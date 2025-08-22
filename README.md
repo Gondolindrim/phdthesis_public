@@ -1,6 +1,8 @@
 # Dynamic Phasor Theory of Electrical Circuits under Nonstationary Regimens
 
-This is the public repository of my doctoral thesis. You will find the PDF in the [releases page](https://github.com/Gondolindrim/phdthesis_public/releases).
+This is the public repository of my doctoral thesis. PDF links:
+
+- [Click here for the defense version dated august 14 2025](https://github.com/Gondolindrim/phdthesis_public/releases/download/defense/alvaro-volpato_dynphasor_theory_defense_version.pdf)
 
 As of August 2025, the source code for the LaTeX document is not available because the thesis was defended and approved but feedback from the committee was not yet applied. Once the feedback is there I will publish the TeX source files too.
 
