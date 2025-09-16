@@ -6,11 +6,11 @@ This is the public repository of my doctoral thesis. PDF links:
 
 ## A note on compiling
 
-If you want to read the thesis, just download the PDF using the link above. If for some reason you need to compile it (like to get the images), the thesis contains 100 TikZ generated figures which are externalized and take roughly 20 minutes to compile, so grab a cofee and lay back.
+If you want to read the thesis, just download the PDF using the link above. If for some reason you need to compile it (like to get the images), the thesis contains 100 TikZ generated figures which are externalized and take roughly 20 minutes to compile, so grab a coffee and lay back.
 
 ## Licensing and citing
 
-The source code for the thesis is available including simulations and figures. The repository is released under the Creative Commons Attribution Non Commercial Share Alike 4.0 license. Under this licensew, you can:
+The source code for the thesis is available including simulations and figures. The repository is released under the Creative Commons Attribution Non Commercial Share Alike 4.0 license. Under this license you can:
 
 - Share, copy, redistribute the material in any medium for any purpose besides commercial purposes (not primarily intended or directed to commercial advantage or compensation);
 
