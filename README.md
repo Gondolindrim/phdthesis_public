@@ -10,9 +10,21 @@ If you want to read the thesis, just download the PDF using the link above. If f
 
 ## Licensing and citing
 
-The source code for the thesis is available including simulations and figures. The repository is released under the MIT license, so basically use everything **with proper citation**. If you use any image, formula, code snippet please cite it. Please help me have citations and get a job.
+The source code for the thesis is available including simulations and figures. The repository is released under the Creative Commons Attribution Non Commercial Share Alike 4.0 license. Under this licensew, you can:
 
-**The only resource that is not redistributable is the EESC-USP ``Athena logo''** in the images folder, but I still have it in the repo because the image is needed for compilation of the document. That is licensed under its own terms, available at the [university's website](https://eesc.usp.br/noticias/logotipos.php) (in portuguese, last accessed september 15, 2025).
+- Share, copy, redistribute the material in any medium for any purpose besides commercial purposes (not primarily intended or directed to commercial advantage or compensation);
+
+- Build upon the material, change and adapt it
+
+And to comply with the license you must:
+
+- Give appropriate credit, provide a link to the license and this repository and indicate if changes were made;
+
+- Changes must be shared under the same terms.
+
+ 	If you use any image, formula, code snippet please cite it. Please help me have citations and get a job.
+
+**The only resource that is not redistributable is the EESC-USP ``Athena logo''** in the images folder, which is not my intellectual property but I still have it in the repo because the image is needed for compilation of the document. That is licensed under its own terms, available at the [university's website](https://eesc.usp.br/noticias/logotipos.php) (in portuguese, last accessed september 15, 2025).
 
 This thesis is public, therefore fully reproductible and redistributable if given the proper citaition. The repository contains a bibtex file you can use if you use LaTeX (which you should by the way), or use the following:
 
