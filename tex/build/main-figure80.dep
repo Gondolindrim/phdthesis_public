@@ -1,0 +1,2 @@
+main-figure80.pdf: data/dpft_sim/data_dpft_sim_scenario1.csv
+main-figure80.pdf: data/dpft_sim/data_dpft_sim_scenario2.csv

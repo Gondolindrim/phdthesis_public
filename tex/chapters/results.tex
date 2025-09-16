@@ -1,0 +1,300 @@
+\chapter{Results and discussion}\label{chapter:results}
+
+	This chapter presents the simulation results for a microgrid test system using the many models herein developed. The main objective of this chapter is assessing the effectiveness of the Pinning-Based Droop Control, as defined in chapter \ref{subsec:pinning} and modelled in section \ref{sec:pinningModelling}.
+
+	Before the Pinning Control evaluation, however, the test system must be presented and built; this is done in section \ref{sec:testSystemBuilding}. After the test system is built and documented, it is simulated under a load disturbance in two situations: the first, using a common P$\upomega$-Q$\dot{\text{V}}$ control and at a second time the Pinning Droop Control.
+
+	The first objective is to justify the development of a microgrid-specific, new PBD control scheme by appointing the flaws of the classic P$\upomega$-Q$\dot{\text{V}}$. This also opens up the possibility of asserting if the Pinning Control technique is indeed better than the conventional Droop control techniques presented. Conceptually, PBD does present a big advantage over conventional Droop techniques because, at first, it can ensure proper load sharing in a microgrid environment while both P$\upomega$-QV and P$\upomega$-Q$\dot{\text{V}}$ fail to do so. We must also take into consideration that the PBD strategy presented also proposes to solve another problem that is not contemplated by conventional Droop. This is because Pinning Control aims at reducing the information exchange network needed in a distributed control setting; on the other hand, conventional Droop is a localized control that does not bring in the issues associated with distributed control.
+
+	The second objective of this chapter is to compare the disturbance responses of these control strategies through application of a load disturbance. In subsection \ref{subsec:pwQdVDroop}, the P$\upomega$-Q$\dot{\text{V}}$ was presented as an evolution of P$\upomega$-QV because, as opposed to this conventional Droop control, P$\upomega$-Q$\dot{\text{V}}$ can enforce proper reactive load sharing among the agents. However, as it was also shown, P$\upomega$-Q$\dot{\text{V}}$ has an intrinsical flaw that it needs a voltage restoration loop which upsets the load sharing condition, yielding not only an added layer of sophistication to the control, but compromising its main benefit. This justifies the need for a distributed control strategy and PBD was then presented as an alternative to the problem, with the main characteristic that it does not require too extensive an information network like other distributed control solutions require. This highlights Pinning Control as a cost-effective and safe control, because it saves the need for complicated control hardware, network information grid necessity, and diminishing the possibility of cyberattacks.
+
+	The third objective of this chapter is to test the Pinning-Droop Control using dynamic agent models. One of the main motivations of this dissertation was that the results in \cite{Avila2017} were based on static models which undermine the results presented because the effectiveness of Pinning Control when dynamical agents are considered is unknown. In this sense, the idea is to implement the Pinning Control on a properly modelled grid that considers the machine dynamics as modelled in chapter \ref{chapter:machineModelling}. The simulation program used is the same as before -- \texttt{pyEPSim} -- with the added control characteristics of Pinning Control.
+
+	The fourth objective of this chapter is to evaluate how a photovoltaic generator would interact with the system should an environmental disturbance occur. At a first glance, the main expectation is that the photovoltaic system, being converter-based, acts in an ultra-fast timescale and its dynamics are negligibly fast. This entices a discussion about the grid modelling and how the static model 
+
+idea is to compare the effectiveness of the pinning control discussed and answer the questions that were raised in the presentation
+
+%--------------------------------------------------------------------------------------------------
+\section{Building a test system}\label{sec:testSystemBuilding} %{{{1
+%--------------------------------------------------------------------------------------------------
+
+	Throughout the dissertation, in order to simulate, test and exemplify the control schemes begin studied, a default test network was used: the IEEE 14 Bus. This system is a standard transmission system aimed at stability and power flow analyses, and served the purpose of assessing the behavior of the machine models: without controllers (subsection \ref{sec:synchModelling}), with AVR and PSS (subsection \ref{sec:avrPssModelling}), with AVR, PSS and conventional Droop (subsection \ref{subsec:droop}), and with AVR, PSS and P$\upomega$-Q$\dot{\text{V}}$ Droop (subsection \ref{subsec:pwQdVDroop}). This was done to standardize the analysis in order to be able to compare different control schemes.
+
+	Being this dissertation about Multi-Agent Systems however, and specially microgrid, it urges the usage of a test system specifically devised for assessing microgrid-oriented control schemes. Hence the IEEE 14 Bus system is unfit for the study of microgrid-specific control as it was employed as an example of conventional big transmission power system. As representative of a small microgrid, a small test system was built. The reason why a ready test system was not used is because there are no widespread microgrid test systems in the literature; there are some references like the CERTS microgrid \pcite{Eto2018} but they are not well-documented and do not contain enough information on the generators, specially dynamic parameters.
+
+	If follows that a test system had to be built for this dissertation. The elected default microgrid test system is depicted in figure \ref{fig:testSystem}, where gray values represent rated values and blue values represent the calculated power flow (static operating point) results of bus voltages magnitudes and angles, and each generator output power.The system is composed of a nine-bar, six-generator system, constituting three pinning areas which also feature local load. The system works at a 460V rated voltage. The areas are connected through line impedances $Z_{34}$ and $Z_{37}$. In the figure, $G_{i}$ represents the generator connected to the i-th bar; $E^\prime_{i}$ the internal induced voltage of $G_{i}$; $V_{i}$ the voltage of the i-th bar. Choosing of the generators nominal power values were based on the Simulink preset models, discussed in the next section.
+
+	The distribution of the buses is supposed to produce a very clear three-are division in the system; one comprised of buses 1, 2, 3; another 4, 5, 6; and another of buses 7, 8, 9. This was made by adding considerably long transmission lines between them; a check on table \ref{tab:lineImpedances} will confirm line $Z_{34}$ is 200m long and $Z_{37}$ is 500 meters long. The distribution of generators was also intentional; in bus 3, the two generators $G_1$ and $G_2$ have a very high rated power difference between them; in bus 7, generators $G_8$ and $G_9$ are very close in that aspect and, in bus $4$, $G_5$ and $G_6$ are different but not as different as $G_2$ and $G_1$. These differences between generators were purposedfully added in order to assess the effects of size disparity among the generators. 
+
+	At this point two discussions are pertinent: first, how should be the line impedances be determined; and second, how should be determined the connection impedances from each generator to its respective bar, that is, the local impedances. References \cite{Vasquez2016} and \cite{Pogaku2007} indicate that the typical line impedance value for a low-voltage microgrid is $Z_L = 0.642 + j0.083\ \sfrac{\Omega}{km}$. The references also indicate that the local lines (that is, the lines connecting the generators to their respective buses) have negligible impedance values due to their also negligible length, meaning that for practical purposes one can consider that the generators are directly connected to their buses.
+
+	Table \ref{tab:lineImpedances} shows the lines lengths, impedance and conductance values. References \cite{Vasquez2016} and \cite{Pogaku2007} also indicate that these length values are well inside typical values for microgrid lines.
+
+\begin{figure}[htb]
+	\begin{center}
+		\includegraphics[width = \textwidth]{../images/modelling/testSystem.pdf}
+		\caption[Schematic of the nine-bar microgrid default test system.]{Schematic of the nine-bar microgrid default test system. In gray, the generator rated values; in blue, power-flow calculated operating point values; in pink, the load disturbance applied.}
+		\label{fig:testSystem}
+	\end{center}
+\end{figure}
+
+% Line impedances absolute values table {{{3
+\begingroup
+\renewcommand*{\arraystretch}{1.3}
+\renewcommand*{\tabcolsep}{2mm}
+\begin{table}[h]
+	\begin{center}
+		\begin{tabular}{c c c c}
+			\hline
+			\textbf{Line} & \textbf{Length (m)} & \textbf{Impedance value} $\mathbf{\Omega}$ \\
+			\hline
+			$\mathbf{Z_{34}}$ & 200  & $0.1284 + j0.01660$ \\
+			\hline
+			$\mathbf{Z_{37}}$ & 500  & $0.3210 + j0.04150$ \\
+			\hline
+			$\mathbf{Z_{54}}$ & 10  & $0.00642 + j0.00083$ \\
+			\hline
+			$\mathbf{Z_{64}}$ & 10  & $0.00642 + j0.00083$ \\
+			\hline
+			$\mathbf{Z_{78}}$ & 15  & $0.00963 + j0.001245$ \\
+			\hline
+			$\mathbf{Z_{79}}$ & 15  & $0.00963 + j0.001245$ \\
+			\hline
+			$\mathbf{Z_{32}}$ & 10  & $0.00642 + j0.00083$ \\
+			\hline
+			$\mathbf{Z_{31}}$ & 20  & $0.01284 + j0.00166$ \\
+			\hline
+		\end{tabular}
+		\caption{Default test system line impedace length and values.}
+		\label{tab:lineImpedances}
+	\end{center}
+\end{table}
+\endgroup %}}}3
+
+	The test system was designed to be islanded, that is, not receive external power from the main  grid. The two following sections detail the modelling of these generators and the controllers used. The first section, \ref{sec:synchModelling}, will denote the synchronous generator modelling as well as its controllers AVR, PSS and Droop. Section \ref{sec:PVModelling} models a photovoltaic generator, comprised of photovoltaic modules, converters and inverter.
+
+%-----------------------------------------------------------
+	\subsection{Model presets used for simulation}
+%-----------------------------------------------------------
+
+	Synchronous machine parameter quantities like reactances, inertia and time constants are not readily available, as most manufacturers do not expressly disclose them. Hence in this dissertation the six synchronous machine parameter models used were based on the model presets available on Simulink. However, even those model presets are incomplete; they lack turbine and governor delay times $\tau_G$ and $\tau_T$. These values were deliberately added. Table \ref{tab:synchMachineModels} show the six parameter models adopted.
+
+% Grid generator values table {{{3
+\begingroup
+\renewcommand*{\arraystretch}{1.3}
+\renewcommand*{\tabcolsep}{2mm}
+\begin{sidewaystable}
+	\begin{center}
+		\begin{tabular}{c c c c c c c c c c c c c}
+			\hline
+			\multicolumn{13}{c}{\textbf{Machine per-unit related parameters}} \\
+			\hline
+			\textbf{Generator} & $\mathbf{V_n}$ (V) & $\mathbf{S_n}$ (kVA) & $\mathbf{r}$ & $\mathbf{x'_q}$ & $\mathbf{x'_d}$ & $\mathbf{x_q}$ & $\mathbf{x_d}$ & $\mathbf{H}$ & $\mathbf{\tau'_{do}}$ & $\mathbf{\tau'_{qo}}$ & $\mathbf{\tau_G}$ & $\mathbf{\tau_T}$\\
+			\hline
+			$\mathbf{G_2}$ & 460 & 10.00 & 0.07809 & 0.083 & 0.0437 & 1.974 & 0.939 & 3.216 & 3.708 & 0.5638 & 0.5 & 0.500 \\
+			\hline
+			$\mathbf{G_5}$ & 460 & 20.00 & 0.06096 & 0.079 & 0.0458 & 1.887 & 0.898 & 2.272 & 5.470 & 0.8254 & 0.5 & 1.000 \\
+			\hline
+			$\mathbf{G_8}$ & 460 & 37.50 & 0.03793 & 0.069 & 0.0391 & 1.630 & 0.769 & 2.084 & 6.903 & 0.9716 & 0.5 & 1.875 \\
+			\hline
+			$\mathbf{G_9}$ & 460 & 52.50 & 0.04491 & 0.090 & 0.0530 & 2.510 & 1.110 & 2.698 & 9.172 & 1.134  & 0.5 & 2.625 \\
+			\hline
+			$\mathbf{G_6}$ & 460 & 72.50 & 0.03461 & 0.080 & 0.0340 & 2.560 & 1.130 & 2.450 & 12.87 & 1.349  & 0.5 & 3.625 \\
+			\hline
+			$\mathbf{G_1}$ & 460 & 100.0 & 0.02599 & 0.070 & 0.0467 & 2.250 & 0.990 & 2.536 & 13.08 & 1.567  & 0.5 & 5.000 \\
+			\hline
+			\multicolumn{13}{c}{\textbf{Grid per-unit related parameters}} \\
+			\hline
+			$\mathbf{G_2}$ & 1.000 & 0.1000  & 0.7809 & 0.8300 & 0.4370  & 19.74 & 9.390 & 0.3216 & 3.708 & 0.563 & 0.5 & 0.500 \\
+			\hline
+			$\mathbf{G_5}$ & 1.000 & 0.2000  & 0.3048 & 0.3950 & 0.2290  & 9.435 & 4.490 & 0.4544 & 5.470 & 0.825 & 0.5 & 1.000 \\
+			\hline
+			$\mathbf{G_8}$ & 1.000 & 0.3750  & 0.1011 & 0.1840 & 0.1043  & 4.347 & 2.051 & 0.7816 & 6.903 & 0.971 & 0.5 & 1.875 \\
+			\hline
+			$\mathbf{G_9}$ & 1.000 & 0.5250 & 0.08554 & 0.1010 & 0.1010  & 4.781 & 2.114 & 1.418  & 9.172 & 1.134 & 0.5 & 2.625 \\
+			\hline
+			$\mathbf{G_6}$ & 1.000 & 0.7250 & 0.04774 & 0.1103 & 0.04690 & 3.655 & 1.559 & 1.762  & 12.87 & 1.349 & 0.5 & 3.625 \\
+			\hline
+			$\mathbf{G_1}$ & 1.000 & 1.000  & 0.02599 & 0.0700 & 0.04670 & 2.250 & 0.9900 & 2.536 & 13.08 & 1.567 & 0.5 & 5.000 \\
+			\hline
+		\end{tabular}
+		\caption{Synchronous machine parameter models based on Simulink model presets.}
+		\label{tab:synchMachineModels}
+	\end{center}
+\end{sidewaystable}
+\endgroup %}}}3
+
+	The quantities in the top part of table \ref{tab:synchMachineModels} are presented in their machine-referenced per-unit values; the voltage and power base values of each preset are their respective line voltage and three-phase power --- for example, all the per-unit values of preset 2 are referred to the base values $V_b = 460V$ and $S_b = 20kVA$. This presents a setback since, being the power grid a multi-generator system, common base values have to be adopted accross all machine models so that the whole grid can be simulated coherently. In this regard, the reference \cite{Ramos2000} proves that if a system-wide per-unit base set of values is adopted, the differential system \eqref{sys:machineSys} of the synchronous machine still holds by simply using the converted values for time constant, reactances and resistances to the system base values. Restated, the model equations are the exact same; all that is needed is to convert each preset values to the default base values adopted. This conversion is done as follows: let $S_a$ be the present base power value (for each preset this is its respective three-phase power) and $S_n$ the base power value to which the quantities must be converted. Let $S_g, V_b, Z_g, I_g$ denote the grid base values for power, voltage, impedance and current; for this system, the chosen values were
+
+\begin{align}
+	S_m &= 100 \text{ kVA} \\[3mm]
+	V_m &= 460 \text{ V} \\[3mm]
+	I_m &= \dfrac{S_b}{V_b} = 217.391304348 \text{ A} \\[3mm]
+	Z_m &= \dfrac{V_b^2}{S_b} = 2.116\ \Omega
+\end{align}
+
+	And let $S_m, Z_m, V_m, I_m$ denote the base values for a particular machine. Then three conversion factors arise:
+
+\begin{align}
+	\left\{\begin{array}{l}
+		C_S = \dfrac{S_m}{S_g} \\[5mm]
+		C_Z = \dfrac{Z_m}{Z_g} \\[5mm]
+		C_I = \dfrac{I_m}{I_g}
+	\end{array}\right.\label{eq:conversionFactor}
+\end{align}
+
+	With the system base values, one can obtain the machine parameters in the grid per-unit base values by multiplying the machine-related values by the conversion factors in \eqref{eq:conversionFactor}. The bottom part of table \eqref{tab:synchMachineModels} shows the parameters in the common grid per-unit base values.
+	
+	For the same reasons, the line impedance values must also be transformed to the grid per-unit base values. Table \ref{tab:lineImpedancesPU} shows the line impedances in the grid per-unit system.
+
+\begingroup
+\renewcommand*{\arraystretch}{1.3}
+\renewcommand*{\tabcolsep}{2mm}
+\begin{table}[h]
+	\begin{center}
+		\begin{tabular}{c c c c}
+			\hline
+			\textbf{Line} & \textbf{Length (m)} & \textbf{Impedance value (p.u.)} \\
+			\hline
+			$\mathbf{Z_{34}}$ & 200  & $0.06068 + j0.007845$ \\
+			\hline
+			$\mathbf{Z_{37}}$ & 500  & $0.1517 + j0.01961$ \\
+			\hline
+			$\mathbf{Z_{54}}$ & 10  & $0.003034 + j0.0003923$ \\
+			\hline
+			$\mathbf{Z_{64}}$ & 10  & $0.003034 + j0.0003923$ \\
+			\hline
+			$\mathbf{Z_{78}}$ & 15  & $0.004551 + j0.005884$ \\
+			\hline
+			$\mathbf{Z_{79}}$ & 15  & $0.004551 + j0.005884$ \\
+			\hline
+			$\mathbf{Z_{32}}$ & 10  & $0.003034 + j0.0003923$ \\
+			\hline
+			$\mathbf{Z_{31}}$ & 20  & $0.006068 + j0.00078466$ \\
+			\hline
+		\end{tabular}
+		\caption{Default test system line impedace length and values in the grid per-unit base system.}
+		\label{tab:lineImpedancesPU}
+	\end{center}
+\end{table}
+\endgroup
+
+%-----------------------------------------------------------
+\section{P$\upomega$-Q$\dot{\text{V}}$ Simulation} %{{{1
+%-----------------------------------------------------------
+
+	Figures \eqref{fig:pfqdvVoltages125} through \eqref{fig:pfqdvAVRPSS} show the microgrid of figure \ref{fig:testSystem} simulated using the P$\upomega$-Q$\dot{\text{V}}$ Droop technique. The disturbance used was the addition of a 10 kW load at bus 1. The objective of simulating the grid with this more conventional Droop control is to have a reference for the performance of Pinning: since P$\upomega$-Q$\dot{\text{V}}$ is a very known and widespread technique, the validation of a new control technique must pass through the comparison with a well-known widespread technique.
+
+	As expected, the graphics show that the microgrid behaves much like the IEEE 14 Bus when this system was simulated using the same technique (section \ref{subsec:pwQdVDroop}). The only difference are that, in the microgrid case, the oscillations present are much faster and wider, even for such a small load increase. This considering that in the IEEE 14 Bus case, the disturbance used was a bigger load step than in this case. This only shows that, as was noted in the introductory chapter, the microgrid behavior and control is prone to wider and faster oscillations due to the smaller size of the agents that are present; while in the microgrid the biggest agent is rated at 100kVA, in the 14 Bus system the largest agent was rated six times bigger. The parameters used were common for all generators: AVR gain $K_e = 10$, PSS gain $K_{PSS} = 5$, PSS time constants $T_1 = 2$ and $T_2 = 3$. The Droop constants for every generator were chosen as $k_{Q} = 0.01Q^* $, $Q^*$ being the generator rated reactive power, and $k_P = 0.05P^*$, $P^*$ being the generator active rated power.
+
+	As was discussed in the modelling chapter, this technique has a flaw in that the voltage regeneration technique used upsets the load sharing result and hence precise load sharing is achievable for low values of regenerating gains. However, the simulations show that the technique achieves a good load sharing result, both in active power as reactive power.
+
+	There is a definite downside to this technique: it does not contain an active power regeneration loop, meaning that after a disturbance it will not bring the system to the original generation frequency. Indeed, taking a look at figure XXX, the generation frequencies stay lower than the nominal.
+
+\begin{figure}[htb]
+	\begin{center}
+		\includegraphics[height = 0.9\textheight]{../images/microgridSimulations/pfqdv/voltages125.pdf}
+		\caption{Simulation results for the voltages and reactive power outputs of microgrid generators 1, 2 and 5 using the P$\upomega$-Q$\dot{\text{V}}$ droop technique. Setpoints are shown in dashed lines and output values in solid lines.}
+		\label{fig:pfqdvVoltages125}
+	\end{center}
+\end{figure}
+
+\begin{figure}[htb]
+	\begin{center}
+		\includegraphics[height = 0.9\textheight]{../images/microgridSimulations/pfqdv/voltages689.pdf}
+		\caption{Simulation results for the voltages and reactive power outputs of microgrid generators 6,8 and 9 using the P$\upomega$-Q$\dot{\text{V}}$ droop technique. Setpoints are shown in dashed lines and output values in solid lines.}
+		\label{fig:pfqdv689}
+	\end{center}
+\end{figure}
+
+\begin{figure}[htb]
+	\begin{center}
+		\includegraphics[width = 0.9\textheight, angle = 90]{../images/microgridSimulations/pfqdv/omega_pm1.pdf}
+		\caption{Simulation results for the frequencies for all the generators in the microgrid using the P$\upomega$-Q$\dot{\text{V}}$ droop technique.}
+		\label{fig:pfqdvOmegaP1}
+	\end{center}
+\end{figure}
+
+\begin{figure}[htb]
+	\begin{center}
+		\includegraphics[width = 0.9\textheight, angle = 90]{../images/microgridSimulations/pfqdv/avr_pss.pdf}
+		\caption{Simulation results for the AVR and PSS controller voltages for all the generators in the microgrid using the P$\upomega$-Q$\dot{\text{V}}$ droop technique. Setpoints are shown in dashed lines and output values in solid lines.}
+		\label{fig:pfqdvAVRPSS}
+	\end{center}
+\end{figure}
+
+%-----------------------------------------------------------
+\section{Pinning Control simulation} %{{{1
+%-----------------------------------------------------------
+
+	Figures \ref{fig:pinningOmegaP1} and \ref{fig:pinningAVRPSS} show the simulation results of the microgrid using the Pinning Control technique proposed.
+
+	The two first and most obvious differences between the results of the Pinning Droop and the P$\upomega$-Q$\dot{\text{V}}$ Droop is that the Pinning takes almost 60 seconds to settle while P$\upomega$-Q$\dot{\text{V}}$ takes almost 40; also, the Pinning control is able to restore the system to the nominal frequency after some time, which the conventional Droop is not able to do. Both these differences stem primarily from the active power regeneration dynamic of equation \eqref{sys:matrixSynch}. The $k_Q,\ k_P\, K_{PSS}, K_{AVR}, T_1, T_2$ values were kept the same as the P$\upomega$-Q$\dot{\text{V}}$ simulation. The load disturbance used also was the same.
+
+	The regenerating gain $k_{\text{res}}$ for this simulation was chosen as $0.01$ -- which is a very low gain, making the restorative dynamic quite slow. However, choosing higher restorative gains showed to make the system present oscillatory behavior. Hence it can be stated that there is a tradeoff between oscillatory behavior and settling time; the higher the restorative gain, the faster the system becomes but its frequencies and mechanical power values will oscillate considerably. On the other hand, low restorative gains will make the system oscillate less, but it will be slower.
+
+	The simulations also show that in this case there is no indication that a safety or operational limit could be violated during the transient swings of the system. This is not surprising, since the load disturbance chosen is minimal and should not present a threat to the system. The Pinning-Droop control is able to operate without incurring operational hazards or damages into the system.
+
+%\begin{figure}[htb]
+%	\begin{center}
+%		\includegraphics[height = 0.9\textheight]{../images/microgridSimulations/pinning/voltages125.pdf}
+%		\caption{Simulation results for the voltages and reactive power outputs of microgrid generators 1, 2 and 5 using the Pinning-Droop technique. Setpoints are shown in dashed lines and output values in solid lines.}
+%		\label{fig:pinningVoltages125}
+%	\end{center}
+%\end{figure}
+%
+%\begin{figure}[htb]
+%	\begin{center}
+%		\includegraphics[height = 0.9\textheight]{../images/microgridSimulations/pinning/voltages689.pdf}
+%		\caption{Simulation results for the voltages and reactive power outputs of microgrid generators 6,8 and 9 using the Pinning-Droop technique. Setpoints are shown in dashed lines and output values in solid lines.}
+%		\label{fig:pinning689}
+%	\end{center}
+%\end{figure}
+
+\begin{figure}[htb]
+	\begin{center}
+		\includegraphics[width = 0.9\textheight, angle = 90]{../images/microgridSimulations/pinning/omega.pdf}
+		\caption{Simulation results for the frequencies for all the generators in the microgrid using the Pinning Droop technique.}
+		\label{fig:pinningOmegaP1}
+	\end{center}
+\end{figure}
+
+\begin{figure}[htb]
+	\begin{center}
+		\includegraphics[width = 0.9\textheight, angle = 90]{../images/microgridSimulations/pinning/avr_pss.pdf}
+		\caption{Simulation results for the AVR and PSS controller voltages for all the generators in the microgrid using the Pinning Droop technique. Setpoints are shown in dashed lines and output values in solid lines.}
+		\label{fig:pinningAVRPSS}
+	\end{center}
+\end{figure}
+
+%-----------------------------------------------------------
+\section{Pinning Control simulation with photovoltaic generator} %{{{1
+%-----------------------------------------------------------
+
+	Figure \ref{fig:testSystemwithPV} shows the microgrid test system featuring a photovoltaic generator. The objective now is to test how the fast converter-based generator will interact with the grid when the Pinning Contol is determining the system dynamics.
+
+\begin{figure}[htb]
+	\begin{center}
+		\includegraphics[width = \textwidth]{../images/modelling/testSystem_withPV.pdf}
+		\caption[Schematic of the nine-bar microgrid default test system featuring a 20kVA photovoltaic generator.]{Schematic of the nine-bar microgrid default test system featuring a 20kVA photovoltaic generator. In gray, the generator rated values; in blue, power-flow calculated operating point values and in pink the disturbance step in photovoltaic generated power.}
+		\label{fig:testSystemwithPV}
+	\end{center}
+\end{figure}
+
+	Initially, the PV generator is outputting a 20kW power to bus 1 at unitary power factor; the inverter is set to maintain that power factor at all times. Then a disturbance in the solar irradiance occurs so that the photovoltaic generated power falls to 10kW inside miliseconds, as the prior simulations of this system predicted.
+
+	It is interesting to note that this configuration of the system is equivalent to a 10kW load step at bus 1, which was used for the P$\upomega$-Q$\dot{\text{V}}$ and Pinning Control strategies; the 10kW fall in photovoltaic output power in this case corresponds exactly to the load disturbance on the other cases.
+
+	Not surprisingly, the results show that the system behaves identically to the load disturbance case; being the photovoltaic generator ultra-fast for the grid, its transient dynamics were faster than the time step for the numerical integration method even, and its effects were akin to that of a load addition. This conforms to the supposition that, when compared to the grid and the synchronous machines, the photovoltaic system can safely have its transient dynamics disregarded.
+
+%-----------------------------------------------------------
+\section{Discussion and possible further advancements} %{{{1
+%-----------------------------------------------------------
+
+	Ultimately, the Pinning Control proves to be successful. It brings the system to a perfectly operable and safe condition, while also providing the load sharing result it was designed to do. It also proves to be a good distributed control technique due to its inherently simple information exchange net, which facilitates the simulation greatly. Another great feature of the pinning control chosen is that the synchronizing functions dynamic equations can be writen in a matrix form (equations \eqref{sys:matrixSynchReduced} at page \pageref{sys:matrixSynchReduced}). Using this form the simulation program can calculate these functions easily with a single command line, whereas calculating these functions individually for every single agent would make the program significantly more complex.
+
+	The only downside presented by Pinning Droop control, when compared to the P$\upomega$-Q$\dot{\text{V}}$ control, was that the frequency settling time, fruit of the frequency restoration technique used, was too wide due to the low restorative gain $k_{\text{res}}$ used. However, when using higher gain values, the system started exhibiting too great frequency oscillations; thence it was concluded that the restorative gain choice comprises a tradeoff between the needed settling time and the duration and amplitude of the frequency oscillations presented. This could be remedied by using a different restoration technique than equation \eqref{sys:pinningObjNew3} (page \pageref{sys:pinningObjNew3}), or by fine-adjusting the pinning gains $b_i$ 
+
+	However complete, the analyses performed in the results did not submit the microgrid system to significantly large load disturbances. Therefore, the response of the Pinning-Droop control to large swings was not assessed. Further analysis on the robustness of this control technique to severe load variations could be held to assess if maybe the Pinning control can be used as a standalone control technique or should it need a secondary, auxiliary control loop to augment the system capabilities. Following this same 
+
+	Finally, albeit a great effort being done in modelling the transient dynamics of the photovoltaic system, the results show that the converter-based generator is so fast that its dynamics can be safely disregarded. However, one must always have in mind that the grid modelling in this dissertation supposes that the grid is at a permanent sinusoidal behavior. If the photovoltaic generator is so fast, then surely its dynamics will interact with the grid's transient response and the supposition of permanent state is not reasonable anymore. This prompts the development of a dynamic grid modelling that can predict the grid's transient behavior when such fast agents are at play. The Dynamic Phasor modelling technique is ideal here; further research can redo the simulations here and assess if the photovoltaic generator is faster than the grid, so that the grid dynamics must be modelled.

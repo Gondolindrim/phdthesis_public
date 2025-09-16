@@ -1,0 +1,166 @@
+\contentsline {chapter}{Abstract}{11}{figure.caption.2}%
+\contentsline {chapter}{Resumo}{13}{figure.caption.2}%
+\contentsline {chapter}{Acknowledgements}{15}{figure.caption.2}%
+\contentsline {chapter}{List of Figures}{17}{section*.3}%
+\contentsline {chapter}{List of Tables}{21}{section*.4}%
+\contentsline {chapter}{Abbreviations and Acronyms}{23}{section*.4}%
+\contentsline {chapter}{\chapternumberline {1}Introduction}{31}{chapter.1}%
+\contentsline {section}{\numberline {1.1}Motivation: the Quasi-Static Modelling}{32}{section.1.1}%
+\contentsline {subsection}{\numberline {1.1.1}Synchronous machine modelling}{33}{subsection.1.1.1}%
+\contentsline {subsection}{\numberline {1.1.2}Large and multimachine Power Systems}{36}{subsection.1.1.2}%
+\contentsline {subsection}{\numberline {1.1.3}Control of Power Systems}{37}{subsection.1.1.3}%
+\contentsline {subsection}{\numberline {1.1.4}The QSM beyond Power Systems}{40}{subsection.1.1.4}%
+\contentsline {subsection}{\numberline {1.1.5}Modern Power Systems}{43}{subsection.1.1.5}%
+\contentsline {section}{\numberline {1.2}Problems this thesis aims to tackle}{44}{section.1.2}%
+\contentsline {subsection}{\numberline {1.2.1}Static Phasors as a template}{45}{subsection.1.2.1}%
+\contentsline {subsection}{\numberline {1.2.2}Electrical power in AC regimen}{45}{subsection.1.2.2}%
+\contentsline {subsection}{\numberline {1.2.3}The current literature}{46}{subsection.1.2.3}%
+\contentsline {section}{\numberline {1.3}This text}{48}{section.1.3}%
+\contentsline {subsection}{\numberline {1.3.1}To whom and for what this text is intended}{48}{subsection.1.3.1}%
+\contentsline {subsection}{\numberline {1.3.2}Objective, contributions and thesis overview}{48}{subsection.1.3.2}%
+\contentsline {section}{\numberline {1.4}Associated papers}{51}{section.1.4}%
+\contentsline {part}{1\hspace {1em}Linear Systems and Classical Phasor Theory}{53}{part.1}%
+\contentsline {chapter}{\chapternumberline {2}Theory of Linear Dynamical Systems}{55}{chapter.2}%
+\contentsline {section}{\numberline {2.1}Introduction}{55}{section.2.1}%
+\contentsline {subsection}{\numberline {2.1.1}Objectives}{55}{subsection.2.1.1}%
+\contentsline {subsection}{\numberline {2.1.2}Notation}{55}{subsection.2.1.2}%
+\contentsline {section}{\numberline {2.2}Linear Circuits as Linear Functionals}{58}{section.2.2}%
+\contentsline {section}{\numberline {2.3}Natural response of a LTI ODE}{63}{section.2.3}%
+\contentsline {section}{\numberline {2.4}Bases, matrices and operations}{66}{section.2.4}%
+\contentsline {section}{\numberline {2.5}Base changes}{74}{section.2.5}%
+\contentsline {section}{\numberline {2.6}Invariant subspaces and eingenstuff}{79}{section.2.6}%
+\contentsline {section}{\numberline {2.7}Diagonalizable operators}{85}{section.2.7}%
+\contentsline {section}{\numberline {2.8}Defective LTI ODEs}{90}{section.2.8}%
+\contentsline {section}{\numberline {2.9}Jordan decomposition and generalized eigenvectors}{92}{section.2.9}%
+\contentsline {section}{\numberline {2.10}Jordan Decomposition}{96}{section.2.10}%
+\contentsline {section}{\numberline {2.11}Generalized Jordan Chains}{99}{section.2.11}%
+\contentsline {section}{\numberline {2.12}Matrix exponentials and the general solution of a LTI ODE}{102}{section.2.12}%
+\contentsline {subsection}{\numberline {2.12.1}Inner product and norms}{103}{subsection.2.12.1}%
+\contentsline {subsection}{\numberline {2.12.2}Norms of maps and matrices}{105}{subsection.2.12.2}%
+\contentsline {subsection}{\numberline {2.12.3}Matrix exponential properties}{108}{subsection.2.12.3}%
+\contentsline {section}{\numberline {2.13}Line and matrix ODEs}{112}{section.2.13}%
+\contentsline {subsection}{\numberline {2.13.1}Matrix-to-line equivalence and the Cayley-Hamilton Theorem}{114}{subsection.2.13.1}%
+\contentsline {subsection}{\numberline {2.13.2}The Frobenius Matrix and Hurwitz Polynomial}{119}{subsection.2.13.2}%
+\contentsline {subsection}{\numberline {2.13.3}General solution of a line ODE}{123}{subsection.2.13.3}%
+\contentsline {section}{\numberline {2.14}Stability}{124}{section.2.14}%
+\contentsline {section}{\numberline {2.15}Lyapunov stability}{132}{section.2.15}%
+\contentsline {chapter}{\chapternumberline {3}Classic Phasors Theory}{137}{chapter.3}%
+\contentsline {section}{\numberline {3.1}Introduction to phasors}{137}{section.3.1}%
+\contentsline {section}{\numberline {3.2}Linear Circuits as Linear Systems (again)}{138}{section.3.2}%
+\contentsline {section}{\numberline {3.3}Hurwitz stability of Passive Linear Circuits}{141}{section.3.3}%
+\contentsline {section}{\numberline {3.4}Static Phasors}{147}{section.3.4}%
+\contentsline {subsection}{\numberline {3.4.1}Operational properties of Static Phasors}{149}{subsection.3.4.1}%
+\contentsline {section}{\numberline {3.5}Impedances and Kirchoff's Laws in the Phasor domain}{154}{section.3.5}%
+\contentsline {section}{\numberline {3.6}Complex and Average Power of Static Phasors}{158}{section.3.6}%
+\contentsline {part}{2\hspace {1em}Dynamic Phasors Theory}{163}{part.2}%
+\contentsline {chapter}{\chapternumberline {4}Dynamic Phasors Theory}{165}{chapter.4}%
+\contentsline {section}{\numberline {4.1}Nonstationary sinusoidal signals: the current theory of Dynamic Phasors}{165}{section.4.1}%
+\contentsline {section}{\numberline {4.2}Short-Time Fourier Transform of nonstationary signals}{167}{section.4.2}%
+\contentsline {subsection}{\numberline {4.2.1}Operational properties of STFT Dynamic Phasors}{170}{subsection.4.2.1}%
+\contentsline {subsection}{\numberline {4.2.2}Shortcomings of Short-Time Fourier Dynamic Phasors}{171}{subsection.4.2.2}%
+\contentsline {subsubsection}{Gabor's Inequality}{171}{section*.25}%
+\contentsline {subsubsection}{Infinite complex systems}{175}{equation.4.38}%
+\contentsline {subsubsection}{Power signals}{176}{equation.4.44}%
+\contentsline {section}{\numberline {4.3}Representation of sinusoidal signals using the Hilbert Transform}{177}{section.4.3}%
+\contentsline {subsection}{\numberline {4.3.1}Analytical Representation of real signals}{177}{subsection.4.3.1}%
+\contentsline {subsection}{\numberline {4.3.2}The Cauchy Principal Value}{179}{subsection.4.3.2}%
+\contentsline {subsection}{\numberline {4.3.3}Properties and application to signals of interest}{181}{subsection.4.3.3}%
+\contentsline {subsection}{\numberline {4.3.4}Shortcomings of the Hilbert Transform}{183}{subsection.4.3.4}%
+\contentsline {subsubsection}{Representation of signals in time}{183}{section*.29}%
+\contentsline {subsubsection}{Differentials}{183}{section*.29}%
+\contentsline {subsubsection}{Power signals}{184}{equation.4.97}%
+\contentsline {section}{\numberline {4.4}Proposed Dynamic Phasors Theory}{184}{section.4.4}%
+\contentsline {subsection}{\numberline {4.4.1}Construction of the Dynamic Phasor Transform}{185}{subsection.4.4.1}%
+\contentsline {subsection}{\numberline {4.4.2}Properties of the Dynamic Phasor Transform}{189}{subsection.4.4.2}%
+\contentsline {section}{\numberline {4.5}The Dynamic Phasor Transform applied to linear systems}{191}{section.4.5}%
+\contentsline {subsection}{\numberline {4.5.1}A dq-equivalent linear system}{192}{subsection.4.5.1}%
+\contentsline {subsection}{\numberline {4.5.2}Complexification of LTI ODEs with phasorial forcing}{199}{subsection.4.5.2}%
+\contentsline {subsection}{\numberline {4.5.3}Discussion on theorem \ref {corollary:complex_equivalence_phasorialodes}}{205}{subsection.4.5.3}%
+\contentsline {section}{\numberline {4.6}Nonstationary Complex Power}{208}{section.4.6}%
+\contentsline {section}{\numberline {4.7}Some circuit analysis in Dynamic Phasor domain}{214}{section.4.7}%
+\contentsline {section}{\numberline {4.8}Three-Phase Dynamic Phasors}{221}{section.4.8}%
+\contentsline {subsection}{\numberline {4.8.1}Synchronization basics: the $\alpha \beta \gamma $ and $dq0$ transforms}{221}{subsection.4.8.1}%
+\contentsline {subsubsection}{The Clarke Transform}{221}{section*.44}%
+\contentsline {subsubsection}{The Park Transform}{223}{equation.4.270}%
+\contentsline {section}{\numberline {4.9}The $dq0$ Transform and the Three-Phase Dynamic Phasor}{224}{section.4.9}%
+\contentsline {subsection}{\numberline {4.9.1}Three-Phase Dynamic Phasors as representations of solutions of ODEs}{228}{subsection.4.9.1}%
+\contentsline {subsection}{\numberline {4.9.2}On the zero-sequence component}{234}{subsection.4.9.2}%
+\contentsline {section}{\numberline {4.10}Three-phase Generalized Complex Power}{236}{section.4.10}%
+\contentsline {section}{\numberline {4.11}Some circuit analysis in three-phase domain and example simulation}{239}{section.4.11}%
+\contentsline {chapter}{\chapternumberline {5}Effects of apparent frequency}{251}{chapter.5}%
+\contentsline {section}{\numberline {5.1}Steady-state phasor approximation and timescales}{251}{section.5.1}%
+\contentsline {subsection}{\numberline {5.1.1}Revisiting nonstationary sinusoids and Dynamic Phasors: Sigma Spaces}{252}{subsection.5.1.1}%
+\contentsline {subsection}{\numberline {5.1.2}Characteristics of $L^1\left (I\right )$}{254}{subsection.5.1.2}%
+\contentsline {subsection}{\numberline {5.1.3}Consequences of characteristics of $\Sigma $ spaces on linear circuit theory}{255}{subsection.5.1.3}%
+\contentsline {section}{\numberline {5.2}Sigma Spaces in the phasor domain}{258}{section.5.2}%
+\contentsline {section}{\numberline {5.3}Determining if a 3$\phi $ system yields a balanced assymptotic solution}{264}{section.5.3}%
+\contentsline {section}{\numberline {5.4}Frequency control modelling and timescales: the Quasi-static Hypothesis}{269}{section.5.4}%
+\contentsline {subsection}{\numberline {5.4.1}Exploring timescales}{272}{subsection.5.4.1}%
+\contentsline {subsection}{\numberline {5.4.2}Applying theorem \ref {theo:qsh_approx_nonlinivps} to the modelling }{275}{subsection.5.4.2}%
+\contentsline {section}{\numberline {5.5}Exploring theorem \ref {theo:qsh_linear_circuits} and its consequences}{276}{section.5.5}%
+\contentsline {subsection}{\numberline {5.5.1}The unitary matrices $U_A$ and $U_B$}{276}{subsection.5.5.1}%
+\contentsline {subsection}{\numberline {5.5.2}Timescale analysis}{277}{subsection.5.5.2}%
+\contentsline {subsection}{\numberline {5.5.3}Assymptotic stability and effects of loads}{277}{subsection.5.5.3}%
+\contentsline {section}{\numberline {5.6}Proving the Quasi-Static Hypothesis}{279}{section.5.6}%
+\contentsline {part}{3\hspace {1em}Dynamic Phasor Functionals and Control}{287}{part.3}%
+\contentsline {chapter}{\chapternumberline {6}Dynamic Phasor Functionals}{289}{chapter.6}%
+\contentsline {section}{\numberline {6.1}Motivation: modelling circuit using the Laplace Transform}{290}{section.6.1}%
+\contentsline {section}{\numberline {6.2}The Dynamic Phasor Functionals}{292}{section.6.2}%
+\contentsline {subsection}{\numberline {6.2.1}Motivation: transforming derivatives}{292}{subsection.6.2.1}%
+\contentsline {subsection}{\numberline {6.2.2}Linearity, bijectiveness and inverse operator}{293}{subsection.6.2.2}%
+\contentsline {section}{\numberline {6.3}Algebraic structures induced by DPFs and the class $\boldsymbol {\Xi }$}{295}{section.6.3}%
+\contentsline {subsection}{\numberline {6.3.1}Group and ring}{295}{subsection.6.3.1}%
+\contentsline {subsection}{\numberline {6.3.2}Field and vector space}{298}{subsection.6.3.2}%
+\contentsline {subsection}{\numberline {6.3.3}The $\boldsymbol {\Xi }$ space and polynomials of DPFs}{299}{subsection.6.3.3}%
+\contentsline {subsection}{\numberline {6.3.4}Matrices in $\boldsymbol {\Xi }$}{301}{subsection.6.3.4}%
+\contentsline {subsection}{\numberline {6.3.5}Real and imaginary components, conjugation and the extended DPF space}{306}{subsection.6.3.5}%
+\contentsline {subsection}{\numberline {6.3.6}A topology of Dynamic Phasor Functionals}{310}{subsection.6.3.6}%
+\contentsline {section}{\numberline {6.4}Circuit modelling techniques using Dynamic Phasors and the DPF}{314}{section.6.4}%
+\contentsline {subsection}{\numberline {6.4.1}Dynamic Impedances}{314}{subsection.6.4.1}%
+\contentsline {subsection}{\numberline {6.4.2}Superposition, Thèvenin and Norton}{320}{subsection.6.4.2}%
+\contentsline {section}{\numberline {6.5}Example application}{325}{section.6.5}%
+\contentsline {subsection}{\numberline {6.5.1}Target circuit}{325}{subsection.6.5.1}%
+\contentsline {subsection}{\numberline {6.5.2}Dynamic Phasor domain modelling}{326}{subsection.6.5.2}%
+\contentsline {subsection}{\numberline {6.5.3}Correlation with the time domain}{330}{subsection.6.5.3}%
+\contentsline {subsection}{\numberline {6.5.4}Simulation}{330}{subsection.6.5.4}%
+\contentsline {chapter}{\chapternumberline {7}Elementary Control Theory in Dynamic Phasor Space}{335}{chapter.7}%
+\contentsline {section}{\numberline {7.1}Decomposition of complex signals}{336}{section.7.1}%
+\contentsline {subsection}{\numberline {7.1.1}The Fundamental Theorem of Homomorphisms}{336}{subsection.7.1.1}%
+\contentsline {subsection}{\numberline {7.1.2}Consequences on DPFs}{338}{subsection.7.1.2}%
+\contentsline {subsection}{\numberline {7.1.3}Nullspace of the DPO}{339}{subsection.7.1.3}%
+\contentsline {subsection}{\numberline {7.1.4}The nature of the null component}{341}{subsection.7.1.4}%
+\contentsline {subsection}{\numberline {7.1.5}Eigenanalysis of the DPO}{342}{subsection.7.1.5}%
+\contentsline {section}{\numberline {7.2}Connection with the Laplace Transform}{344}{section.7.2}%
+\contentsline {subsection}{\numberline {7.2.1}The Final Value Theorems}{351}{subsection.7.2.1}%
+\contentsline {section}{\numberline {7.3}The $\mu $ Transform on DPFs and consequences on linear systems}{353}{section.7.3}%
+\contentsline {subsection}{\numberline {7.3.1}Rational systems and $\mu $TFs}{355}{subsection.7.3.1}%
+\contentsline {section}{\numberline {7.4}BIBO stability}{358}{section.7.4}%
+\contentsline {subsection}{\numberline {7.4.1}For general linear systems}{358}{subsection.7.4.1}%
+\contentsline {subsection}{\numberline {7.4.2}BIBO stability of the $\mu $TFs}{359}{subsection.7.4.2}%
+\contentsline {section}{\numberline {7.5}Discussion and application: a new current controller proposed using DPOs}{362}{section.7.5}%
+\contentsline {subsection}{\numberline {7.5.1}Proposition and construction}{362}{subsection.7.5.1}%
+\contentsline {subsection}{\numberline {7.5.2}Analyzing BIBO stability}{363}{subsection.7.5.2}%
+\contentsline {subsection}{\numberline {7.5.3}Simulation}{366}{subsection.7.5.3}%
+\contentsline {part}{4\hspace {1em}Applications and conclusion}{373}{part.4}%
+\contentsline {chapter}{\chapternumberline {8}Applications to Power System and Electronic Circuits}{375}{chapter.8}%
+\contentsline {section}{\numberline {8.1}Simulation of a simple Power System}{375}{section.8.1}%
+\contentsline {subsection}{\numberline {8.1.1}System model without short}{376}{subsection.8.1.1}%
+\contentsline {subsection}{\numberline {8.1.2}System model while shorted}{379}{subsection.8.1.2}%
+\contentsline {subsection}{\numberline {8.1.3}Simulation}{380}{subsection.8.1.3}%
+\contentsline {section}{\numberline {8.2}A transient Power System modelling framework using Dynamic Phasor theory}{388}{section.8.2}%
+\contentsline {subsection}{\numberline {8.2.1}The Unified Nodal Model for transmission systems}{388}{subsection.8.2.1}%
+\contentsline {subsection}{\numberline {8.2.2}Modelling bus loads}{390}{subsection.8.2.2}%
+\contentsline {subsection}{\numberline {8.2.3}Multi-machine Power System modelling example: the Kundur two-area system}{392}{subsection.8.2.3}%
+\contentsline {section}{\numberline {8.3}Nonlinear systems: modelling of an electronic amplifier}{396}{section.8.3}%
+\contentsline {chapter}{\chapternumberline {9}Discussion and conclusion}{405}{chapter.9}%
+\contentsline {section}{\numberline {9.1}On the proposed Dynamic Phasor representation}{405}{section.9.1}%
+\contentsline {subsection}{\numberline {9.1.1}Comments on definition \ref {def:sinusoid_dynamic} of sinusoids}{405}{subsection.9.1.1}%
+\contentsline {subsection}{\numberline {9.1.2}The 3$\phi $ DPT and the single-phase variant}{407}{subsection.9.1.2}%
+\contentsline {subsection}{\numberline {9.1.3}Justifying the complex generator function and the frequency arbitrariety}{408}{subsection.9.1.3}%
+\contentsline {subsection}{\numberline {9.1.4}Generalization of ``phasor calculus''}{410}{subsection.9.1.4}%
+\contentsline {subsection}{\numberline {9.1.5}Consequences for Power Systems}{410}{subsection.9.1.5}%
+\contentsline {section}{\numberline {9.2}Frequency effects on the Dynamic Phasor Transform}{413}{section.9.2}%
+\contentsline {section}{\numberline {9.3}About Dynamic Phasor Functionals}{414}{section.9.3}%
+\contentsline {section}{\numberline {9.4}About $\mu $ Transforms and the control theory in Dynamic Phasor Space}{415}{section.9.4}%
+\contentsline {section}{\numberline {9.5}Conclusion}{416}{section.9.5}%
+\contentsline {chapter}{Bibliography}{419}{chapter*.112}%

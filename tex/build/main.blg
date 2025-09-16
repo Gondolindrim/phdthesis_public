@@ -1,0 +1,58 @@
+This is BibTeX, Version 0.99d (TeX Live 2026/dev/Arch Linux)
+Capacity: max_strings=200000, hash_size=200000, hash_prime=170003
+The top-level auxiliary file: build/main.aux
+The style file: apalike.bst
+Database file #1: refs.bib
+Warning--to sort, need author or key in EstimatingTransientStability2025
+Warning--empty author in EstimatingTransientStability2025
+Warning--empty publisher in gelfandCalculusVariations1963
+Warning--empty publisher in goncalvesIntroducaoAlgebra2021
+Warning--there's a number but no volume in Henschel1999
+Warning--empty journal in Kusters1979
+Warning--there's a number but no volume in Kusters1979
+Warning--empty journal in volpatoDynamicPhasorFunctionals2025
+Warning--empty journal in volpatoEffectsApparentFrequency2025
+Warning--empty journal in volpatoRepresentationDynamicPhasor2025
+Warning--empty journal in volpatoRigorousApproachQuasistationary2025
+You've used 128 entries,
+            1935 wiz_defined-function locations,
+            1278 strings with 32212 characters,
+and the built_in function-call counts, 49396 in all, are:
+= -- 4891
+> -- 1924
+< -- 99
++ -- 668
+- -- 635
+* -- 4208
+:= -- 8646
+add.period$ -- 404
+call.type$ -- 128
+change.case$ -- 931
+chr.to.int$ -- 121
+cite$ -- 140
+duplicate$ -- 1883
+empty$ -- 3492
+format.name$ -- 830
+if$ -- 9621
+int.to.chr$ -- 8
+int.to.str$ -- 0
+missing$ -- 151
+newline$ -- 646
+num.names$ -- 383
+pop$ -- 822
+preamble$ -- 1
+purify$ -- 956
+quote$ -- 0
+skip$ -- 1377
+stack$ -- 0
+substring$ -- 3399
+swap$ -- 198
+text.length$ -- 17
+text.prefix$ -- 0
+top$ -- 0
+type$ -- 702
+warning$ -- 11
+while$ -- 410
+width$ -- 0
+write$ -- 1694
+(There were 11 warnings)

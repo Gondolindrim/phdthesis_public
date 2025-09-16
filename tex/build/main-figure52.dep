@@ -1,0 +1,3 @@
+main-figure52.pdf: data/rlc_sim/data_rlc_sim_dps.csv
+main-figure52.pdf: data/rlc_sim/data_rlc_sim_omega0.csv
+main-figure52.pdf: data/rlc_sim/data_rlc_sim_omega0.csv

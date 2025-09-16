@@ -1,0 +1,797 @@
+\begin{thebibliography}{}
+
+\bibitem[Est, 2025]{EstimatingTransientStability2025}
+ (2025).
+\newblock Estimating {{Transient Stability Regions}} of {{Large-Scale Power
+  Systems Part I}}: {{Koopman Operator}} and {{Reduced-Order Model}}.
+\newblock {\em CSEE Journal of Power and Energy Systems}.
+
+\bibitem[Achiezer, 1993]{achiezerTheoryLinearOperators1993}
+Achiezer, N.~I. (1993).
+\newblock {\em Theory of {{Linear Operators}} in {{Hilbert Space}}}.
+\newblock Dover {{Books}} on {{Mathematics Series}}. Dover Publications,
+  Incorporated, Newburyport.
+\newblock Description based on publisher supplied metadata and other sources.
+
+\bibitem[Ahlfors, 1979]{ahlfors1979complex}
+Ahlfors, L. (1979).
+\newblock {\em Complex {{Analysis}}: {{An Introduction}} to {{The Theory}} of
+  {{Analytic Functions}} of {{One Complex Variable}}}.
+\newblock McGraw-Hill Education.
+
+\bibitem[Alberto, 2010]{albertoCaracterizacaoEstimativasArea2010}
+Alberto, L. F.~C. (2010).
+\newblock {\em {Caracteriza{\c c}{\~a}o e estimativas da {\'a}rea de atra{\c
+  c}{\~a}o de sistemas din{\^a}micos n{\~a}o lineares.}}
+\newblock PhD thesis, Universidade de S{\~a}o Paulo, S{\~a}o Carlos.
+
+\bibitem[Alberto and {Hsiao-Dong Chiang},
+  2012]{albertoDevelopmentGeneralizedEnergy2012}
+Alberto, L. F.~C. and {Hsiao-Dong Chiang} (2012).
+\newblock Towards development of generalized energy functions for electric
+  power systems.
+\newblock In {\em 2012 {{IEEE Power}} and {{Energy Society General Meeting}}},
+  pages 1--6, San Diego, CA. IEEE.
+
+\bibitem[Allman and Simmons, 1981]{allmanQuasistaticResponseMOS1981}
+Allman, P. and Simmons, J. (1981).
+\newblock Quasistatic response of an {{MOS}} system to a constant gate-current
+  bias.
+\newblock {\em IEEE Electron Device Letters}, 2(1):1--3.
+
+\bibitem[Antoniadis et~al., 2019]{Antoniadis2019}
+Antoniadis, C., Evmorfopoulos, N., and Stamoulis, G. (2019).
+\newblock A rigorous approach for the sparsification of dense matrices in model
+  order reduction of {{RLC}} circuits.
+\newblock In {\em 2019 56th {{ACM}}/{{IEEE}} Design Automation Conference
+  ({{DAC}})}, pages 1--6.
+
+\bibitem[Azevedo, 2024]{azevedoMetodologiaFasorialPara2024}
+Azevedo, R. G. d.~A. (2024).
+\newblock {\em Metodologia Fasorial Para Simula{\c c}{\~a}o de Transit{\'o}rios
+  Eletromagn{\'e}ticos de Manobra}.
+\newblock Doctorate {{Thesis}}, Universidade Federal Fluminense, Niter{\'o}i.
+
+\bibitem[Beffa, 2024]{beffaWeaklyNonlinearSystems2024}
+Beffa, F. (2024).
+\newblock {\em Weakly {{Nonlinear Systems}}: {{With Applications}} in
+  {{Communications Systems}}}.
+\newblock Understanding {{Complex Systems}}. Springer Nature, Cham.
+
+\bibitem[Bishop and Goldberg, 1980]{bishopTensorAnalysisManifolds1980}
+Bishop, R.~L. and Goldberg, S.~I. (1980).
+\newblock {\em Tensor {{Analysis}} on {{Manifolds}}}.
+\newblock Dover Publications, New York.
+\newblock Originally published: New York : Macmillan, c1968 Includes index.
+
+\bibitem[Chattopadhyay et~al., 2008]{CHATTOPADHYAY2008}
+Chattopadhyay, S., Mitra, M., and Sengupta, S. (2008).
+\newblock Area based approach for three phase power quality assessment in
+  clarke plane.
+\newblock {\em Journal of Electrical Systems}, 4(1):60--76.
+
+\bibitem[Chen, 2013]{chenLinearSystemTheory2013}
+Chen, C.-T. (2013).
+\newblock {\em Linear System Theory and Design}.
+\newblock Oxford University Press, New York, NY, fourth edition.
+
+\bibitem[Chen et~al., 2007]{chenFinalValueTheorem2007}
+Chen, J., Lundberh, K.~H., Davison, D.~E., and Bernstein, D.~S. (2007).
+\newblock The {{Final Value Theorem Revisited}} - {{Infinite Limits}} and
+  {{Irrational Functions}}.
+\newblock {\em IEEE Control Systems}, 27(3):97--99.
+
+\bibitem[Chiang, 2011]{chiangDirectMethodsStability2011}
+Chiang, H. (2011).
+\newblock {\em Direct Methods for Stability Analysis of Electric Power Systems:
+  Theoretical Foundation, {{BCU}} Methodologies, and Applications}.
+\newblock J. Wiley \& Sons, Hoboken, N.J.
+\newblock Includes bibliographical references and index. - Description based on
+  print version record.
+
+\bibitem[Chiang and Alberto, 2015]{Chiang_Alberto_2015}
+Chiang, H.-D. and Alberto, L. F.~C. (2015).
+\newblock {\em Stability Regions of Nonlinear Dynamical Systems: {{Theory}},
+  Estimation, and Applications}.
+\newblock Cambridge University Press, Cambridge.
+
+\bibitem[Chiang et~al., 1993]{chiangChaosSimplePower1993}
+Chiang, H.~D., Liu, C.~W., Varaiya, P.~P., Wu, F.~F., and Lauby, M.~G. (1993).
+\newblock Chaos in a simple power system.
+\newblock {\em IEEE Transactions on Power Systems}, 8(4):1407--1417.
+
+\bibitem[Cho et~al., 2010]{Cho2010}
+Cho, S.~H., Jang, G., and Kwon, S.~H. (2010).
+\newblock Time-frequency analysis of power-quality disturbances via the
+  {{Gabor-Wigner}} transform.
+\newblock {\em IEEE Transactions on Power Delivery}, 25(1):494--499.
+
+\bibitem[Clarke, 1938]{clarke1938problems}
+Clarke, E. (1938).
+\newblock Problems solved by modified symmetrical components.
+\newblock {\em General Electric Review}, 41(11-12):488--494.
+
+\bibitem[Conrad et~al., 2020]{Conrad2020}
+Conrad, J., Vogelmann, P., Mokhtar, M.~A., and Ortmanns, M. (2020).
+\newblock Design {{Approach}} for {{Ring Amplifiers}}.
+\newblock {\em IEEE Transactions on Circuits and Systems I: Regular Papers},
+  67(10):3444--3457.
+
+\bibitem[Crupi, 2006]{crupiAnalysisQuasistaticAssumption2006}
+Crupi, G. (2006).
+\newblock Analysis of quasi-static assumption in nonlinear {{FinFET}} model.
+\newblock In {\em {{MIKON-2006}}: 16th {{International Conference}} on
+  {{Microwaves}}, {{Radar}} and {{Wireless Communications}}}, Warsaw, Poland.
+  IEEE.
+\newblock Includes bibliographical references and author index Title from PDF
+  title page (viewed June. 4, 2008).
+
+\bibitem[{da Rocha}, 2024]{darochaComputacaoAltoDesempenho2024}
+{da Rocha}, T. J. B. d.~R. (2024).
+\newblock {\em {Computa{\c c}{\~a}o de Alto Desempenho na Simula{\c c}{\~a}o de
+  Redes El{\'e}tricas de Grande Porte Utilizando Fasores Din{\^a}micos}}.
+\newblock {Doctorate Thesis}, Universidade Federal Fluminense, Niter{\'o}i.
+
+\bibitem[Daniel, 2018]{danielSimuladorTransitoriosEletromagneticos2018}
+Daniel, L. d.~O. (2018).
+\newblock {\em {Simulador de Transit{\'o}rios Eletromagn{\'e}ticos Utilizando
+  Fasores Din{\^a}micos Para An{\'a}lise N{\~a}o-Linear de Redes El{\'e}tricas
+  com Equipamentos FACTS}}.
+\newblock {Doctorate Thesis}, Universidade Federal do Rio de Janeiro, Rio de
+  Janeiro.
+
+\bibitem[Dash et~al., 2003]{dashPowerQualityAnalysis2003}
+Dash, P.~K., Panigrahi, B.~K., and Panda, G. (2003).
+\newblock Power quality analysis using {{S-transform}}.
+\newblock {\em IEEE Transactions on Power Delivery}, 18(2):406--411.
+
+\bibitem[de~Almeida, 2024]{almeidaModelagemFasorialTrifasica2024}
+de~Almeida, L.~P. (2024).
+\newblock {\em {Modelagem Fasorial Trif{\'a}sica com Harm{\^o}nicos de Elos de
+  Corrente Cont{\'i}nua}}.
+\newblock {Doctorate Thesis}, Universidade Federal Fluminense, Niter{\'o}i.
+
+\bibitem[Demello and Concordia, 1969]{demelloConceptsSynchronousMachine1969}
+Demello, F.~P. and Concordia, C. (1969).
+\newblock Concepts of {{Synchronous Machine Stability}} as {{Affected}} by
+  {{Excitation Control}}.
+\newblock {\em IEEE Transactions on Power Apparatus and Systems},
+  PAS-88(4):316--329.
+
+\bibitem[Derviskadic et~al., 2020]{derviskadicPhasorsModelingPower2020}
+Derviskadic, A., Frigo, G., and Paolone, M. (2020).
+\newblock Beyond {{Phasors}}: {{Modeling}} of {{Power System Signals Using}}
+  the {{Hilbert Transform}}.
+\newblock {\em IEEE Transactions on Power Systems}, 35(4):2971--2980.
+
+\bibitem[Desoer and Kuh, 1987]{desoerBasicCircuitTheory1987}
+Desoer, G.~H. and Kuh, E. (1987).
+\newblock {\em Basic Circuit Theory}.
+\newblock McGraw-Hill.
+
+\bibitem[{di Bruno}, 1855]{DiBruno1855}
+{di Bruno}, C. (1855).
+\newblock Sullo sviluppo delle {{Funzioni}}.
+\newblock {\em Annali di Scienze Matematiche e Fisiche}, 6:479--480.
+
+\bibitem[Doherty and Nickle, 1926]{Doherty1926}
+Doherty, R.~E. and Nickle, C.~A. (1926).
+\newblock Synchronous machines {{I}} --- {{An}} extension of {{Blondel}}'s
+  two-reaction theory.
+\newblock {\em Journal of the A.I.E.E.}, 45(10):974--987.
+
+\bibitem[Dummit and Foote, 2003]{dummitAbstractAlgebra2003}
+Dummit, D.~S. and Foote, R.~M. (2003).
+\newblock {\em Abstract {{Algebra}}}.
+\newblock John Wiley \& Sons, 3 edition.
+
+\bibitem[Ebers and Moll, 1954]{ebersLargeSignalBehaviorJunction1954}
+Ebers, J. and Moll, J. (1954).
+\newblock Large-{{Signal Behavior}} of {{Junction Transistors}}.
+\newblock {\em Proceedings of the IRE}, 42(12):1761--1772.
+
+\bibitem[Eisa et~al., 2008]{eisaNewNotionsSuggested2008}
+Eisa, A.~A., Abdel~Aziz, M.~M., and Youssef, H.~K. (2008).
+\newblock New notions suggested to power theory development part 1:
+  {{Analytical}} derivation.
+\newblock {\em IEEE Power and Energy Society 2008 General Meeting: Conversion
+  and Delivery of Electrical Energy in the 21st Century, PES}.
+
+\bibitem[Eisa and Youssef, 2016]{eisaPhysicalInterpretationElectric2016}
+Eisa, A.~A. and Youssef, H.~K. (2016).
+\newblock Physical interpretation of electric energy flow under sinusoidal and
+  non-sinusoidal conditions.
+\newblock {\em Proceedings of International Conference on Harmonics and Quality
+  of Power, ICHQP}, 2016-Decem(1):955--961.
+
+\bibitem[Emanuel, 2004]{emanuelSummaryIEEEStandard2004}
+Emanuel, A. (2004).
+\newblock Summary of {{IEEE Standard}} 1459: {{Definitions}} for the
+  {{Measurement}} of {{Electric Power Quantities Under Sinusoidal}},
+  {{Nonsinusoidal}}, {{Balanced}}, or {{Unbalanced Conditions}}.
+\newblock {\em IEEE Transactions on Industry Applications}, 40(3):869--876.
+
+\bibitem[Emanuel and Arseneau, 1996]{Emanuel1996}
+Emanuel, A. and Arseneau, R. (1996).
+\newblock Practical definitions for powers in systems with nonsinusoidal
+  waveforms and unbalanced loads: {{A}} discussion.
+\newblock {\em IEEE Power Engineering Review}, 16(1):43.
+
+\bibitem[Farrokhabadi et~al., 2020]{farrokhabadi2020}
+Farrokhabadi, M., Canizares, C.~A., {Simpson-Porco}, J.~W., Nasr, E., Fan, L.,
+  {Mendoza-Araya}, P.~A., Tonkoski, R., Tamrakar, U., Hatziargyriou, N., Lagos,
+  D., Wies, R.~W., Paolone, M., Liserre, M., Meegahapola, L., Kabalan, M.,
+  Hajimiragha, A.~H., Peralta, D., Elizondo, M.~A., Schneider, K.~P., Tuffner,
+  F.~K., and Reilly, J. (2020).
+\newblock Microgrid {{Stability Definitions}}, {{Analysis}}, and {{Examples}}.
+\newblock {\em IEEE Transactions on Power Systems}, 35(1):13--29.
+
+\bibitem[Favuzza et~al., 2024]{favuzza2024}
+Favuzza, S., Musca, R., Zizzo, G., and Sa'ed, J.~A. (2024).
+\newblock Comparative {{Modeling}} and {{Analysis}} of {{EMT}} and {{Phasor RMS
+  Grid-Forming Converters Under Different Power System Dynamics}}.
+\newblock {\em IEEE Transactions on Industry Applications}, 60(2):3613--3624.
+
+\bibitem[Fortescue, 1918]{Fortescue1918}
+Fortescue, C.~L. (1918).
+\newblock Method of symmetrical co-ordinates applied to the solution of
+  polyphase networks.
+\newblock {\em Transactions of the American Institute of Electrical Engineers},
+  37:1027--1140.
+
+\bibitem[Freund, 2008]{Freund2008}
+Freund, R.~W. (2008).
+\newblock Structure-preserving model order reduction of {{RCL}} circuit
+  equations.
+\newblock In Schilders, W. H.~A., {van der Vorst}, H.~A., and Rommes, J.,
+  editors, {\em Model Order Reduction: {{Theory}}, Research Aspects and
+  Applications}, pages 49--73. Springer Berlin Heidelberg, Berlin, Heidelberg.
+
+\bibitem[Gabor, 1970]{Gabor1946TheoryOC}
+Gabor, D. (1970).
+\newblock Theory of {{Communication}}.
+\newblock {\em Students Quarterly Journal}, 40(159):110.
+
+\bibitem[Garcia, 2022]{garciaElementosAlgebra2022}
+Garcia, A. (2022).
+\newblock {\em {Elementos de {\'A}lgebra}}.
+\newblock {Cole{\c c}{\~a}o Projeto Euclides}. Associa{\c c}{\~a}o Instituto
+  Nacional de Matem{\'a}tica Pura e Aplicada, Rio de Janeiro, RJ, 7 edition.
+
+\bibitem[Gelfand et~al., 1963]{gelfandCalculusVariations1963}
+Gelfand, I.~M., Fomin, S.~V., and Silvermann, R. (1963).
+\newblock {\em Calculus of {{Variations}}}.
+
+\bibitem[Glose and Kennel, 2016]{gloseContinuousSpaceVector2016}
+Glose, D. and Kennel, R. (2016).
+\newblock Continuous {{Space Vector Modulation}} for {{Symmetrical Six-Phase
+  Drives}}.
+\newblock {\em IEEE Transactions on Power Electronics}, 31(5):3837--3848.
+
+\bibitem[Gon{\c c}alves, 2021]{goncalvesIntroducaoAlgebra2021}
+Gon{\c c}alves, A. (2021).
+\newblock {\em {Introdu{\c c}{\~a}o {\`a} {\'a}lgebra}}.
+\newblock {Cole{\c c}{\~a}o Projeto Euclides}.
+
+\bibitem[Grafakos, 2014]{grafakosClassicalFourierAnalysis2014}
+Grafakos, L. (2014).
+\newblock {\em Classical {{Fourier Analysis}}}, volume 249 of {\em Graduate
+  {{Texts}} in {{Mathematics}}}.
+\newblock Springer New York, New York, NY.
+
+\bibitem[Gray et~al., 2009]{grayAnalysisDesignAnalog2009}
+Gray, P.~R., Hurst, P.~J., Lewis, S.~H., and Meyer, R.~G. (2009).
+\newblock {\em Analysis and Design of Analog Integrated Circuits}.
+\newblock Wiley, New York, 5th ed edition.
+
+\bibitem[Gr{\"o}chenig, 2001]{grochenigFoundationsTimeFrequencyAnalysis2001}
+Gr{\"o}chenig, K. (2001).
+\newblock {\em Foundations of {{Time-Frequency Analysis}}}.
+\newblock {Springer Science and Business Media New York}, New York.
+
+\bibitem[Guo et~al., 2022]{Guo2022}
+Guo, T., Zhang, T., Lim, E., {Lopez-Benitez}, M., Ma, F., and Yu, L. (2022).
+\newblock A {{Review}} of {{Wavelet Analysis}} and {{Its Applications}}:
+  {{Challenges}} and {{Opportunities}}.
+\newblock {\em IEEE Access}, 10:58869--58903.
+
+\bibitem[Gustafsson et~al., 2015]{gustafssonWavePropagationCharacteristics2015}
+Gustafsson, S., Nilsson, B., Nordebo, S., and Sjoberg, M. (2015).
+\newblock Wave {{Propagation Characteristics}} and {{Model Uncertainties}} for
+  {{HVDC Power Cables}}.
+\newblock {\em IEEE Transactions on Power Delivery}, 30(6):2527--2534.
+
+\bibitem[Halmos, 1974]{halmosNaiveSetTheory1974}
+Halmos, P.~R. (1974).
+\newblock {\em Naive {{Set Theory}}}.
+\newblock Undergraduate {{Texts}} in {{Mathematics}}. Springer New York, New
+  York, NY.
+
+\bibitem[Hatziargyriou et~al., 2021]{hatziargyriouetal2021}
+Hatziargyriou, N., Milanovic, J., Rahmann, C., Ajjarapu, V., Canizares, C.,
+  Erlich, I., Hill, D., Hiskens, I., Kamwa, I., Pal, B., Pourbeik, P.,
+  {Sanchez-Gasca}, J., Stankovic, A., Van~Cutsem, T., Vittal, V., and Vournas,
+  C. (2021).
+\newblock Definition and {{Classification}} of {{Power System Stability}} --
+  {{Revisited}} \& {{Extended}}.
+\newblock {\em IEEE Transactions on Power Systems}, 36(4):3271--3281.
+
+\bibitem[Henschel, 1999]{Henschel1999}
+Henschel, S. (1999).
+\newblock Analysis of electromagnetic and electromechanical power system
+  transients with dynamic phasors.
+\newblock {\em Ph.D. Thesis}, (February).
+
+\bibitem[Huang et~al., 2022]{Huang2022}
+Huang, Y., Jiang, Y.-L., and Xu, K.-L. (2022).
+\newblock Model order reduction of {{RLC}} circuit system modeled by
+  port-hamiltonian structure.
+\newblock {\em IEEE Transactions on Circuits and Systems II: Express Briefs},
+  69(3):1542--1546.
+
+\bibitem[Hungerford, 2010]{hungerfordAlgebra2010}
+Hungerford, T.~W. (2010).
+\newblock {\em Algebra}, volume~3 of {\em Graduate {{Texts}} in
+  {{Mathematics}}}.
+\newblock Springer New York, 2 edition.
+
+\bibitem[{IEEE Power \& Energy Society}, 2011]{IEEEStandardSynchrophasor2011}
+{IEEE Power \& Energy Society} (2011).
+\newblock {{IEEE Standard C37}}.118.1 for {{Synchrophasor Measurements}} for
+  {{Power Systems}}.
+
+\bibitem[{IEEE Power and Energy Society},
+  2016]{ieeepowerandenergysocietyIEEEStandard421520162016}
+{IEEE Power and Energy Society} (2016).
+\newblock {{IEEE Standard}} 421.5-2016: {{Recommended Practice}} for
+  {{Excitation System Models}} for {{Power System Stability Studies}}.
+
+\bibitem[Janaszek, 2016]{janaszekExtendedClarkeTransformation2016}
+Janaszek, M. (2016).
+\newblock Extended {{Clarke Transformation}} for n-phase {{Systems}}.
+\newblock {\em Proceedings of Electrotechnical Institute}, 63(0):5--26.
+
+\bibitem[{Jie Yao} et~al., 1995]{jieyaoGeneralizedGaborTransform1995}
+{Jie Yao}, Krolak, P., and Steele, C. (1995).
+\newblock The generalized {{Gabor}} transform.
+\newblock {\em IEEE Transactions on Image Processing}, 4(7):978--988.
+
+\bibitem[Jubin, 2024]{jubinIntrinsicVolumesSublevel2024}
+Jubin, B. (2024).
+\newblock Intrinsic volumes of sublevel sets.
+\newblock {\em Annales de la Facult{\'e} des sciences de Toulouse :
+  Math{\'e}matiques}, 32(5):911--938.
+
+\bibitem[Karanfil et~al., 2023]{karanfilDetectionMicrogridCyberattacks2023}
+Karanfil, M., Rebbah, D.~E., Debbabi, M., Kassouf, M., Ghafouri, M., Youssef,
+  E.-N.~S., and Hanna, A. (2023).
+\newblock Detection of {{Microgrid Cyberattacks Using Network}} and {{System
+  Management}}.
+\newblock {\em IEEE Transactions on Smart Grid}, 14(3):2390--2405.
+
+\bibitem[Khalil, 2002]{Khalil2002}
+Khalil, H.~K. (2002).
+\newblock {\em Nonlinear Systems}.
+\newblock Prentice Hall, New Jersey, 3rd edition.
+
+\bibitem[Kim et~al., 2023]{kimNovelControlStrategy2023}
+Kim, J., Kim, S., and Park, J.~H. (2023).
+\newblock A {{Novel Control Strategy}} to {{Improve Stability}} and
+  {{Performance}} of a {{Synchronous Generator Using Jacobian Gain Control}}.
+\newblock {\em IEEE Transactions on Power Systems}, 38(1):302--315.
+
+\bibitem[Klein et~al., 1991]{kleinFundamentalStudyInterarea1991}
+Klein, M., Rogers, G., and Kundur, P. (1991).
+\newblock A fundamental study of inter-area oscillations in power systems.
+\newblock {\em IEEE Transactions on Power Systems}, 6(3):914--921.
+
+\bibitem[Krause and Thomas, 1965]{Krause1965}
+Krause, P.~C. and Thomas, C.~H. (1965).
+\newblock Simulation of {{Symmetrical Induction Machinery}}.
+\newblock {\em IEEE Transactions on Power Apparatus and Systems},
+  84(11):1038--1053.
+
+\bibitem[Kuka{\v c}ka et~al., 2016]{Kukacka2016}
+Kuka{\v c}ka, L., Kraus, J., Kol{\'a}r, M., Dupuis, P., and Zissis, G. (2016).
+\newblock Review of {{AC}} power theories under stationary and non-stationary,
+  clean and distorted conditions.
+\newblock {\em IET Generation, Transmission and Distribution}, 10(1):221--231.
+
+\bibitem[Kundur, 1994]{kundurPowerSystemStability1994}
+Kundur, P. (1994).
+\newblock {\em Power {{System Stability}} and {{Control}}}.
+\newblock McGraw-Hill Education.
+
+\bibitem[Kusters and Moore, 1979]{Kusters1979}
+Kusters, N.~L. and Moore, W.~J. (1979).
+\newblock On the {{Definition}} of {{Reactive Power Under Non-Sinusoidal
+  Conditions}}.
+\newblock (5):1845--1854.
+
+\bibitem[Kuznetzov, 2023]{kuznetzovElementsAppliedBifurcation2023}
+Kuznetzov, J.~A. (2023).
+\newblock {\em Elements of {{Applied Bifurcation Theory}}}.
+\newblock Number volume 112 in Applied {{Mathematical Sciences}}. Springer,
+  Cham, Switzerland, fourth edition edition.
+\newblock Description based on publisher supplied metadata and other sources.
+
+\bibitem[Kwatny et~al., 1995]{kwatnyLocalBifurcationPower1995}
+Kwatny, H., Fischl, R., and Nwankpa, C. (1995).
+\newblock Local bifurcation in power systems: Theory, computation, and
+  application.
+\newblock {\em Proceedings of the IEEE}, 83(11):1456--1483.
+
+\bibitem[Lamport, 2002]{lamportTLA2002}
+Lamport, L. (2002).
+\newblock {\em Specifying Systems: {{The TLA}}+ Language and Tools for Hardware
+  and Software Engineers}.
+\newblock Addison-Wesley Longman Publishing Co., Inc., USA.
+
+\bibitem[Lara et~al., 2024]{laraRevisitingPowerSystems2024}
+Lara, J.~D., {Henriquez-Auba}, R., Ramasubramanian, D., Dhople, S., Callaway,
+  D.~S., and Sanders, S. (2024).
+\newblock Revisiting {{Power Systems Time-Domain Simulation Methods}} and
+  {{Models}}.
+\newblock {\em IEEE Transactions on Power Systems}, 39(2):2421--2437.
+
+\bibitem[Lima, 2017]{Lima2017b}
+Lima, E.~L. (2017).
+\newblock {\em An{\'a}lise {{Real}}, Volume 2}.
+\newblock IMPA.
+
+\bibitem[Lin et~al., 2025]{10838245}
+Lin, Y., Wen, T., Chen, L., Liu, Y., and Wu, Q.~H. (2025).
+\newblock Estimating transient stability regions of large-scale power systems
+  part {{II}}: {{Reduced-order}} stability region with computational
+  efficiency.
+\newblock {\em CSEE Journal of Power and Energy Systems}, 11(1):38--50.
+
+\bibitem[Lindenstrauss and Tzafriri, 2013]{lindenstrauss2013classical}
+Lindenstrauss, J. and Tzafriri, L. (2013).
+\newblock {\em Classical {{Banach Spaces I}}: {{Sequence Spaces}}}.
+\newblock Ergebnisse Der Mathematik Und Ihrer Grenzgebiete. 2. {{Folge}}.
+  Springer Berlin Heidelberg.
+
+\bibitem[Marv{\'a} et~al., 2012]{Marva2012}
+Marv{\'a}, M., Poggiale, J.~C., and Bravo De La~Parra, R. (2012).
+\newblock Reduction of slowfast periodic systems with applications to
+  population dynamics models.
+\newblock {\em Mathematical Models and Methods in Applied Sciences}, 22(10).
+
+\bibitem[Mazauric et~al., 2014]{mazauricGalileanCovarianceMaxwell2014}
+Mazauric, V.~G., Addar, N., Rondot, L., Wendling, P.~F., and Barrault, M.~R.
+  (2014).
+\newblock From {{Galilean Covariance}} to {{Maxwell Equations}}: {{Back}} to
+  the {{Quasi-Static Regimes}}.
+\newblock {\em IEEE Transactions on Magnetics}, 50(11):1--4.
+
+\bibitem[Mendes, 2020]{Mendes2020}
+Mendes, T.~P. (2020).
+\newblock {\em Teorias Sobre {{Fasores Din{\^a}micos Obtidas}} a Partir de
+  {{Transformadas Integrais}}}.
+\newblock PhD thesis, Universidade Federal de Itajub{\'a}.
+
+\bibitem[Mishra and Ramasubramanian, 2013]{mishraPhillipsHeffronModelPVDG2013}
+Mishra, S. and Ramasubramanian, D. (2013).
+\newblock Phillips-{{Heffron}} model for a {{PV-DG Grid}} connected system.
+\newblock In {\em 2013 {{IEEE Power}} \& {{Energy Society General Meeting}}},
+  pages 1--5, Vancouver, BC. IEEE.
+
+\bibitem[Mo et~al., 2017]{moEvaluationVirtualSynchronous2017}
+Mo, O., D'Arco, S., and Suul, J.~A. (2017).
+\newblock Evaluation of {{Virtual Synchronous Machines With Dynamic}} or
+  {{Quasi-Stationary Machine Models}}.
+\newblock {\em IEEE Transactions on Industrial Electronics}, 64(7):5952--5962.
+
+\bibitem[Monticelli, 1999]{Monticelli1999}
+Monticelli, A. (1999).
+\newblock {\em State {{Estimation}} in {{Electric Power Systems}}}.
+\newblock Springer Science \& Business Media, New York.
+
+\bibitem[Morsi and {El-Hawary}, 2009]{Morsi2009}
+Morsi, W.~G. and {El-Hawary}, M.~E. (2009).
+\newblock A new reactive, distortion and non-active power measurement method
+  for nonstationary waveforms using wavelet packet transform.
+\newblock {\em Electric Power Systems Research}, 79(10):1408--1415.
+
+\bibitem[Narasimhamurthi, 1984]{narasimhamurthiExistenceEnergyFunction1984}
+Narasimhamurthi, N. (1984).
+\newblock On the existence of energy function for power systems with
+  transmission losses.
+\newblock {\em IEEE Transactions on Circuits and Systems}, 31(2):199--203.
+
+\bibitem[O'Rourke et~al., 2019]{orourkeGeometricInterpretationReference2019}
+O'Rourke, C.~J., Qasim, M.~M., Overlin, M.~R., and Kirtley, J.~L. (2019).
+\newblock A {{Geometric Interpretation}} of {{Reference Frames}} and
+  {{Transformations}}: Dq0, {{Clarke}}, and {{Park}}.
+\newblock {\em IEEE Transactions on Energy Conversion}, 34(4):2070--2083.
+
+\bibitem[Park, 1929]{Park1929}
+Park, R.~H. (1929).
+\newblock Two-{{Reaction Theory}} of {{Synchronous Machines}}: {{Generalized
+  Method}} of {{Analysis-Part I}}.
+\newblock {\em Transactions of the American Institute of Electrical Engineers},
+  48(3):716--727.
+
+\bibitem[Perko, 1996]{Perko2001}
+Perko, L. (1996).
+\newblock {\em Differential {{Equations}} and {{Dynamical Systems}}}, volume~7.
+\newblock {Springer Science and Business Media}, New York.
+
+\bibitem[{Power System Stability IEEE/CIGRE Joint Task Force},
+  2004]{powersystemstabilityieee/cigrejointtaskforceDefinitionClassificationPower2004}
+{Power System Stability IEEE/CIGRE Joint Task Force} (2004).
+\newblock Definition and {{Classification}} of {{Power System Stability
+  IEEE}}/{{CIGRE Joint Task Force}} on {{Stability Terms}} and {{Definitions}}.
+\newblock {\em IEEE Transactions on Power Systems}, 19(3):1387--1401.
+
+\bibitem[Ramos et~al., 2000]{Ramos2000}
+Ramos, R.~A., Bretas, N.~G., and Alberto, L. F.~C. (2000).
+\newblock {\em Modelagem de {{M{\'a}quinas S{\'i}ncronas Aplicada}} Ao
+  {{Estudo}} de {{Estabilidade}} de {{Sistemas El{\'e}tricos}} de
+  {{Pot{\^e}ncia}}}.
+\newblock Editora da Escola de Engenharia de S{\~a}o Carlos, S{\~a}o Carlos.
+
+\bibitem[Rotstein and Raz, 1999]{rotsteinGaborTransformTimevarying1999}
+Rotstein, H. and Raz, S. (1999).
+\newblock Gabor transform of time-varying systems: Exact representation and
+  approximation.
+\newblock {\em IEEE Transactions on Automatic Control}, 44(4):729--741.
+
+\bibitem[Rudin, 1991]{rudin1991functional}
+Rudin, W. (1991).
+\newblock {\em Functional {{Analysis}}}.
+\newblock International Series in Pure and Applied Mathematics. McGraw-Hill.
+
+\bibitem[Rupasinghe et~al., 2021]{rupasingheAssessmentDynamicPhasor2021}
+Rupasinghe, J., Filizadeh, S., and Strunz, K. (2021).
+\newblock Assessment of dynamic phasor extraction methods for power system
+  co-simulation applications.
+\newblock {\em Electric Power Systems Research}, 197(November 2020):107319.
+
+\bibitem[Ryan, 1994]{ryanRickerOrmsbyKlander1994}
+Ryan, H. (1994).
+\newblock Ricker, {{Ormsby}}; {{Klander}}, {{Butterworth}} -{{A Choice}} of
+  wavelets.
+\newblock {\em CSEG Recorder}, September:24--25.
+
+\bibitem[Sarkar et~al., 2025]{sarkarFractionalOrderPIDPSS2025}
+Sarkar, D.~U., Prakash, T., and Singh, S.~N. (2025).
+\newblock Fractional {{Order PID-PSS Design Using Hybrid Deep Learning
+  Approach}} for {{Damping Power System Oscillations}}.
+\newblock {\em IEEE Transactions on Power Systems}, 40(1):543--555.
+
+\bibitem[Sauer et~al., 2017]{sauerPowerSystemDynamics2017}
+Sauer, P.~W., Pai, M.~A., and Chow, J.~H. (2017).
+\newblock {\em Power {{System Dynamics}} and {{Stability}}: {{With
+  Synchrophasor Measurement}} and {{Power System Toolbox}} 2e: {{With
+  Synchrophasor Measurement}} and {{Power System Toolbox}}}.
+\newblock Wiley, 1 edition.
+
+\bibitem[Schaefer and Wolff, 1999]{schaeferTopologicalVectorSpaces1999}
+Schaefer, H.~H. and Wolff, M. (1999).
+\newblock {\em Topological Vector Spaces}.
+\newblock Number~3 in Graduate Texts in Mathematics. Springer, New York,
+  softcover reprint of the hardcover 2nd edition edition.
+
+\bibitem[Scott, 1965]{scottElementsLinearCircuits1965}
+Scott, R. (1965).
+\newblock {\em Elements of {{Linear Circuits}}}.
+\newblock Addison-Wesley.
+
+\bibitem[{Shu-Long Ji} et~al., 1992]{shu-longjiDetectionRadarSignals1992}
+{Shu-Long Ji}, {Huangfu Kan}, {Zhong-Kang Sun}, and {Su-Zhi Li} (1992).
+\newblock Detection of radar signals using {{Gabor}} transform and neural
+  network.
+\newblock In {\em Proceedings of the {{IEEE}} 1992 {{National Aerospace}} and
+  {{Electronics Conference}}}, pages 916--922, Dayton, OH, USA. IEEE.
+
+\bibitem[Smith, 2007]{smithMathematicsDiscreteFourier2007}
+Smith, J.~O. (2007).
+\newblock {\em Mathematics of the Discrete {{Fourier}} Transform ({{DFT}}):
+  With Audio Applications}.
+\newblock BookSurge, North Charleston, 2. ed edition.
+\newblock Hier auch sp{\"a}ter erschienene, unver{\"a}nderte Nachdrucke.
+
+\bibitem[Stankovi{\'c} et~al., 2002]{stankovicDynamicPhasorsModeling2002}
+Stankovi{\'c}, A.~M., Sanders, S.~R., and Aydin, T. (2002).
+\newblock Dynamic phasors in modeling and analysis of unbalanced polyphase
+  {{AC}} machines.
+\newblock {\em IEEE Transactions on Energy Conversion}, 17(1):107--113.
+
+\bibitem[Steinmetz, 1893]{Steinmetz1893}
+Steinmetz, C.~P. (1893).
+\newblock Complex {{Quantities}} and their use in {{Electrical Engineering}}.
+\newblock {\em AIEE Proceedings of International Electrical Congress}, pages
+  33--74.
+
+\bibitem[Steinmetz, 1897]{steinmetzTheoryCalculationAlternating1897}
+Steinmetz, C.~P. (1897).
+\newblock {\em Theory and {{Calculation}} of {{Alternating Current
+  Phenomena}}}.
+\newblock W. J. Johnston Company.
+
+\bibitem[Szmajda et~al., 2010]{szmajdaGaborTransformGaborWigner2010}
+Szmajda, M., Gorecki, K., and Mroczka, J. (2010).
+\newblock Gabor {{Transform}}, {{Gabor-Wigner Transform}} and {{SPWVD}} as a
+  time-frequency analysis of power quality.
+\newblock In {\em Proceedings of 14th {{International Conference}} on
+  {{Harmonics}} and {{Quality}} of {{Power}} - {{ICHQP}} 2010}, pages 1--8,
+  Bergamo, Italy. IEEE.
+
+\bibitem[Van~Cutsem et~al., 1995]{vancutsem1995}
+Van~Cutsem, T., Jacquemart, Y., Marquet, J.-N., and Pruvot, P. (1995).
+\newblock A comprehensive analysis of mid-term voltage stability.
+\newblock {\em IEEE Transactions on Power Systems}, 10(3):1173--1182.
+
+\bibitem[Veeramraju and Kimball, 2024]{veeramrajuDynamicModelACAC2024}
+Veeramraju, K. J.~P. and Kimball, J.~W. (2024).
+\newblock Dynamic {{Model}} of {{AC-AC Dual Active Bridge Converter Using}} the
+  {{Extended Generalized Average Modeling Framework}}.
+\newblock {\em IEEE Transactions on Power Electronics}, 39(3):3558--3567.
+
+\bibitem[Venkatasubramanian, 1994]{Venkatasubramanian1994}
+Venkatasubramanian, V. (1994).
+\newblock Tools for dynamic analysis of the general large power system using
+  time-varying phasors.
+\newblock {\em International Journal of Electrical Power and Energy Systems},
+  16(6):365--376.
+
+\bibitem[Venkatasubramanian et~al., 1995a]{Venkatasubramanian1995}
+Venkatasubramanian, V., Sch{\"a}ttler, H., and Zaborszky, J. (1995a).
+\newblock Dynamics of {{Large Constrained Nonlinear Systems-A Taxonomy
+  Theory}}.
+\newblock {\em Proceedings of the IEEE}, 83(11):1530--1561.
+
+\bibitem[Venkatasubramanian et~al., 1995b]{Venkatasubramanian1995a}
+Venkatasubramanian, V., Sch{\"a}ttler, H., and Zaborszky, J. (1995b).
+\newblock Fast {{Time-Varying Phasor Analysis}} in the {{Balanced Three-Phase
+  Large Electric Power System}}.
+\newblock {\em IEEE Transactions on Automatic Control}, 40(11):1975--1982.
+
+\bibitem[Volpato, 2017]{Volpato2017}
+Volpato, {\'A}.~A. (2017).
+\newblock {\em Estudos Do {{Impacto}} de {{PSSs}} Na {{Margem}} de
+  {{Estabilidade Transit{\'o}ria}} de {{Sistemas El{\'e}tricos}} de
+  {{Pot{\^e}ncia}}}.
+\newblock PhD thesis, S{\~a}o Carlos School of Engineering, University of
+  S{\~a}o Paulo.
+
+\bibitem[Volpato, 2025]{volpatoDynamicPhasorTheory2025}
+Volpato, {\'A}.~A. (2025).
+\newblock {\em Dynamic {{Phasor Theory}} of {{Electrical Circuits Under
+  Nonstationary Regimens}}}.
+\newblock Doctorate {{Thesis}}, University of S{\~a}o Paulo, S{\~a}o Carlos.
+
+\bibitem[Volpato and Alberto, 2021]{A.Volpato2021}
+Volpato, {\'A}.~A. and Alberto, L. F.~C. (2021).
+\newblock Grid-connected inverters per-unit {{Dynamic Phasor}} modelling,
+  simulation and control.
+\newblock In {\em {{VIII Simp{\'o}sio Brasileiro}} de {{Sistemas
+  El{\'e}tricos}}}, page~6, S{\~a}o Carlos.
+
+\bibitem[Volpato and Alberto, 2022]{volpatoDynamicPhasorTransform2022}
+Volpato, {\'A}.~A. and Alberto, L. F.~C. (2022).
+\newblock The {{Dynamic Phasor Transform Applied}} to {{Simulation}} and
+  {{Control}} of {{Grid-Connected Inverters}}.
+\newblock {\em Journal of Control, Automation and Electrical Systems},
+  33(6):1807--1818.
+
+\bibitem[Volpato and Alberto, 2025a]{volpatoDynamicPhasorNonstationary2025}
+Volpato, {\'A}.~A. and Alberto, L. F.~C. (2025a).
+\newblock Dynamic {{Phasor}} and {{Nonstationary Power Theory}} as an
+  {{Extension}} of {{Classical Phasor Theory}}.
+\newblock {\em IEEE Transactions on Circuits and Systems I: Regular Papers}.
+\newblock Accepted for publication.
+
+\bibitem[Volpato and Alberto, 2025b]{volpatoDynamicPhasorFunctionals2025}
+Volpato, {\'A}.~A. and Alberto, L. F.~C. (2025b).
+\newblock Dynamic {{Phasor Functionals}} for {{Modelling}} and {{Simulating
+  Circuits}} and {{Systems}} in {{Nonstationary Sinusoidal Regimens}}.
+
+\bibitem[Volpato and Alberto, 2025c]{volpatoEffectsApparentFrequency2025}
+Volpato, {\'A}.~A. and Alberto, L. F.~C. (2025c).
+\newblock Effects of {{Apparent Frequency Choice}} in {{Dynamic Phasor
+  Transformations}}.
+
+\bibitem[Volpato and Alberto, 2025d]{volpatoRepresentationDynamicPhasor2025}
+Volpato, {\'A}.~A. and Alberto, L. F.~C. (2025d).
+\newblock Representation of {{Dynamic Phasor Functionals}} as {{Transfer
+  Functions}} in {{Control Systems}} under {{Nonstationary Sinusoidal
+  Regimens}}.
+\newblock Unpublished manuscript.
+
+\bibitem[Volpato and Alberto,
+  2025e]{volpatoRigorousApproachQuasistationary2025}
+Volpato, {\'A}.~A. and Alberto, L. F.~C. (2025e).
+\newblock A {{Rigorous Approach}} to {{Quasistationary}} and
+  {{Phasor-Equivalent Modelling}} of {{Power Systems}}.
+\newblock Unpublished manuscript.
+
+\bibitem[Volpato and Alberto, 2025f]{volpatoNewDynamicPhasor2025}
+Volpato, {\'A}.~A. and Alberto, L. F.~C. (2025f).
+\newblock Towards a {{New Dynamic Phasor Theory}} for {{Modeling IBG Penetrated
+  Power Grids}}.
+\newblock In {\em International {{Symposium}} on {{Circuits}} and {{Systems}}
+  ({{ISCAS}}) 2025}, London.
+\newblock Accepted for publication.
+
+\bibitem[Wang et~al., 2006]{wangContinuationBasedQuasiSteadyStateAnalysis2006}
+Wang, Q., Song, H., and Ajjarapu, V. (2006).
+\newblock Continuation-{{Based Quasi-Steady-State Analysis}}.
+\newblock {\em IEEE Transactions on Power Systems}, 21(1):171--179.
+
+\bibitem[Wang and Chiang, 2014a]{wangAnalyticalStudiesQuasi2014}
+Wang, X. and Chiang, H.-D. (2014a).
+\newblock Analytical {{Studies}} of {{Quasi Steady-State Model}} in {{Power
+  System Long-Term Stability Analysis}}.
+\newblock {\em IEEE Transactions on Circuits and Systems I: Regular Papers},
+  61(3):943--956.
+
+\bibitem[Wang and Chiang, 2014b]{wangQuasiSteadystateModel2014}
+Wang, X. and Chiang, H.-D. (2014b).
+\newblock Quasi steady-state model for power system stability: {{Limitations}},
+  analysis and a remedy.
+\newblock In {\em 2014 {{Power Systems Computation Conference}}}, pages 1--7,
+  Wroc{\l}aw, Poland. IEEE.
+
+\bibitem[{Xiaozhe Wang} and {Hsiao-Dong Chiang},
+  2013]{xiaozhewangIssuesQuasiSteadyState2013}
+{Xiaozhe Wang} and {Hsiao-Dong Chiang} (2013).
+\newblock Some issues with {{Quasi-Steady State}} model in long-term stability.
+\newblock In {\em 2013 {{IEEE Power}} \& {{Energy Society General Meeting}}},
+  pages 1--5, Vancouver, BC. IEEE.
+
+\bibitem[Xu et~al., 2024]{xuSmallSignalStabilityAnalysis2024}
+Xu, H., Gan, D., Zhang, Q., Huang, W., Zeng, P., and Huang, R. (2024).
+\newblock A {{Small-Signal Stability Analysis Method Based}} on {{Minimum
+  Characteristic Locus}} and {{Its Application}} in {{Controller Parameter
+  Tuning}}.
+\newblock {\em IEEE Transactions on Power Systems}, 39(2):3798--3810.
+
+\bibitem[Xu and Yan, 2006]{Xu2006}
+Xu, Y. and Yan, D. (2006).
+\newblock The {{Bedrosian}} identity for the {{Hilbert}} transform of product
+  functions.
+\newblock {\em Proceedings of the American Mathematical Society},
+  134(9):2719--2728.
+
+\bibitem[Yang et~al., 2022]{10038021}
+Yang, H., Lu, G., Li, H., Wei, Y., Tian, B., and Ma, J. (2022).
+\newblock Region of attraction estimation of new energy power system via sum of
+  square method.
+\newblock In {\em 2022 9th International Forum on Electrical Engineering and
+  Automation ({{IFEEA}})}, pages 399--403.
+
+\bibitem[Zhang et~al., 2007]{zhangSynchronousMachineModeling2007}
+Zhang, P., Marti, J.~R., and Dommel, H.~W. (2007).
+\newblock Synchronous {{Machine Modeling Based}} on {{Shifted Frequency
+  Analysis}}.
+\newblock {\em IEEE Transactions on Power Systems}, 22(3):1139--1147.
+
+\bibitem[Zhao et~al., 2024]{zhaoDynamicAnalysisUniformity2024}
+Zhao, H., Zhou, H., Yao, W., Zong, Q., and Wen, J. (2024).
+\newblock Dynamic {{Analysis}} of {{Uniformity}} and {{Difference}} for
+  {{Grid-following}} and {{Grid-forming Voltage Source Converters Using
+  Phasor}} and {{Topological Homology Methods}}.
+\newblock {\em Journal of Modern Power Systems and Clean Energy}, 13(1):3--14.
+
+\bibitem[Zhu and Mather, 2018]{zhuDWTBasedAggregatedLoad2018}
+Zhu, X. and Mather, B. (2018).
+\newblock {{DWT-Based Aggregated Load Modeling}} and {{Evaluation}} for
+  {{Quasi-Static Time-Series Simulation}} on {{Distribution Feeders}}.
+\newblock In {\em 2018 {{IEEE Power}} \& {{Energy Society General Meeting}}
+  ({{PESGM}})}, pages 1--5, Portland, OR. IEEE.
+
+\bibitem[Zill et~al., 2013]{zillDifferentialEquationsBoundaryvalue2013}
+Zill, D.~G., Wright, W.~S., and Cullen, M.~R. (2013).
+\newblock {\em Differential Equations with Boundary-Value Problems}.
+\newblock Brooks/Cole, Cengage Learning, Boston, MA, 8th ed edition.
+
+\bibitem[Zou and Tewfik, 1992]{zouDiscreteOrthogonalMband1992}
+Zou, H. and Tewfik, A.~H. (1992).
+\newblock Discrete orthogonal {{M-band}} wavelet decompositions.
+\newblock {\em ICASSP, IEEE International Conference on Acoustics, Speech and
+  Signal Processing - Proceedings}, 4(1):605--608.
+
+\end{thebibliography}

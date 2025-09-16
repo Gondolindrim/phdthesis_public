@@ -1,0 +1,547 @@
+% -------------------------------------------------------------------
+% APA-Style thesis LaTeX Template
+% AUTHOR: Álvaro "Gondolindrim" Volpato (alvaro.volpato@usp.br)
+% VERSION: 1.1
+% PAGE: http://github.com/Gondolindrim/apaThesis
+% LICENSE: Creative-Commons Non-commercial Share-Alike
+%--------------------------------------------------------------------
+
+% This is an example of document using the apaThesis class file,
+% for a thesis that fits the American Phychology Association standards, described in 
+
+% American Psychology Association (2009). Publication Manual of the American Psychological Association, sixth edition.
+
+% It is supposed to be used as a template for a masters or PhD thesis. It was written in VIM and it contains
+% folding data (the three "{") in the text. To enable this folding, type in vim:
+
+% :setfoldmethod=marker
+
+\documentclass{apaThesis}
+\usepackage[utf8]{inputenc}
+\hyphenation{eve-ry-where}
+\hyphenation{in-ver-ti-ble}
+
+% -----------------------------------------------
+% DOCUMENT DATA {{{1
+% -----------------------------------------------
+
+% Title and author
+\title{Dynamic Phasor Theory of Electrical Circuits Under Nonstationary Regimens}
+\author{Álvaro Augusto Volpato}
+\place{São Carlos, Brazil}
+\writingdate{June 2025}
+\affiliation{%
+  University of São Paulo
+  \par
+  São Carlos School of Engineering
+  \par
+  Department of Electrical and Computer Engineering}
+\advisor{Professor Dr. Luís Fernando Costa Alberto}
+\preamble{Thesis submitted to the Electrical Engineering Graduate Program of the Department of Electrical and Computer Engineering of the São Carlos School of Engineering in partial fulfillment of the requirements for the degree of Doctor of Science in Electrical Engineering, subfield Electrical Power Systems}
+
+\DeclareMathOperator{\Dom}{Dom}
+\DeclareMathOperator{\rank}{rank}
+
+\DeclareMathOperator{\nullity}{null}
+
+\DeclareMathOperator{\Ln}{Ln}
+\DeclareMathOperator{\Ker}{Ker}
+\DeclareMathOperator{\Eig}{Eig}
+
+\newcommand{\dpo}{\boldsymbol{\sigma}}
+\newcommand{\ndpo}[1]{\dpo^{#1}}
+\newcommand{\dpL}{\boldsymbol{\lambda}}
+\newcommand{\apL}{\boldsymbol{\alpha}}
+\newcommand{\dpS}{\boldsymbol{\Xi}}
+
+\newcommand*{\hermconj}{{\mathsf{H}}}
+\newcommand*{\transpose}{{\mathsf{T}}}
+%\newtheorem{theorem}{Theorem}
+
+% TIKZ AND PGFPLOTS CONFIGURATIONS
+\usepackage{pgfplots}
+\pgfplotsset{
+/pgfplots/colormap={hsv}{rgb255=(255,0,0) rgb255=(255,255,0) rgb255=(0,255,0)
+rgb255=(0,255,255) rgb255=(0,0,255) rgb255=(255,0,255) rgb255=(255,0,0)}
+}
+\pgfplotsset{
+/pgfplots/colormap={hsv2}{rgb255=(0,0,0) rgb255=(128,0,128) rgb255=(0,0,230)
+rgb255=(0,255,255) rgb255=(0,255,0) rgb255=(255,255,0) rgb255=(255,0,0)}
+}
+\usepgfplotslibrary{fillbetween}
+
+\usepackage{tikz}
+\usetikzlibrary{calc,patterns,angles,quotes,math,external,positioning,shapes,intersections,through,backgrounds,shadings,fadings,decorations, decorations.markings, datavisualization,cd,shapes.geometric,fit
+}
+\usepgfplotslibrary{external} 
+
+\tikzset{
+	testfading/.style n args={3}{
+    postaction={
+    decorate,
+    decoration={
+    markings,
+    mark=between positions 0 and \pgfdecoratedpathlength step 0.5pt with {
+    \pgfmathsetmacro\myval{multiply(
+        divide(
+        \pgfkeysvalueof{/pgf/decoration/mark info/distance from start}, \pgfdecoratedpathlength
+        ),
+        100
+    )};
+    \pgfsetfillcolor{#3!\myval!#2};
+    \pgfpathcircle{\pgfpointorigin}{#1};
+    \pgfusepath{fill};}
+}}}}
+
+
+
+\usepackage[siunitx]{circuitikz}
+\tikzstyle{every node}=[font=\small]
+\ctikzset{bipoles/thickness=1}
+\ctikzset{resistors/scale=0.75}
+\ctikzset{bipoles/diode/height=0.3}
+\ctikzset{bipoles/diode/width=0.3}
+\ctikzset{current arrow scale=24}
+\ctikzset{label distance=4}
+
+\tikzexternalize
+% HOW TO COMPILE THIS LATEX SCRIPT
+% FIRST, UNCOMMENT THESE PACKAGES AND RUN THE PICTURES:
+        %\usepackage{tikz}
+        %\pgfrealjobname{entry12}
+        %:w | :!for JOB in entry12-pv_pv entry12-pv_iv entry12-dvdg entry12-didg entry12-dvdt entry12-didt entry12-kt_rsv entry12-mpp_resistance entry12-mpp_radius entry12-mpp_angle; do pdflatex --jobname=$JOB --output-directory=build entry12.tex ; done
+
+% MAKE SURE ALL PDFS WERE GENERATED. THEN COMMENT THE tikz and pdfrealjobname PACKAGES AND UNCOMMENT THIS
+%\long\def\beginpgfgraphicnamed#1#2\endpgfgraphicnamed{\includegraphics{#1}}
+
+% THEN SUCCESSFULLY RUN
+% :!pdflatex --output-directory=build entry12.tex
+
+% ALTERNATIVELY, RUN
+
+%:w | :!for JOB in <<job list separated by spaces>>; do pdflatex --jobname=$JOB --output-directory=build '\let\GenerateTikzJobs=Y\input{entry12.tex}' ; done
+
+        
+% The following code automatically includes the needed lines or not based on the 'GenerateTikzJobs' flag, which if run as Y will execute the jobs, else will just compile the pdf
+\ifx\GenerateTikzJobs Y
+        \usepackage{tikz}
+        \pgfrealjobname{doc}
+\else
+        \long\def\beginpgfgraphicnamed#1#2\endpgfgraphicnamed{\includegraphics{#1}}
+\fi
+
+\usepackage{titlesec}
+
+%\titleclass{\part}{page}
+%\assignpagestyle{\part}{empty}
+%\titleformat{\part}
+%    [display]
+%    {\centering\sffamily\Huge}
+%    {\partname\ \thepart}
+%    {0pt}
+%    {\huge}
+%    [\clearpage]
+
+\usepackage{rotating}
+
+\begin{document}
+
+
+%\begin{customfrontmatter}\end{customfrontmatter}
+
+\definecolor{darkblue}{RGB}{15,35,65}
+\definecolor{waveblue}{RGB}{150,200,255}
+\definecolor{textwhite}{RGB}{255,255,255}
+
+\thispagestyle{empty}
+% CUSTOM FRONT MATTER <<<
+\begin{figure}[h]
+\centering
+\vspace*{-2.6cm}
+\makebox[\linewidth]{
+
+\begin{tikzpicture}[transform shape,>={Stealth[inset=0mm,length=1.5mm,angle'=50]}]
+
+% Define A4 cover size: 21cm wide, 29.7cm tall
+\fill[darkblue] (0,0) rectangle (\paperwidth, \paperheight);
+
+% Title at the top
+\node[text=white, font=\bfseries\large] at (10.5, 28) {PHD THESIS};
+\node[text=white, font=\bfseries\Huge, align=center] at (10.5, 25) {DYNAMIC PHASOR THEORY OF\\ELECTRICAL CIRCUITS\\UNDER NONSTATIONARY REGIMENS};
+%\node[text=white, font=\bfseries\large, align=center] at (10.5, 23) {A STUDY IN MATHEMATICAL ANALYSIS};
+
+% Multiple sinewaves across the middle
+\foreach \i in {0,...,15} {
+    \draw[white, opacity=0.3, thick, samples=200, domain=0:21] 
+    plot (\x, {17 + 1.5*sin(deg(0.5*\x) + \i*15)});
+}
+
+
+% Mathematical formulas
+\node[text=white, font=\large] at (5, 11) {$\displaystyle\sum\limits_{i=0}^n \beta_i^n(t) X^{(i)} - F(t) = 0$};
+
+\node[text=white, font=\large] at (16, 11) {$ X(t) = \dfrac{R_0(t)}{2\pi j}\displaystyle\int_{B_\alpha} \mathbf{M}{\left[X\right]}\left(\mu\right) e^{\mu  t} d\mu$};
+\node[text=white, font=\large] at (10.5, 8.5) {$\dpo\left[X\right] = \dot{X} + j\omega X$};
+
+% Author name and department at the bottom
+\node[text=white, font=\bfseries\large] at (\paperwidth/2, 6) {ÁLVARO A. VOLPATO};
+\node[text=white, font=\bfseries\large] at (\paperwidth/2, 5) {ADVISOR: LUÍS F. C. ALBERTO};
+\node[text=white]                       at (\paperwidth/2, 4) {DEPARTMENT OF ELECTRICAL AND COMPUTER ENGINEERING};
+\node[text=white]                       at (\paperwidth/2, 3) {SÃO CARLOS SCHOOL OF ENGINEERING};
+\node[text=white]                       at (\paperwidth/2, 2) {UNIVERSITY OF SÃO PAULO};
+
+\begin{scope}[yshift=170mm, xshift=\paperwidth/2]
+\draw [fill=none, white, opacity=0.3, thick] (0,0) circle (30 mm) node [gray] {};
+\draw [draw=none, fill=darkblue, opacity=0.75] (0,0) circle (29.8 mm) node [gray] {};
+		\draw [->, thick, white, opacity=0.3] (   -40mm,  0   ) -- (   40mm,  0   );
+		\draw [->, thick, white, opacity=0.3] (      0, -40mm ) -- (   0   ,  40mm);
+
+		\draw [->, thick, white] (0,0) -- (35mm,0) coordinate(realvec);
+		\draw [->, thick, white] (0,0) -- (0,35mm) coordinate(imagvec);
+
+		\node[white] (realveclabel) at ([shift=({-15mm,-3mm})]realvec) {$R = 1e^{j0}$};
+		\node[white, right] (realveclabel) at ([shift=({4mm,-2mm})] imagvec) {$I = 1e^{j\frac{\pi}{2}}$};
+
+		\node [white] (reAxisLabel) at (43mm,0) {Re};
+		\node [white] (imAxisLabel) at (0,43mm) {Im};
+
+		\draw [->,white, opacity=0.5, thick] ({20mm*cos(290)},{20mm*sin(290)}) arc[start angle=290, end angle = 328, radius = 20mm];
+
+		\node [color=white, opacity=0.5] (philabelrotated) at ({25mm*cos(310)},{25mm*sin(310)}) {$\phi(t)$};
+
+		\node (rotX) at ({38mm*cos(330)},{38mm*sin(330)}) {};
+		\node[white] (XomegatLabel) at ({43mm*cos(330)},{43mm*sin(330)}) {$Xe^{j\psi(t)}$};
+		\draw [->,thick, white] (0,0) -- (rotX.center);
+
+		\node (rotRe) at ({40mm*cos(290)},{40mm*sin(290)}) {};
+		\node (rotIm) at ({40mm*cos(20)},{40mm*sin(20)}) {};
+
+		\node [label={[white, opacity=0.5,label distance=0.0mm, rotate=290]290:$Re^{j\psi(t)}$}] (ReomgatLabel) at ({44mm*cos(290)},{27mm*sin(290)}) {};
+
+		\node [label={[white, opacity=0.5,label distance=0.0mm, rotate=20]20:$Ie^{j\psi(t)}$}] (IomegatLabel) at ({15mm*cos(20)},{15mm*sin(20)}) {};
+		\draw [->,thick, white, opacity=0.5] (0,0) -- (rotRe.center);
+		\draw [->,thick, white, opacity=0.5] (0,0) -- (rotIm.center);
+
+		\draw [->,thick,gray, dashed, line cap = round] (0,0) -- ({30mm*cos(240)},{30mm*sin(240)});
+		\node [label={[gray,label distance=0.0mm]245:$m(t)$}] (mt) at ({30mm*cos(245)},{30mm*sin(245)}) {};
+
+		%\draw [->,gray,thick] ({6mm*cos(25)},{6mm*sin(25)}) arc[start angle=25, end angle = 63, radius = 6mm];
+		\node [white, opacity=0.5] (omegat) at ({20mm*cos(135)},{20mm*sin(135)}) {$\psi(t)$};
+
+		\draw [-{Stealth[inset=0mm,length=5mm,angle'=50]}, white, opacity=0.5, line width = 2mm] (13mm,0) arc[start angle=0, end angle = 287, radius = 13mm];
+		
+\end{scope}
+
+\end{tikzpicture}
+}
+\end{figure} %>>>
+\cleardoublepage
+
+% -----------------------------------------------
+% PRETEXTUAL ELEMENTS {{{1
+% -----------------------------------------------
+
+% PRINTING TITLE PAGE
+\printtitlepage
+
+% PRINTING FRONT MATTER
+\printfrontmatter
+
+%--------------------------------------------------------------------------------------------------
+% If you do not need a second front matter in another language, delete or comment these lines.
+\cleardoublepage
+% SECOND FRONT MATTER IN PORTUGUESE
+\anotherfrontmatter
+{Teoria de Fasores Dinâmicos de Circuitos Elétricos sob Regimes Não estacionários}%
+{\theauthor}%
+{São Carlos, Brasil}%
+{Junho de 2025}%
+{Universidade de São Paulo \par %
+Escola de Engenharia de São Carlos \par%
+Departamento de Engenharia Elétrica e de Computação}%
+{Professor Luís Fernando Costa Alberto}%
+{Tese submetida ao Programa de Pós-Graduação em Engenharia Elétrica do Departamento de Engenharia Elétrica e de Computação da Escola de Engenharia de São Carlos como requisito para obtenção do grau de Doutor em Ciências, área de Sistemas de Potência}
+%--------------------------------------------------------------------------------------------------
+
+\cleardoublepage
+% CATALOGRAPHIC CARD
+% I was not able to make a program for this as it can differ wildly between countries -- some won't even need one
+\thispagestyle{empty}
+\vspace*{\fill}
+\begin{center}
+
+This is the revised version of the thesis. The original version is available at the Graduate Program in Electrical Engineering at EESC/USP.
+
+\vspace{1cm}
+
+Trata-se da versão corrigida da tese. A versão original se encontra disponível na EESC/USP que aloja o Programa de Pós-Graduação em Engenharia Elétrica.
+\end{center}
+\newpage
+
+\cleardoublepage
+% CATALOGRAPHIC CARD
+% I was not able to make a program for this as it can differ wildly between countries -- some won't even need one
+\thispagestyle{empty}
+\vspace*{\fill}
+\begin{center}
+I authorize the full or partial reproduction and dissemination of this work, by any conventional or electronic means, for study and research purposes, provided that the source is properly cited.
+
+\vspace{1cm}
+
+Cataloguing-in-publication data prepared by the Prof. Sérgio Rodrigues Fontes Libray and the Communication and Marketing Office at EESC-USP, with information provided by the author. 
+
+\vspace{5mm}
+\noindent\fbox{%
+	\parbox{0.9\textwidth}{%
+		\leftskip0.05\textwidth
+		\vspace*{1cm}
+		\parbox{0.8\textwidth}{%
+		\ttfamily\footnotesize
+		Volpato, Álvaro Augusto
+
+\hspace{-7mm} V472d
+
+		\begingroup\addtolength{\parindent}{2em}
+
+			\thetitle\hphantom{ } / \theauthor; advisor Luís Fernando Costa Alberto - São Carlos, 2025.
+
+			\thelastpage\hphantom{} p.\\
+
+			Doctoral Thesis - Graduate Program in Electrical Engineering and Concentration Area in Electrical Power Systems - São Carlos School of Engineering, University of São Paulo - Brazil, 2025.
+
+			1. Dynamic Phasors. 2. Nonstationary power. 3. Electrical Power Systems. 4. Linear Systems. 5. Perturbed Systems. I. Alberto, Luís Fernando Costa, advisor. II. Título.
+
+		\endgroup
+		\vspace*{1cm}
+    }%
+}
+}
+\vspace{5mm}
+
+Responsible for the cataloguing structure of the publication according to AACR2: EESC librarians
+\end{center}
+\newpage
+
+\begin{judgepage}\end{judgepage}
+
+% -----------------------------------------------
+% ABSTRACTS {{{1
+% -----------------------------------------------
+%\pagestyle{plain}
+	
+% (4.1) IN ENGLISH
+\begin{newabstract}{Abstract}
+	There already exists a myriad body of literature about the construction of a theory on the equivalence between nonstationary sinusoids (signals with sinusoidal ``shape'' but time-varying amplitude, frequency and phase) and time-varying complex functions, called Dynamic Phasors, with the intent of expanding the theory of static or Classical Phasors to a wider class of signals that can model sophisticated transient phenomena in differential equations — particularly those modelling electrical circuits. Because Dynamic Phasors are essentially a tool for solving time differential equations, such literature spans a large variety of subjects, including engineering, mathematics and applied sciences. Electrical engineers have been prolific to propose many such theories, aiming to model circuits, systems and controllers in a phasorial domain with the objective of constructing a mathematically solid, yet useful, way to approach modelling systems under nonstationary regimens. Power Systems engineers have been especially drawn towards such theories due to the recent penetration of power electronics and renewable energy resources into electrical grids worldwide, because such devices void the modelling hypotheses used to describe the circuit networks that make transmission systems.
+
+	Despite many tools currently available, none have been able to capture all of the qualities that made Classical Phasors so useful: while some require truncations and approximations to be operationalizable — thus sacrificing precision for modelling convenience — some others can represent and reconstruct some signals of interest but do not offer a good theory of complex power under nonstationary regimens. This thesis comprises an endeavour of building a novel Dynamic Phasor Theory, specifically the construction of a theory that offers a representation of nonstationary sinusoids as Dynamic Phasors, as well as reconstructing those signals in time from their phasorial counterpars without the need for approximations or truncations while offering a theory of complex electrical power in nonstationary regimens, justifying the synchrophasor representation of voltages and currents and the steady-state approximation of complex power.
+
+	The theory proposed is explored to prove a long-standing problem in the Electrical Engineering, known as the Quasi-Static Modelling or Hypothesis (QSM/QSH), by proving that if a specific circuit is excited by sinusoids which frequency varies slowly and little, then the behavior of the excited circuit can be approximated by its steady-state solution, justifying a great many results in Electrical Power Systems literature where the QSH is adopted as an underlying \textit{sine qua non} modelling pressuposition. Further, the theory proposed is also shown to be easily deployable in modelling electrical circuits because the proposed DPT transform is able to translate differentiation operators in time to specific functionals in the space of complex functions which form very powerful algebraic structures, such that the modelling in Dynamic Phasor space is greatly ameliorated. Such algebraic nature is explored in two ways: firstly, from an electrical circuits standpoint, these functionals are able to originate notions of impedances in the Dynamic Phasor space, thus leading to proofs of circuit modelling techniques (the Superposition Theorem and the Thèvenin-Norton Theorems). Second, from a signals and systems standpoint, the functionals are also able to bear a theory of linear elementary control in the Dynamic Phasor space, and a new transformation that highly resembles the Laplace transformation is proposed, such that the notions of BIBO stability and Transfer Functions are possible. Using this new theory and transform, controllers for Power Systems in nonstationary regimens based on small-signal analyses are justified. A new current setpoint controller for inverter-based systems is proposed using the proportional-integral equivalent controller in these new Transfer Functions, and shown to be a better candidate to some controllers currently used for the same purposes.
+
+\noindent
+\textbf{Keywords}: dynamic phasors, electrical power systems, nonstationary power, linear systems, control theory.
+\end{newabstract}
+
+%% (4.2) AUS DEUTSCH
+%\begin{newabstract}{Zusammenfassung}
+%Zusammenfassung aus Deutsch. \\
+%
+%\noindent
+%\textbf{Stichwörter}: Stichwort 1, Stichwort 2,...
+%\end{newabstract}
+%\newpage
+
+% (4.3) EM PORTUGUÊS
+\begin{newabstract}{Resumo}
+	Já existe um considerável corpo de literatura buscando a construção de uma teoria sobre a equivalência entre senoides não estacionárias (sinais com um ``formato senoidal'' mas com amplitude, frequência e fase variantes no tempo) e funções complexas do tempo, chamados Fasores Dinâmicos, com o intuito de expandir a teoria de Fasores Clássicos para uma classe maior de sinais que podem modelar fenômenos transientes sofisticados em equações diferenciais — particularmente aquelas que modelam circuitos elétricos. Como Fasores Dinâmicos são essencialmente uma ferramenta de solução de Equações Diferenciais, aquela literature caminha entre uma variedade de disciplinas como engenharia, matemática e ciências aplicadas. Engenheiros eletricistas têm sido prolíficos em propor tais teorias, procurando modelar ciruitos, sistemas e controladores no domínio fasorial com o objetivo de construir uma forma matematicamente sólida, mas ainda prática, de modelar sistemas em regimes não estacionários. Engenheiros de Sistemas de Potência, em especial, têm se preocupado com tais teorias devido ao crescente emprego de dispositivos baseados em eletrônica de potência e fontes de energias renováveis em redes elétricas no mundo todo, porque estes dispositivos violam as hipóteses comumente utilizadas para modelar os circuitos que formam os sistemas de transmissão.
+
+	A despeito da propositura de muitas ferramentas, nenhuma delas é capaz de capturar todas as qualidades que fazem Fasores Clássicos tão úteis. Algumas requerem truncamentos e aproximações para serem operacionalizáveis, enquanto outras de fato representam e reconstróem alguns sinais de interesse mas não oferecem uma teoria de potência complexa sob regimes não-estacionários. Esta tese consiste da tarefa de construir uma nova Teoria de Fasores Dinâmicos, especificamente a construção de uma teoria que dispõe de uma representação de senoides não-estacionárias como Fasores Dinâmicos, bem como a reconstrução dos sinais no domínio do tempo a partir dos seus fasores, sem aproximações ou truncamentos e também dispõe de uma teoria de potência elétrica complexa em regimes não estacionários, justificando a representação de tensões e correntes como sincrofasores e a aproximação quase-estática de potência complexa.
+
+	A teoria proposta é explorada para provar um problema de longa data na literatura de Engenharia Elétrica, conhecida como a Hipótese ou Modelagem Quase-Estática (QSH), ao provar que um circuito elétrico excitado por senoides cuja frequência varia pouco e varia lentamente pode ter seu comportamento aproximado pela sua solução de regime estacionário, justificando muitos resultados na literatura de Sistemas Elétricos de Potência que adotam a QSH como um pressuposto fundamental de modelagem. Ademais, mostra-se que a teoria proposta é facilmente utilizável na modelagem de circuitos elétricos porque a transformada DPT proposta traduz a operação de diferenciação no domínio do tempo em certos funcionais no espaço de funções complexas através de funcionais no espaço de sinais complexos. Estes funcionais formam poderosas estruturas algébricas, de forma que a modelagem no espaço de Fasores Dinâmicos é facilitada substancialmente por consistir de manipulações algébricas. Este fato é explorado de duas formas: do ponto de vista de circuitos elétricos, estes funcionais originam noções de impedâncias no espaço de Fasores Dinâmicos — levando a provas de técnicas de modelagem de circuitos como o Teorema da Dualidade, Princípio da Superposição e os Teoremas de Thèvenin e Norton. Depois, de um ponto de vista de sinais e sistemas, os funcionais também são capazes de dar luz a uma teoria de controle elementar no espaço de Fasores Dinâmicos, e uma nova transformada símil à Transformada de Laplace é proposta, tal que as noções de estabilidade entrada-saída e de Funções de Transferência são possíveis. Utilizando esta nova teoria, controladores de sistemas de potência baseados em análise de pequenos sinais em regimes não-estacionários são justificados; um novo controlador de referência de corrente para sistemas com inversores é proposto utilizando o equivalente p[roporcional-integral desta nova transformada, e mostra-se que o controlador proposto é melhor que aquele hoje utilizado na literatura.
+
+\noindent
+\textbf{Palavras-chaves}: fasores dinâmicos, sistemas elétricos de potência, potência não-estacionária, sistemas lineares, teoria de controle.
+\end{newabstract}
+
+% -----------------------------------------------
+
+\begin{acknowledgements}
+
+	To my advisor professor Luís, who shaped me as a professional and a researcher and serves as a role model. I could say Prof. Luís is an excellent engineer, a one-of-a-kind teacher, and a brilliant researcher. I am sure he would nevertheless prefer to be remembered as an inspiring mentor. Ironically, by trying to be like Luís I ended up figuring out how to be myself; his greatest lesson to me is not on Analysis, Differential Equations or Engineering but the gracefully simple yet humanely complex ability to be at peace with myself.
+
+	To my parents who, beyond the deep and inextricable relationship of blood, serve as idols and templates. I feel I am the imperfect casting of perfect moulds however, as I was not able to replicate their humane excellency, even though I inherited it.
+	
+	To Professor Federico Bizzarri, from the Dipartimento di Elettronica, Informazione e Bioingegneria (DEIB) of the Politecnico di Milano, who extended me the opportunity to spend months with him in Milano developing research, going as far as offering financial support. Through Prof. Bizzarri I met Professor Angelo Brambilla, who showed me I was capable of more I thought I was, and also Davide del Giudice, who showed me self-worth is a quiet and unnanouced virtue. A great many thanks also go to the Politecnico di Milano and DEIB for offering me their great infrastructure, including the laboratory and computational servers. In the months I was at PoliMi I poured the entirety of my time and mind into that opportunity. My time in Milano was absolutely blissful.
+
+	To the the funding agencies that made my academic formation possible. The São Paulo Research Foundation FAPESP, who maintains a lot of the infrastructure I worked with, such as the Laboratory of Computational Analysis of Electric Power Systems; the Coordination for the Improvement of Higher Education Personnel CAPES which supplied me with the excellency PROEX scholarship; and the National Council for Scientific and Technological Development (CNPq) who provided with travel funding for conferences. The Institute of Electrical and Electronic Engineers, IEEE, has also gracefully helped by offering student travel grants not once but twice. Finally, Santander for the finantial support, due to their Santander Mobility Program, to my international journey at the end of my doctorate.
+
+	To the University of São Paulo (USP) and the Department of Electrical and Computer Engineering of the São Carlos School of Engineering (SEL - EESC) wherein I was able to complete both my bachelor's degree, my master's and this doctorate thesis with the utmost excellency and infrastructure. The staff and faculty at SEL has gone out of their ways, time and again, to help me, and I am grateful for all these years.
+
+	To the custom mechanical keyboard community, particularly the brazilian community, which were a constant in my life during graduation, master's and doctorate. Especially to Felipe ``MrKeebs'' Coury who is in essence responsible for kick-starting my projects. To the members of the Advanced Input Research Institute. To Númenórien and Khazad-Durin, who are and will be, deeply missed by this Gondolindrim.
+
+\end{acknowledgements}
+
+% LISTS OF FIGURES, TABLES, SYMBOLS AND ACRONYMS {{{1
+% -----------------------------------------------
+
+% LIST OF FIGURES
+\listoffigures
+\cleardoublepage
+
+% LIST OF TABLES
+\listoftables
+\cleardoublepage
+
+% -----------------------------------------------
+% LIST OF ABBREVIATIONS / ACRONYMS
+% -----------------------------------------------
+% This piece of code centralizes the LoA and LoS names, putting them in a HUGE and boldfaced font.
+% I was not able to insert this inside a \newenvironment, because this snipped messes with the
+% @makeschapter macro, which parameter #1 conflicts with the parameter number definition of the
+% newenvironment giving a "Illegal number definition" error. 
+\begingroup
+	\makeatletter
+		\def\chapter{\cleardoublepage\secdef\@chapter\@schapter}
+		\def\@makeschapterhead#1{{\center\HUGE\sffamily\bfseries #1\par\nobreak\vskip 10\p@\vspace*{5mm} }}
+	\makeatother
+
+\begin{acronyms}
+	\acronym{OMIB}{One Machine Infinite Bus System}
+	\acronym{SM}{Synchronous Machine}
+	\acronym{QSH}{Quasi-Static Hypothesis}
+	\acronym{QSM}{Quasi-Static Modelling}
+	\acronym{PLC}{Passive Linear Circuit}
+	\acronym{DQ}{Direct-Quadrature}
+	\acronym{$dq0$}{Direct-Quadrature-Zero transform (synonym with Clarke-Park Transform)}
+	\acronym{3$\phi$}{Three-phase}
+	\acronym{SPO}{Static Phasor Operator}
+	\acronym{PE}{Phasor Equivalent}
+	\acronym{EMT}{Electromagnetic Transient}
+	\acronym{EPS(s)}{Electric Power System(s)}
+	\acronym{PLL}{Phase Locked Loop}
+	\acronym{LTI}{Linear Time Invariant}
+	\acronym{(O)DE(s)}{(Ordinary) Differential Equation(s)}
+	\acronym{DP(s)}{Dynamic Phasor(s)}
+	\acronym{STFT}{Short-Time Fourier Transform}
+	\acronym{LT}{Laplace Transform}
+	\acronym{HT}{Hilbert Transform}
+	\acronym{DPT}{Dynamic Phasor Transform}
+	\acronym{DPF(s)}{Dynamic Phasor Functional(s)}
+	\acronym{ZES}{Zero Energy Start}
+	\acronym{$\mu$T}{Mu Transform}
+	\acronym{$\mu$TF(s)}{Mu Transfer Function(s)}
+	\acronym{BIBO}{Bounded Input Bounded Output}
+\end{acronyms}
+\endgroup
+
+% -----------------------------------------------
+% LIST OF SYMBOLS
+% -----------------------------------------------
+% Works pretty much the same as the list of abbreviations. In most graduate programs
+% and university departments this LoS is not required.
+
+%\begin{listofsymbols}
+%	\item[$ \Gamma $] Letra grega Gama
+%	\item[$ \Lambda $] Lambda
+%	\item[$ \zeta $] Letra grega minúscula zeta
+%	\item[$ \in $] Pertence
+%	\item[$|\cdot|$] Complex absolute value
+%	\item[$\lVert \cdot \rVert$] Complex vector or matrix euclidian norm
+%\end{listofsymbols}
+%
+%\endgroup
+
+% -----------------------------------------------
+% TABLE OF CONTENTS {{{1
+% -----------------------------------------------
+
+\tableofcontents*
+\cleardoublepage
+
+% Redefine plain style
+\pagestyle{fancy}
+
+% -----------------------------------------------
+% EPIGRAPH {{{1
+% -----------------------------------------------
+
+\begin{newepigraph}
+``Iron cares not for faith or heresy. Iron is forever. From iron cometh strength. From strength cometh will. From will cometh faith. From faith cometh honor. From honor cometh iron.''
+
+\hfill --- The Litany of Iron by Dantioch
+\end{newepigraph}
+
+%% -----------------------------------------------
+% TEXT BODY {{{1
+% -----------------------------------------------
+
+% Begin page number at one and start arabic page numbering
+\begintextbody
+
+\input{./chapters/introduction.tex}
+
+\part{Linear Systems and Classical Phasor Theory}\label{part:linearsys_phasor_theory}
+
+\input{./chapters/linear_systems.tex}
+
+\input{./chapters/classic_phasor_theory.tex}
+
+\part{Dynamic Phasors Theory}\label{part:dynphasor_theory}
+
+\input{./chapters/dynamic_phasors_theory.tex}
+
+\input{./chapters/frequency_effects.tex}
+
+\part{Dynamic Phasor Functionals and Control}\label{part:applications}
+
+\input{./chapters/dpos.tex}
+
+\input{./chapters/dpfts.tex}
+
+\part{Applications and conclusion}\label{part:ending}
+
+\input{./chapters/applications.tex}
+
+\input{./chapters/discussion.tex}
+
+%% ----------------------------------------------
+% BIBLIOGRAPHY {{{1
+% -----------------------------------------------
+\bibliography{refs}
+
+% -----------------------------------------------
+% APPENDIXES {{{1
+% -----------------------------------------------
+
+%\part*{Appendixes}
+%\appendix
+
+%
+%\input{./appendixes/cukSimulations.tex}
+
+%\begin{customendmatter}\end{customendmatter}
+
+\thispagestyle{empty}
+% CUSTOM BACK MATTER <<<
+\begin{figure}[h]
+\centering
+\vspace*{-2.6cm}
+\makebox[\linewidth]{
+
+\begin{tikzpicture}[transform shape,>={Stealth[inset=0mm,length=1.5mm,angle'=50]}]
+
+% Define A4 cover size: 21cm wide, 29.7cm tall
+\fill[darkblue] (0,0) rectangle (\paperwidth, \paperheight);
+
+% Multiple sinewaves across the middle
+\foreach \i in {0,...,15} {
+    \draw[white, opacity=0.3, thick, samples=200, domain=0:21] 
+    plot (\x, {17 + 1.5*sin(deg(0.5*\x) + \i*15)});
+}
+
+\node at (\paperwidth/2, 5) {\includegraphics[width=5cm]{../images/uniLogo_white.pdf}};
+\end{tikzpicture}
+}
+\end{figure} %>>>
+\cleardoublepage
+
+\end{document}

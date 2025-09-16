@@ -1,0 +1,1653 @@
+% ---------------------------------------------------------
+\chapter{Applications to Power System and Electronic Circuits}\label{chapter:applications}
+% ---------------------------------------------------------
+
+	In this chapter we show three applications of the theory developed in this thesis, specifically three applications that were used as main motivators in the introduction of the thesis.
+
+	The first motivation, of section \ref{sec:omib_dynphasor_sim}, is that of modelling Power Systems using the Quasi-Static Hypothesis. In that example we model a simple One-Machine Infinite Bus system using Dynamic Phasor Functionals, considering all the transient phenomena of transmission lines; further, we use the Quasi-Static Modelling technique to yield an approximated model where these transient characteristics are not considered, and we show that this approximated model does indeed produce some simulation of the system by disregarding fast transients. This example is used to illustrate the Quasi-Static Hypothesis and how it discards fast electromagnetic phenomena in transmission systems.
+
+	In the second motivation, of section \ref{sec:admittance_modelling_dp}, we show that the Dynamic Phasor Functionals are capable of producing models for transmission systems such that the voltages $V(t)$ of the nodes of the system and the branch currents $I(t)$ are related by an admittance operator $I(t) = \mathbf{Y}\left[V\right]$. We further show that this admittance operator is highly resemblant of the admittance matrix calculated for multimachine Power Systems, and the procedure for obtaining the admittance matrix operator is largely the same as that of commonplace techniques.
+
+	Finally, section \ref{sec:bjt_ampli_modelling} shows the modelling of a Bipolar Junction Transistor common-emitter amplifier to show that the Dynamic Phasor Theory proposed is also applicable to nonlinear systems when they are linearized. As such, the theory hereby presented is able to produce linearized models of electronic circuits that highly resemble the models currently used, but in a generalized sinusoidal manner. Therefore, the models produced are generalizations of the linearized models adopted, allowing for an expansion of such models in generalized sinusoidal conditions.
+
+%-------------------------------------------------
+\section{Simulation of a simple Power System}\label{sec:omib_dynphasor_sim} %<<<1
+
+	Consider the one machine versus infinite bus model of figure \ref{fig:example_omib_simulation} where the machine is connected to an infinite bus through a pure inductive line of reactance $X$ measured at the synchronous frequency $\omega_0$, corresponding to an inductance $L = X\omega_0^{-1}$. We will model a short-circuit contingency where the terminal bus of the machine is shorted to ground at $t = 0$ through $t = t_o$, the subscript ``o'' for ``opening'' because it is known as a ``fault opening time''. The objective is to model the transmission line using a Dynamic Phasors approach and compare the results with a static-behavior approximation.
+
+% EXAMPLE: OMIB <<<
+\begin{figure}[h]
+\centering
+\scalebox{0.8}{
+        \begin{tikzpicture}[american,scale=1.2,transform shape,line width=0.75, cute inductors,>={Stealth[inset=0mm,length=1.5mm,angle'=50]}]
+		\ctikzset{sources/scale=1.2}
+		\node (origin) at (0,0) {};
+		\node [shape=vsourcesinshape, rotate=-90] (gen1) at (-2,0) {} ;
+		\draw[->] ([shift=({-1.1,0})]gen1.south) -- +(1,0) node [midway,below] {$P_{m}$};
+
+		\draw (gen1.north) to[short] ++(1,0) coordinate(inducedbar_up) to[short] ++(0,0.5) to [short] ++(0.3,0) to[L,l=$x'$] ++(1.5,0) to [R,l=$r$] ++(1,0) to[short] ++(0.5,0) to[short] ++(0,-0.5) coordinate(terminalbar);
+		\draw ([shift=({0,0.5})]terminalbar) to[L,l=$X$,-] ++(4,0)  coordinate(vinfbar_up);
+
+		\node (vinfbar) at (vinfbar_up |- origin) {};
+		\node (inducedbar) at (inducedbar_up |- origin) {};
+
+		\draw[line width=1mm] ([shift=({0,1})]terminalbar) -- ++(0,-2); % V voltage
+		\node (vtlabel) at ([shift=({0,1.5})]terminalbar) {$V(t)$};
+
+		\draw[line width=1mm] ([shift=({0,1})]inducedbar.center) -- ++(0,-2); % V voltage
+		\node (elabel) at ([shift=({0,1.5})]inducedbar) {$E(t)$};
+
+		\draw[line width=1mm] ([shift=({0,1})]vinfbar.center) -- ++(0,-2); % V voltage
+
+		\node (vinfsource) [shape=vsourcesinshape, rotate=-90] at ([shift=({1,0})]vinfbar) {};
+		\node[right] () at ([shift=({0.5,0})]vinfsource) {$V_\infty {=} \left\lvert V_\infty\right\rvert e^{j\phi_\infty}$};
+
+		\draw (vinfbar.center) to (vinfsource.south);
+
+		\draw ([shift=({0,-0.5})]terminalbar.center) to[opening switch, l_=$t_o$] ++(2,0) to[short] ++(0,-1) node [tlground] {}; % V voltage
+		\draw ([shift=({0,-0.5})]terminalbar.center) to[short] ++(-1,0) to[R, l_=$R_L$] ++(0,-2) node [tlground] {}; % V voltage
+
+	\end{tikzpicture}
+}
+	\caption{One-Machine-Infinite-Bus System with resistive load for example modelling and simulation.}
+	\label{fig:example_omib_simulation}
+\end{figure} %>>>
+
+	We adopt the classic model \eqref{eq:machine_2a_model_classical} for the machine, according to which the machine is simplified as an internal induced voltage source $E$ behind a transient reactance $x'$, measured at synchronous frequency and corresponding with an inductance $L' = x'\omega_0^{-1}$, where $E$ is supposed constant throughout the simulation. We will also assume that the mechanical power $P_m$ supplied to the machine shaft is adjusted through a simple Droop controller, that is, linearly with frequency deviations: $P_m = P_m^* - k_P\omega$, with $k_P$ some linear gain and $P_m^*$ a reference value.
+
+	Figure \ref{fig:dynamic_phasor_dqaxis_omib} shows a phasorial diagram of the system. The machine DQ frame rotates at an angle $\omega_m$ (the subscript ``m'' for machine) that is governed by the swing equation, generating an angular distance $\delta_m$ with respect to the grid synchronous reference $R$ which rotates at $\omega_0$. The infinite bus voltage has by definition a constant amplitude and phase with respect to $R$. It is important to note that in the classicl model, the variable $\omega$ is the per-unit deviation of the rotor frequency from the synchronous frequency, that is, $\omega_m = \omega_0\omega$, causing an equivalent relationship for the angle $\delta_m = \omega_0\delta$.
+
+	To simplify analysis, we admit that the machine is modelled by the classical model \eqref{eq:machine_2a_model_classical} — even though this model is based on the static phasor approximation, building a new model is not the scope of this text.
+
+%------------------------------------------------- 
+\subsection{System model without short} %<<<2
+
+	When the terminal bus of the system is not shorted ($t < 0$ or $t > t_o$) the Dynamic Phasor model of the transmission line using the machine frequency $\omega_m$ as apparent frequency for the DPT is given by
+
+% DYNAMIC PHASOR DIAGRAM OF OMIB SYSTEM <<<
+\begin{figure}[htb!]
+\centering
+\scalebox{1}{
+	\begin{tikzpicture}[scale=2,>={Stealth[inset=0mm,length=1.5mm,angle'=50]}]
+		\node (origin) at (0,0) {};
+		\draw [->, black!50, name path = dmaxis] (0,0) -- ({40mm*cos(30)}, {40mm*sin(30)});
+		\draw [->, black!50, name path = qmaxis] (0,0) -- ({40mm*cos(120)},{40mm*sin(120)});
+
+		\node [label={[text=stewartpink, label distance=1mm]0:$D_s$}] (ReAxisLabel) at ({40mm*cos(0)} ,{40mm*sin(0)})  {};
+		\draw [->, stewartpink] (0,0) -- (ReAxisLabel.center);
+		\node [label={[text=stewartpink, label distance=1mm]0:$Q_s$}] (ImAxisLabel) at ({40mm*cos(90)} ,{40mm*sin(90)})  {};
+		\draw [->, stewartpink] (0,0) -- (ImAxisLabel.center);
+		\draw [->, stewartpink] ({18mm*cos(0)},{18mm*sin(0)}) arc[start angle=0, end angle = 28, radius = 18mm];
+		\node [stewartpink] (philabel) at ({21mm*cos(6)},{21mm*sin(6)}) {$\delta_m(t)$};
+
+		\node [right,black!50] (DAxisLabel) at ({42mm*cos(30) - 2mm} ,{42mm*sin(30)})  {$D_m$};
+		\node [black!50]       (QAxisLabel) at ({42mm*cos(120)},      {42mm*sin(120)}) {$Q_m$};
+
+		\node [black!50] (omegat) at ({35mm*cos(37)},{35mm*sin(37)}) {$\omega_m(t)$};
+		\draw [-{Stealth[inset=0mm,length=3.5mm,angle'=50]}, black!50, line width = 1mm] ({35mm*cos(25)},{35mm*sin(25)}) arc[start angle=25, end angle = 35, radius = 35mm];
+
+		\node [stewartpink] (omegat) at ({37mm*cos(7)},{37mm*sin(7)}) {$\omega_0$};
+		\draw [-{Stealth[inset=0mm,length=3.5mm,angle'=50]}, stewartpink, line width = 1mm] ({37mm*cos(-5)},{37mm*sin(-5)}) arc[start angle=-5, end angle = 5, radius = 37mm];
+
+		\node [right, stewartyellow] (elabel) at ({35mm*cos(70)},{35mm*sin(70)}) {$E(t)$};
+		\draw [->, stewartyellow] (0,0) -- (elabel);
+
+		% Obtaining Ed and Eq projections
+		\path [name path = edprojection] (elabel) -- +($(origin)-(QAxisLabel)$);
+		\path [name intersections={of=edprojection and dmaxis, by=Ed}];
+		\node [circle,fill=stewartyellow,inner sep=1.5pt,label={[text=stewartyellow]-60:$E_d$}] at (Ed) {};
+		\draw [dashed,stewartyellow] (Ed) -- (elabel);
+
+		\path [name path = eqprojection] (elabel) -- +($(origin)-(DAxisLabel)$);
+		\path [name intersections={of=eqprojection and qmaxis, by=Eq}];
+		\node [circle,fill=stewartyellow,inner sep=1.5pt,label={[text=stewartyellow]-120:$E_q$}] at (Eq) {};
+		\draw [dashed,stewartyellow] (Eq) -- (elabel);
+
+		% Drawing V
+		\node [right, stewartblue] (vlabel) at ({40mm*cos(55)},{40mm*sin(55)}) {$V(t)$};
+		\draw [->, stewartblue] (0,0) -- (vlabel);
+
+		\node [label={[text=stewartgreen, label distance=1mm]0:$\left\lvert V_\infty\right\rvert e^{j\phi_\infty}$}] (vinflabel) at ({42mm*cos(15)},{42mm*sin(15)}) {};
+		\draw [->,   stewartgreen] (0,0) -- (vinflabel.center);
+		\draw [->,   stewartgreen] ({30mm*cos(0)},{30mm*sin(0)}) arc[start angle=0, end angle = 13, radius = 30mm];
+		\node [stewartgreen] (philabel) at ({32mm*cos(7)},{32mm*sin(7)}) {$\phi_\infty$};
+
+		\node [right, stewartpurple] (ilabel) at ({37mm*cos(45)},{37mm*sin(45)}) {$I(t)$};
+		\draw [->,   stewartpurple] (0,0) -- (ilabel);
+	\end{tikzpicture}
+	}
+	\caption
+[Phasor diagram for the OMIB system being simulated.]
+{Phasor diagram for the OMIB system being simulated showing the machine phase frame ``$D_m/Q_m$'' frame, the subscript ``m'' for ``machine'', and the synchronous grid angular frame ``$D_s/Q_s$'' frame.}
+	\label{fig:dynamic_phasor_dqaxis_omib}
+\end{figure} %>>>
+
+\begin{gather}
+	\left(\dfrac{\mathbf{I}}{r\mathbf{I} + \dpo L'}\right)\left[E - V\right] = \dfrac{1}{R_L} V + \left(\dfrac{\mathbf{I}}{L\dpo}\right)\left[V - V_\infty\right] \nonumber\\[5mm]
+%
+	L\dpo \left[E - V\right] = \left[\dfrac{1}{R_L}\left(r\mathbf{I} + \dpo L'\right)\dpo L\right] V + \left(r\mathbf{I} + \dpo L'\right)\left[V - V_\infty\right] \nonumber\\[5mm]
+%           
+	L\dpo \left[E\right] + \left(r\mathbf{I} + \dpo L'\right)\left[V_\infty\right] = \left[\left(\dfrac{r\mathbf{I} + \dpo L'}{R_L}\right)\dpo L + \dpo L + \left(r\mathbf{I} + \dpo L'\right)\right] V \nonumber\\[5mm]
+%            
+	L\dpo \left[E\right] + \left(r\mathbf{I} + \dpo L'\right)\left[V_\infty\right] = \left[r\mathbf{I} + \left(\dfrac{rL}{R_L} + L + L'\right)\dpo + \dfrac{LL'}{R_L}\ndpo{2}\right] V \label{eq:i_omib_diffeq}
+\end{gather}
+
+	\noindent and this achieves a second-order differential equation for $V$. Obtaining the bus current from $V$ can be done from the same law:
+
+\begin{gather}
+	I = \dfrac{1}{R_L} V + \left(\dfrac{\mathbf{I}}{L\dpo}\right)\left[V - V_\infty\right] \nonumber\\[5mm]
+%
+	L\dpo\left[I\right] = \dfrac{1}{R_L} L\dpo\left[V\right] + V - V_\infty = \left(\dfrac{L}{R_L}\dpo + \mathbf{I}\right)\left[V\right] - V_\infty \label{eq:v_omib_diffeq}
+\end{gather}
+
+	\noindent and substituting \eqref{eq:v_omib_diffeq} into \eqref{eq:i_omib_diffeq}. First multiply \eqref{eq:i_omib_diffeq} by $\left(\frac{L}{R_L}\dpo + \mathbf{I}\right)$:
+\begin{equation}
+	\hspace{-3mm} \left(\dfrac{L}{R_L}\dpo + \mathbf{I}\right)\left\{\raisebox{4mm}{} L\dpo \left[E\right] + \left(r\mathbf{I} + \dpo L'\right)\left[V_\infty\right]\right\} = \left\{\left(\dfrac{L}{R_L}\dpo + \mathbf{I}\right)\left[r\mathbf{I} + \left(\dfrac{rL}{R_L} + L + L'\right)\dpo + \dfrac{LL'}{R_L}\ndpo{2}\right]\right\}\left[ V\right]
+\end{equation}
+
+	\noindent and because operators are commutative,
+
+\begin{equation}
+	\hspace{-3mm} \left(\dfrac{L}{R_L}\dpo + \mathbf{I}\right)\left\{\raisebox{4mm}{} L\dpo \left[E\right] + \left(r\mathbf{I} + \dpo L'\right)\left[V_\infty\right]\right\} = \left[r\mathbf{I} + \left(\dfrac{rL}{R_L} + L + L'\right)\dpo + \dfrac{LL'}{R_L}\ndpo{2}\right]\left[ \left(\dfrac{L}{R_L}\dpo + \mathbf{I}\right)\left[V\right]\right]
+\end{equation}
+
+	\noindent now use \eqref{eq:v_omib_diffeq} to yield
+
+\begin{equation}
+	\left(\dfrac{L}{R_L}\dpo + \mathbf{I}\right)\left\{\raisebox{4mm}{} L\dpo \left[E\right] + \left(r\mathbf{I} + \dpo L'\right)\left[V_\infty\right]\right\} = \left[r\mathbf{I} + \left(\dfrac{rL}{R_L} + L + L'\right)\dpo + \dfrac{LL'}{R_L}\ndpo{2}\right]\left\{\raisebox{4mm}{} L\dpo\left[I\right] + V_\infty\right\}
+\end{equation}
+
+	\noindent and isolating the current $I$,
+
+\begin{align}
+	\left(\dfrac{L^2}{R_L}\ndpo{2} + L\dpo\right)\left[E\right] - \left\{\left[r\mathbf{I} + \left(\dfrac{rL}{R_L} + L + L'\right)\dpo + \dfrac{LL'}{R_L}\ndpo{2}\right] - \left(\dfrac{L}{R_L}\dpo + \mathbf{I}\right)\left(r\mathbf{I} + \dpo L'\right)\right\}\left[V_\infty\right] &= \nonumber\\[5mm] & \hspace{-9cm} = \left[r\mathbf{I} + \left(\dfrac{rL}{R_L} + L + L'\right)\dpo + \dfrac{LL'}{R_L}\ndpo{2}\right]\left\{\raisebox{4mm}{} L\dpo\left[I\right] \right\} \\[5mm]
+%
+	\left(\dfrac{L^2}{R_L}\ndpo{2} + L\dpo\right)\left[E\right] - \left\{\left[r\mathbf{I} + \left(\dfrac{rL}{R_L} + L + L'\right)\dpo + \dfrac{LL'}{R_L}\ndpo{2}\right] - \left[\dfrac{LL'}{R_L}\ndpo{2} + \left(\dfrac{Lr}{R_L} + L'\right)\dpo + r\mathbf{I}\right]\right\}\left[V_\infty\right] &= \nonumber\\[5mm] & \hspace{-9cm} = \left[r\mathbf{I} + \left(\dfrac{rL}{R_L} + L + L'\right)\dpo + \dfrac{LL'}{R_L}\ndpo{2}\right]\left\{\raisebox{4mm}{} L\dpo\left[I\right] \right\} \\[5mm]
+%
+	&\hspace{-14cm} \left(\dfrac{L^2}{R_L}\ndpo{2} + L\dpo\right)\left[E\right] - L\dpo\left[V_\infty\right] = \left[r\mathbf{I} + \left(\dfrac{rL}{R_L} + L + L'\right)\dpo + \dfrac{LL'}{R_L}\ndpo{2}\right]\left\{\raisebox{4mm}{} L\dpo\left[I\right] \right\}
+\end{align}
+
+	\noindent and dividing the entire equation by $L\dpo$:
+
+\begin{equation}
+	\left(\dfrac{L}{R_L}\dpo + \mathbf{I}\right)\left[E\right] - V_\infty  = \left[r\mathbf{I} + \left(\dfrac{rL}{R_L} + L + L'\right)\dpo + \dfrac{LL'}{R_L}\ndpo{2}\right]\left[I\right]
+\end{equation}
+
+	Now adopt $\omega(t)$ as the apparent frequency for the Dynamic Phasor Transform and expanding this equation yields
+
+\begin{align}
+& \dfrac{L L'}{R_L}\ddot{I}(t) + \left[L\left(1 + \frac{r}{R_L}\right) + L' + j\left(\frac{2 L L'}{R_L}\omega(t)\right)\right]\dot{I}(t) + \nonumber\\[5mm]
+%
+& \hspace{1cm} \left( r - \dfrac{L L'}{R_L}\omega^2(t) + j\left\{\dfrac{L L'}{R_L}\dot{\omega}(t) + \left[L\left(1 + \dfrac{r}{R_L}\right) + L'\right] \omega(t)\right\}\right) I(t) \nonumber\\[5mm]
+%
+& \hspace{2cm} = \dfrac{L}{R_L}\dot{E} + \left(1 + j\dfrac{\omega L}{R_L}\right)E - V_\infty
+\end{align}
+
+	\noindent and multiplying the entire equation by $R_L/LL'$,
+
+\begin{align}
+& \ddot{I}(t) + \left[\dfrac{R_L + r}{L'}+ \dfrac{R_L}{L} +  2j\omega(t)\right]\dot{I}(t) + \left\{ \dfrac{rR_L}{LL'} - \omega^2(t) + j\left[\dot{\omega}(t) + \left(\dfrac{R_L + r}{L'}+ \dfrac{R_L}{L}\right) \omega(t)\right]\right\} I(t) \nonumber\\[5mm]
+%
+& \hspace{2cm} = \dfrac{1}{L'}\dot{E} + \left(\dfrac{R_L}{LL'} + j\dfrac{\omega}{L'}\right)E - \dfrac{R_L}{LL'}V_\infty . \label{eq:omib_sim_final_curr_model}
+\end{align}
+
+	The modelling will be done in the DQ frame of the transmission grid at the synchronous frequency (the pink frame on figure \ref{fig:dynamic_phasor_dqaxis_omib}), using the synchronous frequency $\omega_0$ for the Dynamic Phasor Transform. In that frame, $V_\infty$ is a constant number and the internal induced voltage $E$ is equal to
+
+\begin{align}
+	E = \left(E_d + jE_q\right)e^{j\delta_m} \Rightarrow \dot{E} &= \left(\dot{E}_d + j\dot{E}_q\right)e^{j\delta_m} + \left(E_d + jE_q\right)\omega_m e^{j\delta_m} = \nonumber\\[5mm] &= \left[\left(\dot{E}_d + \omega_m E_d\right) + j\left(\dot{E}_q + \omega_m E_q\right)\right]e^{j\delta_m}
+\end{align}
+
+	\noindent where $E_d$ and $E_q$ are given by the differential model of the machine. Using these facts on \eqref{eq:omib_sim_final_curr_model} yields a current model
+
+\begin{align}
+& \ddot{I}(t) + \left(\dfrac{R_L + r}{L'}+ \dfrac{R_L}{L} +  2j\omega_0\right)\dot{I}(t) + \left\{ \dfrac{rR_L}{LL'} - \omega_0 + j\left(\dfrac{R_L + r}{L'}+ \dfrac{R_L}{L}\right) \omega_0 \right\} I(t) = \nonumber\\[5mm]
+%
+& \hspace{2cm} = \dfrac{1}{L'}\dot{E} + \left(\dfrac{R_L}{LL'} + j\dfrac{\omega_0}{L'}\right)E - \dfrac{R_L}{LL'}V_\infty
+\end{align}
+
+	\noindent dividing this entire equation by $\omega_0^2$ to achieve a per-unit-compatible model:
+
+\begin{align}
+& \dfrac{1}{\omega_0^2} \ddot{I}(t) + \left(\dfrac{R_L + r}{x'}+ \dfrac{R_L}{X} +  2j\right)\dfrac{1}{\omega_0}\dot{I}(t) + \left[ \dfrac{rR_L}{x'X} - 1 + j\left(\dfrac{R_L + r}{x'}+ \dfrac{R_L}{X}\right) \right] I(t) = \nonumber\\[5mm]
+%
+& \hspace{2cm} = \dfrac{1}{\omega_0 x'} \dot{E} + \left(\dfrac{R_L}{x'X} + j\dfrac{1}{x'}\right)E - \dfrac{R_L}{x'X}V_\infty. \label{eq:omib_current_final_pu_model}
+\end{align}
+
+	For this modelling we use the classical model
+
+% MACHINE CLASSICAL MODEL <<<
+\begin{equation}
+	\left\{\begin{array}{l}
+		\dot{\omega} = \dfrac{P_m - P_e}{2H} \\[5mm]
+		\dot{\delta} = \omega \\[5mm]
+		P_e = E_dI_d + E_qI_q \\[5mm]
+		P_m = P_m^* - k_P\omega
+	\end{array}\right. \label{eq:machine_2a_model_classical_modelling}
+\end{equation} %>>>
+
+	\noindent and in this model $E_d$ and $E_q$ are constant, and $\omega$ is given in a per-unit unit system such that the machine electrical frequency deviation is given by $\omega_m = \omega_0\left(\omega + \right)$. Similarly, the phase deviation is also given in a per-unit system such that $\delta_m = \omega_0\delta$. Coupling the model \eqref{eq:machine_2a_model_classical_modelling} to the grid equations \eqref{eq:omib_current_final_pu_model} achieves the model of the system:
+
+% OMIB SYSTEM TOTAL MODEL <<<
+\begin{equation}
+	\left\{\begin{array}{l}
+		\dot{\omega} = \dfrac{P_m - P_e}{2H} \\[5mm]
+		\dot{\delta} = \omega \\[5mm]
+		\dfrac{1}{\omega_0^2} \ddot{I} + \left(\dfrac{R_L + r}{x'} + \dfrac{R_L}{X} +  2j\right)\dfrac{1}{\omega_0}\dot{I} + \left[ \dfrac{rR_L}{x'X} - 1 + j\left(\dfrac{R_L + r}{x'}+ \dfrac{R_L}{X}\right) \right] I = \\[5mm]
+%
+		\hspace{2cm} = \left(\dfrac{\omega}{x'} + \dfrac{R_L}{x'X} + j\dfrac{2}{x'}\right)\left(E_d + jE_q\right)e^{j\omega_0\delta} - \dfrac{R_L}{x'X}V_\infty \\[5mm]
+		P_e = E_dI_d + E_qI_q \\[5mm]
+		P_m = P_m^* - k_P\omega
+	\end{array}\right. \label{eq:omib_classical_total_model}
+\end{equation} %>>>
+
+	Naturally, the quasi-static approximation of this grid model is obtained by applying all current derivatives to zero:
+
+% OMIB SYSTEM QUASISTATIC MODEL <<<
+\begin{equation}
+	\left\{\begin{array}{l}
+		\dot{\omega} = \dfrac{P_m - P_e}{2H} \\[5mm]
+		\dot{\delta} = \omega \\[5mm]
+		I = \dfrac{\raisebox{-5mm}{} \left(\dfrac{\omega}{x'} + \dfrac{R_L}{x'X} + j\dfrac{2}{x'}\right)\left(E_d + jE_q\right)e^{j\omega_0\delta} - \dfrac{R_L}{x'X}V_\infty}{\raisebox{6mm}{} \dfrac{rR_L}{x'X} - 1 + j\left(\dfrac{R_L + r}{x'}+ \dfrac{R_L}{X}\right)} \\[12mm]
+		P_e = E_dI_d + E_qI_q \\[5mm]
+		P_m = P_m^* - k_P\omega
+	\end{array}\right. \label{eq:omib_classical_quasi_model}
+\end{equation} %>>>
+
+%-------------------------------------------------
+\subsection{System model while shorted} %<<<2
+
+	Thus \eqref{eq:omib_classical_total_model} and \eqref{eq:omib_classical_quasi_model} achieve the complete and approximated models of the system when the terminar bus is not shorted. When the bus is shorted,
+
+\begin{equation} E = \left(r\mathbf{I} + \dpo L' \right)\left[I\right] \Leftrightarrow E = L'\dot{I} + \left(r + j\omega(t)L'\right)I \end{equation} \noindent applying the modelling at the synchronous frequency $\omega_0$,
+
+\begin{equation} E = \dfrac{x'}{\omega_0}\dot{I} + \left(r + jx'\right)I \end{equation}
+
+	\noindent achieving a model of the system at the synchronous reference
+
+% OMIB SYSTEM QUASISTATIC MODEL <<<
+\begin{equation}
+	\left\{\begin{array}{l}
+		\dot{\omega} = \dfrac{P_m - P_e}{2H} \\[5mm]
+		\dot{\delta} = \omega \\[5mm]
+		\dot{I} = \dfrac{\omega_0}{x'}\left[\left(E_d + jE_q\right)e^{j\omega_0\delta} - \left(r + jx'\right)I \right] \\[5mm]
+		P_e = E_dI_d + E_qI_q \\[5mm]
+		P_m = P_m^* - k_P\omega
+	\end{array}\right. \label{eq:omib_classical_short}
+\end{equation} %>>>
+
+	\noindent which generates a quasi-static model
+
+% OMIB SYSTEM QUASISTATIC MODEL <<<
+\begin{equation}
+	\left\{\begin{array}{l}
+		\dot{\omega} = \dfrac{P_m - P_e}{2H} \\[5mm]
+		\dot{\delta} = \omega \\[5mm]
+		I = \dfrac{\left(E_d + jE_q\right)e^{j\omega_0\delta}}{\left(r + jx'\right)} \\[5mm]
+		P_e = E_dI_d + E_qI_q \\[5mm]
+		P_m = P_m^* - k_P\omega
+	\end{array}\right. \label{eq:omib_classical_short_quasistatic}
+\end{equation} %>>>
+
+%-------------------------------------------------
+\subsection{Simulation} %<<<2
+
+	The initial conditions for the simulation are calculated using power flow equations. We assume that the power angle $\delta$ is null at initial time and that the machine is supplying an initial power of $S_0 = 1 + j0.1$ and the terminal voltage and bus current are calculated by the equations
+
+\begin{equation}
+	\left\{\begin{array}{l}
+		\left[\dfrac{rR_L}{x'X} - 1 + j\left(\dfrac{R_L + r}{x'} + \dfrac{R_L}{X}\right)\right]I - \left(\dfrac{R_L}{x'X} + j\dfrac{2}{x'}\right)E + \dfrac{R_L}{x'X}V_\infty = 0 \\[5mm]
+		\left[E - \left(r + jx'\right)I\right]\overline{I} - S_0 = 0
+	\end{array}\right.
+\end{equation}
+
+	\noindent where the first equation is the grid equation and the second equation is the power flow equation. From this system one obtains the initial values of table \ref{tab:initialcond_params} and calculates the initial mechanical power at equilibrium $P_m = P_e$, and we adopt the mechanical power setpoint $P_m^*$ as the initial mechanical power. As for parameters, we use the parameters of table \ref{tab:synchmachine_params}.
+
+% TABLE OF INITIAL CONDITIONS <<<
+\renewcommand{\arraystretch}{1.2}
+\begin{table}[t]
+\begin{center}
+\begin{tabular}{ c|c|c|c|c } 
+\hline 
+\raisebox{-2mm}{} $E_d$ & $E_q$ & $I_d$ & $I_q$ & $P_m$ \\
+\hline
+$1.1566432$ pu & $0.50040052$ pu & $0.89092649$ pu & $-0.045016622$ pu & $1.0079578$ pu \\
+\hline
+\end{tabular}
+\end{center}
+\caption{Initial conditions of the synchronous machine for the simulation of the OMIB system of figure \ref{fig:example_omib_simulation}.}
+\label{tab:initialcond_params}
+\end{table} %>>>
+
+% TABLE OF PARAMETERS <<<
+\renewcommand{\arraystretch}{1.2}
+\begin{table}[t]
+\begin{center}
+\begin{tabular}{ c|c|c|c|c|c|c|c|c|c } 
+\hline 
+\raisebox{-3mm}{} $\omega_0$ & $H$ & $\left\lvert V_\infty\right\rvert$ & $\phi_\infty$ & $r$ & $x'$ & $X$ & $k_P$ & $t_o$ & $R_L$\\
+\hline
+$120\pi$ rad.s$^{-1}$ & $1$ s & $1.1$ pu & $3^\circ$ & 0.01 pu & 0.5 pu& 0.1 pu & 10 & 0.1 s & 2.5 pu \\
+\hline
+\end{tabular}
+\end{center}
+\caption{Parameter values of the OMIB system of figure \ref{fig:example_omib_simulation} for simulation.}
+\label{tab:synchmachine_params}
+\end{table} %>>>
+
+% FREQUENCY CURVES <<<
+\begin{figure}
+        \begin{center}
+                \begin{tikzpicture}
+                        \begin{axis}[
+				name = ax_main,
+                                width = 0.9*\columnwidth,
+                                height = 0.9*1/1.618*\columnwidth,
+                                title={OMIB simulation frequency signals},
+                                xlabel={Time (s)},
+                                ylabel={$\omega$},
+                                xmin=0, xmax=2,
+                                ymin=-0.043, ymax=0.04,
+                                xtick={0,0.25,...,2},
+                                ytick={-0.04,-0.03,...,0.04},
+				ticklabel style={
+					/pgf/number format/fixed,
+					/pgf/number format/precision=5
+				},
+				scaled y ticks=false,
+                                legend pos=south east,
+                                ymajorgrids=true,
+                                xmajorgrids=true,
+                                every axis plot/.append style={thick},
+				legend columns=2,
+                        ]
+				\addplot[blue, smooth]         table[col sep=comma,header=false,x index=0,y index=1]{data/omib_sim/data_omib_sim_short.csv};
+				\addlegendentry{$\omega(t)$}
+				\addplot[blue, smooth, forget plot]         table[col sep=comma,header=false,x index=0,y index=1, forget plot]{data/omib_sim/data_omib_sim_noshort.csv};
+				\addplot[red,  smooth] table[col sep=comma,header=false,x index=0,y index=1]{data/omib_sim/data_omib_sim_shortquasi.csv};
+				\addlegendentry{$\omega(t)$ (quasi.)}
+				\addplot[red,  smooth, forget plot] table[col sep=comma,header=false,x index=0,y index=1]{data/omib_sim/data_omib_sim_noshortquasi.csv};
+                        \coordinate (c1) at (axis cs:0  ,-0.043);
+                        \coordinate (c2) at (axis cs:0.5,-0.043);
+                        \end{axis}
+%
+                        \begin{axis}[
+                                name = ax_zoomed_start,
+                                at={($(ax_main.north east)-(0.9\columnwidth,1.75/1.618*\columnwidth)$)},
+                                width = 0.9*1\columnwidth,
+                                height = 0.9*1/1.618*\columnwidth,
+                                xmin=0, xmax=0.5,
+                                ymin=-0.043, ymax=0.04,
+                                xtick={0,0.05,...,0.5},
+        			xlabel={Time (s)},
+                                ytick={-0.04,-0.03,...,0.04},
+				ticklabel style={
+					/pgf/number format/fixed,
+					/pgf/number format/precision=5
+				},
+				scaled y ticks=false,
+                                ymajorgrids=true,
+                                xmajorgrids=true,
+                                every axis plot/.append style={thick},
+                        ]
+				\addplot[blue, smooth]         table[col sep=comma,header=false,x index=0,y index=1]{data/omib_sim/data_omib_sim_short.csv};
+				\addplot[blue, smooth]         table[col sep=comma,header=false,x index=0,y index=1]{data/omib_sim/data_omib_sim_noshort.csv};
+				\addplot[red,  smooth] table[col sep=comma,header=false,x index=0,y index=1]{data/omib_sim/data_omib_sim_noshortquasi.csv};
+				\addplot[red,  smooth] table[col sep=comma,header=false,x index=0,y index=1]{data/omib_sim/data_omib_sim_shortquasi.csv};
+                        \end{axis}
+                        % draw dashed lines from rectangle in first axis to corners of second
+                        \draw [gray,dashed] (c1) -- (ax_zoomed_start.north west);
+                        \draw [gray,dashed] (c2) -- (ax_zoomed_start.north east);
+                \end{tikzpicture}
+        \caption
+[Frequency signals from OMIB system fault simulation.]
+{Frequency signals from OMIB system fault simulation. In blue, the result of simulation using the ``complete models'' \eqref{eq:omib_classical_total_model} and \eqref{eq:omib_classical_quasi_model} and in red the result of the quasi-static models \eqref{eq:omib_classical_short} and \eqref{eq:omib_classical_short_quasistatic}.}
+        \label{fig:omibsim_freq}
+        \end{center}
+\end{figure}
+% >>>
+
+% ID CURVES <<<
+\begin{figure}
+        \begin{center}
+                \begin{tikzpicture}
+                        \begin{axis}[
+				name = ax_main,
+                                width = 0.9*\columnwidth,
+                                height = 0.9*1/1.618*\columnwidth,
+                                title={OMIB simulation direct current component $I_d$ signal},
+                                xlabel={Time (s)},
+                                ylabel={$I_d$ (pu)},
+                                xmin=0, xmax=2,
+                                ymin=-1.1, ymax=3.5,
+                                xtick={0,0.25,...,2},
+                                ytick={-1,0,...,3},
+                                legend pos=south east,
+                                ymajorgrids=true,
+                                xmajorgrids=true,
+                                every axis plot/.append style={thick},
+				legend columns=2,
+                        ]
+				\addplot[blue, smooth] table[col sep=comma,header=false,x index=0,y index=3, forget plot]{data/omib_sim/data_omib_sim_short.csv};
+				\addplot[blue, smooth] table[col sep=comma,header=false,x index=0,y index=3]{data/omib_sim/data_omib_sim_noshort.csv};
+				\addlegendentry{$I_d(t)$}
+				\addplot[red,  smooth] table[col sep=comma,header=false,x index=0,y index=3, forget plot]{data/omib_sim/data_omib_sim_shortquasi.csv};
+				\addplot[red,  smooth] table[col sep=comma,header=false,x index=0,y index=3]{data/omib_sim/data_omib_sim_noshortquasi.csv};
+				\addlegendentry{$I_d(t)$ (quasi.)}
+                        \coordinate (c1) at (axis cs:0  ,-1.1);
+                        \coordinate (c2) at (axis cs:0.6,-1.1);
+                        \end{axis}
+%
+                        \begin{axis}[
+                                name = ax_zoomed_start,
+                                at={($(ax_main.north east)-(0.9\columnwidth,1.75/1.618*\columnwidth)$)},
+                                width = 0.9*1\columnwidth,
+                                height = 0.9*1/1.618*\columnwidth,
+                                xmin=0, xmax=0.6,
+                                ymin=-1.1, ymax=3.5,
+                                xtick={0,0.06,...,0.6},
+                                ytick={-1,0,...,3},
+				ticklabel style={
+					/pgf/number format/fixed,
+					/pgf/number format/precision=5
+				},
+				scaled y ticks=false,
+        			xlabel={Time (s)},
+                                ymajorgrids=true,
+                                xmajorgrids=true,
+                                every axis plot/.append style={thick},
+                        ]
+				\addplot[blue, smooth] table[col sep=comma,header=false,x index=0,y index=3, forget plot]{data/omib_sim/data_omib_sim_short.csv};
+				\addplot[blue, smooth] table[col sep=comma,header=false,x index=0,y index=3]{data/omib_sim/data_omib_sim_noshort.csv};
+				\addplot[red,  smooth] table[col sep=comma,header=false,x index=0,y index=3, forget plot]{data/omib_sim/data_omib_sim_shortquasi.csv};
+				\addplot[red,  smooth] table[col sep=comma,header=false,x index=0,y index=3]{data/omib_sim/data_omib_sim_noshortquasi.csv};
+                        \end{axis}
+                        % draw dashed lines from rectangle in first axis to corners of second
+                        \draw [gray,dashed] (c1) -- (ax_zoomed_start.north west);
+                        \draw [gray,dashed] (c2) -- (ax_zoomed_start.north east);
+                \end{tikzpicture}
+        \caption
+[Direct component of bus current signals from OMIB system fault simulation.]
+{Direct component of bus current signals from OMIB system fault simulation. In blue, the result of simulation using the ``complete models'' \eqref{eq:omib_classical_total_model} and \eqref{eq:omib_classical_quasi_model} and in red the result of the quasi-static models \eqref{eq:omib_classical_short} and \eqref{eq:omib_classical_short_quasistatic}.}
+        \label{fig:omibsim_id}
+        \end{center}
+\end{figure}
+% >>>
+
+% IQ CURVES <<<
+\begin{figure}
+        \begin{center}
+                \begin{tikzpicture}
+                        \begin{axis}[
+				name = ax_main,
+                                width = 0.9*\columnwidth,
+                                height = 0.9*1/1.618*\columnwidth,
+                                title={OMIB simulation quadrature current component $I_q$ signal},
+                                xlabel={Time (s)},
+                                ylabel={$I_q$ (pu)},
+                                xmin=0, xmax=2,
+                                ymin=-4.5, ymax=2.8,
+                                xtick={0,0.25,...,2},
+                                ytick={-4,-3,...,2},
+				scaled y ticks=false,
+                                legend pos=south east,
+                                ymajorgrids=true,
+                                xmajorgrids=true,
+                                every axis plot/.append style={thick},
+				legend columns=2,
+                        ]
+				\addplot[blue, smooth] table[col sep=comma,header=false,x index=0,y index=4, forget plot]{data/omib_sim/data_omib_sim_short.csv};
+				\addplot[blue, smooth] table[col sep=comma,header=false,x index=0,y index=4]{data/omib_sim/data_omib_sim_noshort.csv};
+				\addlegendentry{$I_q(t)$}
+				\addplot[red,  smooth] table[col sep=comma,header=false,x index=0,y index=4, forget plot]{data/omib_sim/data_omib_sim_shortquasi.csv};
+				\addplot[red,  smooth] table[col sep=comma,header=false,x index=0,y index=4]{data/omib_sim/data_omib_sim_noshortquasi.csv};
+				\addlegendentry{$I_q(t)$ (quasi.)}
+                        \coordinate (c1) at (axis cs:0  ,-4.5);
+                        \coordinate (c2) at (axis cs:0.6,-4.5);
+                        \end{axis}
+%
+                        \begin{axis}[
+                                name = ax_zoomed_start,
+                                at={($(ax_main.north east)-(0.9\columnwidth,1.75/1.618*\columnwidth)$)},
+                                width = 0.9*1\columnwidth,
+                                height = 0.9*1/1.618*\columnwidth,
+                                xmin=0, xmax=0.6,
+                                ymin=-4.5, ymax=2.8,
+                                xtick={0,0.06,...,0.6},
+                                ytick={-4,-3,...,2},
+				ticklabel style={
+					/pgf/number format/fixed,
+					/pgf/number format/precision=5
+				},
+				scaled y ticks=false,
+        			xlabel={Time (ms)},
+                                ymajorgrids=true,
+                                xmajorgrids=true,
+                                every axis plot/.append style={thick},
+                          ]
+				\addplot[blue, smooth] table[col sep=comma,header=false,x index=0,y index=4, forget plot]{data/omib_sim/data_omib_sim_short.csv};
+				\addplot[blue, smooth] table[col sep=comma,header=false,x index=0,y index=4]{data/omib_sim/data_omib_sim_noshort.csv};
+				\addplot[red,  smooth] table[col sep=comma,header=false,x index=0,y index=4, forget plot]{data/omib_sim/data_omib_sim_shortquasi.csv};
+				\addplot[red,  smooth] table[col sep=comma,header=false,x index=0,y index=4]{data/omib_sim/data_omib_sim_noshortquasi.csv};
+                        \end{axis}
+                        % draw dashed lines from rectangle in first axis to corners of second
+                        \draw [gray,dashed] (c1) -- (ax_zoomed_start.north west);
+                        \draw [gray,dashed] (c2) -- (ax_zoomed_start.north east);
+                \end{tikzpicture}
+        \caption
+[Quadrature component of bus current signals from OMIB system fault simulation.]
+{Quadrature component of bus current signals from OMIB system fault simulation. In blue, the result of simulation using the ``complete models'' \eqref{eq:omib_classical_total_model} and \eqref{eq:omib_classical_quasi_model} and in red the result of the quasi-static models \eqref{eq:omib_classical_short} and \eqref{eq:omib_classical_short_quasistatic}.}
+        \label{fig:omibsim_iq}
+        \end{center}
+\end{figure}
+% >>>
+
+% VD CURVES <<<
+\begin{figure}
+        \begin{center}
+                \begin{tikzpicture}
+                        \begin{axis}[
+				name = ax_main,
+                                width = 0.9*\columnwidth,
+                                height = 0.9*1/1.618*\columnwidth,
+                                title={OMIB simulation direct current component $I_d$ signal},
+                                xlabel={Time (s)},
+                                ylabel={$V_d$ (pu)},
+                                xmin=0, xmax=2,
+                                ymin=-0.08, ymax=1.15,
+                                xtick={0,0.25,...,2},
+                                ytick={0,0.2,...,1},
+				scaled y ticks=false,
+                                legend pos=south east,
+                                ymajorgrids=true,
+                                xmajorgrids=true,
+                                every axis plot/.append style={thick},
+				legend columns=2,
+                        ]	
+				\addplot[blue, smooth] table[col sep=comma,header=false,x index=0,y index=5, forget plot]{data/omib_sim/data_omib_sim_noshort.csv};
+				\addplot[blue, smooth] table[col sep=comma,header=false,x index=0,y index=5]{data/omib_sim/data_omib_sim_short.csv};
+				\addlegendentry{$V_d(t)$}
+				\addplot[red, smooth] table[col sep=comma,header=false,x index=0,y index=5, forget plot]{data/omib_sim/data_omib_sim_shortquasi.csv};
+				\addplot[red, smooth] table[col sep=comma,header=false,x index=0,y index=5]{data/omib_sim/data_omib_sim_noshortquasi.csv};
+				\addlegendentry{$V_d(t)$ (quasi.)}
+                        \end{axis}
+%
+                        \begin{axis}[
+                                name = ax_zoomed_start,
+                                at={($(ax_main.north west)-(0,1.7/1.618*\columnwidth)$)},
+                                width = 0.9*1\columnwidth,
+                                height = 0.9*1/1.618*\columnwidth,
+                                xmin=0, xmax=2,
+                                ymin=-0.08, ymax=0.23,
+                                xtick={0,0.25,...,2},
+                                ytick={0.05,0,...,0.25},
+				scaled y ticks=false,
+        			xlabel={Time (s)},
+                                ylabel={$V_q$ (pu)},
+                                ymajorgrids=true,
+                                xmajorgrids=true,
+                                every axis plot/.append style={thick},
+				legend columns=2,
+                                legend pos=south east,
+				ticklabel style={
+					/pgf/number format/fixed,
+					/pgf/number format/precision=5
+				},
+                          ]
+				\addplot[blue, smooth] table[col sep=comma,header=false,x index=0,y index=6, forget plot]{data/omib_sim/data_omib_sim_noshort.csv};
+				\addplot[blue, smooth] table[col sep=comma,header=false,x index=0,y index=6]{data/omib_sim/data_omib_sim_short.csv};
+				\addlegendentry{$V_q(t)$}
+				\addplot[red, smooth] table[col sep=comma,header=false,x index=0,y index=6, forget plot]{data/omib_sim/data_omib_sim_shortquasi.csv};
+				\addplot[red, smooth] table[col sep=comma,header=false,x index=0,y index=6]{data/omib_sim/data_omib_sim_noshortquasi.csv};
+				\addlegendentry{$V_q(t)$ (quasi.)}
+                        \end{axis}
+                
+		\end{tikzpicture}
+        \caption
+[Direct and quadrature components of terminal voltage signals from OMIB system fault simulation.]
+{Direct and quadrature components of terminal voltage signals from OMIB system fault simulation. In blue, the result of simulation using the ``complete models'' \eqref{eq:omib_classical_total_model} and \eqref{eq:omib_classical_quasi_model} and in red the result of the quasi-static models \eqref{eq:omib_classical_short} and \eqref{eq:omib_classical_short_quasistatic}.}
+        \label{fig:omibsim_v}
+        \end{center}
+\end{figure}
+% >>>
+
+% P CURVES <<<
+\begin{figure}
+        \begin{center}
+                \begin{tikzpicture}
+                        \begin{axis}[
+				name = ax_main,
+                                width = 0.9*\columnwidth,
+                                height = 0.9*1/1.618*\columnwidth,
+                                title={Active power exported by the machine at the terminal bus},
+                                xlabel={Time (s)},
+                                ylabel={$P$ (pu)},
+                                xmin=0, xmax=2,
+                                ymin=-0.7, ymax=3.3,
+                                xtick={0,0.25,...,2},
+                                ytick={-0.5,0,...,3},
+				scaled y ticks=false,
+                                legend pos=south east,
+                                ymajorgrids=true,
+                                xmajorgrids=true,
+                                every axis plot/.append style={thick},
+				legend columns=2,
+                        ]
+				\addplot[blue, smooth] table[col sep=comma,header=false,x index=0,y index=7, forget plot]{data/omib_sim/data_omib_sim_noshort.csv};
+				\addplot[blue, smooth] table[col sep=comma,header=false,x index=0,y index=7]{data/omib_sim/data_omib_sim_short.csv};
+				\addlegendentry{$P(t)$}
+				\addplot[red, smooth] table[col sep=comma,header=false,x index=0,y index=7, forget plot]{data/omib_sim/data_omib_sim_shortquasi.csv};
+				\addplot[red, smooth] table[col sep=comma,header=false,x index=0,y index=7]{data/omib_sim/data_omib_sim_noshortquasi.csv};
+				\addlegendentry{$P(t)$ (quasi.)}
+                        \coordinate (c1) at (axis cs:0  ,-0.7);
+                        \coordinate (c2) at (axis cs:0.6,-0.7);
+                        \end{axis}
+%
+                        \begin{axis}[
+                                name = ax_zoomed_start,
+                                at={($(ax_main.north east)-(0.9\columnwidth,1.75/1.618*\columnwidth)$)},
+                                width = 0.9*1\columnwidth,
+                                height = 0.9*1/1.618*\columnwidth,
+                                xmin=0, xmax=0.6,
+                                ymin=-0.7, ymax=3.3,
+                                xtick={0,0.06,...,0.6},
+                                ytick={-0.5,0,...,3},
+				scaled y ticks=false,
+        			xlabel={Time (ms)},
+                                ymajorgrids=true,
+                                xmajorgrids=true,
+                                every axis plot/.append style={thick},
+				ticklabel style={
+					/pgf/number format/fixed,
+					/pgf/number format/precision=5
+				},
+                          ]
+				\addplot[blue, smooth] table[col sep=comma,header=false,x index=0,y index=7, forget plot]{data/omib_sim/data_omib_sim_noshort.csv};
+				\addplot[blue, smooth] table[col sep=comma,header=false,x index=0,y index=7]{data/omib_sim/data_omib_sim_short.csv};
+				\addplot[red, smooth] table[col sep=comma,header=false,x index=0,y index=7, forget plot]{data/omib_sim/data_omib_sim_shortquasi.csv};
+				\addplot[red, smooth] table[col sep=comma,header=false,x index=0,y index=7]{data/omib_sim/data_omib_sim_noshortquasi.csv};
+                        \end{axis}
+                        % draw dashed lines from rectangle in first axis to corners of second
+                        \draw [gray,dashed] (c1) -- (ax_zoomed_start.north west);
+                        \draw [gray,dashed] (c2) -- (ax_zoomed_start.north east);
+                \end{tikzpicture}
+        \caption
+[Active power signals from OMIB system fault simulation.]
+{Active power signals from OMIB system fault simulation. In blue, the result of simulation using the ``complete models'' \eqref{eq:omib_classical_total_model} and \eqref{eq:omib_classical_quasi_model} and in red the result of the quasi-static models \eqref{eq:omib_classical_short} and \eqref{eq:omib_classical_short_quasistatic}.}
+        \label{fig:omibsim_p}
+        \end{center}
+\end{figure}
+% >>>
+
+% Q CURVES <<<
+\begin{figure}
+        \begin{center}
+                \begin{tikzpicture}
+                        \begin{axis}[
+				name = ax_main,
+                                width = 0.9*\columnwidth,
+                                height = 0.9*1/1.618*\columnwidth,
+                                title={Reactive power exported by the machine at the terminal bus},
+                                xlabel={Time (s)},
+                                ylabel={$Q$ (pu)},
+                                xmin=0, xmax=2,
+                                ymin=-2.1, ymax=0.8,
+                                xtick={0,0.25,...,2},
+                                ytick={-2,-1.5,...,0.5},
+				scaled y ticks=false,
+                                legend pos=south east,
+                                ymajorgrids=true,
+                                xmajorgrids=true,
+                                every axis plot/.append style={thick},
+				legend columns=2,
+                        ]
+				\addplot[blue, smooth] table[col sep=comma,header=false,x index=0,y index=8, forget plot]{data/omib_sim/data_omib_sim_noshort.csv};
+				\addplot[blue, smooth] table[col sep=comma,header=false,x index=0,y index=8]{data/omib_sim/data_omib_sim_short.csv};
+				\addlegendentry{$Q(t)$}
+				\addplot[red, smooth] table[col sep=comma,header=false,x index=0,y index=8, forget plot]{data/omib_sim/data_omib_sim_shortquasi.csv};
+				\addplot[red, smooth] table[col sep=comma,header=false,x index=0,y index=8]{data/omib_sim/data_omib_sim_noshortquasi.csv};
+				\addlegendentry{$Q(t)$ (quasi.)}
+                        \coordinate (c1) at (axis cs:0  ,-2.1);
+			\coordinate (c2) at (axis cs:0.6,-2.1);
+                        \end{axis}
+%
+                        \begin{axis}[
+                                name = ax_zoomed_start,
+                                at={($(ax_main.north east)-(0.9\columnwidth,1.75/1.618*\columnwidth)$)},
+                                width = 0.9*1\columnwidth,
+                                height = 0.9*1/1.618*\columnwidth,
+                                xmin=0, xmax=0.6,
+                                ymin=-2.1, ymax=0.8,
+                                xtick={0,0.06,...,0.6},
+                                ytick={-2,-1.5,...,0.5},
+				scaled y ticks=false,
+        			xlabel={Time (ms)},
+                                ymajorgrids=true,
+                                xmajorgrids=true,
+                                every axis plot/.append style={thick},
+				ticklabel style={
+					/pgf/number format/fixed,
+					/pgf/number format/precision=5
+				},
+                          ]
+				\addplot[blue, smooth] table[col sep=comma,header=false,x index=0,y index=8, forget plot]{data/omib_sim/data_omib_sim_noshort.csv};
+				\addplot[blue, smooth] table[col sep=comma,header=false,x index=0,y index=8]{data/omib_sim/data_omib_sim_short.csv};
+				\addplot[red, smooth] table[col sep=comma,header=false,x index=0,y index=8, forget plot]{data/omib_sim/data_omib_sim_shortquasi.csv};
+				\addplot[red, smooth] table[col sep=comma,header=false,x index=0,y index=8]{data/omib_sim/data_omib_sim_noshortquasi.csv};
+                        \end{axis}
+                        % draw dashed lines from rectangle in first axis to corners of second
+                        \draw [gray,dashed] (c1) -- (ax_zoomed_start.north west);
+                        \draw [gray,dashed] (c2) -- (ax_zoomed_start.north east);
+                \end{tikzpicture}
+        \caption
+[Reactive power signal from OMIB system fault simulation.]
+{Reactive power signal from OMIB system fault simulation. In blue, the result of simulation using the ``complete models'' \eqref{eq:omib_classical_total_model} and \eqref{eq:omib_classical_quasi_model} and in red the result of the quasi-static models \eqref{eq:omib_classical_short} and \eqref{eq:omib_classical_short_quasistatic}.}
+        \label{fig:omibsim_q}
+        \end{center}
+\end{figure}
+% >>>
+
+% CURRENT TIME CURVES <<<
+\begin{figure}
+        \begin{center}
+                \begin{tikzpicture}
+                        \begin{axis}[
+                                name = ax_main,
+                                width = 0.9*\columnwidth,
+                                height = 0.9*1/1.618*\columnwidth,
+                                title={Time-domain current signals},
+                                xlabel={Time (s)},
+                                ylabel={$i$ (pu)},
+                                xmin=0, xmax=2,
+                                ymin=-3, ymax=3,
+                                xtick={0,0.25,...,2},
+                                ytick={-3,-2,...,3},
+                                scaled y ticks=false,
+                                legend pos=south east,
+                                ymajorgrids=true,
+                                xmajorgrids=true,
+                                every axis plot/.append style={thick},
+                                legend columns=2,
+                        ]
+                                \addplot[blue, smooth] table[col sep=comma,header=false,x index=0,y index=9, forget plot]{data/omib_sim/data_omib_sim_noshort.csv};
+                                \addplot[blue, smooth] table[col sep=comma,header=false,x index=0,y index=9]{data/omib_sim/data_omib_sim_short.csv};
+                                \addlegendentry{$i(t)$}
+                                \addplot[red, smooth] table[col sep=comma,header=false,x index=0,y index=9, forget plot]{data/omib_sim/data_omib_sim_shortquasi.csv};
+                                \addplot[red, smooth] table[col sep=comma,header=false,x index=0,y index=9]{data/omib_sim/data_omib_sim_noshortquasi.csv};
+                                \addlegendentry{$i(t)$ (quasi.)}
+                        \coordinate (c1) at (axis cs:0.25,-0.7);
+                        \coordinate (c2) at (axis cs:0.4 ,-0.7);
+			\draw[draw=gray] (axis cs:0.25,-0.7) rectangle (axis cs: 0.4,0.7);
+                        \end{axis}
+%
+                        \begin{axis}[
+                                name = ax_zoomed_start,
+                                at={($(ax_main.north east)-(0.9\columnwidth,1.75/1.618*\columnwidth)$)},
+                                width = 0.9*1\columnwidth,
+                                height = 0.9*1/1.618*\columnwidth,
+                                xmin=0.25, xmax=0.4,
+                                ymin=-0.7, ymax=0.7,
+                                xtick={0.25,0.275,...,0.4},
+                                ytick={-0.6,-0.4,...,0.6},
+                                scaled y ticks=false,
+                                xlabel={Time (s)},
+                                ymajorgrids=true,
+                                xmajorgrids=true,
+                                every axis plot/.append style={thick},
+                                ticklabel style={
+                                        /pgf/number format/fixed,
+                                        /pgf/number format/precision=5
+                                },
+                          ]
+                                \addplot[blue, smooth] table[col sep=comma,header=false,x index=0,y index=9, forget plot]{data/omib_sim/data_omib_sim_noshort.csv};
+                                \addplot[blue, smooth] table[col sep=comma,header=false,x index=0,y index=9]{data/omib_sim/data_omib_sim_short.csv};
+                                \addplot[red, smooth] table[col sep=comma,header=false,x index=0,y index=9, forget plot]{data/omib_sim/data_omib_sim_shortquasi.csv};
+                                \addplot[red, smooth] table[col sep=comma,header=false,x index=0,y index=9]{data/omib_sim/data_omib_sim_noshortquasi.csv};
+                        \end{axis}
+                        % draw dashed lines from rectangle in first axis to corners of second
+                        \draw [gray,dashed] (c1) -- (ax_zoomed_start.north west);
+                        \draw [gray,dashed] (c2) -- (ax_zoomed_start.north east);
+                \end{tikzpicture}
+        \caption
+[Bus current time domain signal reconstructed from the Dynamic Phasor $I_d + jI_q$ of figures \ref{fig:omibsim_id} and \ref{fig:omibsim_iq}.]
+{Bus current time domain signal reconstructed from the Dynamic Phasor $I_d + jI_q$ of figures \ref{fig:omibsim_id} and \ref{fig:omibsim_iq}. In blue, the result of simulation using the ``complete models'' \eqref{eq:omib_classical_total_model} and \eqref{eq:omib_classical_quasi_model} and in red the result of the quasi-static models \eqref{eq:omib_classical_short} and \eqref{eq:omib_classical_short_quasistatic}.}
+        \label{fig:omibsim_curr}
+        \end{center}
+\end{figure}
+% >>>
+
+%-------------------------------------------------
+\section{A transient Power System modelling framework using Dynamic Phasor theory} \label{sec:admittance_modelling_dp}%<<<1
+
+	It is standard in Power System stability studies that the electrical grid to which the generators and agents are coupled is modelled as a constant impedance nodal matrix, where each bus represents a node and the vertixes of the graph represent the transmission lines. The most common approach to the modelling problem is the structure-preserving model, where an electrical grid is represented by a admittance matrix $\mathbf{Y}$ such that the current injection in the buses is related to bus voltages by the equation
+
+\begin{equation} \mathbf{I} = \mathbf{Y}\mathbf{E}, \label{eq:gridConductance} \end{equation}
+
+	\noindent where $\mathbf{I}\in \mathbb{C}^{n}$ is a vector, $n$ being the number of buses in the system, which k-th component $I_k$ is the current injection in the k-th bus, $\mathbf{E}\in \mathbb{C}^{n}$ is the bus voltages vector and $\mathbf{Y}\in\mathbb{C}^{n\times n}$ is the admittance matrix. This matrix is seldomly divided into its imaginary and real parts, yielding $\mathbf{G}$ and $\mathbf{B}$, both in $\mathbb{R}^{n\times n}$, such that $\mathbf{Y} = \mathbf{G} + j\mathbf{B}$.
+
+%-------------------------------------------------
+\subsection{The Unified Nodal Model for transmission systems}\label{subsec:unified_model} %<<<2
+
+	Here we propose a Dynamic Phasor expansion of this model. We want to prove that the relationship \eqref{eq:gridConductance} is also possible in a Dynamic Phasor framework using Dynamic Phasor functionals, that is,
+
+\begin{equation} \mathbf{I} = \mathbf{Y}\left[\mathbf{E}\right], \label{eq:gridConductance_dynamic}\end{equation}
+
+	\noindent where $\mathbf{I,E}\in\left[\mathbb{R}\to\mathbb{C}^n\right]$ are the Dynamic Phasors of current injections on buses and voltages of the buses and $\mathbf{Y}\in\dpS^{(n\times n)}$ is the matrix of DPFs associates with the grid. To do this, we expand the Unified Nodal Model developed in \cite{Monticelli1999}, called so because it encompasses line impedance, shunt reactances and transformer effects onto the transmission line. Using the Dynamic Phasor Theory of chapter \ref{chapter:dynamic_phasor_theory}, we adopt the synchronous frequency $\omega_0$ as the apparent frequency for the Dynamic Phasor Transform. 
+
+% UNIFIED NODAL MODEL <<<
+\begin{figure}[h]
+\centering
+        \begin{tikzpicture}[american,scale=1.2, transform shape,line width=0.75, cute inductors, >={Stealth[inset=0mm,length=1.5mm,angle'=50]}]
+		\node (busk) at (0,0) {};
+		\node (busklabel) at ([shift=({0,1})]busk) {$E_k$};
+		\draw [line width=1mm] ([shift=({0,0.75})]busk.center) -- ++(0,-1.5);
+		\node [shape=circle,draw,inner sep=1pt] at (-0.5,0) {$k$};
+		\draw (busk.center) to[short, f=$I_{km}$] ++(1.5,0) to[voosource, sources/scale=1.25, name=ktransf] ++(1.25,0) to [short, f=$I_{km}'$] ++(1.5,0) coordinate (kmconn) to[generic, l=$\mathbf{y}_{km}^{sh}$] ++(0,-2) node[tlground] {} ;
+%
+		\node (tkmlabel) at ([shift=({0,0.2})]ktransf.north) {$1:\mathbf{t}_{km}$};
+%
+		\node [circle, fill=black, inner sep=0mm, minimum size=1.5mm] at (kmconn) {};
+%
+		\node [above=2mm of kmconn] (kmconnlabel) {$E_k'$};
+		\draw (kmconn) to[generic, l=$\mathbf{y}_{km}$] ++(3,0) coordinate (mkconn);
+		\draw (mkconn) to[generic, l=$\mathbf{y}_{mk}^{sh}$] ++(0,-2) node[tlground] {};
+%
+		\node [circle, fill=black, inner sep=0mm, minimum size=1.5mm] at (mkconn) {};
+		\node [above=2mm of mkconn] (mkconnlabel) {$E_m'$};
+%
+		\draw (mkconn) to[voosource, sources/scale=1.25, name=mtransf] ++(2.5,0) coordinate (busm);
+%
+		\node (tmklabel) at ([shift=({0,0.2})]mtransf.north) {$\mathbf{t}_{mk}:1$};
+%
+		\draw [line width=1mm] ([shift=({0,0.75})]busm.center) -- ++(0,-1.5);
+		\node (busmlabel) at ([shift=({0,1})]busm) {$E_m$};
+		\node [shape=circle,draw,inner sep=1pt] at ([shift=({0.5,0})]busm) {$m$};
+        \end{tikzpicture}
+	\caption
+[Unified transmission line ``pi model'' as devised by \cite{Monticelli1999}.]
+{Unified transmission line ``pi model'' as devised by \cite{Monticelli1999}. The figure shows the transmission line between the k-th and the m-th bus of the system, equationing $I_{km}$, that is, the contribution of the m-th bus to the total current draw from the k-th bus of the system considering effects of transformers, line serial and shunt impedances. The figure does not show bus shunt impedances, which will be dealt with later in the equationing.}
+	\label{fig:monticelli_transmission_line}
+\end{figure} %>>>
+
+	Figure \ref{fig:monticelli_transmission_line} shows the schematic diagram of a transmission line between the k-th and m-th buses in a hypothetical grid. In the figure, $E_k = V_ke^{j\theta_k}$ and $E_m = V_me^{j\theta_m}$ are the dynamic phasors of the voltages of the buses, $V_k$ and $V_m$ being their absolute value and $\theta_k$ and $\theta_m$ their complex angles, and $I_{km}$ is the dynamic phasor of the current that flows from bus $k$ to the transmission line (which is not the same as $I_{mk}$). $\mathbf{y}_{km} = \mathbf{g}_{km} + j\mathbf{b}_{km}$ is the admittance functional of the transmission line, $\mathbf{y}^{sh}_{km}$ and $\mathbf{y}^{sh}_{mk}$ are the line shunt admittance functionals; these are comprised of a shunt conductance $\mathbf{g}^{sh}_{km}$ which accounts for current leakages and a susceptance $j\mathbf{b}^{sh}_{km}$ being the line charge capacitance susceptance. In most Power System studies, the conductance is neglected. It is crucial not to mistake these shunt admittances for the shunt admittances attached to buses; these will be dealt with in the equationing later.
+
+	The transformers are modelled by an operator $\mathbf{t}$ such that the voltage of the primary coil $V_1$ and the voltage of the secondary coil $V_2$ are related by $V_2 = \mathbf{t}\left[V_1\right]$. The most widely adopted model is that the transformer operator is given by $\mathbf{t} \left[V_1\right] = a e^{j\varphi}V_1$, where $a$ is the turns ratio (positive real) while $\varphi$ is voltage angle deviation caused by the transformer. It is also supposes that the transformers are lossless, that is, the apparent complex power injected on the primary coil is equal to the apparent complex power output by the secondary coil.
+
+	Therefore, $\mathbf{t}_{km} = a_{km}e^{j\varphi_{km}}$ is the voltage ratio operator of the line transformer from the k-th bus to the m-th, and analogously with the transformer from the m-th to the k-th, yielding
+
+\begin{equation} E'_k = \mathbf{t}_{km}\left[E_k\right] = a_{km}e^{j\varphi_{km}} E_k,\ I'_{km} = \dfrac{1}{a_{km}}e^{j\varphi_{km}} I_{km} \end{equation} 
+
+	\noindent and analogously with $E_m,E'_m,I_{mk}$ and $I_{mk}$. Applying Kirchoff's Current Law for Dynamic Phasors on node $E_k'$ yields
+
+\begin{equation} I_{km}' = \mathbf{y}_{km}^{sh}\left[E'_k\right] + \mathbf{y}_{km}\left[E'_k - E'_m\right] \end{equation}
+
+	\noindent and applying the transformer models to this equation
+
+\begin{equation} \dfrac{1}{a_{km}}e^{j\varphi_{km}} I_{km} = \mathbf{y}_{km}^{sh}\left[ a_{km}e^{j\varphi_{km}}E_k\right] + \mathbf{y}_{km}\left[a_{km}e^{j\varphi_{km}}E_k - a_{mk}e^{j\varphi_{mk}}E_m\right] .\end{equation}
+
+	Using the linearity of Dynamic Phasor Functionals,
+
+\begin{align}
+	I_{km} &= a_{km}e^{-j\varphi_{km}} \left\{ \mathbf{y}_{km}^{sh}\left[ a_{km}e^{j\varphi_{km}}E_k\right] + \mathbf{y}_{km}\left[a_{km}e^{j\varphi_{km}}E_k - a_{mk}e^{j\varphi_{mk}}E_m\right]\right\} \nonumber\\[3mm]
+	&= \mathbf{y}_{km}^{sh}\left[ a_{km}e^{-j\varphi_{km}} a_{km}e^{j\varphi_{km}}E_k\right] + \mathbf{y}_{km}\left[a_{km}e^{-j\varphi_{km}} a_{km}e^{j\varphi_{km}}E_k - a_{km}e^{-j\varphi_{km}} a_{mk}e^{j\varphi_{mk}}E_m\right] \nonumber\\[3mm]
+	&= \mathbf{y}_{km}^{sh}\left[ a_{km}^2 E_k\right] + \mathbf{y}_{km}\left[a_{km}^2 E_k - a_{km}a_{mk}e^{j\left(\varphi_{mk}-\varphi_{km}\right)}E_m\right]
+\end{align}
+
+	\noindent and using linear combinations of DPFs,
+
+\begin{equation}
+	I_{km} = \left[a_{km}^2\left(\mathbf{y}_{km}^{sh} + \mathbf{y}_{km}\right)\right] \left[ E_k\right] - a_{km}a_{mk}e^{j\left(\varphi_{mk}-\varphi_{km}\right)} \mathbf{y}_{km}\left[E_m\right]
+\end{equation}
+	
+	We can also use this equation to calculate the current injection in bus k. Suppose that this bus has a shunt load admittance $\mathbf{y}^{sh}_k$ as in figure \ref{fig:busSum}. Denote $\Omega_k$ as the set of buses adjacent to bus $k$. By the Kirchoff Current Law,
+
+% BUS CURRENT SUM <<<
+\begin{figure}
+\centering
+        \begin{tikzpicture}[american,scale=1.2,transform shape,line width=0.75, cute inductors, >={Stealth[inset=0mm,length=2mm,angle'=50]}]
+		\ctikzset{quadpoles/transformer core/width=0.5, quadpoles/transformer core/inner=1, quadpoles/transformer core/height=1}
+		\node (busk) at (0,0) {};
+		\draw [<-] ([shift=({0.3,0})]busk) -- ++(-1.5,0) node[left] {$I_k$};
+		\node (busklabel) at ([shift=({0,1.5})]busk) {$E_k$};
+		\draw [line width=1mm] ([shift=({0,1})]busk.center) -- ++(0,-2);
+		\node [shape=circle,draw,inner sep=1pt] at (0,-1.5) {$k$};
+		\draw ([shift=({0,-0.75})]busk.center) to[short] ++(1,0) to [short, f<=$I_k^{sh}$] ++(0,-1) to[generic, l=$\mathbf{y}_k^{sh}$] ++(0,-2) node [tlground] {} ;
+		\draw ([shift=({0,-0.25})]busk.center) to[short] ++(3,0);
+		\draw ([shift=({0, 0.25})]busk.center) to[short] ++(2,0) to[short, f=$I_{km}$] ++(1,0.5);
+		\draw ([shift=({0, 0.75})]busk.center) to[short] ++(1,0) to[short] ++(0,1);
+	\end{tikzpicture}
+		\caption{Schematic diagram of the current draw components and current input on a generic k-th bus of the system, considering the bus shunt conductance.}
+		\label{fig:busSum}
+\end{figure}%>>>
+
+\begin{gather}
+	I_k + I^{sh}_k = \sum\limits_{m\in\Omega_k} I_{km} \nonumber\\[3mm]
+%
+	I_k - \mathbf{y}_{k}^{sh}\left[E_k\right] = \left[\sum\limits_{m\in\Omega_k} a_{km}^2\left( \mathbf{y}_{km} + \mathbf{y}^{sh}_{km}\right)\right] \left[E_k\right] + \sum\limits_{m\in\Omega_k} \left(- a_{km}a_{mk}e^{j\left(\varphi_{mk}-\varphi_{km}\right)}\mathbf{y}_{km}\right)\left[E_m\right]
+\end{gather}
+
+	Arranging this equation in matricial form yields the sought grid model \eqref{eq:gridConductance_dynamic}, where:
+
+\begin{equation}
+\left\{\begin{array}{l}
+	\mathbf{Y}_{kk} = \mathbf{y}_{k}^{sh} + \sum\limits_{m\in\Omega_k} a_{km}^2\left(\mathbf{y}_{km} + \mathbf{y}^{sh}_{km}\right) \\[5mm]
+%
+	\mathbf{Y}_{km} = - a_{km}a_{mk}e^{j\left(\varphi_{mk}-\varphi_{km}\right)}\mathbf{y}_{km}
+\end{array}\right.\label{eq:multimachine_admittance_dynamic}
+\end{equation}
+
+	Notably, if the system is at phasorial equilibrium (constant amplitude, frequency and phases) then these equations fall back to the customary admittance equations where the operators $\mathbf{y}_{km}$ and $\mathbf{y}_{km}^{sh}$ become a multiplication by complex numbers.
+
+%-------------------------------------------------
+\subsection{Modelling bus loads} %<<<2
+
+	To consider the effects of bus loads, a commonplace technique in Power System studies is to reduce the bus loads to equivalent admittances, in a linear model. Let $S^k_L$ denote the complex power of the load attached to the k-th bus calculated at equilibrium using Power Flow equations; then the equivalent admittance of this load can be calculated as
+
+\begin{equation} Y_L^k = \dfrac{\overline{S_L^k}}{V_k^2} \label{eq:load_eq_impedance} \end{equation}
+
+	\noindent whre the $S_L$ are calculated using Power Flow equations. From this number we can calculate the equivalent DPF of the bus load; for instance, if $Y_L^k$ is of the form $a + jb$, with positive $b$, then the corresponding impedance is
+
+\begin{equation} Z_L^k = \dfrac{1}{Y_L^k} = \dfrac{a}{\left(a^2 + b^2\right)} - j\dfrac{b}{\left(a^2 + b^2\right)} \end{equation}
+
+	\noindent thus equivalent to a resistance of $R_L^k = a/(a^2 + b^2)$ ohms in series with an inductance of $L_L^k = \left\lvert b\right\rvert/[\omega_0(a^2 + b^2)]$ henrys if $b$ is negative or a capacitance of $C_L^k = (a^2 + b^2)/[b\omega_0]$ farads if $b$ is positive; therefore the equivalent Dynamic Impedances are
+
+\begin{equation} \mathbf{Z}_L^k = \left\{\begin{array}{l} L_L^k\dpo + R_L^k\mathbf{I} \text{ if } b < 0; \\[5mm] \dfrac{\mathbf{I}}{C_L^k\dpo} + R_L^k\mathbf{I} \text{ if } b > 0 \end{array}\right.\end{equation}
+
+	\noindent and obviously the admittance operator $\mathbf{Y}_L^k$ is the inverse of the impedance operator. Denote the diagonal matrix of the corresponding DPFs of the loads
+
+\begin{equation} \mathbf{Y_L} = \text{diag}\left(\left\{\mathbf{Y}_L^k\right\}_{k=1}^n\right)\end{equation}
+
+	\noindent and define an ``equivalent'' system where there are no bus loads, but to each bus is added its equivalent load admittance. It can be proven that both cases (the one where loads are modelled as constant power and the simplified one where loads are modelled as constant admittances) have the same power flow solutions. Hence, the dynamic model admittance matrix is taken as $\mathbf{Y_d = Y + Y_L}$, where $\mathbf{Y}$ is the original system admittance matrix and $\mathbf{Y_d}$ is the admittance matrix of the equivalent system where loads were converted to constant shunt admittances.
+
+	Another common technique is called \textit{matrix reduction}: instead of writing the grid model in terms of the $n$ buses, we write it only in term of the buses that have agents. Taking a closer look at the equivalent admittance matrix $\mathbf{Y_d}$, one can, with no loss of generality, admit that the first $1, 2, ..., p$ buses of the total number of buses $n$ have agents attached and the last $m = n - p$ buses have no agents attached; this means that the matrix $\mathbf{Y_d}$ can be divided as in \eqref{sys:ydDivision}.
+
+\begin{gather} %<<<
+	\hspace{-6mm}\begin{array}{C{1cm}C{1cm}} p & m \end{array} \nonumber\\[1mm]
+	\mathbf{Y_d} = \left[\begin{array}{C{1cm}|C{1cm}}
+		\mathbf{Y_1} & \mathbf{Y_2} \\[0.2cm]\hline\\[-3mm]
+		\raisebox{3mm}{} \mathbf{Y_3} & \mathbf{Y_4}
+	\end{array}\right]
+	\begin{array}{C{1cm}}
+		p \\[5mm]
+		m \end{array} \nonumber\\
+	\label{sys:ydDivision}
+\end{gather} %>>>
+
+	Where $\mathbf{Y_1}\in\dpS^{(p\times p)}$, $\mathbf{Y_2}\in\dpS^{(p\times m)}$, $\mathbf{Y_3}\in\dpS^{(m\times p)}$, $\mathbf{Y_4}\in\dpS^{(p\times p)}$; denote $\mathbf{I_A}$ as the currents injected into the agent buses (the first $p$ buses), $\mathbf{E_A}$ the complex voltages of these buses and $\mathbf{E_N}$ as the complex voltages of the non-agent buses; the trick is to understand that while the agent buses have current injected on them, the non-agent buses do not and then we can write
+
+\begin{equation}%<<<
+	\left[\begin{array}{C{1cm}}
+		\raisebox{5mm}{} \mathbf{I_A}\\[0.5cm]
+		\raisebox{5mm}{} \mathbf{0}
+	\end{array}\right] =
+	%
+	\left[\begin{array}{C{1cm}C{1cm}}
+		\raisebox{5mm}{} \mathbf{Y_1} & \mathbf{Y_2} \\[0.5cm]
+		\raisebox{5mm}{} \mathbf{Y_3} & \mathbf{Y_4}
+	\end{array}\right]
+	%
+	\left[\raisebox{15mm}{} \left[\begin{array}{C{1cm}}
+		\raisebox{5mm}{} \mathbf{E_A} \\[0.5cm]
+		\raisebox{5mm}{} \mathbf{E_N}
+	\end{array}\right]\right]
+\end{equation}%>>>
+
+	Expanding these matrix equations,
+
+\begin{equation}
+\left\{\begin{array}{l}
+	\mathbf{I_A} = \mathbf{Y_1}\left[\mathbf{E_A}\right] + \mathbf{Y_2}\left[\mathbf{E_N}\right] \\[5mm]
+%
+	\mathbf{0} = \mathbf{Y_3}\left[\mathbf{E_A}\right] + \mathbf{Y_4}\left[\mathbf{E_N}\right]
+\end{array}\right. .
+\end{equation}
+
+	Isolating the last equation yields $\mathbf{E_N} = -\left(\mathbf{Y_4}^{-1}\mathbf{Y_3}\right)\left[\mathbf{E_A}\right]$, proving that indeed the voltages of non-agent buses can be expressed algebraically through agent buses voltages. However, not only this, but these equations also allow for a reduction of the number of equations in the overall power system model: substituting this algebraic equation into the first equation yields
+
+\begin{equation} \mathbf{I_A} = \left(\mathbf{Y_1} - \mathbf{Y_2}\mathbf{Y_4}^{-1}\mathbf{Y_3}\right)\left[\mathbf{E_A}\right]. \end{equation}
+
+	One could, naturally, raise the question if $\mathbf{Y_4}$ is singular or not, and under which circumstances. It can be also proven, by graph theory, that this matrix will always have an inverse as long as no agent buses as islanded, that is, all agent buses are connected to at least one bus in the system through a finite admittance -- which is true by construction because the system is supposed entire. Denote the \textit{reduced matrix} $\mathbf{Y_r}$ as
+
+\begin{equation} \mathbf{Y_r} = \mathbf{Y_1} - \mathbf{Y_2}\mathbf{Y_4}^{-1}\mathbf{Y_3} \Rightarrow \mathbf{I_A} = \mathbf{Y_r}\left[\mathbf{E_A}\right] \end{equation}
+
+	\noindent and the voltages across the buses with no agents attached can at all times be calculated by
+
+\begin{equation} \mathbf{E_N}(t) = -\left(\mathbf{Y_4}^{-1}\mathbf{Y_3}\right)\left[\mathbf{E_A}\right]. \end{equation}
+
+%-------------------------------------------------
+\subsection{Multi-machine Power System modelling example: the Kundur two-area system} %<<<2
+
+	Figure \ref{fig:kundur_2} shows the Kundur ``two-area system'' as first described in \cite{kleinFundamentalStudyInterarea1991}.
+
+% KUNDUR TWO AREA CIRCUIT <<<
+\begin{figure}[htb!]
+\centering
+\scalebox{0.8}{
+        \begin{tikzpicture}[american,scale=1,transform shape,line width=0.75, cute inductors, voltage shift = 1,>={Stealth[inset=0mm,length=1.5mm,angle'=50]}]
+	\ctikzset{/tikz/circuitikz/voltage/distance from node=10mm}
+% BUS 1
+		\node [shape=vsourcesinshape, rotate=-90] (gen1) at (0,0) {} ;
+		\node (g1label) at ([shift=({0,8mm})]gen1.center) {$G_1$};
+		\draw (gen1.north) to [short] ++(1,0) node (gen1_terminal) {} ;
+		\draw [line width=1mm] ([shift=({0,5mm})]gen1_terminal.center) -- ++(0,-10mm);
+		\node [shape=circle,draw,inner sep=1pt] (v1label) at ([shift=({0,8mm})]gen1_terminal.center) {$1$};
+% BUS 5
+		\draw (gen1_terminal.center) to[voosource] ++(2,0) node (bus5) {};
+		\draw [line width=1mm] ([shift=({0,5mm})]bus5.center) -- ++(0,-10mm);
+		\node [shape=circle,draw,inner sep=1pt] (v5label) at ([shift=({0,8mm})]bus5.center) {$5$};
+% BUS 6
+		\draw (bus5.center) to[short] ++(2,0) node (bus6) {};
+		\node (bus56line) at ([shift=({0,3mm})] $(bus5)!0.5!(bus6)$) {25km};
+		\draw [line width=1mm] ([shift=({0,5mm})]bus6.center) -- ++(0,-10mm);
+		\node [shape=circle,draw,inner sep=1pt] (v6label) at ([shift=({0,8mm})]bus6.center) {$6$};
+% BUS 2
+		\draw ([shift=({0,-3mm})]bus6.center) to [short] ++(-1,0) to[voosource] ++(0,-2) node (bus2) {};
+		\draw [line width=1mm] ([shift=({-5mm,0mm})]bus2.center) -- ++(10mm,0);
+		\node [shape=circle,draw,inner sep=1pt] (v2label) at ([shift=({8mm,0})]bus2.center) {$2$};
+		\node [shape=vsourcesinshape, rotate=-90, transform shape] at ([shift=({0,-1})]bus2) (gen2) {} ;
+		\draw (bus2.center) to[short] (gen2.west);
+		\node (g2label) at ([shift=({8mm,0})]gen2.center) {$G_2$};
+% BUS 7
+		\draw  (bus6.center) to[short] ++(2,0) node (bus7) {};
+		\draw [line width=1mm] ([shift=({0mm,10mm})]bus7.center) -- ++(0,-20mm);
+		\node (bus67line) at ([shift=({0,3mm})] $(bus6)!0.5!(bus7)$) {10km};
+		\node [shape=circle,draw,inner sep=1pt] (v7label) at ([shift=({0,13mm})]bus7.center) {$7$};
+		\draw[->] ([shift=({0,-8mm})]bus7.center) to [short] ++(-0.5,0) to[short] ++(0,-1) node (load7) {};
+		\node (load7label) at ([shift=({0,-3mm})]load7.center) {$L_7$};
+		\draw ([shift=({0,-8mm})]bus7.center) to [short] ++(0.5,0) to[cC,l=$C_7$] ++(0,-1.5) node (cap7) {} to [short] ++(0,-0.1) node[tlground] {};
+% BUS 8
+		\node [right=2 of bus7.center] (bus8) {};
+		\draw [line width=1mm] ([shift=({0mm,10mm})]bus8.center) -- ++(0,-20mm);
+		\node (bus87line) at ([shift=({0,6mm})] $(bus8)!0.5!(bus7)$) {110km};
+		\node [shape=circle,draw,inner sep=1pt] (v8label) at ([shift=({0,13mm})]bus8.center) {$8$};
+		\draw ([shift=({0,-3mm})]bus7.center) -| (bus8.center);
+		\draw ([shift=({0, 3mm})]bus7.center) -| (bus8.center);
+% BUS 9
+		\node[right=2 of bus8.center] (bus9) {};
+		\draw [line width=1mm] ([shift=({0mm,10mm})]bus9.center) -- ++(0,-20mm);
+		\node (bus89line) at ([shift=({0,6mm})] $(bus8)!0.5!(bus9)$) {110km};
+		\node[shape=circle,draw,inner sep=1pt] (v8label) at ([shift=({0,13mm})]bus9.center) {$9$};
+		\draw ([shift=({0,-3mm})]bus8.center) -| (bus9.center);
+		\draw ([shift=({0, 3mm})]bus8.center) -| (bus9.center);
+		\draw[->] ([shift=({0,-8mm})]bus9.center) to [short] ++(0.5,0) to[short] ++(0,-1) node (load7) {};
+		\node (load7label) at ([shift=({0,-3mm})]load7.center) {$L_9$};
+		\draw ([shift=({0,-8mm})]bus9.center) to [short] ++(-0.5,0) to[cC,l_=$C_9$] ++(0,-1.5) node (cap7) {} to [short] ++(0,-0.1) node[tlground] {};
+% BUS 10
+		\draw (bus9.center) to[short] ++(2,0) node (bus10) {};
+		\node (bus910line) at ([shift=({0,3mm})] $(bus9)!0.5!(bus10)$) {10km};
+		\draw [line width=1mm] ([shift=({0,5mm})]bus10.center) -- ++(0,-10mm);
+		\node[shape=circle,draw,inner sep=1pt] (v9label) at ([shift=({0,9mm})]bus10.center) {$10$};
+% BUS 4
+		\draw ([shift=({0,-3mm})]bus10.center) to [short] ++(1,0) to[voosource] ++(0,-2) node (bus4) {};
+		\draw [line width=1mm] ([shift=({-5mm,0mm})]bus4.center) -- ++(10mm,0);
+		\node [shape=circle,draw,inner sep=1pt] (v4label) at ([shift=({-8mm,0})]bus4.center) {$4$};
+		\node [shape=vsourcesinshape, rotate=-90, transform shape] at ([shift=({0,-1})]bus4) (gen4) {} ;
+		\draw (bus4.center) to[short] (gen4.west);
+		\node (g4label) at ([shift=({8mm,0})]gen4.center) {$G_4$};
+% BUS 11
+		\draw (bus10.center) to[short] ++(2,0) node (bus11) {};
+		\node (bus1011line) at ([shift=({0,3mm})] $(bus10)!0.5!(bus11)$) {25km};
+		\draw [line width=1mm] ([shift=({0,5mm})]bus11.center) -- ++(0,-10mm);
+		\node [shape=circle,draw,inner sep=1pt] (v11label) at ([shift=({0,9mm})]bus11.center) {$11$};
+% BUS 3
+		\draw (bus11.center) to[voosource] ++(2,0) node (bus3) {};
+		\draw [line width=1mm] ([shift=({0,5mm})]bus3.center) -- ++(0,-10mm);
+		\node [shape=circle,draw,inner sep=1pt] (v3label) at ([shift=({0,8mm})]bus3.center) {$3$};
+		\node [shape=vsourcesinshape, rotate=-90] (gen3) at ([shift=({1,0})]bus3) {} ;
+		\node (g3label) at ([shift=({0,8mm})]gen3.center) {$G_3$};
+		\draw (gen3.south) to [short] (bus3.center);
+        \end{tikzpicture}
+}
+	\caption{Kundur two-area system for quasi-static modelling example.}
+	\label{fig:kundur_2}
+\end{figure} %>>>
+
+	The parameters used are from the base case where the base units are $230kV$ and $100MVA$. The transmission lines have an impedance $z_L = 0.0001 + j0.001\ pu$ per kilometer (line lengths are indicated in the picture), and a shunt susceptance of $0.00175\ pu$ per kilometer. The transformers have unitary transformation ratios and no dephasing ($a = 1,\ \varphi = 0$) and a series impedance of $0 + j0.15pu$.
+
+	In the base case, the capacitors $C_7$ and $C_9$ send $S_{C_7} = 0 + j2pu$ and $S_{C_9} = 0 + j3.5pu$ to their respective buses. The loads are $S_{L_7} = 9.67 + j1pu$ and $S_{L_9} = 17.67 + j1pu$. Using these quantities and the parameters one arrives at the power flow voltages of table \ref{tab:kundur_powerflow}.
+
+% TABLE OF POWER FLOW VOLTAGES <<<
+\renewcommand{\arraystretch}{1.2}
+\begin{table}[t]
+\begin{center}
+\scalebox{0.9}{
+\begin{tabular}{ c|c|c|c|c|c|c|c|c|c|c|c } 
+\hline 
+\raisebox{0mm}{} Bus & 1 & 2 & 3 & 4 & 5 & 6 & 7 & 8 & 9 & 10 & 11 \\
+\hline
+$\left\vert V\right\rvert$ & 1.03 & 1.01 & 1.03 & 1.01 & 1.006 & 0.978 & 0.961 & 0.949 & 0.971 & 0.983 & 1.008\\
+$\theta$ (deg.) & 20.2 & 10.433 & 6.885 & -17.074 & 13.737 & 3.651 & -4.759 & 18.633 & 32.234 & 23.819 & -13.511\\
+\hline
+\end{tabular}
+}
+\end{center}
+\caption{Power Flow results for Kundur two-area system of figure \ref{fig:kundur_2}.}
+\label{tab:kundur_powerflow}
+\end{table} %>>>
+
+	We first calculate the equivalent impedances of the loads through \eqref{eq:load_eq_impedance}, yielding
+
+\begin{gather}
+	Y_{L}^7 = \dfrac{\overline{9.67 + j1}}{0.961^2} = 10.470796 - j1.0828124 \\[5mm]
+	Y_{L}^9 = \dfrac{\overline{17.67 + j1}}{0.971^2} = 18.741230 - j1.0606242
+\end{gather}
+
+	\noindent and inverting these values yields
+
+\begin{gather}
+	Z_{L}^7 = \left(10.470796 - j1.0828124\right)^{-1} = 0.094493197 + j0.0097717887 \\[5mm]
+	Z_{L}^9 = \left(18.741230 - j1.0606242\right)^{-1} = 0.053187942 + j0.0030100703.
+\end{gather}
+
+	Therefore $Z_{L}^7$ corresponds to a resistance of $R_L^7 = 0.094493197pu$ in series with an inductance of
+
+\begin{equation} L^7 = \dfrac{0.094493197}{120\pi} = 25.920475\times 10^{-6} pu \end{equation}
+
+	\noindent  where the per-unit quantity of impedance is $(230kV)^2/(100MVA) = 529\Omega$ and the per-unit quantity of inductance is also $529H$. Analogously, $Z_{L}^9$ corresponds to a resistance of $R_L^9 = 0.053187942pu$ in series with an inductance
+
+\begin{equation} L^9 = \dfrac{0.0030100703}{120\pi} = 7.9844594\times 10^{-6} pu .\end{equation}
+
+	Therefore the loads are modelled by the Dynamic Phasor Functionals
+
+\footnotesize
+\begin{gather}
+	\mathbf{Z}_{L}^7 = 25.920475\times 10^{-6}\dpo + 0.094493197\mathbf{I} \Leftrightarrow \mathbf{Y}_{L}^7 = \dfrac{\mathbf{I}}{25.920475\times 10^{-6}\dpo + 0.094493197\mathbf{I}}\\[5mm]
+	\mathbf{Z}_{L}^9 = 7.9844594\times 10^{-6}\dpo + 0.053187942\mathbf{I} \Leftrightarrow \mathbf{Y}_{L}^9 = \dfrac{\mathbf{I}}{7.9844594\times 10^{-6}\dpo + 0.053187942\mathbf{I}}.
+\end{gather}
+\normalsize
+
+	We also calculate the capacitances $C_7$ and $C_9$ attached to buses 7 and 9. From the power flow,
+
+\begin{gather}
+	Y_{C_7} = \dfrac{\overline{-j2}}{0.961^2} = j2.1656248 \Rightarrow C_7 = \dfrac{2.1656248}{120\pi} = 5.7444982\times 10^{-3} pu \\
+	Y_{C_9} = \dfrac{\overline{-j3.5}}{0.971^2} = j3.7121848 \Rightarrow C_9 = \dfrac{3.7121848}{120\pi} = 9.8468760\times 10^{-3} pu
+\end{gather}
+
+	\noindent where the per-unit value of capacitance is $1/529 = 1.8903592$ mF; these values correspond to the Dynamic Admittance operators
+
+\begin{equation} \mathbf{Y}_{C_7} = \dfrac{\mathbf{I}}{5.7444982\times 10^{-3}\dpo},\ \mathbf{Y}_{C_9} = \dfrac{\mathbf{I}}{9.8468760\times 10^{-3}\dpo} .\end{equation}
+
+	Therefore the total shunt admittance operators at buses 7 and 9 are given by
+
+\begin{align}
+	\mathbf{y}_{sh}^7 &= \dfrac{\mathbf{I}}{25.920475\times 10^{-6}\dpo + 0.094493197\mathbf{I}} + \dfrac{\mathbf{I}}{5.7444982\times 10^{-3}\dpo} = \nonumber\\[5mm]
+		&= \dfrac{5.7704187\dpo + 94.493197\mathbf{I}}{148.90012\times 10^{-6}\ndpo{2} + 542.81600\times 10^{-3}\dpo} \\[5mm]
+	\mathbf{y}_{sh}^9 &= \dfrac{\mathbf{I}}{7.9844594\times 10^{-6}\dpo + 0.053187942\mathbf{I}} + \dfrac{\mathbf{I}}{9.8468760\times 10^{-3}\dpo} = \nonumber\\[5mm]
+		&= \dfrac{9.8548605\dpo + 53.187942\mathbf{I}}{78.621982\times 10^{-6}\ndpo{2} + 523.73507\times 10^{-3}\dpo}
+\end{align}
+
+	Finally we calculate the admittances of the transmission lines. The system has three types of lines: 110km, 25km and 10km. Then again, the line admittances and shunt admittances are calculated as functions of the line lengths. The line impedances are $z_L = 0.0001 + j0.001\ pu$ per km, that is, a resistance of $R_L = 0.0001pu$ in series with an inductance of $0.001/120\pi\ pu$ per km, leading to the admittance operator
+
+\begin{equation} \mathbf{y} = \dfrac{\mathbf{I}}{a\times \left( 0.0001\mathbf{I} + 2.6525824\times 10^{-6}\dpo \right)}\ pu \end{equation}
+
+	\noindent with $a$ the line length in kilometers. The capacitive shunt admittance is given by $0.00175pu$ per kilometer, which entails to a capacitance
+
+\begin{equation} C_{sh} = \dfrac{1}{a\times 0.65973446}\ pu \end{equation}
+
+	\noindent defining an admittance operator
+
+\begin{equation} \mathbf{y}_{sh} = \dfrac{1}{a\times 0.65973446}\dpo .\end{equation}
+
+	Using these values one can build the admittance matrix operator $\mathbf{Y}$. Equations \eqref{eq:example_y1} through \eqref{eq:example_y4} show the resulting pieces $\mathbf{Y}_1$ through $\mathbf{Y}_4$ of $\mathbf{Y}$. Note: due to page space constraints the equation for $\mathbf{Y}_4$ is shown broken in half.
+
+\begin{align}
+\mathbf{Y}_1 &= \left[\begin{matrix}0.00039788736 \dpo & 0 & 0 & 0\\0 & 0.00039788736 \dpo & 0 & 0\\0 & 0 & 0 & 0\\0 & 0 & 0 & 0.00039788736 \dpo\end{matrix}\right] \label{eq:example_y1} \\[5mm]
+\mathbf{Y}_2 &= \left[\begin{matrix}0 & 0 & 0 & 0 & 0 & 0\\- 0.00039788736 \dpo & 0 & 0 & 0 & 0 & 0\\0 & 0 & 0 & 0 & 0 & - 0.00039788736 \dpo\\0 & 0 & 0 & 0 & - 0.00039788736 \dpo & 0\end{matrix}\right] \label{eq:example_y2} \\[5mm]
+\mathbf{Y}_3 &= \left[\begin{matrix}0 & 0 & 0 & 0\\0 & 0 & 0 & 0\\0 & 0 & 0 & 0\\0 & 0 & 0 & 0\\0 & 0 & 0 & 0\\0 & 0 & - 0.00039788736 \dpo & 0\end{matrix}\right] \label{eq:example_y3}
+\end{align}
+
+% HUGE Y4 EQUATION <<<
+\newpage
+\footnotesize
+\begin{sideways}
+\parbox{\textheight}{%
+\begin{gather}
+	\mathbf{Y}_4 =
+	\left[\hspace{5mm} \begin{matrix}
+		\frac{2.6385725 \times 10^{-8} \dpo^3 + 9.947184 \times 10^{-7}\dpo^2 + 1.00000402 \dpo + 1.5157614\times 10^{-4}\mathbf{I}}{6.631456 \times 10^{-5} \dpo^2 + 2.5\times 10^{-3}\dpo} &
+		- \frac{\mathbf{I}}{6.63145600 \times 10^{-5} \dpo + 2.5\times 10^{-3}\mathbf{I}} &
+		0\\[5mm]
+%
+		- \frac{\mathbf{I}}{6.631456 \times 10^{-5} \dpo + 2.5\times 10^{-3}\mathbf{I}} &
+		\frac{7.0000281 \dpo + 1.0610330\times 10^{-3}\mathbf{I}}{1.3262912\times 10^{-4} \dpo + 5\times 10^{-3}\mathbf{I}} &
+		- \frac{\mathbf{I}}{2.65258240 \times 10^{-5} \dpo + 10^{-3}\mathbf{I}}\\[5mm]
+%
+		0 &
+		- \frac{\mathbf{I}}{2.6525824 \times 10^{-5} \dpo + 10^{-3}\mathbf{I}} &
+		\frac{3.6194256 \times 10^{-3} \dpo^{2} + 7.1476829 \dpo + 1.0404948\mathbf{I}}{4.3446682 \times 10^{-8} \dpo^{3} + 1.600230\times 10^{-4} \dpo^2 + 5.970976\times 10^{-3}\dpo}\\[5mm]
+%
+		0 &
+		0 &
+		- \frac{\mathbf{I}}{1.45892032\times 10^{-4} \dpo + 5.5\times 10^{-3}\mathbf{I}}\\[5mm]
+%
+		0 &
+		0 &
+		0\\[5mm]
+%
+		0 &
+		0 &
+		0\\[5mm]
+%
+		0 &
+		0 &
+		0
+\end{matrix}\right. \nonumber\\[8mm]
+%
+		\hspace{1cm}\left.\begin{matrix}
+		0 &
+		0 &
+		0 &
+		0\\[5mm]
+%
+		0 &
+		0 &
+		0 &
+		0\\[5mm]
+%
+		- \frac{\mathbf{I}}{1.45892032\times 10^{-4} \dpo + 5.5\times 10^{-3}\mathbf{I}} &
+		0 &
+		0 &
+		0\\[5mm]
+%
+		\frac{2.0000080 \dpo + 3.0315227\times 10^{-4}}{1.45892032\times 10^{-4} \dpo^2 + 5.5\times 10^{-3}\dpo} &
+		- \frac{\mathbf{I}}{1.45892032\times 10^{-4} \dpo + 5.5\times 10^{-3}\mathbf{I}} &
+		0 &
+		0\\[5mm]
+%
+		- \frac{\mathbf{I}}{1.45892032\times 10^{-4} \dpo + 5.5\times 10^{-3}\mathbf{I}} &
+		\frac{3.8975811\times 10^{-3}\dpo^{2} + 6.9325063 \dpo + 0.58609938\mathbf{I}}{2.2940641 \times 10^{-8} \dpo^{3} + 1.5368239\times 10^{-4} \dpo^2 + 5.76108577\times 10^{-3}\dpo} &
+		- \frac{\mathbf{I}}{2.6525824 \times 10^{-5} \dpo + 10^{-3}\mathbf{I}} &
+		0\\[5mm]
+%
+		0 &
+		- \frac{\mathbf{I}}{2.6525824 \times 10^{-5} \dpo + 10^{-3}\mathbf{I}} &
+		\frac{1.0000040 \dpo + 1.5157614\mathbf{I}}{2.6525824 \times 10^{-5} \dpo^2 + 10^{-3}\dpo} &
+		- \frac{\mathbf{I}}{6.631456 \times 10^{-5} \dpo + 2.5\times 10^{-3}\mathbf{I}}\\[5mm]
+%
+		0 &
+		0 &
+		- \frac{\mathbf{I}}{6.631456 \times 10^{-5} \dpo + 2.5\times 10^{-3}\mathbf{I}} &
+		0
+\end{matrix}\hspace{5mm}\right]
+\nonumber\\[8mm] \label{eq:example_y4}
+\end{gather}
+}
+\end{sideways}
+\normalsize
+\newpage
+%>>>
+
+	Naturally, in a static phasors condition where $\omega$ is constant and all phasors are constant (thus of null derivatives), equations \eqref{eq:example_y1},\eqref{eq:example_y2},\eqref{eq:example_y3} and \eqref{eq:example_y4} for $\mathbf{Y}_1$ through $\mathbf{Y}_4$ become their steady-state equivalent used in Quasi-Static approximations.
+
+%-------------------------------------------------
+\section{Nonlinear systems: modelling of an electronic amplifier} \label{sec:bjt_ampli_modelling}%<<<1
+
+	Consider the amplifier circuit of figure \ref{fig:common_emitter}, known as a common emitter amplifier using a bipolar junction transistor (BJT). The input voltage $v_i(t)$ is a nonstationary sinusoid defined at some frequency $\omega(t)$, $V_{CC}$ and $V_{EE}$ constant voltages, $v_o(t)$ the output voltage.
+
+% MODELLING EXAMPLE: COMMON EMITTER AMPLIFIER <<<
+\begin{figure}[h]
+\centering
+        \begin{tikzpicture}[american,scale=1,transform shape,line width=0.75, cute inductors, voltage shift = 1,>={Stealth[inset=0mm,length=1.5mm,angle'=50]}]
+	\ctikzset{/tikz/circuitikz/voltage/distance from node=10mm}
+		\node [npn] (q1) at (0,0) {$Q_1$};
+		\draw (q1.C) to[short] ++(0,0.5) node (cout) {} to[R,l=$R_C$] ++(0,2) node (vcc_C) {};
+		\draw (cout.center) to [C,l=$C_L$, *-] ++(2,0) node (out) {} to [R,l=$R_L$] ++(0,-2) node[tlground] {};
+		\draw [->] (out.center) to[short,*-] ++(1,0) node [right] (outlabel) {$v_o(t)$};
+		\draw (q1.E) to[R,l=$R_E$] ++(0,-2) node (vee_E) {};
+		\draw (q1.B) to[short, -*] ++(-1,0) node (base_conn) {};
+		\draw (base_conn.center) to [R, l=$R_{B1}$] (base_conn |- vcc_C) node (vcc_B) {};
+		\draw (base_conn.center) to [R, l=$R_{B2}$] (base_conn |- vee_E) node (vee_B) {};
+		\draw (base_conn.center) to [C, l=$C_B$] ++(-2,0) to [sV, l_=$v_i(t)$] ++(0,-3) node [tlground] {} ;
+% SUPPLY BARS
+		\draw [line width=1mm] ([shift=({-12.5mm,0})]$(vcc_B)!0.5!(vcc_C)$) node (mid_vcc) {} -- ++(25mm,0);
+		\draw [line width=1mm] ([shift=({-12.5mm,0})]$(vee_B)!0.5!(vee_E)$) node (mid_vee) {} -- ++(25mm,0);
+		\node at ([shift=({0mm,-3mm})]$(vee_B)!0.5!(vee_E)$) {$V_{EE}$};
+		\node at ([shift=({0mm, 3mm})]$(vcc_B)!0.5!(vcc_C)$) {$V_{CC}$};
+        \end{tikzpicture}
+	\caption{Common emitter bipolar transistor amplifier circuit.}
+	\label{fig:common_emitter}
+\end{figure} %>>>
+
+	For the transistor model, \eqref{eq:complete_ebers_moll} shows a commonly used model for simulating bipolar transistor circuits known as te Ebers-Moll model \pcite{ebersLargeSignalBehaviorJunction1954,grayAnalysisDesignAnalog2009} depicte din figure \ref{fig:ebers_moll}. In this model, the base-collector junction is modelled by the diode $D_R$ (the subscript ``R'' for ``reverse'') and the base-emitter junction by $D_F$ (the subscript ``F'' for ``forward''). The current sources $\alpha_F i_F$ and $\alpha_R i_R$ correspond to saturation currents on the forward bias (collector and emitter working as collector and emitter, respectively) and the reverse bias (collector working as emitter, emitter working as collector). $C_{BC}$ and $C_{BE}$ are parasitic capacitances of the junctions, as $r_B, r_C, r_E$ are parasitic resistances.
+
+% EBERS MOLL MODEL WITH EARLY EFFECT <<<
+\begin{figure}[h!]
+\centering
+        \begin{tikzpicture}[american,scale=1,transform shape,line width=0.75, cute inductors, voltage shift = 1,>={Stealth[inset=0mm,length=1.5mm,angle'=50]}]
+	\ctikzset{/tikz/circuitikz/voltage/distance from node=10mm}
+		\node [npn] (q1) at (-2,0) {};
+		\draw (q1.C) to [short, -o] ++(0,0.5) node[above] (qcoll) {$C$};
+		\draw (q1.E) to [short, -o] ++(0,-0.5) node[below] (qemitt) {$E$};
+		\draw (q1.B) to [short, -o] ++(-0.5,0) node[left] (qbase) {$B$};
+
+		\draw (0,0) node[left] (base) {$B$} to[short,i=$i_B$,o-] ++(1,0) to [R,l=$r_B$, -*] ++(2,0)  node (baseconn) {} to [D, color=stewartpink, stewartpink, l_=$D_R$, i=$i_R$] ++(0,2) to [short] ++(2,0) node (collconn) {} to [R,l=$r_C$,*-] ++(0,2) to [short, -o, i<=$i_C$] ++(0,1) node[above] (collector) {$C$};
+		\draw (collconn.center) to [cisourceAM,/tikz/circuitikz/bipoles/length=1cm, color=stewartblue, stewartblue, l=$\alpha_F i_F$] (collconn |- baseconn) node (midconn) {} to [short] (baseconn.center);
+		\draw (collconn.center) to [short] ++(2,0) node (cbcstart) {} to [C,l=$C_{BC}$] (baseconn -| cbcstart) to [short,*-*] (midconn.center);
+		\draw (baseconn.center) to [D, color=stewartblue, stewartblue, l_=$D_F$, i=$i_F$] ++(0,-2) to [short] ++(2,0) node (emitterconn) {} to [R,l=$r_E$, *-] ++(0,-2) to [short, i>=$i_E$, -o] ++(0,-1) node[below] (emitter) {$E$};
+		\draw (emitterconn.center) to [cisourceAM,/tikz/circuitikz/bipoles/length=1cm, color=stewartpink, stewartpink, l_=$\alpha_R i_R$] (midconn.center) to [short] (baseconn.center);
+		\draw (baseconn -| cbcstart) to [C,l=$C_{BE}$] (emitterconn -| cbcstart) to [short] (emitterconn.center);
+		\node at ([shift=({3mm,3mm})]baseconn) {$B'$};
+		\node at ([shift=({3mm,3mm})]collconn) {$C'$};
+		\node at ([shift=({3mm,3mm})]emitterconn) {$E'$};
+
+        \end{tikzpicture}
+	\caption{Large-signal Ebers Moll model for the NPN bipolar junction transistor.}
+	\label{fig:ebers_moll}
+\end{figure} %>>>
+
+	The equations of this model are given by \eqref{eq:complete_ebers_moll}. In those equations, the two first equations are the exponential equations of the forward diode $D_F$ and reverse diode $D_R$; the third and fourth equations are the Early Effect correction equations. The three following equations are the parasitic resistance equations of $r_B, r_C$ and $r_E$, 
+
+\begin{equation}
+	\left\{\begin{array}{l}
+		i_F = I_{ES}\left[\exp\left(\dfrac{v_{B'} - v_{E'}}{n_CV_T}\right) - 1\right] \\[5mm]
+		i_R = I_{CS}\left[\exp\left(\dfrac{v_{B'} - v_{C'}}{n_FV_T}\right) - 1\right] \\[5mm]
+		I_{ES} = I_{ES}^0 \left(1 + \dfrac{v_{CE}}{V_A}\right) \\[5mm]
+		I_{CS} = I_{CS}^0 \left(1 + \dfrac{v_{BC}}{V_A}\right)  \\[5mm] v_{B'} = v_B - r_Bi_B \\[3mm]
+		v_{C'} = v_C - r_Ci_B \\[3mm]
+		v_{E'} = v_E + r_Ei_B  \\[3mm]
+		i_C + i_R - \alpha_F i_F - C_{BC}\dot{v}_{C'} - C_{BC}\dot{v}_{B'} = 0 \\[3mm]
+		-i_E + i_F - \alpha_R i_R - C_{BE}\dot{v}_{E'} - C_{BE}\dot{v}_{B'} = 0 
+	\end{array}\right. \label{eq:complete_ebers_moll}
+\end{equation}
+
+	For the purposes of analytical analysis, we simplify the model of figure \ref{fig:ebers_moll_simplified}. We first disregard the parasitic effects of junction resistances and capacitances. We also suppose that the device is well within forward bias; thus we can ignore the reverse bias components since their current contributions are negligble. With these considerations the model becomes that of figure \ref{fig:ebers_moll_simplified}.
+
+% SIMPLIFIED EBERS MOLL MODEL <<<
+\begin{figure}[h]
+\centering
+        \begin{tikzpicture}[american,scale=1,transform shape,line width=0.75, cute inductors, voltage shift = 1,>={Stealth[inset=0mm,length=1.5mm,angle'=50]}]
+	\ctikzset{/tikz/circuitikz/voltage/distance from node=10mm}
+		\draw (0,0) node[below] (base) {$B$} to[short,i=$i_B$,o-] ++(0,1) node (baseconn) {} to [cisourceAM,/tikz/circuitikz/bipoles/length=1cm, l_=$\alpha_F i_E$, invert] ++(-2,0) to [short, -o, i<=$i_C$] ++(-1,0) node[above] (collector) {$C$};
+		\draw (baseconn.center) to[D, l=$D_F$, i=$i_E$, *-o] ++(3,0) node[right] (emitter) {$E$};
+		\node[right=10mm of emitter] {
+		$
+	\left\{\begin{array}{l}
+		i_E = I_{ES}\left[\exp\left(\dfrac{v_{BE}}{n_CV_T}\right) - 1\right] \\[5mm]
+		I_{ES} = I_{ES}^0 \left(1 + \dfrac{v_{CE}}{V_A}\right) \\[5mm]
+		i_B + \alpha_F i_E - i_E = 0 \\[5mm]
+		i_C = \alpha_F i_E
+	\end{array}\right. $
+		};
+        \end{tikzpicture}
+	\caption{Simplified large-signal Ebers Moll model for the NPN bipolar junction transistor in the forward bias region.}
+	\label{fig:ebers_moll_simplified}
+\end{figure} %>>>
+
+	Developing the model equations of figure \ref{fig:ebers_moll_simplified} yields
+
+\begin{equation}
+	\left\{\begin{array}{l}
+		i_C = \alpha_F I_{ES}\left[\exp\left(\dfrac{v_{BE}}{n_CV_T}\right) - 1\right] \\[3mm]
+		I_{ES} = I_{ES}^0 \left(1 + \dfrac{v_{CE}}{V_A}\right) \\[5mm]
+		i_C = \dfrac{\alpha_F}{1 - \alpha_F} i_B
+	\end{array}\right. \label{eq:simple_ebers_moll_developed}
+\end{equation}
+
+	Now naming the tandem parameters
+
+\begin{equation}
+	\left\{\begin{array}{l}
+		I_S^0 = \alpha_F I_{ES}^0 \\[3mm]
+		\beta_F = \dfrac{\alpha_F}{1 - \alpha_F}
+	\end{array}\right. \label{eq:simple_ebers_moll_params}
+\end{equation}
+
+	\noindent one arrives at the more known equations
+
+\begin{equation}
+	\left\{\begin{array}{l}
+		i_C = I_{S}\left[\exp\left(\dfrac{v_{BE}}{n_CV_T}\right) - 1\right] \\[5mm]
+		I_{S} = I_{S}^0 \left(1 + \dfrac{v_{CE}}{V_A}\right) \\[5mm]
+		i_C = \beta_F i_B
+	\end{array}\right. \label{eq:simple_ebers_moll_new_params}
+\end{equation}
+
+	\noindent and this achieves a simplified large-signal model \eqref{eq:dcbias_largesignal} of the amplifier circuit of figure \ref{fig:common_emitter} where the currents and voltages are depicted in figure \ref{fig:common_emitter_dcbias}. Using this model and forcing steady-state (all derivatives equal zero), the algebraic operating point equations (also called ``DC'' or ``bias'' equations) of the amplifier of figure \ref{fig:common_emitter} is achieved.
+
+\begin{equation}
+	\left\{\begin{array}{l}
+		i_C = I_{S}^0 \left(1 + \dfrac{v_{C} - v_{E}}{V_A}\right)\left[\exp\left(\dfrac{v_{B} - v_{E}}{n_CV_T}\right) - 1\right] \\[5mm]
+		i_C = \beta_F i_B \\[5mm]
+		C_B\dfrac{d}{dt}\left(v_i - v_B\right) + \dfrac{V_{CC} - v_B}{R_{B1}} - \dfrac{v_B - V_{EE}}{R_{B2}} - i_B = 0  \\[5mm]
+		-i_C + \dfrac{V_{CC} - v_{C}}{R_C} - i_L = 0 \\[5mm]
+		C_L\dfrac{d}{dt}\left(v_C - v_o\right) - \dfrac{v_o}{R_L} = 0 \\[5mm]
+		R_Li_L = v_o \\[5mm]
+		v_E - v_{EE} = R_Ei_E \\[5mm]
+		i_E = i_B + i_C
+	\end{array}\right. \label{eq:dcbias_largesignal}
+\end{equation}
+
+% DC BIAS EQUIVALENT CIRCUIT OF COMMON EMITTER AMPLIFIER <<<
+\begin{figure}[h]
+\centering
+        \begin{tikzpicture}[american,scale=1,transform shape,line width=0.75, cute inductors, voltage shift = 1,>={Stealth[inset=0mm,length=1.5mm,angle'=50]}]
+	\ctikzset{/tikz/circuitikz/voltage/distance from node=10mm}
+		\node [npn] (q1) at (0,0) {$Q_1$};
+		\draw (q1.C) to [short, f<_=$i_C$] ++(0,1) coordinate (collconn) to [R,l_=$R_C$] ++(0,2) node (vcc_C) {};
+		\draw (collconn) to [C, l=$C_L$, f_=$i_L$, *-] ++(3,0) to [R, l=$R_L$] ++(0,-2) node [tlground] {};
+		\draw (q1.E) to[R,l=$R_E$, f>_=$i_E$] ++(0,-3) node (vee_E) {};
+		\draw (q1.B) to[short, -*, f<_=$i_B$] ++(-1,0) node (base_conn) {};
+		
+		\draw (base_conn.center) to [short] ++(0,1) to [R, l=$R_{B1}$, f<^=$i_1$] (base_conn |- vcc_C) node (vcc_B) {};
+		\draw (base_conn.center) to [short] ++(0,-1) to [R, l=$R_{B2}$, f>_=$i_2$] (base_conn |- vee_E) node (vee_B) {};
+
+		\draw (base_conn.center) to [C, l=$C_B$] ++(-2,0) to [sV, l_=$v_i(t)$, f<^=$i_i$] ++(0,-3) node [tlground] {} ;
+% SUPPLY BARS
+		\draw [line width=1mm] ([shift=({-12.5mm,0})]$(vcc_B)!0.5!(vcc_C)$) node (mid_vcc) {} -- ++(25mm,0);
+		\draw [line width=1mm] ([shift=({-12.5mm,0})]$(vee_B)!0.5!(vee_E)$) node (mid_vee) {} -- ++(25mm,0);
+		\node at ([shift=({0mm,-3mm})]$(vee_B)!0.5!(vee_E)$) {$V_{EE}$};
+		\node at ([shift=({0mm, 3mm})]$(vcc_B)!0.5!(vcc_C)$) {$V_{CC}$};
+        \end{tikzpicture}
+	\caption{``DC'' or ``bias'' equivalent circuit of common emitter BJT amplifier circuit.}
+	\label{fig:common_emitter_dcbias}
+\end{figure} %>>>
+
+	Using these equations one can arrive at a linearized model:
+
+\begin{equation}
+	\left\{\begin{array}{l}
+		\dfrac{\partial i_C}{\partial v_{BE}} = I_{S}^0 \left(1 + \dfrac{v_{CE}^o}{V_A}\right)\left[\dfrac{1}{n_CV_T} \exp\left(\dfrac{v_{BE}^o}{n_CV_T}\right) \right]\\[5mm]
+		\dfrac{\partial i_C}{\partial v_{CE}} = i_E^o \dfrac{1}{V_A} \left[\exp\left(\dfrac{v_{BE}^o}{n_CV_T}\right) - 1\right] \\[5mm]
+		\dfrac{\partial i_B}{\partial v_{BE}} = \dfrac{I_{S}^0}{\beta_F} \left(1 + \dfrac{v_{CE}^o}{V_A}\right)\left[\dfrac{1}{n_CV_T} \exp\left(\dfrac{v_{BE}^o}{n_CV_T}\right) \right] \\[5mm]
+		\dfrac{\partial i_B}{\partial v_{CE}} = \dfrac{I_{S}^0}{\beta_F} \left(1 + \dfrac{1}{V_A}\right)\left[\exp\left(\dfrac{v_{BE}^o}{n_CV_T}\right) - 1\right]
+	\end{array}\right.
+\end{equation}
+
+	\noindent where the superscript ``$o$'' denotes an operating point, that is, these small-signal quantities are calculated at an operating point $v_{CE}^o, v_{BE}^o$. These quantities are generally denoted in the more familiar notations
+
+\begin{equation}
+	\left\{\begin{array}{l}
+		\dfrac{\partial i_C}{\partial v_{BE}} = g_m\\[5mm]
+		\dfrac{\partial i_C}{\partial v_{CE}} = \dfrac{1}{r_o}\\[5mm]
+		\dfrac{\partial i_B}{\partial v_{BE}} = \dfrac{1}{r_\pi} = \dfrac{1}{\beta_F r_o} \\[5mm]
+		\dfrac{\partial i_B}{\partial v_{CE}} = g_\mu = \dfrac{g_m}{\beta_F}
+	\end{array}\right.
+\end{equation}
+
+	Figure \ref{fig:ebers_moll_small_signal} shows the small-signal model originated by these equations and quantities.
+
+% SMALL_SIGNAL EBERS MOLL MODEL <<<
+\begin{figure}[h]
+\centering
+        \begin{tikzpicture}[american,scale=1,transform shape,line width=0.75, cute inductors, voltage shift = 1,>={Stealth[inset=0mm,length=1.5mm,angle'=50]}]
+	\ctikzset{/tikz/circuitikz/voltage/distance from node=10mm}
+		\draw (0,0) node[left] (base) {$B$} to[short,i=$i_B$,o-] ++(1,0) coordinate(baseconn) to [cisourceAM,/tikz/circuitikz/bipoles/length=1cm, l_=$g_{\mu} v_{CE}$] ++(0,-2) to [short] ++(1,0) coordinate (emitterconn);
+		\draw (baseconn.center) to[short] (base -| emitterconn) to [R,l=$r_{\pi}$] (emitterconn.center);
+		\draw (emitterconn.center) to[short] ++(1,0) coordinate (emittermid) to[short, -o, i=$i_E$] ++(0,-1) node[below] (emitter) {$E$};
+		\draw (emittermid.center) to[short] ++(1,0) coordinate (collconn) to[R,l=$r_o$] (collconn |- base) to [short] ++(1,0) coordinate (collmid) to [cisourceAM,/tikz/circuitikz/bipoles/length=1cm, l^=$g_m v_{BE}$] (emittermid -| collmid) to [short] (collconn);
+		\draw (collmid.center) to[short, -o, i<=$i_C$] ++(1,0) node[right] (collector) {$C$};
+        \end{tikzpicture}
+	\caption{Small-signal model for the NPN bipolar junction transistor using the simplified Ebers Moll model of figure \ref{fig:ebers_moll_simplified}.}
+	\label{fig:ebers_moll_small_signal}
+\end{figure} %>>>
+
+	Further approximations are made: from \eqref{eq:simple_ebers_moll_new_params}, we now that in the forward bias the $v_{BE}^o$ is in the decimals of volts (clasically around $0.7V$) and the $V_T$ is small (around $25mV$). Hence the exponential function of their quotient is large and the expression for $i_C^o$ can be approximated
+
+\begin{equation} i_C^o = I_{S}\left[\exp\left(\dfrac{v_{BE}^o}{n_CV_T}\right) - 1\right] \approx I_{S}\exp\left(\dfrac{v_{BE}^o}{n_CV_T}\right) .\end{equation}
+
+	One also considers that $v_{CE}^o$ in the forward bias is generally of hundreds of volts (generally $100$ to $200mV$) and the Early voltage $V_A$ is quite high (tens or hundreds of volts). Then one can approximate the small signal quantities as
+
+\begin{equation}
+	\left\{\begin{array}{l}
+		g_m \approx  \dfrac{i_C^o}{n_CV_T} \\[5mm]
+		\dfrac{1}{r_o} =  i_C^o \dfrac{1}{V_A\left(1 + \dfrac{v_{CE}^o}{V_A}\right)} = \dfrac{i_C^o}{\left(V_A + v_{CE}^o\right)} \approx \dfrac{i_C^o}{V_A}
+	\end{array}\right. .
+\end{equation}
+
+	Further, because the current gain $\beta_F$ is quite high (hundreds to thousands) and the voltage $v_{CE}$ is much smaller than $v_{BE}$, the current contribution $g_\mu v_{CE}$ is neglected for being much smaller than $g_m v_{BE}$. Thus the amplifier circuit of figure \ref{fig:common_emitter} becomes the small-signal version of \ref{fig:common_emitter}.
+
+% SMALL SIGNAL VERSION OF THE COMMON EMITTER AMPLIFIER <<<
+\begin{figure}[h]
+\centering
+\scalebox{0.95}{
+        \begin{tikzpicture}[american,scale=1,transform shape,line width=0.75, cute inductors, voltage shift = 1,>={Stealth[inset=0mm,length=1.5mm,angle'=50]}]
+	\ctikzset{/tikz/circuitikz/voltage/distance from node=10mm}
+		%\node [npn] (q1) at (0,0) {$Q_1$};
+		\draw (0,0) to [R,l=$r_\pi$, v=$v_{BE}$] ++(3,0) coordinate (emitterconn) to [R,l=$r_o$] ++(0,3) to[short] ++(2.5,0) coordinate (collector) to [cisourceAM, l_=$g_mv_{BE}$, *-] (collector |- emitterconn) to [short, -*] (emitterconn.center);
+		\draw (collector.center) to [short] ++(2,0) coordinate (rc_conn) to[R,l=$R_C$] ++(0,- 2) node[tlground] {} ;
+		\draw (rc_conn.center) to[C,l=$C_L$, *-] ++(2,0) node (out) {} to [R,l=$R_L$] ++(0,-2) node [tlground] (vcc_C)  {};
+		\draw [->] (out.center) to[short,*-] ++(1,0) node [right] (outlabel) {$v_o(t)$};
+		\draw (emitterconn.center) to[R,l=$R_E$] ++(0,-2) node[tlground] (vee_E) {};
+		\draw (0,0) to[short, -*] ++(-0,0) node (base_conn) {};
+		\draw (base_conn.center) to [R, l=$R_{B1}$] ++(0,-2) node[tlground] (vcc_B) {};
+		\draw (base_conn.center) to [short] ++(-2,0) coordinate (input) to [R, l=$R_{B2}$, *-] ++(0,-2) node[tlground] (vee_B) {};
+		\draw (input.center) to [C, l=$C_B$] ++(-2,0) to [sV, l_=$v_i(t)$] ++(0,-2) node [tlground] {} ;
+% SUPPLY BARS
+        \end{tikzpicture}
+}
+	\caption{Small-signal version of the common emitter bipolar transistor amplifier circuit of figure \ref{fig:common_emitter}.}
+	\label{fig:common_emitter_small}
+\end{figure} %>>>
+
+	Transport the small-signal model of \ref{fig:common_emitter_small} to the Dynamic Phasor domain by substituting capacitances by their Dynamic Impedances to obtain the schematic of figure \ref{fig:common_emitter_small_dp}.
+
+% SMALL SIGNAL VERSION OF THE COMMON EMITTER AMPLIFIER <<<
+\begin{figure}[h]
+\centering
+\scalebox{0.95}{
+        \begin{tikzpicture}[american,scale=1,transform shape,line width=0.75, cute inductors, voltage shift = 1,>={Stealth[inset=0mm,length=1.5mm,angle'=50]}]
+	\ctikzset{/tikz/circuitikz/voltage/distance from node=10mm}
+		%\node [npn] (q1) at (0,0) {$Q_1$};
+		\draw (0,0) to [R,l=$r_\pi$, v=$V_{BE}$] ++(3,0) coordinate (emitterconn) to [R,l=$r_o$] ++(0,3) to[short] ++(2.5,0) coordinate (collector) to [cisourceAM, l_=$g_mV_{BE}$, *-] (collector |- emitterconn) to [short, -*] (emitterconn.center);
+		\draw (collector.center) to [short] ++(2,0) coordinate (rc_conn) to[R,l_=$R_C$] ++(0,- 2) node[tlground] {} ;
+		\draw (rc_conn.center) to[C,l=$\dfrac{\mathbf{I}}{\dpo C_L}$, label distance = 4mm, *-] ++(2,0) node (out) {} to [R,l=$R_L$] ++(0,-2) node [tlground] (vcc_C)  {};
+		\draw [->] (out.center) to[short,*-] ++(1,0) node [right] (outlabel) {$V_o(t)$};
+		\draw (emitterconn.center) to[R,l=$R_E$] ++(0,-2) node[tlground] (vee_E) {};
+		\draw (0,0) to[short, -*] ++(-0,0) node (base_conn) {};
+		\draw (base_conn.center) to [R, l=$R_{B1}$] ++(0,-2) node[tlground] (vcc_B) {};
+		\draw (base_conn.center) to [short] ++(-2,0) coordinate (input) to [R, l=$R_{B2}$, *-] ++(0,-2) node[tlground] (vee_B) {};
+		\draw (input.center) to [C, l_=$\dfrac{\mathbf{I}}{\dpo C_B}$, label distance = 4mm] ++(-2,0) to [sV, l_=$V_i(t)$] ++(0,-2) node [tlground] {} ;
+% NODE LABELS
+		\node [shape=circle,draw,inner sep=1pt] at (-1,0.5)  {$1$};
+		\node [shape=circle,draw,inner sep=1pt] at (3.5,0.5) {$2$};
+		\node [shape=circle,draw,inner sep=1pt] at (5.5,3.5) {$3$};
+		\node [shape=circle,draw,inner sep=1pt] at (9.5,3.5) {$4$};
+        \end{tikzpicture}
+}
+	\caption{Dynamic Phasor small-signal version of the common emitter bipolar transistor amplifier circuit of figure \ref{fig:common_emitter}.}
+	\label{fig:common_emitter_small_dp}
+\end{figure} %>>>
+
+	Thus we use the Kirchoff's Laws in Dynamic Phasor Domain and the bipoles current-voltage relationships on the nodes:
+
+\begin{equation}
+\left\{\begin{array}{l}
+	(1):\ \left(V_i - V_1\right) \dpo C_B - \dfrac{V_1}{R_{B1}} - \dfrac{V_1}{R_{B2}} - \dfrac{V_1 - V_2}{r_\pi} = 0 \\[5mm]
+	(2):\ \dfrac{V_1 - V_2}{r_\pi} + g_m \left(V_1 - V_2\right) - \dfrac{V_2}{R_E} + \dfrac{V_3 - V_2}{r_o} = 0 \\[5mm]
+	(3):\ -g_m \left(V_1 - V_2\right) - \dfrac{V_3 - V_2}{r_o} - \dfrac{V_3}{R_C} - \left(V_3 - V_o\right)\dpo C_L = 0 \\[5mm]
+	(4):\ \left(V_3 - V_o\right)\dpo C_L - \dfrac{V_o}{R_L} = 0
+\end{array}\right. \label{eq:transistor_node_eqs}
+\end{equation}
+
+	Hence leading to a 4-equation-by-4-unknowns system ($V_1,V_2,V_3,V_o$). Writing this system in matrix form yields
+
+\begin{equation} \mathbf{A}\left[\begin{array}{c} V_1 \\[3mm] V_2 \\[3mm] V_3 \\[3mm] V_o \end{array}\right] = \left[\begin{array}{c} -\dpo C_B \\[3mm] 0 \\[3mm] 0 \\[3mm] 0 \end{array}\right]V_i, \end{equation}
+
+	\noindent where
+
+\begin{equation}
+\hspace{-2mm}\mathbf{A} = \left[\begin{array}{cccc}
+	 - \dpo C_B - \dfrac{1}{R_{B1}} - \dfrac{1}{R_{B2}} - \dfrac{1}{r_\pi} & \dfrac{1}{r_\pi} & 0 & 0  \\[5mm]
+	\dfrac{1}{r_\pi} + g_m & -\dfrac{1}{r_\pi} - g_m - \dfrac{1}{R_E} - \dfrac{1}{r_o} & \dfrac{1}{r_o} & 0 \\[5mm]
+	-g_m & g_m + \dfrac{1}{r_o} & - \dfrac{1}{r_o} - \dfrac{1}{R_C} - \dpo C_L & \dpo C_L \\[5mm]
+	0 & 0 & \dpo C_L & -\dpo C_L - \dfrac{1}{R_L}
+\end{array}\right],
+\end{equation}
+
+	\noindent and one can find the gain operator $\mathbf{G}$ such that $V_o = G\left[V_i\right]$ by inverting this matrix. This yields
+
+\begin{equation} V_o = \mathbf{G}\left[V_i\right],\ \mathbf{G} = \dfrac{ N_2\ndpo{2} + N_1\dpo}{D_2\ndpo{2} + D_1\dpo + D_0} \end{equation}
+
+	\noindent where
+
+\begin{equation}\hspace{-2mm} D_2 =  C_BC_L\left[R_{C}R_ER_L +  r_o r_{\pi} \left[\left(g_m  + \dfrac{1}{r_o} +  \dfrac{1}{r_{\pi}}\right)R_E\left(R_C + R_L\right) + R_C\left(1 + \dfrac{R_L}{r_o}\right) + R_L\right]\right]  \end{equation}
+
+\begin{align}
+	D_1 &= \left\{
+		\begin{array}{l}
+			C_B \left[R_E\left(R_{C} + g_m r_o r_{\pi} + r_o + r_{\pi}\right) + r_{\pi}\left(r_o + R_{C}\right) \right] + \\%
+			C_L \left[ R_{C}\left( R_E + R_L + r_o\right) + R_L\left(R_E + r_o\right)\right]
+		\end{array}\right\} + \nonumber\\[5mm]
+%
+	&+ C_L \dfrac{R_CR_LR_E}{R_B}\left[ 1 + \dfrac{r_{\pi}}{R_E} + r_o r_{\pi}\left(\dfrac{1}{R_L} + \dfrac{1}{R_C}\right) \left( g_m + \dfrac{1}{r_o} + \dfrac{1}{r_{\pi}} + \dfrac{1}{R_E}\right)\right]
+\end{align}
+
+\begin{equation} D_0 = \left(R_{C} + R_E + r_o\right) + \left(R_{B1} + R_{B2}\right) r_o r_{\pi}\left[R_E\left(g_m  + \dfrac{1}{r_o}\right) + \left(1 + \dfrac{R_E}{r_{\pi}}\right)\left(1 + \dfrac{R_C}{r_o}\right)\right] \end{equation}
+
+\small
+\begin{equation} N_2 = C_LC_B r_or_\pi \left\{ R_{C} \left[ R_E \left( g_m + \dfrac{1}{r_\pi} \right) + \left(1 + \dfrac{R_E}{r_\pi}\right)\left(1 + \dfrac{R_L}{r_o}\right)\right] + R_L \left[R_E \left( g_m + \dfrac{1}{r_o} + \dfrac{1}{r_{\pi}}\right) + 1\right] \right\}\end{equation}
+\normalsize
+
+\begin{equation} N_1 = C_B \left\{R_{C}\left( R_E + r_{\pi}\right) + r_\pi r_o \left[ R_E \left(g_m + \dfrac{1}{r_o} + \dfrac{1}{r_{\pi}} \right) + 1\right] \right\} \end{equation}
+
+	\noindent with $R_B = R_{B1}//R_{B2}$, that is, $R_B^{-1} = R_{B1}^{-1} + R_{B2}^{-1}$. To obtain an analytical expression, we further simplify this expression by adopting $r_\pi,\ r_o\to\infty$ and
+
+\begin{equation}
+\hspace{-2mm}\mathbf{A} = \left[\begin{array}{cccc}
+	 - \dpo C_B - \dfrac{1}{R_{B1}} - \dfrac{1}{R_{B2}} & 0 & 0 & 0  \\[5mm]
+	g_m & - g_m - \dfrac{1}{R_E} & 0 & 0 \\[5mm]
+	-g_m & g_m & - \dfrac{1}{R_C} - \dpo C_L & \dpo C_L \\[5mm]
+	0 & 0 & \dpo C_L & -\dpo C_L - \dfrac{1}{R_L}
+\end{array}\right].
+\end{equation}
+
+	If we further assume no load ($R_L\to\infty$ and $C_L\to 0$) then the last equation \eqref{eq:transistor_node_eqs} is lost because node 4 is islanded and the approximate equations become
+
+\begin{equation}
+\left\{\begin{array}{l}
+	(1):\ \left(V_i - V_1\right) \dpo C_B - \dfrac{V_1}{R_{B1}} - \dfrac{V_1}{R_{B2}} - \dfrac{V_1 - V_2}{r_\pi} = 0 \\[5mm]
+	(2):\ \dfrac{V_1 - V_2}{r_\pi} + g_m \left(V_1 - V_2\right) - \dfrac{V_2}{R_E} + \dfrac{V_3 - V_2}{r_o} = 0 \\[5mm]
+	(3):\ -g_m \left(V_1 - V_2\right) - \dfrac{V_3 - V_2}{r_o} - \dfrac{V_3}{R_C} = 0
+\end{array}\right. \label{eq:transistor_node_eqs_noload}
+\end{equation}
+
+	\noindent and in matrix form
+
+\begin{equation}
+\left[\begin{array}{ccc}
+	 - \dpo C_B - \dfrac{1}{R_{B1}} - \dfrac{1}{R_{B2}} & 0 & 0  \\[5mm]
+	g_m & - g_m - \dfrac{1}{R_E} & 0 \\[5mm]
+	-g_m & g_m & - \dfrac{1}{R_C}
+\end{array}\right]
+\left[\begin{array}{c} V_1 \\[3mm] V_2 \\[3mm] V_3 \end{array}\right] = \left[\begin{array}{c} -\dpo C_B \\[3mm] 0 \\[3mm] 0 \end{array}\right]V_i, \end{equation}
+
+	\noindent and we can solve directly for $V_1$:
+
+\begin{equation} V_1 = \left( \dfrac{\dpo C_B}{\dpo C_B + \dfrac{1}{R_{B1}} + \dfrac{1}{R_{B2}}}\right)\left[V_i\right] \end{equation}
+
+	\noindent and retro-substituting on the second equation
+
+\begin{equation} g_m v_1 - \left( g_m + \dfrac{1}{R_E}\right)V_2 = 0 \Rightarrow V_2 = \left(\dfrac{g_m}{g_m + \dfrac{1}{R_E}}\right) \left( \dfrac{\dpo C_B}{\dpo C_B + \dfrac{1}{R_{B1}} + \dfrac{1}{R_{B2}}}\right)\left[V_i\right] \end{equation}
+
+	\noindent and from the third equation
+
+\begin{align}
+	V_3 &= R_Cg_m\left(V_2 - V_1\right) \nonumber\\[5mm]
+%
+	&= R_Cg_m\left(\dfrac{g_m}{g_m + \dfrac{1}{R_E}} - 1\right) \left( \dfrac{\dpo C_B}{\dpo C_B + \dfrac{1}{R_{B1}} + \dfrac{1}{R_{B2}}}\right)\left[V_i\right] = -\left(\dfrac{\dfrac{R_Cg_m}{R_E}}{g_m + \dfrac{1}{R_E}}\right) \left( \dfrac{\dpo C_B}{\dpo C_B + \dfrac{1}{R_{B1}} + \dfrac{1}{R_{B2}}}\right)\left[V_i\right] \nonumber\\[5mm]
+%
+	&= -\left(\dfrac{R_Cg_m}{g_mR_E + 1}\right) \left( \dfrac{\dpo C_B}{\dpo C_B + \dfrac{1}{R_{B1}} + \dfrac{1}{R_{B2}}}\right)\left[V_i\right] = -\left(\dfrac{R_C}{R_E + \dfrac{1}{g_m}}\right) \left( \dfrac{\dpo C_B}{\dpo C_B + \dfrac{1}{R_{B1}} + \dfrac{1}{R_{B2}}}\right)\left[V_i\right].
+\end{align}
+
+	Finally, we suppose $g_m^{-1} \ll R_E$ and a direct input $C_B\to\infty$, yielding
+
+\begin{equation} V_1 = V_i,\ V_2 = V_i,\ V_3 = -\dfrac{R_C}{R_E} V_i \end{equation}

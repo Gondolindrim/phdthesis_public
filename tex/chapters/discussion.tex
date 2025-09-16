@@ -1,0 +1,319 @@
+% ---------------------------------------------------------
+\chapter{Discussion and conclusion}\label{chapter:discussion_conclusion}
+% ---------------------------------------------------------
+
+	The discussions presented in this chapter were mostly raised by the commitee members at the defense of this thesis. Particualr emphasis was given to the inception of Dynamic Phasors themselves and the relationship between Nonstationary Sinusoids and their representation in complex domain.
+
+	No great discussions were made from chapter \ref{chapter:choice_apparent_frequency} onwards, since this second part of the thesis is new in the literature. Thus, regarding these chapters, this discussion will concentrate on asserting the contributions and novelties of these chapters.
+
+%-------------------------------------------------
+\section{On the proposed Dynamic Phasor representation}\label{sec:discussion_proposed_representation} %<<<1
+
+	As discussed in the introduction, the idea of a phasorial transformation that does not rely on integral transformations is not new in the literature; to this author's best knowledge, there are two widely accepted theories: Venkatasubramanian's ``low-pass phasors'', as defined in \cite{Venkatasubramanian1994} and the Shifted Frequency Analysis of Zhang, Martí and Dommel as presented in \cite{zhangSynchronousMachineModeling2007}. The purpose of this discussion is to assert the nature of phasorial transforms and show that the theory presented in this thesis unifies and generalizes these two strategies.
+
+%-------------------------------------------------
+\subsection{Comments on definition \ref{def:sinusoid_dynamic} of sinusoids}\label{subsec:comments_def_sin} %<<<2
+
+	Once definition \ref{def:sinusoid_dynamic} is shown, naturally one wonders what are the restrictions that need to be imposed upon a signal $x(t)$ so that it can be written in the form $m(t)\cos\left(\theta(t)\right)$ and that there exists one $\omega(t)$ such that \ref{eq:apparent_angle_def} has a solution $\phi(t)$ — in other words, how to exactly classify the class of generalized sinusoids? Indeed, it looks like the feasibility of a generalized sinusoidal representation hinges on requiring the conformity of the considered signal into a certain structure — that it looks like a ``bent'' sinewave with time-varying parameters — which would reduce the application of this definition.
+
+	Formally, given a signal $x(t)\in\left[\mathbb{R}\to\mathbb{R}\right]$ then it is a generalized sinusoid if there is a complex signal $f(t)\in\left[\mathbb{R}\to\mathbb{C}\right]$ such that $x(t) = \Re\left[f\right]$. In other words, $f$ must be of the form
+
+\begin{equation} f(t) = x(t) + jy(t) \label{eq:complex_extension}\end{equation}
+
+	\noindent for some $y\in\left[\mathbb{R}\to\mathbb{R}\right]$. We call $f(t)$ a \textbf{complex generator function} of $x(t)$; if such a function exists, then we can adopt $m(t),\theta(t)\in\left[\mathbb{R}\to\mathbb{C}\right]$ as the amplitude and argument of $f$, as in $f(t) = m(t)e^{j\theta(t)}$. Furthermore, $x(t)$ admits a representation at some apparent frequency $\omega(t)$ if there exists a solution to 
+
+\begin{equation} \phi(t) = \theta(t) - \psi(t),\ \psi(t) = \int_0^t \omega(s)ds. \end{equation}
+
+	If this is true, then the Dynamic Phasor of $x(t)$ at the apparent frequency $\omega(t)$ is $X(t) = f(t)e^{-j\psi(t)}$ so that $x(t) = \Re\left[X(t)e^{j\psi(t)}\right]$. Immediately one notices that these simple relationships directly yield the Dynamic Phasor Transform: given $x(t)$ and its complex generator $f(t)$, one can define
+
+\begin{equation} X(t) = \mathbf{P_D^{\omega}}\left[x\right] = f(t)e^{-j\psi(t)},\ x(t) = \mathbf{P_D^{-(\omega)}}\left[X\right] = \Re\left[f\right] = \Re\left[X(t)e^{j\psi(t)}\right] .\end{equation}
+
+	In other words, the Dynamic Phasor Transform is in essence a rotation of the stationary complex space by an angle $\psi(t)$. The Dynamic Phasor of a quantity is the projection of said quantity onto the rotated space. This rotation is naturally only possible in the complex space, explaining the need to transform a real signal $x(t)$ into a complex generator $f(t)$.
+
+	The question then becomes: \textbf{what are the restrictions needed on $x(t)$ so that such a $f(t)$ exists?} At a first glance, from the definition, I could not find such restriction: however contrived an example of a signal I came up with, I could always find a sinusoidal representation even though the resulting frequency $\omega(t)$ became equally obscure and exotic as the original signal. For an arbitrary signal $m(t)$, one can (rather lazily) adopt $\omega(t) = 0$ and write $x(t) = m(t)\cos\left(0\right)$; the entirety of the theory presented is possible at a null frequency signal. Alternatively, one can admit an arbitrary frequency signal $\omega(t)$ so that $\phi(t)$ will equal $-\psi(t)$. Therefore, apparently, any continuous signal admits such a representation.
+
+	Naturally this conclusion stems from the fact that I had theoretical signals which can be manipulated or ``mathematically compelled'' to admit the form of a generalized sinusoid, a process which cannot be undertaken in a real-time signal processing scenario, or for an arbitrary real signal $x(t)$ even if its form is known. One then asks what would be a possible generalized sinusoid representation of a signal $x(t)$ given as a time series of some sampled or measured signal (here we assume $x(t)$ is continuously measured and not discretely, for this would imply the usage of discrete versions of the transforms involved which is not in the scope of this thesis). Also, one asks whether if given an expression of $x(t)$ one can find a procedural algorithm to create the complex generator $f(t)$. One could for instance, adopt the analytical signal by means of a Hilbert Transform, that is,
+
+\begin{equation} f(t) = x_a(t) = x(t) + j\mathbf{H}\left[x\right]\label{eq:hilbert_complex_gen}\end{equation}
+
+	\noindent and notably this function conforms to \eqref{eq:complex_extension}. Also notably, by adopting the complex generator function of \eqref{eq:hilbert_complex_gen} we arrive at the Shifted Frequency Analysis of \cite{zhangSynchronousMachineModeling2007}, who define a \textit{Shifted Frequency representation} of a low-pass signal $s(t)$ as
+
+\begin{equation} \left<s\right>(t) = \left\{s(t) + j\mathbf{H}\left[s\right]\right\}e^{-j\omega_0 t} \end{equation}
+
+	\noindent where $\omega_0$ is the carrier frequency in signal analysis or synchronous frequency in Power Systems. We therefore conclude that the generalized sinusoidal representation and definition presented in this thesis generalizes the SFA representation because the representation hereby proposed not only allows for time-varying frequency signals but also does not require any particular restrictions on the spectrum of the signal being transformed, that is, \eqref{eq:hilbert_complex_gen} yields the Dynamic Phasor
+
+\begin{equation} X(t) = \left\{x(t) + j\mathbf{H}\left[x\right]\right\}e^{-j\psi(t)},\ \psi(t) = \int_0^t \omega(s)ds \label{eq:hilbert_complex_gen_phasor}\end{equation}
+
+	\noindent and one notes that this transformation satisfies all the characteristics of the Dynamic Phasor Transform. Naturally, the adoption of the complex generator \eqref{eq:hilbert_complex_gen} and the incurring Dynamic Phasor \eqref{eq:hilbert_complex_gen_phasor} depend on if $x(t)$ admits a Hilbert Transform; there are several results that make us inclined towards the conclusion that this process is feasible for for most practical time series and expressions of interest: for instance, it is well-known that any function with compact support has a well-defined Hilbert Transform. If $x(t)$ does not have compact support, it is also a known fact in analysis \cite[p.~320]{grafakosClassicalFourierAnalysis2014} that any $p$-measurable function admits such a transform and that $\mathbf{H}\left[\cdot\right]$ is a bounded operator in $L^p\left(\mathbb{R}\right)$. In simpler terms, if there exists some $p\in\left(1,\infty\right)$ such that the $p$-norm of $x$ is finite, that is,
+
+\begin{equation} \left\lVert x\right\rVert_p = \left[\int_{\mathbb{R}}\left\lvert x(t)\right\rvert^p dt\right]^{\frac{1}{p}} < \infty ,\end{equation}
+
+	\noindent then there exists a constant $C_p$ such that
+
+\begin{equation} \left\lVert \mathbf{H}\left[x\right]\right\rVert_p \leq C_p \left\lVert x\right\rVert_p \label{eq:hilbert_boundedness}\end{equation}
+
+	\noindent where $C_p \leq 2p$ for $2\leq p< \infty$ and $C_p \leq 2p/(p-1)$ for $1 < p \leq 2$. Thus the Hilbert Transform is a linear bounded operator in the $L^p\left(\mathbb{R}\right)$ space, and this means it ``\textbf{exists almost everywhere}'' — in simpler terms, the property of having a Hilbert Transform defines a very large class of functions which probably contains most practical signals, in turn meaning that most practical signals probably admit a generalized sinusoidal representation. For $p=1$, \cite{grafakosClassicalFourierAnalysis2014} shows that \eqref{eq:hilbert_boundedness} is not true but there is one version admitting a weaker space, by proving that if $x\in L^1\left(\mathbb{R}\right)$ then there exists $C_1$ such that
+
+\begin{equation} \left\lVert \mathbf{H}\left[x\right]\right\rVert_{\left(1,\infty\right)} \leq C_1 \left\lVert x\right\rVert_1 \label{eq:hilbert_boundedness_p1}\end{equation}
+
+	\noindent where $\left\lVert\cdot\right\rVert_{\left(1,\infty\right)}$ is the norm of the weak Lebesgue space $L^{1,\infty}$.
+
+	We conclude that (at least outwardly) the admission of a sinusoidal representation for an arbitrary signal is a quite permissive property because it is possible for a large class of signals, thus requiring loose restrictions. For the intents of applications and modelling, some \textit{conceptual} restrictions might be applied. Particularly for Electrical Power Systems, we are of course assuming that $\omega(t)$ is ``close to'' or does not ``deviate much from'' a certain synchronous frequency $\omega_0$. In formal terms, we are supposing that the deviation $\Delta\omega = \omega(t) - \omega_0$ is bounded and is kept reasonably small throughout the entire timespan under consideration. We can also intuitively assume $m(t)$ and $\omega(t)$ are defined positive, to avoid the counterintuitive notions of a ``backwards spin'' (negative frequency) or a ``negative size'' (negative amplitude).
+
+	At the end of day, it looks like most signals of interest conform to the class of generalized sinusoids for the requirements to such representation are rather weak. In simpler terms, most signals of interest (both in real-time processing and in modelling and simulation) admit a sinusoidal representation. Notwithstanding this fact, this does not categorically mean such restrictions do not exist. In the name of mathematical cautiousness, when we assume a signal admits a sinusoidal representation we will say so explicitly as in "\textbf{assume $x(t)$ has a sinusoidal representation}", however weak this assumption is.
+
+\begin{definition}[Admissibility of a sinusoidal representation] A signal $x(t)\in\left[\mathbb{R}\to\mathbb{R}\right]$ \textbf{admits a sinusoidal representation} if there exist functions $m(t),\ \theta(t)$ such that $x(t) = m(t)\cos\left(\theta(t)\right)$. Additionally, $x(t)$ admits a sinusoidal representation \textbf{at the frequency $\omega(t)$} if there exists a solution $\phi$ to $\phi(t) = \theta(t) - \psi(t),\ \psi(t) = \int_0^t \omega(s)ds$.
+
+	Equivalently, $x(t)$ admits a sinusoidal representation if there exists a complex generator function $f(t)$ of $x(t)$, that is, there exits a $f(t)\in\left[\mathbb{R}\to\mathbb{C}\right]$ such that $x(t) = \Re\left[f(t)\right]$. The signal $x(t)$ then admits a representation at $\omega(t)$ if $f(t)$ is such that there exists a solution $\phi$ to $\phi(t) = \arg\left[f(t)\right] - \psi(t)$.
+\end{definition}
+
+%-------------------------------------------------
+\subsection{The 3$\phi$ DPT and the single-phase variant} %<<<2
+
+	We immediately notice that the three-phase variant of the Dynamic Phasor transform does not need this entire sophistication of complex expansion to exist; the three-phase transform feels, in some way, much more \textit{natural} than its single-phase counterpart. For instance, we do not need to consider whether the three-phase signal $\left[x_a(t),x_b(t),x_c(t)\right]^\transpose$ admits a phasorial representation, or if there exists some complex generating function; the transformations involved can be applied for an arbitrary three-phase quantity, balanced or not, phasorializable or not.
+
+	The matter of fact is that the 3$\phi$ DPT is, in essence, two linear matrix transformations in tandem (the Clarke transform followed by the Park transform), as per definition \ref{def:dq0_transform}. As such, these transformations can be applied to any three-phase signal, at any apparent frequency chosen. Because the transformations are invertible and linear, the 3$\phi$DPT is also naturally invertible and linear. These characteristics are extensively explored in \cite{orourkeGeometricInterpretationReference2019}, where the Clarke-Park Transform is explored as a geometric perspective transformation in the three-dimensional space of functions.
+
+	The naturality of the three-phase transform stems from the simple fact that by definition the three-phase signals have dimension three, and the 3$\phi$DPT is a literal transformation, that is, it has a three-dimensional input and a three-dimensional output. What is more, again, this transformation is linear and always invertible, making it very simple to deploy. No information is generated or lost; the benefit, however, is that for specific signals of interest, the particular quantities generated are naturally represented by a phasorial two-dimensional quantity and a zero-sequence component that is very conveniently null for balanced signals and excitations that comprise most analyses.
+
+	On the single-phase case, however, in order to produce a complex phasorial quantity, we must create two dimensions from the single-dimensional input, which means information is somehow created. It is a consequence of this process that the justification and mathematical background for this creation must be precise and solid, because the creation of the extra dimension must be done carefully to maintain the properties and qualities that we want; to this extent, subsections \ref{subsec:comments_def_sin} and \ref{subsec:justifying} go to great lengths to show that this process can be done with mathematical rigour and aligns with the intuition and conception of Dynamic Phasors — complex, time varying functions represented with respect to a rotating frame on the complex plane.
+
+	This explains why, historically, the three-phase transformations were developed earlier than the single-phase ones; as a matter of fact, the Clarke-Park transforms were quickly adapted for higher numbers of phases. For instance, six-phase DQ transformations were used to model and control six-phase and dual-three-phase machines; modernly they are used in space-vector control of PWM drives \pcite{gloseContinuousSpaceVector2016}. An expansion of these transformations for an arbitrary number of phases also exists, as developed in \cite{janaszekExtendedClarkeTransformation2016}.
+
+	As a matter of fact, the theorems of this thesis were all first developed for the three-phase case and then for the single-case one; in the text, however, the latter is shown first because from a study and development perspective it is only natural that a transformation is first developed in single dimension and then expanded to higher dimensions.
+
+%-------------------------------------------------
+\subsection{Justifying the complex generator function and the frequency arbitrariety}\label{subsec:justifying} %<<<2
+
+	From the dicussion of last subsection it is natural to ask whether the sophistication of obtaining some complex projector function $f(t)$ makes sense, as it apparently makes analyses harder. Reestated, the fact that in order to have Dynamic Phasors we need to ``create an additional dimension'', as the real signal $x(t)$ needs to be expanded to a complex $f(t)$. This is a natural and justified question because the subsection clearly shows that the existence of such a function for an arbitrary signal gets quite complicated, requiring quite wordly tools such as the Hilbert Transform.
+
+	The intent of chapter \ref{chapter:dynamic_phasor_theory} on the inception of the proposed Dynamic Phasor Theory was to show that this process, while admittedly startling at first, does pay off. For instance, because we can represent the initial signal $x(t)$ as some expanded complex representative $f(t)$, we can apply modifications to the complex space onto $f(t)$ so that the equivalent quantities in the modified space are better applicable to our problems of interest; specifically for the intents of this thesis, we want to represent generalized sinusoids as Dynamic Phasors which are a convenient way to define amplitude and phase of such signals.
+
+	The representation of signals in the complex domain naturally opens the way for a set of transformations only available to complex numbers; for instance, we can rotate the complex space in \textit{just the right way} (i.e., by the specific angle $\psi(t)$) so that the solution of certain differential equations is ameliorated. Furthermore, the inception of a complex representative allows us the complex notions of amplitude and phase in a wider reach of complex domain rather than the simpler equivalent notions for real signals.
+
+	In particular, it was shown that a linear and time invariant differential equation in the time domain has an equivalent linear equation in the complex domain — equivalently, given a complex system in the time domain we obtain an equivalent system in phasorial domain. This, in turn, allows us to model circuits and systems in the phasorial domain; in practice, this means we can produce models, simulations and (further along the thesis) control blocks in phasor domain rather than the time domain. To this wise, chapter \ref{chapter:dynamic_phasor_theory} shows several examples of modelling. 
+
+	Therefore, the conception of a complex generating function is in essence the core of the Dynamic Phasor Transform, and it is exacly this tool that allows the development of the theory proposed in this thesis. Further, this function allows the rotation of the complex space and the generation of a ``dq-equivalent'' differential model from a linear system, allowing one to model a circuit in phasorial domain given the time-domain model. Also importantly, we have shown that this entire process is a generalization of the classical phasor transform, defined as the Static Phasor Operator in this thesis, in such way that the intuitive models of rotating vectors and linear transformations are maintained, albeit in a mode sophisticated mathematical environment.
+
+	Furthermore, it was shown that the particular rotation that generates the phasorial domain maintains the ideas of active and reactive power of static phasors, thus making possible the power analyses not only in a static phasor framework (that is, in phasorial equilibrium) but also in a Dynamic Phasor context, which we used model power transfer in a circuit in transient regimens. Here, the resemblance of complex power in the classical framework and in dynamic models cannot be understated. Even the formulas are exactly the same: in classical phasors the instantaneous power is given by theorem \ref{theo:sfp_complex_apparent_power} as
+
+\begin{equation} p(t) = P \left[1 + \cos\left(2\omega t + 2\phi_v\right) \right] + Q\sin\left(2\omega t + 2\phi_v\right)\end{equation}
+
+	\noindent where the complex power is defined as
+
+\begin{equation} S = \frac{1}{2}\left<V,I\right> = P + jQ\ \left\{\begin{array}{l} P = \dfrac{m_vm_i}{2}\cos\left[\phi_v - \phi_i\right] \\[3mm] Q = \dfrac{m_vm_i}{2}\sin\left[\phi_v - \phi_i\right] \end{array}\right. \end{equation}
+
+	\noindent where in the Dynamic Phasors domain these formulas are just the time-varying counterparts, as per theorem \ref{theo:activereactivepower}:
+
+\begin{gather}
+	p(t) = P(t) \left[1 + \cos\left(2\psi + 2\phi_v\right) \right] + Q(t) \sin\left(2\psi + 2\phi_v\right) \\[3mm]
+	S(t) = \frac{1}{2}\left<V(t),I(t)\right> = P(t) + jQ(t)\ \left\{\begin{array}{l} P(t) = \dfrac{m_v(t)m_i(t)}{2}\cos\left[\phi_v(t) - \phi_i(t)\right] \\[3mm] Q(t) = \dfrac{m_v(t)m_i(t)}{2}\sin\left[\phi_v(t) - \phi_i(t)\right] \end{array}\right. .
+\end{gather}
+
+	Finally, the physical meanings and interpretations of the active and reactive power components are also maintained. By theorem \ref{corollary:sfp_active_average_power}, the active power $P$ in a static phasor environment is the average power over a period $T$:
+
+\begin{equation} \dfrac{1}{T} \int_{t}^{t + T} v(x)i(x)dx = P \end{equation}
+
+	\noindent and in a DP framework the same formula holds — albeit naturally now $T$ is time-variable: theorem \ref{theo:activepowerperiod} defines that the active power $P(t)$ is the average over $T(t)$:
+
+\begin{equation} \dfrac{1}{T(t)}\int_{t}^{t+T(t)} p(s)ds = P(t) .\end{equation}
+
+	Finally, much like theorem \ref{corollary:direct_quad_current} shows that in static phasor the active power accounts for the portion of current in  phase with voltage and the reactive power accounts for the portion in quadrature with voltage, as in
+
+\begin{equation} i(t) = \dfrac{2P}{m_v}\cos\left(\omega t + \phi_v\right) + \dfrac{2Q}{m_v}\sin\left(\omega t + \phi_v\right) .\end{equation}
+
+	\noindent the same exact phenomenon happens in Dynamic Phasors, as per theorem \ref{theo:direct_quad_current_nonst}:
+
+\begin{equation} i(t) = \dfrac{2P(t)}{m_v(t)}\cos\left(\psi(t) + \phi_v(t)\right) + \dfrac{2Q(t)}{m_v(t)}\sin\left(\psi(t) + \phi_v(t)\right) .\end{equation}
+
+%-------------------------------------------------
+\subsection{Generalization of ``phasor calculus''} %<<<2
+
+	Due to the extensive results on circuit analysis and complex power, we also note that the theory defined in this thesis also generalizes the ``low-pass phasor calculus'' as presented by Venkatasubramanian:
+
+\begin{quotation}
+	``\textit{\textbf{Property 4} (1) (Capacitor): The current $i_C(t)$ flowing through a capacitor $C$ with the terminal voltage $v_C(t)$ can be represented by}
+
+\begin{equation} \hat{i}_C(t) = C\dfrac{d}{dt}\hat{e}_C(t) + j\omega_c C\hat{e}_C(t) \end{equation}
+
+	\noindent \textit{in the phasor domain (...). (2) (Inductor): The voltage $e_L$(t) across an inductor $L$ when the $i_L(t)$ is flowing through, can be represented by}
+
+\begin{equation} \hat{e}_L(t) = L\dfrac{d}{dt}\hat{i}_L(t) + j\omega_c L\hat{i}_L(t) \end{equation}
+
+ 	\noindent \textit{in the phasor domain (...).} ''\hfill\cite{Venkatasubramanian1994}
+\end{quotation}
+
+	Notably, these formulas are the same formulas that stem from the theory of this thesis, as per theorems \ref{theo:1p_capacitive_conductance} and \ref{theo:1p_inductive_impedance} where the capacitive and inductive relationships of the Dynamic Phasors $V$ of voltage and $I$ of current of the capacitive and inductive elements are given by
+
+\begin{gather}
+	I = C\dfrac{dV}{dt} + j\omega C V \\[3mm]
+	V = L\dfrac{dI}{dt} + j\omega L I
+\end{gather}
+
+	\noindent but, in the case of these formulas, $\omega$ can be time-varying and the relationships do not require the time-domain signals to have limited spectrum. Similar relationships are found in Shifted-Frequency Analysis of \cite{zhangSynchronousMachineModeling2007}:
+
+\begin{quotation}
+	``\textit{To obtain the SFA equivalent circuit [of the inductor], we transform (5) using (4) to get}
+
+\begin{equation} \mathbf{V}(t) = -\mathbf{L}\dfrac{d\mathbf{I}(t)}{dt} + j\omega_s \mathbf{LI}(t)\end{equation}
+
+	\noindent \textit{where $\mathbf{V}(t)$ and $\mathbf{I}(t)$ are the dynamic phasor vectors corresponding to the physical time vectors $v(t)$ and $i(t)$, respectively.}'' \hfill\cite{zhangSynchronousMachineModeling2007}
+\end{quotation}
+
+	Therefore, we conclude that the theory presented in this thesis generalizes the results by both \cite{Venkatasubramanian1994} and \cite{zhangSynchronousMachineModeling2007}, by not requiring the signals considered to be in a low-pass spectrum or a fixed apparent frequency. This is illustrated in example \ref{example:rlc_dpt}, where the excitation \eqref{eq:example_voltage_freq_def} adopted has a infinitely wide spectrum yet the theory is able to deal with this excitation with ease. Because of this ease, this exact excitation is used throughout the thesis to reiterate how powerful this theory is, several times over. Furthermore, section \ref{sec:example_application} shows an example application where two excitations of infinite spectrum but different natures (one excitation is frequency modulated, the other is amplitude modulated) are adopted, and the theory is again able to operate these signals.
+
+%-------------------------------------------------
+\subsection{Consequences for Power Systems} %<<<2
+
+
+	Particularly for Electric Power Systems, the complexity of Dynamic Phasor tools is also justified as they are known to considerably speed up the simulation times of differential models: for instance, \cite{laraRevisitingPowerSystems2024} states that ``\textit{Tools such as the EMTP [Electromagnetic Transients Program] work with instantaneous time variables and can continuously trace the evolution of the system state. These tools, however, require small discretization steps dictated by the need to trace the instantaneous values of all waveforms. This makes the EMTP unnecessarily slow to trace phenomena around the 60-Hz fundamental frequency}'', whereas the integration time steps are enlarged using the proposed SFA tehcnique, speeding up simulation time: ``\textit{The main advantages of the proposed shifted frequency analysis (SFA) model are realized when the frequencies in the simulation are close to 60 Hz, which allows, after frequency shifting, the use of large integration steps.}''
+
+	Moreover, the fact that the apparent frequency must be ``chosen'' is also confusing, for a couple reasons. First, that this choice is arbitrary, and second, that a signal $x(t)$ might admit a phasorial representation against multiple (or even infinite) apparent frequency functions, thus one of such must be chosen. At this point one infers that the arbitrariness of $\omega(t)$ brings some problems at no benefit; in reality, it serves multiple purposes. In Power Systems, the many agents of the grid have a local measurement of frequency, and most will be equipped with frequency control dependend on active power output (known as Droop control) so that the frequency of the generated sinewave is transiently adjusted, therefore being a choice of the local agent by its controller; in this sense, the frequency signal $\omega(t)$ must be \textit{chosen}, hence why it is defined as arbitrary for now in the sense that the operator has to choose a signal, that is, the representation depends on the existence of some frequency signal that is preemptively defined.
+
+	The problem of many (or infinite) possible apparent frequency choices is not new in the literature; for example, Venkatasubramanian debutes his linear operator-based approach by making an argument that for Electric Power Systems, the choice of the synchronous frequency is not only convenient but also plays on the well-definiteness of the problem of multiple possible frequencies:
+
+\begin{quotation}
+\textit{``In fact, it is easy to construct an infinite number of different time-varying phasors which all satisfy (3) [the definition of a Dynamic Phasor], but they are not of practical interest. The point is that in general, an explicit representation of the form $e_o$(t) [a generalized sinusoid at the frequency $\omega_c$] is not available for modulated signals, and the problem of finding the phasor is not mathematically meaningful unless we impose some assumptions to tighten the field of possible candidates to the practically interesting ones. For instance, it can be observed that the degenerate phasors (...) associated with the signal $e_o$(t) all have their bandwidths greater than or equal to $\omega_c$ [the carrier frequency] whereas the bandwidth of the degenerate phasors is strictly less than $\omega_c$. In other words, if we restrict the choice of phasors to those with bandwidths less than the carrier frequency $\omega_c$, then [the produced Dynamic Phasor] is the unique phasor associated with $e_o(t)$ and the problem is well-defined.}\hfill\pcite{Venkatasubramanian1994}
+\end{quotation}
+\vspace{3mm}
+	
+	Even then, as exposed in the introduction of this thesis, both the SFA technique by \cite{laraRevisitingPowerSystems2024} and the linear operator approach of \cite{Venkatasubramanian1994} require the signals under study to have a spectrum limited to a bandwidth around the synchronous frequency; however, in the representation proposed in this thesis and the entire theory that stems from it, no such requirement is made — reestated, the theory hereby proposed poses an expansion of such theories by requiring no conformities or restrictions on the characteristics of the signal.
+
+	Considering this fact, this theory can model phenomena unavailable to these past theories by not only not restricting the signals but also not requiring a particular frequency value: for instance, a network with multiple agents will include many frequency signals, and each agent will represent the grid by a particular time-varying model that is used in its sensors, controllers and estimators. The definition hereby proposed aims to offer a ``wiggle room'', in the form of the arbitrariness of $\omega(t)$, so that the same grid can be modelled using multiple frequency signals. It will be proven in this thesis that the particular model of each agent is ``equivalent'' in some sense — which is only natural seen as the grid is the same for all agents after all. A ``common frequency'' representation can be chosen, however; in most Power System studies, the Center of Angle (CoA) is chosen as the pure average (or weighted average) of the frequency signals of the agents; ideally, the grid eventually achieves \textit{consensus} — loosely defined in Power Systems as the agents converging to a common frequency after some disturbance — thus reaching a steady-state value.
+
+	This ``common frequency'' however can also be time-varying, prompting a wide and embracing definition. If the agents of the grid achieve consensus, then the grid achieves a steady-state frequency that deviates from the synchronous frequency depending on the load state of the system. The adjustment of this steady-state frequency generally depends on a collaborative and/or centralized control that adjusts the power setpoint of the agents, and this control acts on the slow bandwidth timescale — generally tens of seconds or even minutes. 
+
+	Moreover, another interesting aspect of the arbitrariness of $\omega(t)$ comes from a modelling and a numerical standpoint and allowing particular choices of frequency signals at the discretion of the user, engineer, mathematician, or whoever is fortunate enough to use this theory. Seen as the representations of a particular linear system using two distinct frequency signals are equivalent, one asks what is the ``most convenient'' representation. Naturally, for modelling purposes, one might think it would be easier to adopt $\omega(t) = \omega_0$ the synchronous frequency, which makes sense in a ``slack'' or synchronous reference frame. Engineers interested in a simulatory and numerical approach will also ask what is the frequency signal that yields simpler differential models that can make simulation easier or faster by either reducing complexity or allowing for larger integration timesteps.
+
+	By allowing any choice of apparent frequency, the theory proposed in this thesis embraces and generalizes the current literature definitions, like those of \cite{laraRevisitingPowerSystems2024} and \cite{Venkatasubramanian1994}, that define nonstationary sinusoids as always defined at the synchronous frequency. This definition is widespread in the Elecric Power System literature, and was standardized in the IEEE Standard C37.118.1-2011 where a nonstationary sinusoid is defined in page 6 as a signal 
+
+\begin{equation} x(t) = X_m(t) \cos\left(2\pi \int f dt + \phi\right).\end{equation}
+
+	The standard also defines a nominal frequency $f_0$ and a frequency deviation signal $g$:
+
+	\textit{In the general case where the amplitude is a function of time $X_m(t)$ and the sinusoid frequency is also a function of time $f(t)$, we can define the function $g = f - f_0$ where $f_0$ is the nominal frequency and $g$ is the difference between the actual and nominal frequencies (note that $g$ will also be a function of time, e.g., $g(t) = f(t) - f_0$. The sinusoid can then be written as}
+
+\begin{align}
+	x(t) &= X_m(t) \cos\left(2\pi \int f dt + \phi\right) \nonumber\\[3mm]
+	&= X_m(t) \cos\left[2\pi \int \left(g + f_0\right) dt + \phi\right] \nonumber\\[3mm]
+	&= X_m(t) \cos\left[2\pi f_0 t + \left(2\pi \int gdt + \phi\right)\right] \label{eq:synchrophasor_time}
+\end{align}
+
+	\textit{The synchrophasor representation for this waveform is:}
+\begin{equation} X(t) = \dfrac{X_m(t)}{\sqrt{2}} e^{j\left(2\pi \int gdt + \phi\right)} . \label{eq:synchrophasor_complex}\end{equation}
+
+	Immediately one notices that choosing $\omega(t) = \omega_0 = 2\pi f_0$ constant on \eqref{eq:apparent_angle_def} yields this precise definition; as a consequence, the definition proposed generalizes this synchrophasor representation.
+
+	Further, in page 8, the standard defines ``frequency'' as follows. Given a signal $x(t) = X_m(t)\cos\left(\theta(t)\right)$ measured by a Phasor Measurement Unit (PMU) or a realtime measurement device like a scope, the frequency is
+
+\begin{equation} f(t) = \dfrac{1}{2\pi} \dfrac{d\theta}{dt} \label{eq:synchrophasor_complex_frequency}\end{equation}
+
+	\noindent which differs significantly from the apparent frequency definition proposed. This is because the definition of the standard assumes that the phase $\phi$ is constant, where the proposed definition is more generalized. To this extent, we can define an equivalent definition of the \textbf{absolute frequency} $\eta$ as the derivative of the absolute angle $\theta$ in \eqref{eq:apparent_angle_def}:
+
+\begin{equation} \eta(t) = \dfrac{d\theta}{dt}(t) = \omega(t) + \dfrac{d\phi}{dt}(t)\end{equation}
+
+	\noindent which is equivalent to the frequency definition \eqref{eq:synchrophasor_complex_frequency} of the standard. This is therefore related to the apparent frequency and phase as
+
+\begin{equation} \int_{t_0}^t \eta(s)ds = \phi(t) + \int_{t_0}^t \omega(s)ds \Rightarrow \phi(t) = \int_{t_0}^t \left[\eta(s) - \omega(s)\right]ds . \end{equation}
+
+	Moreover, to make a frequency variation analysis the standard defines the Rate of Change of Frequency (ROCOF) quantity as
+
+\begin{equation} \text{ROCOF}(t) = \dfrac{df(t)}{dt} .\end{equation}
+
+	Then, because the standard defines synchrophasors as quantities computed in relation to a nominal frequency $f_0$, then the argument can be represented as $\theta(t) = 2\pi f_0 + \phi(t)$, and the frequency becomes $f(t) = f_0 + \Delta f(t)$, this latter term a frequency deviation and the ROCOF becomes
+
+\begin{equation} \text{ROCOF}(t) = \dfrac{d}{dt} \left[\Delta f(t)\right].\end{equation}
+
+%-------------------------------------------------
+\section{Frequency effects on the Dynamic Phasor Transform}%<<<1
+
+	The contributions of chapter \ref{chapter:choice_apparent_frequency} are entirely new in the literature; the main contribution, as outlined in the introduction, is the proof of the Quasi-Static Hypothesis, leading to and justifying Quasi-Static Models as per theorem \ref{theo:qsh_linear_circuits}.
+
+	While the inner workings of this theorem are somewhat complicated as based on theorem \ref{theo:qsh_approx_nonlinivps} by \cite{Marva2012}, the application of the theorem seems rather intuitive to engineers: in essence, Quasi-Static Models are loosely defined as ``using classical phasor relationships to Dynamic Phasors'', which obviously greatly amenize the process of modelling.
+
+	It must be noted that \cite{Venkatasubramanian1995a} shows a similar discussion on the proof of the QSH using Tikhonov's Theorem. The theorem presented is stronger, for two reasons: it also considers non-autonomous systems, and that allows it to use a more general model where forcings and frequencies are co-dependent. This makes the proof in \cite{Venkatasubramanian1995a} more limited with respect to the one shown here. That paper also discusses on the validity of the $\pi$ model (the Unified Model of subsection \ref{subsec:unified_model}), with the argument that the quasi-static approximation is naturally only as good as however well the model adopted can reflect the system dynamics but as voltages and currents on lines get quicker, electromagnetic modelling is needed to account for transmission line delay characteristics.
+
+	Furthermore, the generalized Power System modelling of \cite{Venkatasubramanian1995a} also has simplifications, as it does not model transformations on the apparent frequency nor the dependence on frequency, forcings and states. Furthermore, the authors do not offer a phasorial theorem that explains Quasi-Static models. Moreover, the phasorial theory used is that of \cite{Venkatasubramanian1994}, which as discussed before, expects the generalized sinusoids involved to have limited spectrum.
+
+	As such, the proof shown in this thesis not only adopts a more general and complete model of Power Systems but also uses the more generalized Dynamic Phasor theory that does not rely on specific spectrum qualities of the signals involved. As such, the proof shown here is inspired by the results of \cite{Venkatasubramanian1995a} but offers a more comprehensive and expanded proof and modelling.
+
+	The effects of this approximation are thoroughly discussed in example \ref{example:rlc_timescales}, where the circuit parameters vary to show how a circuit with different timescales reacts to a fast-changing excitation. Section \ref{sec:omib_dynphasor_sim} shows the application of this theory to a Power System, illustrating how Quasi-Static Models fail to capture certain electromagnetic trasient phenomena of transmission grids and internal impedances of generators.
+
+	Despite this main contribution of proving the Quasi-Static Hypothesis, this chapter also has other contributions to the overall theory of Dynamic Phasors. For instance, the chapter proves in theorem \ref{theorem:sols_are_nonst} that if a linear circuit is excited with generalized sinusoids at some frequency $\omega(t)$, then all currents and votages will also be sinusoids defined at the same frequency; furthermore, even if the excitations are defined at distinct frequencies, under mild requirements they can be written with respect to a common frequency.
+
+	While apparently too theoretical, this chain of proofs has profound consequences in the Theory of Electrical Circuits. For instance, since all excitations, currents and voltages can be written in the same frequency, they can be geometrically drawn and compared in the same DQ frame; this justifies the commonly used phasorial diagrams for circuits. For instance, take the diagram of figure \ref{fig:dynamic_phasor_dqaxis_ibr}, where all quantities are drawn in a stationary real-imaginary frame. Because all quantities can be defined at the same frequency $\omega_P(t)$, then one can rotate the entire frame by $\psi(t)$, generating the phasorial diagram in the DQ frame \ref{fig:dynamic_phasor_dqaxis_ibr_dqframe}.
+
+	Another contribution of this chapter is the fact that in a multi-frequency system (one where each agent inputs onto the system a forcing at a local particular frequency), the entire system can be modelled in a common frequency such that all signals can be reconstructed losslessly, as shown in theorems \ref{theo:homeomorphic_phasors} and \ref{theo:diff_freqs}, and illustrated in example \ref{example:diff_freqs}. This fact is widely used in Power Systems: most of the times the electrical grid is modelled at the synchronous frequency, and all agents forcings are rotated to this frequency so that all are modelled with respect to the same frequency. This is illustrated for instance in the example of subsection \ref{sec:omib_dynphasor_sim}, where the synchronous machine and the infinite bus input voltages at different frequencies but the system is modelled at the synchronous frequency.
+
+%-------------------------------------------------
+\section{About Dynamic Phasor Functionals}%<<<1
+
+	While the Dynamic Phasor Theory of chapter \ref{chapter:dynamic_phasor_theory} generalizes concepts that are already timidly developed in the literature, Dynamic Phasor Functionals greatly enhance the application of the theory to produce intuitive and complete models of circuits and systems in nonstationary regimens.
+
+	The concepts of these functionals was pointed at by Venkatasubramanian, Schättler and Zaborsky when they noted that the composition of the phasor transform — which they denoted $P(\cdot)$ — and the derivative generate yet another transformation in the complex domain:
+
+\begin{quotation}
+	\textit{``A special feature for the time-varying phasor transformation emerges when the time derivative operation is considered:}
+
+\begin{equation} P\left(\dfrac{d}{dt}e(t)\right) = \dfrac{d}{dt}\vec{E}(t) + j\omega \vec{E}(t) \label{eq:venka_p_operator}\end{equation}
+
+	\noindent\textit{the result simply follows from the definition of $P(\cdot)$ using the chain rule.}''\hfill\pcite{Venkatasubramanian1995a}
+\end{quotation}
+
+	However, this relationship was given as a property; the functional aspects were not considered. From this point onward, the entirety of the theory on Dynamic Phasor Functionals as developed in chapter \ref{chapter:dpos} is novel in the literature.
+
+	The matter of fact is that these functionals, in some way, seem \textit{too good to be true}. They have very convenient algebraic properties that make them remarkably useful in modelling circuits and systems, and particularly Power Systems. Not only that, these functionals are also imbued with a topology through the norm definition \ref{def:dpnorm}, which allows producing idealized models of short and open circuits, as well as infinitely large open-loop gains — which was explored in the example of section \ref{sec:example_application}.
+
+	More importantly, the algebraic properties of DPFs are also surprising; given the apparent sophistication of their definition, the functionals are ultimately easy to work with, being invertible, linearly combineable. The concepts of polynomials and matrices are also of great interest, because they allow the definition of Dynamic Impedances and the possibility of matrix network analysis in the Dynamic Phasor domain.
+
+	One of the more happy aspects of Dynamic Phasor Functionals is that they are able to abstract the apparent frequency from the calculations and modelling. It is clear that without these functionals, if one were to use relationship \eqref{eq:venka_p_operator} for all circuit orders, they would inevitably be led to a rather concerning number of terms and combinations of the frequency and its derivatives. Whereas by using functionals these calculations are all abstracted and the frequency signal is only needed at the end of the model.
+
+	The most important aspect of Dynamic Phasor Functionals for the Theory of Electric Circuits is, by far, the possibility of defining impedances in the Dynamic Phasor space, as per definition \ref{def:steinmetz_impedance}. This definition is very in line with the commonplace concept of impedances both in the classical phasors domain — where impedances are ratios of polynomials of $j\omega$ — but also impedances in the Laplace domain — where an impedance is a transfer function composed of ratios of polynomials of the Laplace frequency $s$.
+
+	The inception of these impedance operators culminates with the Superposition Theorem (theorem \ref{theo:superposition}), which yields the Thèvenin and Norton theorems (theorems \ref{theo:thevenin} and \ref{theo:norton}). The importance of these theorems cannot be understated, because they mean that the circuit analysis in Dynamic Phasor domain is not at all different from the analysis engineers are already used to; with minimal adaptations, such as the ongoing notion that the quantities being time-varying phasors and functional operators, the modelling procedures and concepts are essentially the same as static phasors.
+
+	It is clear that the reach and possibility of Dynamic Phasor Functionals is quite large, and they may be deployed to a large number of problems in a large number of areas. Particularly for Electrical Engineering, their application to signals, systems and controls cannot be understated. Of course, this author will develop further research into those topics.
+
+%-------------------------------------------------
+\section{About $\mu$ Transforms and the control theory in Dynamic Phasor Space}
+
+	The control thery presented in chapter \ref{chapter:control_theory} is entirely new in the literature. The objective of this chapter is to essentially justify linear controllers in the Dynamic Phasor space, that is: there is a direct relationship between controllers in Dynamic Phasor domain and controllers in time domain, or equivalently, by controlling Dynamic Phasor quantities one also controls time quantities, and this process is justified.
+
+	The great contribution of this thesis is to show the exact mathematical mechanism that generates this relationship between control realms. This mechanism is the $\mu$ Transform of \eqref{eq:mtransf_mu_def}, which is shown to be a generalization of the Laplace Transform in rotating complex frames. This can be seen by the simple fact that if the apparent frequency is null (the space does not rotate) then the $\mu$ Transform devolves exactly into the Laplace Transform, as well as the inverse transform devolves into the Inverse Laplace Transform as per theorem \ref{theo:xmu_reconst}.
+
+	Albeit a generalization, the $\mu$ Transform retains the most convenient properties of the Laplace Transform: it has a Final Value Theorem (theorem \ref{theo:laplace_fvt}), it transforms differentials (DPFs) into a multiplication by the complex frequency $\mu$ (theorem \ref{theo:mu_transf_and_dpfs}) and it transforms rational systems into Transfer Functions (as per \eqref{eq:intuition_mutfs}).
+
+	As a consequence, $\mu$ Transfer Functions ($\mu$TFs) also called Dynamic Phasor Transfer Functions (DPFTs) also generalize Laplace Transfer Functions while retaining interesting properties: a convolution operator is defineable (definition \ref{def:mut_convo}) and this operator makes $\mu$TFs a ring with respect to the space of functions (theorem \ref{theo:muT_conv_prod}); furthermore, the impulse distribution is the neutral element of the convolution (theorem \ref{theo:delta_neutral}). These facts culminate with the fact that the output of a linear system can be obtained by convolving the input with the impulse response (as per \ref{eq:impulse_response_convo}).
+
+	However, the most important theorem of the chaper is theorem \ref{theo:bibo_mutfs}. This theorem basically defines that the concept of input-output stability, also named bounded input, bounded output (BIBO) stability is also available for $\mu$ TFs. The contribution of this theorem is that the construction of controllers using $\mu$TFs, like controllers on Laplace domain, can be made by engineering the transfer functions themselves instead of looking at the time responses directly; therefore, things like zeros-poles anlyses and stability are also maintained with minor adjustments.
+
+	Further research is needed to deploy this theory to develop better controllers or to validate the ones that exist. Chapter  \ref{chapter:control_theory} shows that the current controller of figure \ref{fig:3p_curr_control}, example \ref{example:3p_eps_modelling} commonly used in IBR systems is not really convenient to use because of the amount of gain parameters, leading to difficult tuning. In contrast, the proposed substitute of figure \ref{fig:partial_blockmodel}, based on the proportional-integral equivalent controller in DP domain of figure \ref{fig:pi_utf_blockmodel}, is a much better candidate because its BIBO stability is guaranteed with the very simple requirement that the integral gain be positive; the rest of the tuning process can be undertaken using dynamic performance constraints. The example used loosely chosen values for the gains, but further research will be made to specify the tuning process, leading to better performance.
+
+%-------------------------------------------------
+\section{Conclusion} %<<<1
+
+	The introduction of this thesis uses the Quasi-Static Hypothesis as a motivator for a sequence of faults in the literature of Power System modelling and control. All of the faults stem from the essential fact that in order to achieve Phasor Equivalent models of machines, the transmission grid, and the controllers employed, many approximations and assumptions are made, and extensively so, to the point of bringing into question if the models and simulations and controllers developed are valid, that is, if these elements do indeed yield verosimile results that mirror the signals and systems they intend to represent.
+
+	The key concept is that the lack of a complete theory to represent generalized sinusoids forces the assumption that frequency swings are small in amplitude and slow in time. Under such assumption, the phasorial models \eqref{eq:machine_2a_model} and \eqref{eq:machine_2a_model_classical} are possible; coupled with the constant admittance model of the grid in \eqref{eq:multimachine_admittance}, one can model a transmission grid and its machines using approximate models that suppose (1) that the machines supply ``almost-sinusoidal'' voltages and currents and that (2) the grid circuit is much ``quicker'' than the frequency variations, so that it can be approximated for its steady-state sinusoidal behavior. This also allows the construction of power flow equations \eqref{eq:power_flow_eqs}, even though a clear and solid definition of complex power in nonstationary regimens is not available.
+
+	Even though this assumption — formalized as the Quasi-Static Hypothesis or Modelling — seems reasonable, and for however important it is, a solid and straightforward proof that the models stemming from it are verosimile and indeed approximate quasistatic sinusoids in time is notable absent in the current literature. Moreover, for modern Power Systems this assumption is violated, requiring more involved models aimed specifically at the quicker transient phenomena these new systems can manifest.
+
+	Moreover, the usual control systems built for Power Systems heavily draw from these approximations, like the controllers of figure \ref{fig:machine_model_controls}. However, due to the wide and deep approximations and assumptions, it becomes questionable if these controllers are really effective from a theoretical standpoint, and if their efficacy outside of the approximated models can be asserted.
+
+	In the scope of these driving facts, this thesis achieves the initial task of offering a theory of Dynamic Phasors that allows for mathematical formalizations of the gaps in the literature that fundamentally cause the issues outlined. In a wide view, chapter \ref{chapter:dynamic_phasor_theory} dealing with the inception of Dynamic Phasor Theory formalizes the idea of generalized sinusoids as real signals as a generalization of static sinusoids by allowing time-varying amplitude, frequency and phase. It was shown, through a construction of several operators and functionals, that generalized sinusoids bear a bijectivie relationship — called the Dynamic Phasor Transform — with complex time functions called Dynamic Phasors. This allows, for instance, representing the widely used synchrophasors \eqref{eq:equivalent_emt_E}, \eqref{eq:equivalent_emt_X} and especially those as defined in the IEEE Standard C37.118.1-2011 \eqref{eq:synchrophasor_time}. Further, this chapter also shows that the Dynamic Phasor Transform achieves notions of complex, active and reactive power that generalize their static counterparts while maintaining close resemblance and physical interpretations. Therefore, this chapter successfuly achieves the first issue raised in the introduction, \textit{videlicet} the representation of generalized sinusoids as Dynamic Phasors with solid construction and physical meaning.
+
+	It was shown that this theory allows for building models of power systems in Dynamic Phasor space, as shown by examples \ref{example:rlc_dpt} and \ref{example:rlc_dpt_power}, including three-phasor systems as in example \ref{example:3p_eps_modelling}. The models built are solid and produce phasorial quantities that losslessly reconstruct their respective signals in time, solving the second issue raised in the introduction as this allows for building models of power devices, in particular synchronous machines and transmission lines.
+
+	In chapter \ref{chapter:choice_apparent_frequency}, it was shown that the Quasi-Static Modelling and the models derived from it indeed bear verosimilance, by proving the intuitive notion that if a circuit is quicker than its excitaions, the circuit behaves at an ``almost-sinusoidal'' state as proven by theorem \ref{theo:qsh_linear_circuits} and illustrated in example \ref{example:rlc_timescales}. Further, it was also shown that even if a circuit is imbued with several frequency or angle references, the models built in the different frames are equivalent in some way, as per theorem \ref{theo:diff_freqs}. Reestated, even if the models describe different phasors and models but they build the same time signals, as shown in example \ref{example:diff_freqs}. This shows that even though each agent in a multi-agent system has their own reference and frequency frames, their controls and models agree. This chapter justifies the constant admittance model \eqref{eq:multimachine_admittance} of power grids, as well as the power flow equations \eqref{eq:power_flow_eqs}, effectively justifying the common modelling used for power grids, as well as the validity of quasi-static models like \eqref{eq:machine_2a_model} and \eqref{eq:machine_2a_model_classical}. Furthermore, this chapter in section \ref{sec:freq_modelling_timescales} shows that any time-domain controlled system in nonstationary regimen is diffeomorphic to a phasor-domain controlled system, justifying phasorial-domain controllers for linear systems excited with generalized sinusoids.
+
+	Further, chapter \ref{chapter:dpos} shows that the Dynamic Phasor Transform can be highly operationalized through a specific set of functionals in Dynamic Phasor space, called Dynamic Phasor Functionals (theorem \ref{theo:nth_order_relationship} and definition \ref{def:steinmetzoperator_revisited}). These functionals transform differentiation in time domain to very convenient and powerful algebraic structures (group, ring, field and vector space as proven in section \ref{subsec:notation_abuse}) that enable an entire development of circuit modelling and network analysis in Dynamic Phasor space, even without the Quasi-Static Hypothesis. By the advent of polynomials of such functionals one can define impedances in the Dynamic Phasor context (definition \ref{def:steinmetz_impedance}), and also matrices of such impedances, allowing for an admittance notation like that of the static case \eqref{eq:multimachine_admittance} but in a general case. Further, famous circuit modelling techniques have their Dynamic Phasor counterparts proven: Kirchoff's Laws (theorems \ref{theo:kirchoff_current} and \ref{theo:kirchoff_voltage}), the Superposition Principle (theorem \ref{theo:superposition}), Thèvenin's Theorem (theorem \ref{theo:thevenin}) and Norton's Theorem (theorem \ref{theo:norton}). These results show that a notion of complex admittances and network analysis is possible even if the Quasi-Static Hypothesis fails (see equation \eqref{eq:admittance_dpfs}), allowing to model modern power systems in a manner similar to the techniques already employed in classical systems.
+
+	Finally, chapter \ref{chapter:control_theory} shows that a linear control theory is possible in Dynamic Phasor space, with some slight definitions and modifications. It is proven that an integral transform, named the Mu Transform or $\mu$T, is possible with very convenient properties — mainly that it highly resembles the Laplace Transform (as per definition \eqref{eq:mtransf_mu_def}). This transform has an inverse (theorem \ref{theo:xmu_reconst}) that allows Dynamic Phasors to be rebuilt from their transforms, like using complex poles (theorem \ref{theo:xmu_reconst_residue}). Further, Mu Transforms can produce Transfer Functions or $\mu$TFs (definition \ref{def:muT_TFs}) which again bear very close resemblance to Laplace Transfer Functions; mainly, $\mu$TFs of rational systems as stable if they are proper and Hurwitz Stable (theorem \ref{theo:bibo_mutfs}), the very same characteristic that makes Laplace Transfer functions useful. Thus, this chapter justifies linear controllers in generalized sinusoidal space, like the AVR, PSS and Droop controllers of figure \ref{fig:machine_model_controls} (which are generally designed and tuned using small-signal analyses) but can also produce better, more intuitive controllers than the current ones, as shown in subsection \ref{subsec:new_controller}.
+
+	Ultimately, the Dynamic Phasor Theory proposed in this thesis proves to be a powerful and comprehensive theory that allows for modelling, control and simulation of electrical circuits in generalized sinusoidal regimens. Beyond Dynamic Phasor representation, the theory offers equivalents of modelling techniques and control theory that makes it applicable to a plethora of systems and circuits. The currently most used theories — the Short-Time Fourier Transform and the Hilbert Transform — are, in some way or the other, bereft of applicability as they do not fulfill one or more of the requirements initially set by Classical Phasors, while the current theory checks all the boxes.
+
+	While this thesis offers a wide theory, the obvious challenge is applying the theory herein developed to engineering problems. Due to their intention, the examples showin in this thesis fulfill their purpose of showcasing the features of the theory develop, in so far as they illustrate its usage. Nevertheless, the examples are naturally simplistic in application and size. While it is obvious that while the theory developed can be used to model large systems, a dedicated simulatory software is needed to realize large-scale simulations in this framework.
+
+	The theory also proves to be capable of producing models of Power Systems that can be used for simulation and stability analyses; regarding the ``classical'' Power Systems, even though the proof of the QSM shown in this thesis validates the customary synchronous machine models \eqref{eq:machine_2a_model} and \eqref{eq:machine_2a_model_classical}, it is still to be determined if these models remain the same if one uses the Dynamic Phasor Theory proposed. Much the same way, one wonders if the controllers used, like those in figure \ref{fig:machine_model_controls}, also remain or need to be adjusted in some way.
+
+	Finally, it is also still to be determined what is the behavior of this theory when applied to nonlinear systems, especially because the development of the theory, as presented in this thesis, depends largely on the linear and time invariancy of the systems being studied. The Hartman-Gröbman Theorem guarantees that linearization of a nonlinear system around a hyperbolic equilibrium leads to an equivalent linearized system; this guarantees that the theory applicable to the linearized version around a hyperbolic equilibrium like most controllers are designed and tuned at, including AVRs, PSSs, PI controllers and so on. Nevertheless, this is only valid for small-signal perturbations. However, this fails when such nonlinear systems are subject to large disturbances — not a rare ocurrence in Power Systems.

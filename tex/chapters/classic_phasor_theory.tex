@@ -1,0 +1,1337 @@
+%--------------------------------------------------------------------------------------------------
+\chapter{Classic Phasors Theory} \label{chapter:classical_phasors}
+%--------------------------------------------------------------------------------------------------
+
+%-------------------------------------------------
+\section{Introduction to phasors} %<<<1
+
+	Classical Phasor Theory is proheminently based on the Classical Phasors Operator, which is a bijection that takes a sinusoid and represents it as a point in the complex plane. The paramount property of this operator, which prompted its inception by Steinmetz, is the fact that while adding sinusoids requires formul\ae s known as the Prostaph\ae resis Formul\ae s, adding two complex numbers is a simple matter of complex number operations which are geometrical.
+
+ Despite these useful operational properties, the most useful result stemming from the transform $p_S$ is that it transforms time differential equations defined by linear circuits (such as the grids of Electrical Power Systems) into algebraic equations in the complex domain — a process called ``complexification''. This process allows for a much easier and simpler analysis of electric power grids because the phasor representation of sinusoidal waves allows for the development of the usual phasorial alternating current electrical analysis theory.
+
+	The theoretical challenge is to prove that the complex phasorial quantities obtained from solving the algebraic complex equations are indeed representative of the time signals that solve the original time differential equations of the circuit. Reestated, as simple the operator definition might be, it still is as of now only that — a definition or a representation of some arbitrary operator with nice operational properties. The proof of this fact is absolutely not trivial; in short, it needs first to be proven that Passive Linear Circuits are Hurwitz-stable, that is, if a particular solution can be found then the homogeneous part vanishes exponentially such that the particular solution dominates. Then, it must be shown that the particular solution to a linear circuit excited by sinusoids is also a sinusoid.
+
+	In a broader Electrical Engineering sense, this complexification process is of primary importance for is permeating effects, especially because these results beget the notion of impedances: defining capacitors and inductors as ``complex resistances'', defined as $X_C = \left(j\omega C\right)^{-1}$ and $Z_L = j\omega L$, and this in turn allows representing alternate current networks by phasorial equivalents of direct current circuits, extending the properties of resistive direct current circuits to alternating current ones, such that seminal theorems and laws — like Kirchoff's Voltage and Current laws and Thèvenin's and Norton's Theorems — can be easily ported to alternating current equivalents.
+
+	In the narrower field of Power Systems, when capacitors and inductors are substituted by impedances and applied to an electrical grid — with the assumption that the machine and inverter dynamics are supposed much slower than the grid dynamics —, the exponential transient behaviors of the grid dissipate rapidly, allowing modelling the grid as a set of algebraic complex equations. Owing to this, the modelling of the grid itself is greatly simplified and the only dynamical models needed are those of the agents that act upon the grid. Moreover, the transformation of the electrical equations of the grid into complex algebraic equations, often called ``complexifying'' or the ``complexification'' of the eletrical grid has a great many benefits for power system analysis. First, it allows engineers, researchers and designers to obtain voltages and currents without the need to directly solve the time differential equations of the grid; second, it allows for the representation of voltages and currents in a phasor complex diagram, which begets the notions of angle lags, active and reactive power (therefore complex power). Finally, the complex power $S = V \overline{I}$ is shown to be a direct representation of the instantaneous AC power of a circuit, and its real part the average power developed by that circuit.
+
+	In short, the establishment of Classical Phasors need the following steps: first, show that Passive Linear Circuis are stable. Then, show that the operator $p_S$ allosw the establishment of a bijection between a sinusoid $A\cos\left(\omega t + \phi\right)$ with constant amplitude and phase and the complex number $Ae^{j\phi}$, such that the differential equation in time is transformed into an algebraic equation. Then, this complexification process is justified because the sinusoid is the stable solution to the time Differential Equations of an electrical grid, disconsidering transient vanishing behavior of the grid.
+
+	Then, is shown that the ratios between the phasor of the voltage and the phasor of current of bipoles in the phasor domain are algebraic quantities called \textit{impedances}, which act as ``complex resistances'', allowing for the modelling of sinusoidally-excited electrical circuits directly in the phasor domain instead of modelling in time domain to later transport the model to phasors.
+
+	Finally, it is shown that the instant power of an electrical device operating under a sinusoidal voltage and current is also bijective to a complex number called the complex apparent power $S$, and that the real part of $S$ pertains to the average power developed by the device in half a time period.
+
+	These facts are the basis of alternate current grid analysis theory, and are largely taught in engineering schools in the first years of undergraduate courses. After this, the issues with this approach will be shown, motivating the need for Dynamic Phasors. Most importantly, it will be shown that this complexification process is unable to translate more useful signals of a sinusoidal shape where the amplitude and phase angle are variant in time.
+
+%-------------------------------------------------
+\section{Linear Circuits as Linear Systems (again)} %<<<1
+
+	We first must define the precise target of our analysis: a linear, passive circuit. Theorem \ref{theo:generic_rlc_modelling} shows that any RLC circuit can be modelled as a linear differential equation. Even though this is a well-known fact in the literature, the gist of this particular theorem is that the result is shown in a very specific form that preserves the circuit structure.
+
+	Proving theorem \ref{theo:generic_rlc_modelling} requires a deep introduction to circuits in graph theory (for concepts like incidence matrices), falling outside of the scope of this thesis. Therefore, the theorem is not proven; for the same reason, the example \ref{example:node_analysis_time} that follows the theorem does not apply the theorem directly due to the lack of precise definitions of incidence matrices. Rather, the example proves the simpler assertion that the circuit under study does define a linear system.
+
+\begin{theorem}[Structure-preserving generic modelling of an RLC circuit \pcite{Freund2008,Huang2022,Antoniadis2019}]\label{theo:generic_rlc_modelling} %<<<
+	For a given RLC circuit, denote the incidence matrix
+
+\begin{equation} \mathbf{A}_0 =  \left[\mathbf{A}_R,\mathbf{A}_L,\mathbf{A}_C,\mathbf{A}_V,\mathbf{A}_I\right], \end{equation}
+
+	\noindent composed of $-1,1$ and $0$, where nodes are numbered accordingly. Let the $\mathbf{R,L,C}$ parameter matrices be the matrices of the resistance, inductance and capacitance components ($R$ and $C$ diagonal and $L$ will not be diagonal if mutual inductances are present). Let $x(t) = \left[v^\intercal,i^\intercal\right]^\intercal$, where $v$ is the vector of node voltages, $i$ the branch currents and $f(t) = i_f^\intercal$ the excitation currents from current sources (voltage excitation sources can be transformed into current sources with Norton's Theorem). Then $x$ satisfies
+
+\begin{equation} \mathbf{E}\dot{\mathbf{x}} = \left(\mathbf{J-K}\right)\mathbf{x}(t) + \mathbf{Gf}(t) \label{eq:linear_circuit_linear_system}\end{equation}
+
+	where
+
+\begin{equation} \mathbf{E} = \left[\begin{array}{cc} \mathbf{A}_C C \mathbf{A}_C^\intercal & \mathbf{0}\\[1mm] \mathbf{0} & L \end{array}\right],\ \mathbf{G} = \left[\begin{array}{c} \mathbf{A}_i \\ \mathbf{0} \end{array}\right],\ \mathbf{J} = \left[\begin{array}{cc} \mathbf{0} & -\mathbf{A}_L \\[1mm] \mathbf{A}_L^\intercal & \mathbf{0} \end{array}\right],\ \mathbf{K} = \left[\begin{array}{cc} \mathbf{A}_R \mathbf{R}^{-1}  \mathbf{A}_R^\intercal & \mathbf{0} \\[1mm] \mathbf{0} & \mathbf{0} \end{array}\right] ,\end{equation}
+
+	\noindent and $\mathbf{A}_i$ is the input-to-node connectivity matrix.
+\end{theorem} %>>>
+
+\begin{example}[Node analysis of a second-order circuit]\label{example:node_analysis_time} %<<<
+
+	Consider the second-order circuit of figure \ref{fig:nodeanalysis_example}, which we use as an example of node analysis. First, start with the current laws: from the nodes,
+
+% MODELLING EXAMPLE: RLC CIRCUIT <<<
+\begin{figure}[htb!]
+\centering
+        \begin{tikzpicture}[american,scale=1,transform shape,line width=0.75, cute inductors, voltage shift = 1,>={Stealth[inset=0mm,length=1.5mm,angle'=50]}]
+	\ctikzset{/tikz/circuitikz/voltage/distance from node=10mm}
+		% DRAWING VOLTAGE LOOPS
+		\draw[thick, blue  , <-]  ({2+cos(30)},2.5) arc (30:320:1);% syntax (starting point coordinates) arc (starting angle:ending angle:radius)
+		\draw[thick, red   , <-]  ({6+cos(30)},2.5) arc (30:320:1);% syntax (starting point coordinates) arc (starting angle:ending angle:radius)
+		\draw[thick, green , <-] ({10+cos(30)},2.5) arc (30:320:1);% syntax (starting point coordinates) arc (starting angle:ending angle:radius)
+
+		\draw[thick, stewartyellow, <-]  (7.75,4.75) arc (0:320:0.5);% syntax (starting point coordinates) arc (starting angle:ending angle:radius)
+
+		\draw (0,0)
+			to[vsource,sources/scale=1.25,f<^=$i_{V1}$, v>=$v_1$,invert] (0,4)
+			to[R,l=$R_1$,f>^=$i_{R1}$,v>=$v_{R1}$,-*] (4,4) 
+			to[C,l=$C_1$,f>^=$i_{C1}$,v>=$v_{C1}$,-*] (4,0) 
+			to[short] (0,0); 
+		\draw (4,4)
+			to[short]  (4,6)
+			to[isource,sources/scale=1.25, l=$i_1$, v>=$v_{I1}$] (8,6)
+			to[short]  (8,4);
+		\draw (4,4)
+			to[R,l=$R_2$,f>^=$i_{R2}$,v>=$v_{R2}$,-*] (8,4) 
+			to[R,l=$R_3$,f>^=$i_{R3}$,v>=$v_{R3}$,-*] (8,0)
+			to[short]  (4,0);
+		\draw (8,4)
+			to[L,l=$L_1$,f>=$i_{L1}$,v>=$v_{L1}$] (12,4) 
+			to[R,l=$R_4$,f>^=$i_{R4}$,v>=$v_{R4}$] (12,0) 
+			to[short]  (8,0);
+
+		% DRAWING NODE LABELS
+		\node[shape=circle,draw,inner sep=1pt] at (  0,4.5) {$1$};
+		\node[shape=circle,draw,inner sep=1pt] at (3.5,4.5) {$2$};
+		\node[shape=circle,draw,inner sep=1pt] at (8.5,4.5) {$3$};
+		\node[shape=circle,draw,inner sep=1pt] at ( 12,4.5) {$4$};
+		\node[shape=circle,draw,inner sep=1pt] at ( 6,-0.5) {$5$};
+		
+		% DRAWING LOOP LABELS
+
+		\node[color=blue] at (2,2) {$L1$} ;
+		\node[color=red ] at (6,2) {$L2$} ;
+		\node[color=stewartyellow] at (7.25,4.75) {$L3$} ;
+		\node[color=green] at (10,2) {$L4$} ;
+        \end{tikzpicture}
+	\caption{Second-order circuit for node analysis example.}
+	\label{fig:nodeanalysis_example}
+\end{figure} %>>>
+
+\begin{equation} %<<<
+	\left\{\begin{array}{l}
+		(1):\ -i_{V1} - i_{R1} = 0 \\[3mm]
+		(2):\ i_{R1} - i_{R2} - i_{C1} - i_{I1} = 0 \\[3mm]
+		(3):\ i_{R2} - i_{R3} + i_{I1} - i_{L1} = 0 \\[3mm]
+		(4):\ i_{L1} - i_{R4} = 0 \\[3mm] 
+		(5):\ i_{V1} + i_{C1} + i_{R3} + i_{R4} = 0 
+	\end{array}\right.
+\end{equation} %>>>
+
+	But since $i_{V1} = i_{R1}$, we eliminate the former:
+
+\begin{equation} %<<<
+	\left\{\begin{array}{l}
+		i_{R1} - i_{R2} - i_{C1} - i_1 = 0 \\[3mm]
+		i_{R2} - i_{R3} + i_1 - i_{L1} = 0 \\[3mm]
+		i_{L1} - i_{R4} = 0 \\[3mm] 
+		i_{R1} + i_{C1} + i_{R3} + i_{R4} = 0 
+	\end{array}\right.
+\end{equation} %>>>
+
+	In matrix form,
+
+\begin{equation} %<<<
+%
+	\left[\begin{array}{ccccccc}
+	-1 &  0 &  1 &-1 & 0 & 0 \\[3mm]
+	 0 & -1 &  0 & 1 &-1 & 0 \\[3mm]
+	 0 &  1 &  0 & 0 & 0 &-1 \\[3mm]
+	 1 &  0 &  1 & 0 & 0 & 1 
+	\end{array}\right]
+%
+	\left[\begin{array}{c}
+		i_{C1} \\[3mm] i_{L1} \\[3mm] i_{R1} \\[3mm] i_{R2} \\[3mm] i_{R3} \\[3mm] i_{R4}
+	\end{array}\right] =
+%
+	\left[\begin{array}{c}
+		0 \\[3mm] 1 \\[3mm] -1 \\[3mm] 0 \\[3mm] 0
+	\end{array}\right]
+%
+	\left[\begin{array}{c}
+		i_1
+	\end{array}\right] \label{eq:example_KCL}
+\end{equation} %>>>
+
+	Now apply Kirchoff's Voltage Law on the loops:
+
+\begin{equation} %<<<
+	\left\{\begin{array}{l}
+		(L1):\ -v_1 + v_{R1} = 0 \\[3mm]
+		(L2):\ -v_{C1} + v_{R2} + v_{R1} = 0 \\[3mm]
+		(L3):\ v_{I1} + v_{R2} = 0 \\[3mm]
+		(L4):\ -v_{R3} + v_{L1} + v_{R4} = 0 
+	\end{array}\right.
+\end{equation} %>>>
+
+	But since $V_{I1} = -v_{R2}$, we eliminate the former:
+
+\begin{equation} %<<<
+	\left\{\begin{array}{l}
+		-v_1 + v_{R1} = 0 \\[3mm]
+		-v_{C1} + v_{R2} + v_{R1} = 0 \\[3mm]
+		-v_{R3} + v_{L1} + v_{R4} = 0 
+	\end{array}\right.
+\end{equation} %>>>
+
+	In matrix form,
+
+\begin{equation} %<<<
+%
+	\left[\begin{array}{ccccccc}
+	 0 &  0 &  1 & 0 & 0 & 0 \\[3mm]
+	-1 &  0 &  0 & 1 & 1 & 0 \\[3mm]
+	 0 &  1 &  0 & 0 &-1 & 1 
+	\end{array}\right]
+%
+	\left[\begin{array}{c}
+		v_{C1} \\[3mm] v_{L1} \\[3mm] v_{R1} \\[3mm] v_{R2} \\[3mm] v_{R3} \\[3mm] v_{R4}
+	\end{array}\right] =
+%
+	\left[\begin{array}{c}
+		1 \\[3mm] 0 \\[3mm] 0
+	\end{array}\right]
+%
+	\left[\begin{array}{c}
+		v_1
+	\end{array}\right]\label{eq:example_KVL}
+\end{equation} %>>>
+
+	Now using the capacitor, inductor and resistor relationships on \eqref{eq:example_KCL} and \eqref{eq:example_KVL},
+
+\begin{equation} %<<<
+\left\{\begin{array}{rcl}
+	\left[\begin{array}{ccccccc}
+	-C_1 &  0 & R_1 & -R_2 &  0   & 0    \\[3mm]
+	   0 & -1 &   0 &  R_2 & -R_3 & 0    \\[3mm]
+	   0 &  1 &   0 &    0 &  0   & -R_4 \\[3mm]
+	 C_1 &  0 & R_1 &    0 &  0   &  R_4 
+	\end{array}\right]
+%
+	\left[\begin{array}{c}
+		\dot{v}_{C1} \\[3mm] i_{L1} \\[3mm] v_{R1} \\[3mm] v_{R2} \\[3mm] v_{R3} \\[3mm] v_{R4}
+	\end{array}\right] &=&
+%
+	\left[\begin{array}{c}
+		0 \\[3mm] 1 \\[3mm] -1 \\[3mm] 0 
+	\end{array}\right]
+%
+	\left[\begin{array}{c}
+		i_1
+	\end{array}\right]  \\[30mm]
+%
+	\left[\begin{array}{ccccccc}
+	 0 &  0 &  1 & 0 & 0 & 0 \\[3mm]
+	-1 &  0 &  0 & 1 & 1 & 0 \\[3mm]
+	 0 &L_1 &  0 & 0 &-1 & 1
+	\end{array}\right]
+%
+	\left[\begin{array}{c}
+		v_{C1} \\[3mm] \dot{i}_{L1} \\[3mm] v_{R1} \\[3mm] v_{R2} \\[3mm] v_{R3} \\[3mm] v_{R4}
+	\end{array}\right] &=&
+%
+	\left[\begin{array}{c}
+		1 \\[3mm] 0 \\[3mm] 0
+	\end{array}\right]
+%
+	\left[\begin{array}{c}
+		v_1
+	\end{array}\right]
+\end{array}\right.
+\end{equation} %>>>
+
+	Isolating $v_{C1},\dot{v}_{C1},i_{L1},\dot{i}_{L1}$ and grouping them in a vector,
+
+\begin{equation} %<<<
+\left\{\begin{array}{rcl}
+	\left[\begin{array}{ccccccc}
+	-C_1 & 0 \\[3mm]
+	   0 & 0\\[3mm]
+	   0 & 0\\[3mm]
+	 C_1 & 0 
+	\end{array}\right]
+%
+	\left[\begin{array}{c}
+		\dot{v}_{C1} \\[3mm] \dot{i}_{L1}
+	\end{array}\right]
++
+	\left[\begin{array}{ccccccc}
+	 0 &  0 \\[3mm]
+	 0 & -1 \\[3mm]
+	 0 &  1 \\[3mm]
+	 0 &  0 
+	\end{array}\right]
+%
+	\left[\begin{array}{c}
+		v_{C1} \\[3mm] i_{L1}
+	\end{array}\right]
++
+	\left[\begin{array}{ccccccc}
+	R_1 & -R_2 &  0   & 0    \\[3mm]
+	  0 &  R_2 & -R_3 & 0    \\[3mm]
+	  0 &    0 &  0   & -R_4 \\[3mm]
+	R_1 &    0 &  0   &  R_4 
+	\end{array}\right]
+%
+	\left[\begin{array}{c}
+		v_{R1} \\[3mm] v_{R2} \\[3mm] v_{R3} \\[3mm] v_{R4}
+	\end{array}\right] &=&
+%
+	\left[\begin{array}{c}
+		0 \\[3mm] 1 \\[3mm] -1 \\[3mm] 0
+	\end{array}\right]
+%
+	\left[\begin{array}{c}
+		i_1
+	\end{array}\right]  \\[30mm]
+%
+\left[\begin{array}{ccccccc}
+	 0 &  0 \\[3mm]
+	 0 &  0 \\[3mm]
+	 0 &L_1 
+	\end{array}\right]
+%
+	\left[\begin{array}{c}
+		\dot{v}_{C1} \\[3mm] \dot{i}_{L1}
+	\end{array}\right]
++
+	\left[\begin{array}{ccccccc}
+	 0 & 0 \\[3mm]
+	-1 & 0 \\[3mm]
+	 0 & 0 
+	\end{array}\right]
+%
+	\left[\begin{array}{c}
+		v_{C1} \\[3mm] i_{L1}
+	\end{array}\right]
++
+	\left[\begin{array}{ccccccc}
+		1 & 0 & 0 & 0 \\[3mm]
+		0 & 1 & 1 & 0 \\[3mm]
+		0 & 0 &-1 & 1
+	\end{array}\right]
+%
+	\left[\begin{array}{c}
+		v_{R1} \\[3mm] v_{R2} \\[3mm] v_{R3} \\[3mm] v_{R4}
+	\end{array}\right] &=&
+%
+	\left[\begin{array}{c}
+		1 \\[3mm] 0 \\[3mm] 0
+	\end{array}\right]
+%
+	\left[\begin{array}{c}
+		v_1
+	\end{array}\right]
+\end{array}\right.
+\end{equation} %>>>
+
+	\noindent and the vector $\left[v_{R1},\ v_{R2},\ v_{R3},\ v_{R4}\right]$ can be obtained as a function of $\left[v_{C1},i_{L1}\right]^\transpose$ and its derivatives from the first equation because the matrix that multiplies it is invertible. Substituting into the second equation eliminates $\left[v_{R1},\ v_{R2},\ v_{R3},\ v_{R4}\right]$, leading to an equation of the form \eqref{eq:linear_circuit_linear_system} where $\mathbf{x} = \left[v_{C1},i_{L1}\right]^\transpose$.
+
+\examplebar
+\end{example}%>>>
+
+%-------------------------------------------------
+\section{Hurwitz stability of Passive Linear Circuits} %<<<1
+
+	Having shown that a PLC defines a linear system, we now prove that this linear system will be stable, by proving they are Lyapunov stable thus Hurwitz stable by corollary \ref{corollary:hurwitz_lti_odes}.
+
+\begin{lemma}\label{lemma:positive_def_diag} A diagonal matrix of positive coefficients is positive definite. \end{lemma}
+\noindent\textbf{Proof:} by simple inspection. Take $\mathbf{A}$ such matrix with positive diagonal elements $a_i$, and suppose it has size $n$. Consider an arbitrary complex vector $\mathbf{x}$ of size $n$. Then
+
+\begin{equation} \mathbf{x}^\hermconj \mathbf{A} = \left[\begin{array}{ccccc} a_1\overline{x}_1 & 0 & 0 & \cdots & 0\\[3mm] 0 & a_2\overline{x}_2 & 0 & \cdots & 0 \\[3mm]  0 & 0 & a_3\overline{x}_3 & \cdots & 0\\[3mm] \vdots & \vdots & \vdots & \ddots & \vdots \\[3mm] 0 & 0 & 0 & \cdots & a_n\overline{x}_n \end{array}\right]. \end{equation}
+
+\begin{equation} \mathbf{x}^\hermconj \mathbf{Ax} =  a_1\overline{x}_1x_1 + a_2\overline{x}_2x_2 + a_3\overline{x}_3x_3 + \cdots +  a_n\overline{x}_nx_n = \sum_{k=1}^n a_k \left\lvert x_k\right\rvert^2 , \end{equation}
+
+	\noindent and because all $a_k$ are positive, this is always positive, except at the origin.
+\begin{lemma} \label{lemma:positive_def_congruent} Any matrix that is congruent to another positive definite matrix is also positive definite. \end{lemma}
+\noindent\textbf{Proof:} here, congruency means that a matrix $\mathbf{A}$ is congruent to another $\mathbf{B}$ is there is a matrix $\mathbf{C}$ such that $\mathbf{A} = \mathbf{C}^\hermconj\mathbf{BC}$; then
+
+\begin{equation} \mathbf{x}^\hermconj\mathbf{Ax} = \mathbf{x}^\hermconj\mathbf{C}^\hermconj\mathbf{BCx} = \left(\mathbf{Cx}\right)^\hermconj\mathbf{B}\left(\mathbf{Cx}\right) \end{equation}
+
+	\noindent and, if $\mathbf{B} > 0$, this is always positive, hence $\mathbf{x}^\hermconj\mathbf{Ax}$ is also always positive, therefore $\mathbf{A} > 0$.
+
+\begin{theorem}[PLCs are stable]\label{theo:plcs_stable} %<<<
+	Any non-excited Passive Linear Circuit, that is, a circuit comprised of only inductances, capacitances and resistances with at least one resistance, is stable.
+\end{theorem}
+\noindent\textbf{Proof:} by finding a Lyapunov Function. Suppose that the linear circuit in question has $p$ inductors, $q$ capacitors and $w$ resistors and write the state space $\mathbf{x}$ as follows: first the capacitor voltages, then the inductor currents
+
+\begin{equation} \mathbf{x} = \left[ \overbrace{v_1,v_2,...,v_q}^{\text{Capacitor voltages}}, \overbrace{i_1, i_2 , ... i_p}^{\text{Inductor currents}}\right] \end{equation}
+
+	\noindent and this system (with no excitations) is modelled as $\dot{\mathbf{x}} = \mathbf{Ax}$. Also write $\mathbf{i}_R = \left[i_{R1},...,i_{Rw}\right]^\transpose$ as the vector of currents on resistors. Now consider the energy functions:
+
+\begin{itemize}
+	\item For inductors, adopt the energy stored in the magnetic field $E_L(t) = \dfrac{1}{2} Li_L^2(t)$;
+	\item For capacitors, adopt the energy stored in the electric field $E_C(t) = \frac{1}{2} Cv_C^2(t)$;
+	\item And for resistors, adopt the total energy expenditure at time $t$: $E_R(t) = \displaystyle R\int_{-\infty}^t i_R^2(s)ds$.
+\end{itemize}
+
+	\noindent and $U(t)$ as the total energy developed by the system at a given time:
+
+\begin{equation}
+	U(t) = \mathbf{x}^\transpose\dfrac{1}{2}\left[\begin{array}{cccccccc} C_1 & 0 & ... & 0 & 0 & 0 & ... & 0 \\[3mm]  0 & C_2 & ... & 0 & 0 & 0 & ... & 0 \\[3mm] \vdots & \vdots & \ddots & \vdots & \vdots & \vdots & \ddots & \vdots \\[3mm] 0 & 0 & ... & C_q & 0 & 0 & ... & 0 \\[3mm] 0 & 0 & ... & 0 & L_1 & 0 & ... & 0 \\[3mm] 0 & 0 & ... & 0 & 0 & L_2 & ... & 0 \\[3mm] \vdots & \vdots & \ddots & \vdots & \vdots & \vdots & \ddots & \vdots \\[3mm] 0 & 0 & ... & 0 & 0 & 0 & ... & L_p \end{array}\right]\mathbf{x} + \int_{-\infty}^{t} \mathbf{i_R}^\transpose(s) \left[\begin{array}{cccc} R_1 & 0 & ... & 0 \\[3mm] 0 & R_2 & ... & 0 \\[3mm] \vdots & \vdots & \ddots & \vdots \\[3mm] 0 & 0 & ... & R_w \end{array}\right] \mathbf{i_R}(s)ds .
+\end{equation}
+
+	Now denote the capacitance, inductance and resistance matrices
+
+\begin{equation}
+	\mathbf{C} = \left[\begin{array}{ccccc} C_1 & 0 & ... & 0 \\[3mm]  0 & C_2 & ... & 0 \\[3mm] \vdots & \vdots & \ddots & \vdots \\[3mm] 0 & 0 & ... & C_q \end{array}\right],\
+	\mathbf{L} = \left[\begin{array}{ccccc} L_1 & 0 & ... & 0 \\[3mm]  0 & L_2 & ... & 0 \\[3mm] \vdots & \vdots & \ddots & \vdots \\[3mm] 0 & 0 & ... & L_p \end{array}\right],\
+	\mathbf{R} = \left[\begin{array}{ccccc} R_1 & 0 & ... & 0 \\[3mm]  0 & R_2 & ... & 0 \\[3mm] \vdots & \vdots & \ddots & \vdots \\[3mm] 0 & 0 & ... & R_w \end{array}\right]
+\end{equation}
+
+	Then
+
+\begin{equation} U(t) = \dfrac{1}{2} \mathbf{x}^\transpose\left[\begin{array}{cc} \mathbf{C} & \mathbf{0} \\[3mm] \mathbf{0} & \mathbf{L} \end{array}\right]\mathbf{x} + \int_{-\infty}^{t} \mathbf{i_R}^\transpose (s) \mathbf{R} \mathbf{i_R}(s)ds = \dfrac{1}{2} \mathbf{x}^\transpose\mathbf{Z}\mathbf{x} + \int_{-\infty}^{t} \mathbf{i_R}^\transpose (s) \mathbf{R} \mathbf{i_R}(s)ds \end{equation}
+
+	\noindent that is, this function $U$ represents the stored energy on capacitors and inductors plus the energy dissipated by resistors. By Tellegen's Theorem \cite{desoerBasicCircuitTheory1987}, this function is constant in time, that is, $\dot{U} = \mathbf{0}$; intuitively, since the circuit is a closed system, no energy gets in or out. 
+
+	We now want to write $U$ as a function of the states $\mathbf{x}$, which is achieved by writing $\mathbf{i_R}$ as a function of $\mathbf{x}$. According to Kirchoff's Current Law, the current through the k-th resistor $i_{Rk}$ is given by a direct sum of the currents of all other elements of the circuit:
+
+\begin{equation} i_{Rk} = \mathbf{i_k}^\transpose \left[i_{C1},i_{C2},...,i_{Cq},i_{L1},i_{L2},...,i_{Lp},i_{R1},i_{R2},...,i_{Rw}\right]^\transpose. \end{equation}
+
+	where $\mathbf{i}_k$ is a column vector composed of elements that are $1$, $0$ or $-1$ and necessarily $0$ at the $i_{Rk}$ position. Then use the capacitor models to write
+
+\begin{equation} i_{Rk} = \mathbf{i_k}^\transpose \left[C_1\dot{v}_{C1},C_2\dot{v}_{C2},...,C_q\dot{v}_{Cq},i_{L1},i_{L2},...,i_{Lp},i_{R1},i_{R2},...,i_{Rw}\right]^\transpose .\end{equation}
+
+	Arranging the resistor currents as rows of the vector $\mathbf{i_R}$,
+
+\begin{equation} \mathbf{i_R} = \left[\begin{array}{c} i_{R1} \\[3mm] i_{R2} \\[3mm] \vdots \\[3mm] i_{Rw} \end{array}\right] = \left[\begin{array}{c} \left[\begin{array}{ccc} ... & \mathbf{i_1}^\transpose & ... \end{array}\right] \\[3mm] \left[\begin{array}{ccc} ... & \mathbf{i_2}^\transpose & ... \end{array}\right] \\[3mm] \vdots \\[3mm] \left[\begin{array}{ccc} ... & \mathbf{i_w}^\transpose & ... \end{array}\right] \end{array}\right] \left[\begin{array}{c} C_1\dot{v}_{C1} \\[3mm] C_2\dot{v}_{C2} \\[3mm] \vdots \\[3mm] C_q\dot{v}_{Cq} \\[3mm] i_{L1} \\[3mm] i_{L2} \\[3mm] \vdots \\[3mm] i_{Lp} \\[3mm] i_{R1} \\[3mm] i_{R2} \\[3mm] \vdots \\[3mm] i_{Rw}\end{array} \right] = \left[\begin{array}{ccc} \mathbf{A^I_CC} & \mathbf{A^I_L} & \mathbf{A^I_R} \end{array}\right] \left[\begin{array}{c} \dot{v}_{C1} \\[3mm] \dot{v}_{C2} \\[3mm] \vdots \\[3mm] \dot{v}_{Cq} \\[3mm] i_{L1} \\[3mm] i_{L2} \\[3mm] \vdots \\[3mm] i_{Lp} \\[3mm] i_{R1} \\[3mm] i_{R2} \\[3mm] \vdots \\[3mm] i_{Rw}\end{array} \right], \end{equation}
+
+	\noindent where the $\mathbf{A^I}$ matrices are called called current adjacency matrices. $\mathbf{A^I_C}$ is of size $w\times q$, $\mathbf{A^I_L}$ of size $w\times p$ and $\mathbf{A^I_R}$ of size $w\times w$ with null diagonal, and all are composed of $-1,1,0$ elements. Then
+
+\begin{equation} \mathbf{i_R} = \mathbf{A^I_CC} \left[\begin{array}{c} \dot{v}_{C1} \\[3mm] \dot{v}_{C2} \\[3mm] \vdots \\[3mm] \dot{v}_{Cq} \end{array}\right] + \mathbf{A^I_L}\left[\begin{array}{c} i_{L1} \\[3mm] i_{L2} \\[3mm] \vdots \\[3mm] i_{Lp} \end{array}\right] + \mathbf{A^I_R}\left[\begin{array}{c} i_{R1} \\[3mm] i_{R2} \\[3mm] \vdots \\[3mm] i_{Rw} \end{array}\right] = \mathbf{A^I_CC}\dot{\mathbf{v}}_\mathbf{C} + \mathbf{A^I_Li_L} + \mathbf{A^I_Ri_R}. \label{eq:current_adjacency}\end{equation}
+
+	Doing the same process with the voltages across resistors, by Kirchoff's Voltage Law, these voltages are direct combinations of the capacitor and inductor voltages:
+
+\begin{equation} \mathbf{v_R}= \mathbf{A^V_C} \left[\begin{array}{c} v_{C1} \\[3mm] v_{C2} \\[3mm] \vdots \\[3mm] v_{Cq} \end{array}\right]  + \mathbf{A^V_L}\mathbf{L} \left[\begin{array}{c} \dot{i}_{L1} \\[3mm] \dot{i}_{L2} \\[3mm] \vdots \\[3mm] \dot{i}_{Lp} \end{array}\right] + \mathbf{A^V_R}\mathbf{R}\mathbf{i}_R , \label{eq:voltage_adjacency}\end{equation}
+
+	\noindent where the $\mathbf{A^V_C},\ \mathbf{A^V_L},\ \mathbf{A^V_R}$ are voltage adjacency matrices comprised of $-1,0,1$ and $\mathbf{A^V_R}$ has null diagonal. Then substituting \eqref{eq:voltage_adjacency} into \eqref{eq:current_adjacency} and noting that $\mathbf{v_R} = \mathbf{Ri_R}$, and that $\mathbf{R}$ is diagonal hence invertible and
+
+\begin{equation}
+	\mathbf{i_R} = \mathbf{A^I_C}\mathbf{C} \left[\begin{array}{c} \dot{v}_{C1} \\[3mm] \dot{v}_{C2} \\[3mm] \vdots \\[3mm] \dot{v}_{Cq} \end{array}\right]  + \mathbf{A^I_L} \left[\begin{array}{c} i_{L1} \\[3mm] i_{L2} \\[3mm] \vdots \\[3mm] i_{Lp} \end{array}\right] + \mathbf{A^I_R}\mathbf{R}^{-1}\left\{\mathbf{A^V_C} \left[\begin{array}{c} v_{C1} \\[3mm] v_{C2} \\[3mm] \vdots \\[3mm] v_{Cq} \end{array}\right]  + \mathbf{A^V_L}\mathbf{L} \left[\begin{array}{c} \dot{i}_{L1} \\[3mm] \dot{i}_{L2} \\[3mm] \vdots \\[3mm] \dot{i}_{Lp} \end{array}\right] + \mathbf{A^V_R}\mathbf{R}\mathbf{i}_R \right\}
+\end{equation}
+
+	And reorganizing,
+
+\begin{equation}
+	\left(\mathbf{I} - \mathbf{A^I_RR^{-1}A^V_RR}\right)\mathbf{i_R} = \left[\begin{array}{cc} \mathbf{A^I_CC} & \mathbf{A^I_RR^{-1}A^V_LL} \end{array}\right]\dot{\mathbf{x}} + \left[\begin{array}{cc} \mathbf{A^I_RR^{-1}A^V_C} & \mathbf{A^I_L} \end{array}\right]\mathbf{x}
+\end{equation}
+
+	Therefore 
+
+\begin{equation}
+	\mathbf{i_R} = \mathbf{K}\dot{\mathbf{x}} + \mathbf{Lx}
+\end{equation}
+
+	\noindent and using the system differential model $\dot{\mathbf{x}} = \mathbf{Ax}$,
+	
+\begin{equation} \mathbf{i_R} = \mathbf{K}\mathbf{Ax} + \mathbf{Lx} = \left(\mathbf{KA + L}\right)\mathbf{x}\end{equation}
+
+	Then
+
+\begin{equation} U\left(\mathbf{x}\right) = \dfrac{1}{2} \mathbf{x}^\transpose\mathbf{Z}\mathbf{x} + \int_{-\infty}^{t} \mathbf{x}^\transpose(s)\left(\mathbf{KA + L}\right)^\transpose \mathbf{R}\left(\mathbf{KA + L}\right)\mathbf{x}(s)ds \end{equation}
+
+	Now let us take a closer look at the matrices involved. By definition,
+
+\begin{equation} \mathbf{Z} = \left[\begin{array}{cc} \mathbf{C} & \mathbf{0} \\[3mm] \mathbf{0} & \mathbf{L} \end{array}\right] \end{equation}
+
+	\noindent and by lemma \ref{lemma:positive_def_diag} $\mathbf{Z}$ is positive definite because it is a diagonal matrix with positive entries; at the same time, the matrix
+
+\begin{equation} \mathbf{T} = \left(\mathbf{KA + L}\right)^\transpose \mathbf{R}\left(\mathbf{KA + L}\right) \end{equation}
+
+	\noindent is congruent to $\mathbf{R}$. Hence, by lemma \ref{lemma:positive_def_congruent}, $\mathbf{T}$ is also positive definite because $\mathbf{R}$ is positive definite. This also makes $\mathbf{T}$ hermitian. Using $\dot{U} = 0$, 
+
+\begin{align}
+	0 &= \dfrac{d}{dt}\left[\mathbf{x}^\transpose\dfrac{1}{2}\mathbf{Zx} + \int_{-\infty}^{t} \mathbf{x}^\transpose(s)\mathbf{T}\mathbf{x}(s)ds\right] \nonumber\\[3mm]
+	0 &= \mathbf{x}^\transpose\mathbf{ZAx} + \mathbf{x}^\transpose\mathbf{T}\mathbf{x} \nonumber\\[3mm]
+	\mathbf{x}^\transpose\mathbf{ZAx} &= - \mathbf{x}^\transpose\mathbf{T}\mathbf{x} \label{theo:lincircuits_are_lyapunov}
+\end{align}
+
+	Now, consider the function
+
+\begin{equation} V\left(\mathbf{x}\right) = \dfrac{1}{2}\mathbf{x}^\transpose \mathbf{Zx} \end{equation}
+
+	\noindent as the candidate for Lyapunov Energy Function of this system. Notably, $V$ represents only the energy stored in the capacitors and inductors; this function is always positive and can be zero only at the origin, since $\mathbf{Z}$ is positive definite. Then
+
+\begin{equation} \dot{V} = \dfrac{1}{2}\dfrac{d}{dt}\left(\mathbf{x}^\transpose \mathbf{Zx}\right) =  \mathbf{x}^\transpose \mathbf{ZAx}\end{equation}
+
+	but by equation \eqref{theo:lincircuits_are_lyapunov} this implies
+
+\begin{equation} \dot{V} = -\mathbf{x}^\transpose\mathbf{T}\mathbf{x} \end{equation}
+
+	and because $\mathbf{T}$ is positive definite, this function is always negative.
+\hfill$\blacksquare$
+\vspace{5mm}
+\hrule
+\vspace{5mm}
+%>>>
+\begin{remark} The stability result dictates that the circuit \textbf{needs} at least one resistance; if no resistances are present, then $\mathbf{T = 0}$, meaning the function $\mathbf{V}$ is not positive definite but semi-positive definite and that the circuit will stay in the manifold defined by some $V\left(\mathbf{x}\right) = k > 0$. Intuitively, this means that if the circuit is not \textbf{passive} (it does not ``consume'' energy), then this energy is constantly exchanged between the capacitors and inductors without ``being spent'', that is, the system is not forced to $V\left(\mathbf{x}\right) = 0$. \end{remark}
+
+	Due to the properties of linear systems, PLCs being Lyapunov stable mean they are also Hurwitz stable, hence exponentially stable. This fact is of great uses in the theory of electrical circuits, notably the fact that if such is the case, the transient (``natural'') behavior of the system inevitably vanishes exponentially, and the assymptotic behavior is solely described by the particular (``forced'') behavior. In the theory of alternating current circuits, Hurwitz Stability plays a major role as a simplifying characteristic of linear passive networks. Theorem \ref{theo:phasors_solutions} proves that any LTI ODE, when excited sinusoidally, has a exponential homogeneous response and a sinusoidal forced response; if the system is Hurwitz-stable, then the natural response vanishes and only the sinusoidal response remains, meaning that the exponentially stable steady-state response of the system is also sinusoidal.
+
+\begin{theorem}[Steady-state solutions of sinusoidally-forced LTI ODEs]\label{theo:phasors_solutions} %<<<
+Consider the linear n-th order LTI Ordinary Differential Equation
+
+\begin{equation} \sum\limits_{k=0}^n \alpha_k x^{(k)}(t) - M\cos\left(\omega t\right) = 0,\label{eq:linear_ode_phasor_solution_1}\end{equation}
+
+	\noindent where $y^{(k)}$ represents the k-th derivative of $y$ with $y^{(0)} \equiv y$; the $\alpha_k$ are real numbers with $\alpha_n \neq 0$, and $M,\omega$ are positive real numbers. If the associated Hurwitz Polynomial
+
+\begin{equation} H\left(z\right) = \sum\limits_{k=0}  \alpha_k z^k \label{theo:linear_ode_phasor_solution_3}\end{equation}
+
+	\noindent is stable, that is, has only roots with negative real part, then the globally exponentially stable steady-state solution of \eqref{eq:linear_ode_phasor_solution_1} is given by
+
+\begin{equation} x_s(t) = K\cos\left(\omega t + \phi\right) \label{eq:linear_ode_phasor_solution_2}\end{equation}
+
+	\noindent where 
+
+\begin{align}
+	K &= \sqrt{A^2 + B^2} = \sqrt{\left(\alpha_0 - \alpha_2\omega^2 + ...\right)^2 + \left(\alpha_1 - \alpha_3\omega^3 + ...\right)^2}\\[3mm]
+	\tan\left(\phi\right) &= \dfrac{\left(\alpha_1 - \alpha_3\omega^3 + ...\right)}{\left(\alpha_0 - \alpha_2\omega^2 + ...\right)}
+\end{align}
+
+\end{theorem}
+\textbf{Proof: } because the system is linear and Hurwitz-stable, its homogenous non-forced equivalent is surely globally exponentially assymptotic. This means that $x(t)$ will tend, globally and exponentially, to a particular solution $x_p$, and the only challenge is to find one such particular solution. Because the space of sinusoids at a particular frequency $\omega$ is invariant to differentiation, then surely a linear combination of both is a solution to the original ODE. Because of this, suppose
+
+\begin{equation} x_p(t) = A\cos\left(\omega t\right) + B\sin\left(\omega t\right) \end{equation}
+
+	then calculate $A$ and $B$: applying $x_p$ into the original ODE,
+
+\begin{gather}
+	\sum\limits_{k=0}^n \alpha_k\left[A\cos\left(\omega t\right) + B\sin\left(\omega t\right)\right]^{(k)} - M\cos\left(\omega t\right) = 0 \nonumber\\[3mm]
+	\left. \begin{array}{l}
+		\alpha_0\left[A\cos\left(\omega t\right) + B\sin\left(\omega t\right)\right] + \\[3mm]
+		\hspace{5mm}\alpha_1\left[-A\omega\sin\left(\omega t\right) + B\omega\cos\left(\omega t\right)\right] + \\[3mm]
+		\hspace{10mm}\alpha_2\left[-A\omega^2\cos\left(\omega t\right) - B\omega^2\sin\left(\omega t\right)\right] + \\[3mm]
+		\hspace{30mm} \vdots\\[3mm]
+		\hspace{15mm} - M\sin\left(\omega t\right) = 0 
+	\end{array}\right.  \nonumber\\[3mm]
+%
+	\left(-M + \alpha_0A + \alpha_1\omega B - \alpha_2\omega^2A + ...\right)\cos\left(\omega t\right) +  \left(\alpha_0 B - \alpha_1\omega A - \alpha_2\omega^2B + ...\right)\sin\left(\omega t\right) = 0
+\end{gather}
+
+	But since the sine and cosine functions are orthogonal, this can only be true if $A$ and $B$ satisfy
+
+\begin{equation}
+\left\{\begin{array}{l}
+	\alpha_0A + \alpha_1 B\omega - \alpha_2\omega^2A + ... - M = 0 \\[3mm]
+	\alpha_0B - \alpha_1 A\omega - \alpha_2\omega^2B + ... = 0
+\end{array}\right.
+\end{equation}
+
+	Developing this system,
+
+\begin{gather}
+\left\{\begin{array}{l}
+	B\overbrace{\left(\alpha_0 - \alpha_2\omega^2 + ...\right)}^{\text{Even exponents}} - A\overbrace{\left(\alpha_1 - \alpha_3\omega^3 + ...\right)}^{\text{Odd exponents}} = 0 \\[3mm]
+	A\left(\alpha_0 - \alpha_2\omega^2 + ...\right) + B\left(\alpha_1 - \alpha_3\omega^3 + ...\right) - M= 0
+\end{array}\right. \nonumber\\[5mm]
+	\Rightarrow\left\{\begin{array}{l}
+	B = M \left[\dfrac{\left(\alpha_0 - \alpha_2\omega^2 + ...\right)}{\left(\alpha_0 - \alpha_2\omega^2 + ...\right)^2 + \left(\alpha_1 - \alpha_3\omega^3 + ...\right)^2} \right] \\[10mm]
+	A = M \left[\dfrac{-\left(\alpha_1 - \alpha_3\omega^3 + ...\right)}{\left(\alpha_0 - \alpha_2\omega^2 + ...\right)^2 + \left(\alpha_1 - \alpha_3\omega^3 + ...\right)^2} \right]
+	\end{array}\right.
+\end{gather}
+
+	Therefore $A$ and $B$ are calculated. Adopt
+
+\begin{align}
+	K &= \sqrt{A^2 + B^2} = \sqrt{\left(\alpha_0 - \alpha_2\omega^2 + ...\right)^2 + \left(\alpha_1 - \alpha_3\omega^3 + ...\right)^2}\\[3mm]
+	\tan\left(\phi\right) &= \dfrac{\left(\alpha_1 - \alpha_3\omega^3 + ...\right)}{\left(\alpha_0 - \alpha_2\omega^2 + ...\right)}
+\end{align}
+
+	And $x_p = K\cos\left(\omega t + \phi\right)$. \hfill$\blacksquare$
+\vspace{5mm}
+\hrule
+\vspace{5mm}
+% >>>
+
+	 In other words, a Hurwitz-stable LTI system when excited sinusoidally responds with a natural homogeneous response of exponential decay added by a second part corresponding to the excited response, and it is also sinusoidal. Consequently, after enough time the excited sinusoidal part of its response dominates. If the time constants are small enough compared to the sinusoid, that is, if the initial transient timescale is disregarded, then a timescale argument can be made that the system can be modelled in its steady-state by a purely sinusoidal response. In short, the particular solution
+
+\begin{equation} x_p(t) = K\sin\left(\omega t + \phi\right) \end{equation}
+
+	\noindent is the exponentially stable steady-state solution to the original LTI ODEs \eqref{eq:linear_ode_phasor_solution_1}. Because of this, denote $x_\infty = x_p$, where the infinity symbol denotes the fact that $x(t)$ tends to $x_\infty$ as $t\to\infty$. 
+
+	Here we can already see a glimpse of an argument for quasistatic modelling. The fact that passive electrical grids are Hurwitz (and therefore exponentially) stable has profound consequences in the study of Electrical Power Systems. Supposing the electrical machines and inverter systems connected to the grid impose to it perfectly sinusoidal voltages, theorem \eqref{theo:phasors_solutions} proves that the solution to the linear ODEs defined by the grid will also be sinusoidal signals added by vanishing exponential terms. Thus if the timescales of these vanishing terms are significantly slower than the sinusoidal forcing period, they can be disregarded for effects of transient analysis without much loss in accuracy. To some effect, this means that if the circuit network is ``quicker'' than the excitations, then the exponentials vanish quickly enough that the steady-state sinusoidal behavior can be considered to be the transient solution.
+
+%-------------------------------------------------
+\section{Static Phasors} %<<<1
+
+	One fortunate result of the linearity and Hurwitz Stability of PLCs and the fact that their steady-state response to sinusoidal excitations are sinusoids themselves is the fact that the combined excitations lead to combined responses, that is, when subject to a combination of two sinusoids, the reponse is the combination of the individual response of the sinusoids. The problem now lies in the fact that the algebra of sinusoids is problematic, and takes a lot of calculations to be done, as shown in theorem \ref{theo:closed}, which also shows that the class of sinusoids is, in fact, closed to addition.
+
+\begin{theorem}[The class of sinusoids is closed to addition] \label{theo:closed}%<<<
+	The sum of two sinusoids of the same frequency is a sinusoid at that frequency.
+\end{theorem}
+\noindent\textbf{Proof:} take two arbitrary sinusoids $A\cos\left(\omega t + \alpha\right)$ and $B\cos\left(\omega t + \beta\right)$ at the frequency $\omega$. Then
+
+\begin{align}
+	S(t) &= A\cos\left(\omega t + \alpha\right) + B\cos\left(\omega t + \beta\right) = \nonumber\\[3mm]
+%
+	&= A\left[\cos\left(\omega t\right)\cos\left(\alpha\right) - \sin\left(\omega t\right)\sin\left(\alpha\right)\right] + B\left[\cos\left(\omega t\right)\cos\left(\beta\right) - \sin\left(\omega t\right)\sin\left(\beta\right)\right] = \nonumber\\[3mm]
+%
+	&= \cos\left(\omega t\right)\left[A\cos\left(\alpha\right) + B\cos\left(\beta\right)\right] - \sin\left(\omega t\right)\left[A\sin\left(\alpha\right) + B\sin\left(\beta\right)\right]
+\end{align}
+
+	\noindent now let $C \geq 0$ and $\phi$ that satisfy
+
+\begin{align}
+	C &= \sqrt{\left[A\cos\left(\alpha\right) + B\cos\left(\beta\right)\right]^2 + \left[A\sin\left(\alpha\right) + B\sin\left(\beta\right)\right]^2} = \\[3mm] &= \sqrt{\raisebox{3mm}[1mm][1mm]{} A^2 + B^2 + 2AB\cos\left(\alpha - \beta\right)}, \label{eq:sinesum_c} \\[3mm]
+	& \left\{\begin{array}{l} C\sin\left(\phi\right) = A\sin\left(\alpha\right) + B\sin\left(\beta\right) \\[3mm]
+				  C\cos\left(\phi\right) = A\cos\left(\alpha\right) + B\cos\left(\beta\right)\end{array}\right. \label{eq:sinesum_phi}
+\end{align}
+
+	\noindent and noting that $\phi = \pm \pi/2$ if the cosine expression is null. Then
+
+\begin{equation} S(t) = C\left[\cos\left(\omega t\right)\cos\left(\phi\right) - \sin\left(\omega t\right)\sin\left(\phi\right)\right] = C\cos\left(\omega t + \phi\right) \label{eq:sinesum_final} \end{equation}
+
+\hfill$\blacksquare$
+\vspace{5mm}
+\hrule
+\vspace{5mm}
+% >>>
+
+	As shown by the proof of the theorem, the algebra of sinusoids is contrived and worksome. Consider the proposition: if we represent a sinusoid $x(t) = K\cos\left(\omega t + \phi\right)$ as the point $X = Ke^{j\phi}$ in the complex plane, as in Figure \ref{fig:static_phasor_representation}, then adding the complex numbers is considerably simpler than sinusoids. The figure shows the number $X$ and the graph of $x(t)$; if the number $X$ is rotated by a quantity $\omega t$ (that is, multiplied by $e^{j\omega t}$), then $x(t)$ is the real projection of the the rotated $Xe^{j\omega t}$.
+
+% STATIC PHASOR DIAGRAM <<<
+\begin{figure}[htb]
+\centering
+	\begin{tikzpicture}[scale=2,>={Stealth[inset=0mm,length=1.5mm,angle'=50]}]
+		\draw [fill=none,gray, thick] (0,0) circle (10 mm) node [gray] {};
+		\draw [->, thick, black!30] (   -20mm,  0   ) -- (   20mm,  0   );
+		\draw [->, thick, black!50] (      0, -15mm ) -- (   0   ,  15mm);
+
+		\draw [->, thick, black] (0,0) -- (14mm,0) coordinate(realvec);
+
+		\node (realveclabel) at ([shift=({0,-2mm})]realvec) {$R = 1e^{j0}$};
+
+		\node [black!50] (reAxisLabel) at (22mm,0) {Re};
+		\node [black!50] (imAxisLabel) at (0,17mm) {Im};
+
+		\node [label={[label distance=0.1mm]30:$X = Ke^{j\phi}$}] (X) at ({10mm*cos(30)},{10mm*sin(30)}) {};
+		\draw [->,thick] (0,0) -- (X.center);
+		\draw [->,stewartblue,thick] ({8mm*cos(0)},{8mm*sin(0)}) arc[start angle=0, end angle = 28, radius = 8mm];
+		\draw [->,stewartblue,thick] ({8mm*cos(290)},{8mm*sin(290)}) arc[start angle=290, end angle = 318, radius = 8mm];
+
+		\node [color=stewartblue] (philabel) at ({6.5mm*cos(13)},{6.5mm*sin(13)}) {$\phi$};
+		\node [color=stewartblue] (philabelrotated) at ({6.5mm*cos(304)},{6.5mm*sin(304)}) {$\phi$};
+
+		\node (rotX) at ({cos(320)},{sin(320)}) {};
+		\node (XomegatLabel) at ({13mm*cos(330)},{13mm*sin(330)}) {$Xe^{j\omega t}$};
+		\draw [->,thick] (0,0) -- (rotX.center);
+
+		\node (rotRe) at ({13mm*cos(290)},{13mm*sin(290)}) {};
+		\node (RomegatLabel) at ({14mm*cos(290)},{14mm*sin(290)}) {$Re^{j\omega t}$};
+		\draw [->,thick] (0,0) -- (rotRe.center);
+
+		%\draw [->,gray,thick] ({6mm*cos(25)},{6mm*sin(25)}) arc[start angle=25, end angle = 63, radius = 6mm];
+		\node [green!50!black] (omegat) at ({6mm*cos(135)},{6mm*sin(135)}) {$\omega t$};
+
+		\draw [-{Stealth[inset=0mm,length=3mm,angle'=50]},green!50!black, line width = 1mm] (4mm,0) arc[start angle=0, end angle = 287, radius = 4mm];
+		
+		% SINEWAVE PLOT AXES
+		\draw [->, gray, thick]  (   -15mm, -20mm  ) -- (   15mm,  -20mm  );
+		\draw [->, gray, thick]  (      0,  -20mm  ) -- (    0  ,  -50mm  );
+
+		\node[gray] (axistlabel) at ( 0mm,-52mm) {$t$};
+
+		\begin{axis}[color=stewartblue, at={(-12.5mm,-52mm)}, rotate=-90, width=35mm, height=25mm, scale only axis, yticklabel=\empty, xticklabel=\empty, axis line style={draw=none}, tick style={draw=none}]
+			\addplot[domain=30:325, smooth, samples=100] {cos(x)};
+			\addplot[dashed, domain=325:720, smooth, samples=100] {cos(x)};
+		\end{axis}
+
+		\node (rotXaxis) at ([shift=({0,-25.7mm})]rotX.center) {};
+		\draw [color=stewartblue,fill] (rotXaxis) circle (0.5mm);
+
+		\draw[dashed,color=stewartblue, thick] (rotX) -- (rotXaxis) ;
+
+		\node [stewartblue] (xsignal) at (25mm, -40mm) {$x(t)  = K\cos\left(\omega t + \phi\right)$};
+
+	\end{tikzpicture}
+	\caption{Sinusoidal signal as the real projection of a rotated stationary phasor.}
+	\label{fig:static_phasor_representation}
+\end{figure} %>>>
+
+	Confusingly, the single-dimensional $x(t)$ has become a two-dimensional quantity. The key concept is that if the frequency $\omega$ is fixed, a sinusoidal signal — albeit real — needs two dimensions to be described: the phase $\phi$ and the magnitude $K$. Conversely, in order to reconstruct the real sinusoid, two quantities are required. As a phase reference (a phasor with zero phase) is adopted, because the cosine angle $\omega t + \phi$ grows linearly with time, the angle difference between $x$ and the reference is kept constant at all times -- hence the angle of $x$ at $t = 0$ is enough to describe $x$. Therefore, there is a bijection between the pair $\left(K,\phi\right)\in\mathbb{R}^2$ and $x_\infty(t) = K\cos\left(\omega t + \phi\right)\in\left[\mathbb{R}\to\mathbb{R}\right]$. Because $\mathbb{C}$ is homeomorphic to $\mathbb{R}^2$; this allows for representing $x_\infty(t) = K\cos\left(\omega t + \phi\right)$ as its complexification $X = Ke^{j\phi}$.
+\par
+	Figure \ref{fig:complexification_process} shows this process: a function $K\cos\left(\omega t + \phi\right)$ is picked from the space of real signals $\left[\mathbb{R}\to\mathbb{R}\right]$ (in green) and, by taking its value at $t = 0$, it is associated with a pair $\left(K,\phi\right)$ in $\mathbb{R}^2$ (in yellow). Because there is an isomorphism between $\mathbb{R}^2$ and $\mathbb{C}$, it is easy to associate $\left(K,\phi\right)$ to a complex $Ke^{j\phi}$ in $\mathbb{C}$ (in blue). Therefore, the tandem process of representing the real funcion by the complex number, called \textit{complexification}, is justified. 
+
+% COMPLEXIFICATION <<<
+\begin{figure}[htb]
+\centering
+	\begin{tikzpicture}[scale=1.5,>={Stealth[inset=0mm,length=2.5mm,angle'=50]}]
+		\draw [fill=none,gray, thick,stewartgreen,fill=stewartgreen!30,line width=0.5mm]   ({20mm*cos(150)},{20mm*sin(150)}) circle(10mm) node[stewartgreen] (kcos) {$K\cos\left(\omega t + \phi\right)$};
+		\draw [fill=none,gray, thick,stewartyellow,fill=stewartyellow!30,line width=0.5mm] ({20mm*cos( 30)},{20mm*sin( 30)}) circle( 7mm)  node[stewartyellow] (kphi) {$\left(K,\phi\right)$};
+		\draw [fill=none,gray, thick,stewartblue, fill=stewartblue!30,line width=0.5mm]    ({20mm*cos(260)},{20mm*sin(260)}) circle( 7mm)  node[stewartblue] (kphicomp) {$Ke^{j\phi}$};
+
+		\draw [->,stewartblue   ,testfading={0.25mm}{stewartyellow}{stewartblue}] ([shift=({{7mm*cos( -95)},{7mm*sin( -95)}})]kphi.center) to [bend left]  ([shift=({{7mm*cos( 20)},{7mm*sin( 20)}})]kphicomp.center); 
+		\draw [->,stewartblue   ,testfading={0.25mm}{stewartgreen}{stewartblue}]  ([shift=({{10mm*cos(250)},{10mm*sin(250)}})]kcos.center) to [bend right] ([shift=({{7mm*cos(160)},{7mm*sin(160)}})]kphicomp.center);
+		\draw [->,stewartyellow ,testfading={0.25mm}{stewartgreen}{stewartyellow}]([shift=({{10mm*cos( 45)},{10mm*sin( 45)}})]kcos.center) to [bend left]  ([shift=({{7mm*cos(150)},{7mm*sin(150)}})]kphi.center);
+
+		\node (label1) at (-1mm,21mm) {$t = 0$};
+		\node (label2) at (22mm,-9mm) {Isomorphism};
+		\node (label3) at (-29mm,-9mm) {``Complexification''};
+	\end{tikzpicture}
+	\caption{The process of \textit{complexification} of a sinusoid $K\cos\left(\omega t  + \phi\right)$ into a complex number $Ke^{j\phi}$.}
+	\label{fig:complexification_process}
+\end{figure} %>>>
+
+	Therefore, one can define a Phasor representation based on these results as a bijection between the signal $x(t)$ and its phasorial counterpart $X$.
+
+\begin{definition}[Static Phasor Operator (SPO)]\label{def:static_phasor_transform} %<<<
+Let $x(t) = A\cos\left(\omega t + \phi\right)$, where $A,\omega$ and $\phi$ are constant real numbers. Then there is a bijection $\mathbf{p_S}\left[x\right]$, which we call Static Phasor Operator, defined as 
+
+\begin{equation}
+	\mathbf{p_S}\left[x\right] \vcentcolon \left\{\begin{array}{rcl}
+	\left[\mathbb{R}\to \mathbb{R}\right] &\to& \mathbb{C} \\[3mm]
+	x = A\cos\left(\omega t + \phi\right) &\mapsto& X = A e^{j\phi}
+\end{array}\right.
+\end{equation}
+
+	The inverse operator is defined as
+
+\begin{equation}
+	\mathbf{p_S^{-1}}\left[X\right] \vcentcolon \left\{\begin{array}{rcl}
+	\mathbb{C} &\to& \left[\mathbb{R}\to \mathbb{R}\right]  \\[3mm]
+	X &\mapsto& \Re\left(Xe^{j\omega t}\right)
+\end{array}\right.
+\end{equation}
+\end{definition} %>>>
+\begin{definitionremark} The Static Phasor Operator relates a function to a complex number, thus being an operator. Therefore it is denoted with a lowercase notation $\mathbf{p_S}$. \end{definitionremark}
+%-------------------------------------------------
+\subsection{Operational properties of Static Phasors} %<<<2
+
+	Operationally, the most obvious benefit of this operator is that it simplifies the algebra of sinusoids involved, as shown in theorem \ref{theo:ps_morphism}.
+
+\begin{theorem}[The Static Phasor Operator and its inverse are linear morphisms] \label{theo:ps_morphism}%<<<
+	The Static Phasor Operator maintains the summation operation of sinusoids, that is, if $X = \mathbf{p_S}\left[x\right]$ and $Y = \mathbf{p_S}\left[y\right]$, then $X + Y = \mathbf{p_S}\left[x + y\right]$. At the same time, if $x(t) = \mathbf{p_S^{-1}}\left[X\right]$ and $y(t) = \mathbf{p_S^{-1}}\left[Y\right]$, then $x(t) + y(t) = \mathbf{p_S^{-1}}\left[X + Y\right]$.
+\end{theorem}
+\noindent\textbf{Proof.} Take the sinusoids from theorem \ref{theo:closed}. The first sinusoid is related to $Ae^{j\alpha}$, the second to $Be^{j\beta}$ and
+
+\begin{equation} Ae^{j\alpha} + Be^{j\beta} = \left[A\cos\left(\alpha\right) + B\cos\left(\beta\right)\right] + j\left[A\sin\left(\alpha\right) + B\sin\left(\beta\right)\right]\end{equation}
+
+	\noindent and note that the absolute value of this number is $C$ as in \eqref{eq:sinesum_c} and its argument is $\phi$ as in \eqref{eq:sinesum_phi}, that is,
+
+\begin{equation} Ae^{j\alpha} + Be^{j\beta} = Ce^{j\phi}\end{equation}
+
+	\noindent meaning a notably simpler process than summing sinusoids. For the inverse, if $x(t) = \mathbf{p_S^{-1}}\left[X\right] = \text{Re}\left(Xe^{j\omega t}\right)$ and $y(t) = \mathbf{p_S^{-1}}\left[Y\right] = \text{Re}\left(Ye^{j\omega t}\right)$ then one uses the linearity of the real part and
+
+\small\begin{equation} x(t) + y(t) = \text{Re}\left(Xe^{j\omega t}\right) + \text{Re}\left(Ye^{j\omega t}\right) = \text{Re}\left(Xe^{j\omega t} + Xe^{j\omega t}\right) = \text{Re}\left[\left(X + Y\right)e^{j\omega t}\right] = \mathbf{p_S^{-1}}\left[X + Y\right]\end{equation}\normalsize
+
+\hfill$\blacksquare$
+\vspace{5mm}
+\hrule
+\vspace{5mm}
+% >>>
+
+	As beforementioned, the first engineer to notice the direct bijection between a sinusoid to a complex number as a useful result in engineering was Steinmetz, who noticed that the combinations (addition or subtraction) of sinewaves as solutions to the Differential Equations of electrical networks was vastly superior to directly solving the differential equations of the system or using trigonometric formulas to add sinusoids:
+
+\vspace{3mm}
+\begin{quotation}
+\textit{``The sine-wave is completely determined and characterized by intensity and phase. It is obvious that the phase is of interest only as a difference of phase, where several waves of different phases are under consideration. [...] The representation of sine-waves by their rectangular components is very useful in so far as it avoids the use of trigonometric functions. To combine sinewaves, we have simply to add or subtract their rectangular components.''} \hfill\pcite{Steinmetz1893} 
+\end{quotation}
+\vspace{3mm}
+
+	When theory is concerned, in general \pcite{desoerBasicCircuitTheory1987,scottElementsLinearCircuits1965}, the operational properties of Static Phasors are taught from a strictly sinusoidal point of view as in theorem \ref{theo:ps_morphism}, which makes it clear that for any two sinusoids $x(t) = M\cos\left(\omega t + \alpha\right)$  and $y(t) = N\cos\left(\omega t + \beta\right)$ their linear combination $z(t) = x(t) + cy(t)$ yields an equivalent phasor $Z = X + cY$ ($X$ and $Y$ being the phasors of $x(t)$ and $y(t)$) for any real $c$. Further, it is also simple to see that the properties of derivatives are obeyed.
+
+	In a deeper and more complete setting, the concept of a Static Phasor is born from steady-state solutions of sinusoidally-forced linear ODEs, that is, these proofs also prove that the linearity of the static phasor transform also allows to obtain the combination of responses for linear circuits, as shown in theorem \ref{theo:spo_linear}.
+
+\begin{theorem}[The Static Phasor Operator is linear]\label{theo:spo_linear} %<<<
+	Let $\left(\alpha_k\right)_{k=0}^n$ define a Hurwitz-stable system and $x_\infty(t)$ and $y_\infty(t)$ be the steady-state solutions to two different sinusoids at the same frequency, that is,
+
+\begin{equation} \left\{ \begin{array}{l} \sum\limits_{k=0}^n \alpha_k x^{(k)}(t) - A\cos\left(\omega t + \alpha\right) = 0 \\[3mm] \sum\limits_{k=0}^n \alpha_k y^{(k)}(t) - B\cos\left(\omega t + \beta\right) = 0 \end{array}\right. , \label{eq:input_linearity}\end{equation}
+
+	\noindent such that
+
+\begin{equation} \lim\limits_{t\to\infty} \left[x(t) - x_\infty(t)\right] = 0,\ \lim\limits_{t\to\infty} \left[y(t) - y_\infty(t)\right] = 0 \end{equation}
+
+	\noindent and the existence of $x_\infty$ and $y_\infty$ is guaranteed by theorem \ref{theo:phasors_solutions}. Denote $\mathbf{p_S}\left[x_\infty\right] = X,\ \mathbf{p_S}\left[y_\infty\right] = Y$. Now consider the response $z(t)$ of the combined forcing, that is,
+
+\begin{equation} \sum\limits_{k=0}^n \alpha_k z^{(k)}(t) - \left[A\cos\left(\omega t + \alpha\right) + c B\cos\left(\omega t + \beta\right)\right] = 0,\ c\in\mathbb{C}, \end{equation}
+
+	\noindent then 
+
+\begin{equation} \lim\limits_{t\to\infty} \left[z(t) - \left(x_\infty(t) + cy_\infty(t)\right)\right] = 0 \end{equation}
+
+	\noindent so the phasor of $z_\infty(t)$ is $Z = X + cY$. Succintly, 
+
+\begin{equation} \mathbf{p_S}\left[x_\infty(t) + c y_\infty(t)\right] = \mathbf{p_S}\left[x_\infty\right] + c \mathbf{p_S}\left[y_\infty\right],\ \forall c \in\mathbb{C}. \end{equation}
+\end{theorem}
+\noindent\textbf{Proof:} a direct consequence from theorems \ref{theo:closed}, \ref{theo:ps_morphism} and the fact that the differential equation is LTI. Add the first equation of \eqref{eq:input_linearity} to the second one \eqref{eq:input_linearity} multiplied by some complex $c$, and using the linearity of derivatives:
+
+\begin{equation} \sum\limits_{k=0}^n \alpha_k \left[x + cy\right]^{(k)}(t) - \left[ A\cos\left(\omega t + \alpha\right) + c B\cos\left(\omega t + \beta\right)\right] . \label{eq:input_linearity_2}\end{equation}
+
+	Now let $z = x + cy$ and
+
+\begin{equation} \sum\limits_{k=0}^n \alpha_k z^{(k)}(t) - \left[ A\cos\left(\omega t + \alpha\right) + c B\cos\left(\omega t + \beta\right)\right] , \label{eq:input_linearity_3}\end{equation}
+
+	\noindent and due to the linearity of both ODEs, the solution $z(t)$ of \eqref{eq:input_linearity_3} is equal to $x(t) + cy(t)$ with $x(t)$ the solution of the first ODE of \eqref{eq:input_linearity}  and $y(t)$ the solution of the second equation. This means
+
+\begin{align}
+	\left\lvert z(t) - \left[x_\infty(t) + cy_\infty(t)\right]\right\rvert &= \left\lvert x(t) + cy(t) - \left[x_\infty(t) + cy_\infty(t)\right]\right\rvert = \nonumber\\[3mm] &= \left\lvert x(t) - x_\infty(t) + c\left[y(t) - y_\infty(t)\right]\right\rvert \leq \nonumber\\[3mm] &\leq \left\lvert x(t) - x_\infty(t)\right\rvert + \left\lvert c \right\rvert\left\lvert y(t) - y_\infty(t)\right\rvert
+\end{align}
+
+	\noindent and, by hypothesis, the right side vanishes at infinity, and it is immediate from this that
+
+\begin{equation} \lim_{t\to\infty} \left[z(t) - \left(x_\infty(t) + cy_\infty(t)\right)\right] = 0 .\end{equation}
+
+	Therefore, denote $z_\infty(t) = x_\infty(t) + cy_\infty(t)$ and by the linearity of $\mathbf{p_S}$,
+
+\begin{equation} \mathbf{p_S}\left[x_\infty(t) + cy_\infty(t)\right] = \mathbf{p_S}\left[x_\infty\right] + c\mathbf{p_S}\left[cy_\infty\right] = X + cY.\end{equation}
+
+
+\hfill$\blacksquare$
+\vspace{5mm}
+\hrule
+\vspace{5mm}
+% >>>
+
+% STATIC PHASOR DIAGRAM <<<
+\begin{figure}[htb]
+\centering
+	\begin{tikzpicture}[scale=1.5,>={Stealth[inset=0mm,length=1.5mm,angle'=50]}]
+		\draw [->, thick, black!50] (   -30mm,  0   ) -- (   30mm,  0   );
+		\draw [->, thick, black!50] (      0, -5mm ) -- (   0   ,  15mm);
+
+		\node [gray] (imlabel) at ( 0mm, 17mm) {Im};
+		\node [gray] (relabel) at (32mm,  0mm) {Re};
+
+		\node (O) at (0,0)       {};
+		\node (X) at (9mm,12mm)  {};
+		\node [stewartblue] (Xlabel) at ([shift=({0,2mm})]X)  {$X$};
+		\node (Y) at (7mm,2mm)   {};
+		\node (2Y) at (14mm,4mm) {};
+		\node [stewartgreen] (Ylabel) at ([shift=({-2mm,-3.5mm})]Y)  {$Y$};
+		\node (2Y) at (14mm,4mm) {};
+		\node [stewartyellow] (2Ylabel) at ([shift=({2mm,-1mm})]2Y)  {$2Y$};
+
+		\node (SUM) at (23mm,16mm) {};
+		\node [stewartpurple] (SUMlabel) at ([shift=({2mm, 2mm})]SUM)  {$X + 2Y$};
+
+		\draw [->, thick, stewartblue]  (O.center) -- (X.center);
+		\draw [->, thick, stewartyellow]  (O.center) -- (2Y.center);
+		\draw [->, thick, stewartgreen]  (O.center) -- (Y.center);
+		\draw [thick, dashed, stewartblue!50]  (2Y.center) -- (SUM.center);
+		\draw [thick, dashed, stewartgreen!50] (X.center) -- (SUM.center);
+
+		\draw [->, thick, stewartpurple] (O.center) -- (SUM.center);
+
+		\draw [->, gray, thick]  (   -30mm, -10mm  ) node (beginXaxis) {} -- (   30mm,  -10mm  ) node (endXaxis) {};
+		\draw [->, gray, thick]  (      0,  -10mm  ) node (beginYaxis) {} -- (    0  ,  -70mm  ) node (endYaxis) {} ;
+
+		\node [gray] (tlabel) at ( 0mm,-72mm) {$t$};
+
+		\draw [thick,dashed,stewartblue!50]     (X) -- (beginXaxis -|   X);
+		\draw [thick,dashed,stewartgreen!50]    (Y) -- (beginXaxis -|   Y);
+		\draw [thick,dashed,stewartyellow!50]   (2Y) -- (beginXaxis -|  2Y);
+		\draw [thick,dashed,stewartpurple!50] (SUM) -- (beginXaxis -| SUM);
+
+		\begin{axis}[at={(-33.5mm,-71.5mm)}, rotate=-90, width=67mm, height=67mm, scale only axis, yticklabel=\empty, xticklabel=\empty, axis line style={draw=none}, tick style={draw=none}]
+			\addplot[color = stewartblue, domain=0:720, smooth, samples=100] {15mm*cos(x+53.13)};
+			\addplot[color = stewartgreen, domain=0:720, smooth, samples=100] {7.28mm*cos(x+15)};
+			\addplot[color = stewartyellow, domain=0:720, smooth, samples=100] {2*7.28mm*cos(x+15)};
+			\addplot[color = stewartpurple, domain=0:720, smooth, samples=100] {28.02mm*cos(x+34.82)};
+		\end{axis}
+
+		\node [label={[color=stewartblue]right:$x(t)$}] at           (33mm, -40mm) {};
+		\node [label={[color=stewartgreen]right:$y(t)$}] at          (33mm, -43mm) {};
+		\node [label={[color=stewartyellow]right:$2y(t)$}] at        (33mm, -46mm) {};
+		\node [label={[color=stewartpurple]right:$x(t) + 2y(t)$}] at (33mm, -49mm) {};
+
+	\end{tikzpicture}
+	\caption{Static Phasor Operator linearity schematic.}
+	\label{fig:spo_linearity}
+\end{figure} %>>>
+
+	Figure \ref{fig:spo_linearity} shows a schematization of the linearity property. In that figure, two vectors $X$ (in blue) and $Y$ (in green) are operated and the vector $X + 2Y$, in purple, is generated. Below, the real projection of these vectors are shown as sinusoids, showing how the sinusoidal signals and the complex vectors are linearly operated.
+
+	Meanwhile, theorem \ref{theo:spo_der} proves a bigger result: that the SPO is not only linear, but it also transforms derivatives into algebraic equations.
+
+\begin{theorem}[Static Phasor Operator of derivatives]\label{theo:spo_der} %<<<
+	Let $\left(\alpha_k\right)_{k=0}^n$ define a Hurwitz-stable system and $x(t)$ its response to a particular sinusoid at a frequency $\omega$:
+
+\begin{equation} \sum\limits_{k=0}^n \alpha_k x^{(k)}(t) - A\cos\left(\omega t + \alpha\right) = 0 , \label{eq:spo_diff_1}\end{equation}
+
+	\noindent such that $\mathbf{p_S}\left[x_\infty\right] = X$. Consider $y_i(t) = x^{(i)}(t)$; then:
+
+\begin{enumerate}
+	\item $y_i(t)$ is the solution to $\sum\limits_{k=0}^n \alpha_k y_i^{(k)}(t) - \left(\omega\right)^i A\cos\left(\omega t + \alpha + \dfrac{i\pi}{2}\right) = 0$;
+
+	\item Further, $y_i(t)$ has a stable sinusoidal steady-state solution $y_{i,\infty}(t)$ at the frequency $\omega$;
+
+	\item Finally, $\mathbf{p_S}\left[y_{i,\infty}\right] = \left(j\omega\right)^i X$, which is to say $\mathbf{p_S} \circ \mathbf{D^i} = \left(j\omega\right)^i \mathbf{p_S}$ or
+
+\begin{equation} \mathbf{p_S}\left[ \dfrac{d^ix_\infty(t)}{dt^i}\right] = \left(j\omega\right)^i \mathbf{p_S}\left[ x_\infty \right] .\end{equation}
+\end{enumerate}
+\end{theorem} 
+\noindent\textbf{Proof:} take the system and consider \eqref{eq:spo_diff_1}. Then $x(t)$ has a sinusoidal steady-state solution $x_\infty = M_x \cos\left(\omega t + \phi_x\right)$. Then write $z = x'(t)$ and differentiate \eqref{eq:spo_diff_1} with respect to time:
+
+\begin{equation} \sum\limits_{k=0}^n \alpha_k z^{(k)}(t) - \left[- A\omega\sin\left(\omega t + \alpha\right)\right] = 0 \end{equation}
+
+	\noindent writing the sine as a de-phased cosine:
+
+\begin{equation} \sum\limits_{k=0}^n \alpha_k z^{(k)}(t) - A\omega\cos\left(\omega t + \alpha + \dfrac{\pi}{2}\right) = 0. \label{eq:spo_diff_2}\end{equation}
+
+	Because the equation is linear, the phasor $Z$ corresponding to $z(t)$ is scaled at the same rate that the input of \eqref{eq:spo_diff_2} is scaled with respec to the input of \eqref{eq:spo_diff_1}, as per \eqref{eq:lti_scaling}. Therefore $z(t)$ has modulus $\omega M$. Because this equation is also time-invariant, a delay in the excitation causes the same delay in the solution, that is, the phase of $z$ is the same phase as $x(t)$ but shifted $\pi/2$, as per \eqref{eq:lti_delay}. Hence  
+
+\begin{equation} z(t) = \omega x\left(t + \dfrac{\pi}{2}\right) \Rightarrow z_\infty = \omega x_\infty \left(t + \dfrac{\pi}{2}\right) = \omega M_x \cos\left(\omega t + \phi_x + \pi/2\right)\end{equation}
+
+	\noindent and taking the phasor operator,
+
+\begin{equation} \mathbf{p_S}\left[z_\infty\right] = \omega M_x e^{j\left(\phi_x + \frac{\pi}{2}\right)} = \omega Xe^{j\frac{\pi}{2}} = j\omega X . \end{equation}
+
+	For the i-th derivative, we can iterate this process using induction. Alternatively, knowing it is true for $i=1$ and noting that
+
+\begin{equation} \dfrac{d^i}{dt^i}\left[A\cos\left(\omega t + \alpha\right)\right] = A\omega^i\cos\left(\omega t + \alpha + \dfrac{i\pi}{2}\right) .\end{equation}
+
+	\noindent then, by denoting $x^{(i)} = z_i(t)$ and differentiating \eqref{eq:spo_diff_1} $i$ times we obtain
+
+\begin{equation} \sum\limits_{k=0}^n \alpha_k z_i^{(k)}(t) - A\omega^i\cos\left(\omega t + \alpha + \dfrac{i\pi}{2}\right) = 0 , \label{eq:spo_diff_i}\end{equation}
+
+	\noindent yielding
+
+\begin{equation} \mathbf{p_S}\left[z_{i,\infty}\right] = \omega^i M_x e^{j\left(\phi_x + \frac{i\pi}{2}\right)} = \omega^i Xe^{j\frac{i\pi}{2}} = \left(j\omega\right)^i X . \end{equation}
+
+\hfill$\blacksquare$
+\vspace{5mm}
+\hrule
+\vspace{5mm}
+% >>>
+
+	----- Finally, proving the transformation of integral property is the same process but with a small caveat: adopting $z = \int x dt$ needs the adoption of the bottom integration limit in order to remove the integration constant. This integration limit is generally defined as $-\infty$, as long as the integral of $x$ in $\left(-\infty,t\right]$ converges for all time instants $t$; special considerations can be made when convergence is not guaranteed or $x(t)$ has some discontinuity, which can be the case because signals are generally defined starting from time $t = 0$. In this case the Cauchy principal value of the integral can be used or a different integration limit altogether and the results will largely remain.
+
+	These properties greatly simplify the solution of linear differential equations of linear circuits; for instance, one can re-prove theorem \ref{theo:phasors_solutions}.
+
+\begin{theorem}[Phasors as solutions to sinusoidally-forced LTI ODEs (reproof)]\label{theo:phasors_solutions_reproof} %<<<
+Consider the linear n-th order LTI Ordinary Differential Equation
+
+\begin{equation} \sum\limits_{k=0}^n \alpha_k x^{(k)}(t) - M\cos\left(\omega t\right) = 0,\label{eq:linear_ode_phasor_solution_reproof_1}\end{equation}
+
+	\noindent where $y^{(k)}$ represents the k-th derivative of $y$ with $y^{(0)} \equiv y$; the $\alpha_k$ are real numbers with $\alpha_n \neq 0$ such that \eqref{eq:linear_ode_phasor_solution_reproof_1} is Hurwitz, and $M,\omega$ are positive real numbers. Then the globally exponentially stable steady-state solution of \eqref{eq:linear_ode_phasor_solution_1} is given by
+
+\begin{equation} x_s(t) = K\cos\left(\omega t + \phi\right)\end{equation}
+
+	\noindent where 
+
+\begin{gather}
+	K = \dfrac{M}{\left(\alpha_0 - \alpha_2\omega^2 + ...\right) + j\left(\alpha_1 - \alpha_3\omega^3 + ...\right)} \\[5mm]
+	\tan\left(\phi\right) = \dfrac{\left(\alpha_1 - \alpha_3\omega^3 + ...\right)}{\left(\alpha_0 - \alpha_2\omega^2 + ...\right)}
+\end{gather}
+
+\end{theorem}
+\textbf{Proof: } due to Hurwitz stability this system admits an exponentially stable sinusoidal solution. Using theorems \ref{theo:spo_linear} and \ref{theo:spo_der}, \eqref{eq:linear_ode_phasor_solution_reproof_1} is transformed into
+
+\begin{equation} \sum\limits_{k=0}^n \alpha_k \left(j\omega\right)^k X - M = 0 \label{eq:linear_ode_phasor_solution_reproof_2} \end{equation}
+
+	\noindent and solving this equation yields
+
+\begin{equation} X\left[\sum\limits_{k=0}^n \alpha_k \left(j\omega\right)^k \right] - M = 0 \Rightarrow X = \dfrac{M}{\left[\sum\limits_{k=0}^n \alpha_k \left(j\omega\right)^k \right]} = \dfrac{M}{\left(\alpha_0 - \alpha_2\omega^2 + ...\right) + j\left(\alpha_1 - \alpha_3\omega^3 + ...\right)} .\end{equation}
+
+	Therefore
+
+\begin{gather}
+	\left\lvert X\right\rvert = \dfrac{M}{\left\lvert\left(\alpha_0 - \alpha_2\omega^2 + ...\right) + j\left(\alpha_1 - \alpha_3\omega^3 + ...\right)\right\rvert} = \dfrac{M}{\sqrt{\left(\alpha_0 - \alpha_2\omega^2 + ...\right)^2 + \left(\alpha_1 - \alpha_3\omega^3 + ...\right)^2}} \\[3mm]
+	\tan\left(\text{arg}\left(X\right)\right) = \dfrac{\left(\alpha_1 - \alpha_3\omega^3 + ...\right)}{\left(\alpha_0 - \alpha_2\omega^2 + ...\right)}
+\end{gather}
+\hfill$\blacksquare$
+\vspace{5mm}
+\hrule
+\vspace{5mm}
+% >>>
+
+	Remarkably, the reproof \ref{theo:phasors_solutions_reproof} of theorem \ref{theo:phasors_solutions} is strikingly simpler. This shows that the SPO is not only a great way to simplify the algebra of sinusoids, but also a great way to simplify the solution of differential equations by transforming differential operators into algebraic ones, as shown by transforming \eqref{eq:linear_ode_phasor_solution_reproof_1} into \eqref{eq:linear_ode_phasor_solution_reproof_2}.
+
+%-------------------------------------------------
+\section{Impedances and Kirchoff's Laws in the Phasor domain} %<<<1
+
+	The last two properties are especially useful in the development of phasorial electrical analysis theory for their capability of easening the solution of differential equations. More specifically, these properties allow for the definitions of capacitive conductance and inductive impedances as algebraic quantities; indeed, consider a voltage $v = m_v\cos\left(\omega t + \phi_v\right)$ over a capacitor of value $C$ and $V$ the corresponding phasor of $v(t)$; then
+
+\begin{equation} i(t) = C\dfrac{dv(t)}{dt} = -C\omega m_v \sin\left(\omega t + \phi_v\right) = C\omega m_v\cos\left(\omega t + \phi_v + \dfrac{\pi}{2}\right) \end{equation}
+
+	Therefore the phasor of $i$ can be calculated as
+
+\begin{equation} I = C\omega m_ve^{\displaystyle j\left(\phi_v + \dfrac{\pi}{2}\right)} = V C\omega e^{\displaystyle j\left(\dfrac{\pi}{2}\right)} = V \left(j\omega C\right) \Leftrightarrow \dfrac{V}{I} = \dfrac{1}{j\omega C}. \end{equation}
+
+	Now consider a current $i = m_i\cos\left(\omega t + \phi_i\right)$ through an inductor $L$; then
+
+\begin{equation} v(t) = L\dfrac{di(t)}{dt} = -L\omega m_i \sin\left(\omega t + \phi_i\right) = L\omega m_i\cos\left(\omega t + \phi_i + \dfrac{\pi}{2}\right) \end{equation}
+
+	Therefore the phasor of $v$ can be calculated as
+
+\begin{equation} V = L\omega j\left(\phi_i + \dfrac{\pi}{2}\right) = I \omega L e^{\displaystyle j\left(\dfrac{\pi}{2}\right)} = I \left(j\omega I\right) \Leftrightarrow \dfrac{V}{I} = j\omega L . \end{equation}
+
+	These identities are then applied to an electrical grid with the assumption that the excitations (machine and inverter dynamics) are much slower than the grid dynamics, leading to the fact that the exponential transient behaviors of the grid dissipate rapidly and allowing to consider the grid as a set of algebraic complex equations. The benefit of representing sinusoidal waves as complex numbers is that complex algebra is much simpler than the algebra of sinusoidal signals which requires contrived formulas to be undertaken. Instead, two-dimensional vectorial algebra is used in the complex space, and the complex number pertaining to voltages and currents are obtained; the bijection $p_S$ as defined in \ref{def:static_phasor_transform} combined with theorem \ref{theo:phasors_solutions} guarantee that the complex numbers obtained are bijective representations of the exponentially stable steady-state sinusoidal solutions to the electrical grid differential equations.
+
+	Furthermore, using the linearity of the Phasor Operator one can prove the phasorial counterparts to Kirchoff's Laws.
+
+\begin{theorem}[Kirchoff's Current Law in the Phasor domain] \label{theo:kirchoff_current_phasor}
+Let $i_p(t)$, $p = 1,...,q$ be the sinusoidal currents of a certain network meeting at a node, $I_p$ their phasors. Then
+
+\begin{equation} \sum\limits_{p=1}^q I_p = 0 \end{equation}
+
+\end{theorem}
+\noindent \textbf{Proof.} By Kirchoff's Current Law in time domain, $\sum i_p(t) = 0$. Applying the phasor operator and using its linearity yields $\sum I_p = 0$. \hfill$\blacksquare$
+	
+\begin{theorem}[Kirchoff's Voltage Law in the Phasor domain] \label{theo:kirchoff_voltage_phasor}
+Let $v_p(t)$, $p = 1,...,q$ be the sinusoidal voltages of a certain network around a certain closed loop, $V_p$ their phasors. Then
+
+\begin{equation} \sum\limits_{p=1}^q V_p = 0 \end{equation}
+
+\end{theorem}
+\noindent \textbf{Proof:} akin to theorem \ref{theo:kirchoff_current_phasor}. \hfill$\blacksquare$
+
+	It can be shown \pcite{scottElementsLinearCircuits1965,desoerBasicCircuitTheory1987} that one can also prove phasorial equivalents of the Superposition Theorem and the Thèvenin-Norton Theorems; these will not be proven now, but later in the broader context of Dynamic Phasors which generalize Classical Phasors.
+
+	These results process makes AC network analysis much easier than, for instance, directly solving their time differential equations. This process of ``solving'' an AC network is as follows:
+
+\begin{enumerate}
+	\item Substitute inductances as impedances $j\omega L$, capacitances as conductances $j\omega C$ and resistances as impedances $R$;
+	\item Substitute voltage and current sources by their phasor equivalents;
+	\item Write the complex algebraic equations of the network;
+	\item In the frequency domain, solve the complex algebraic equations of the node voltages and branch currents obtaining their equivalent phasors;
+	\item Apply the inverse transform to obtain their equivalent steady-state time responses.
+\end{enumerate}
+
+\begin{example}[Phasorial analysis of a second-order circuit] \label{example:phasorial_analysis}%<<<
+
+	Consider the second-order circuit of figure \ref{fig:nodeanalysis_example} with sinusoidal forcings $v_1 = V\cos\left(\omega t + \phi_v\right)$ and $i_1(t) = I\cos\left(\omega t + \phi_i\right)$, yielding the phasors $V_1 = Ve^{j\phi_v}$ and $I_1 = Ie^{j\phi_i}$. Then substituting the inductance by $j\omega L$ and the capacitance by $1/j\omega C$ one arrives at the phasorial version of the circuit, depicted in figure \ref{fig:nodeanalysis_example_phasorial}
+
+% MODELLING EXAMPLE: RLC CIRCUIT <<<
+\begin{figure}[htb!]
+\centering
+        \begin{tikzpicture}[american,scale=1,transform shape,line width=0.75, cute inductors, voltage shift = 1]
+	\ctikzset{/tikz/circuitikz/voltage/distance from node=10mm}
+		\draw (0,0)
+			to[vsource,sources/scale=1.25,f<^=$I_{V1}$, v>=$V_1$,invert] (0,4)
+			to[R,l=$R_1$,f>^=$I_{R1}$,v>=$V_{R1}$,-*] (4,4) 
+			to[C,l=$\dfrac{1}{j\omega C_1}$,f>^=$I_{C1}$,v>=$V_{C1}$,-*] (4,0) 
+			to[short] (0,0); 
+		\draw (4,4)
+			to[short]  (4,7)
+			to[isource,sources/scale=1.25, l=$I_1$, v>=$V_{I1}$] (8,7)
+			to[short]  (8,4);
+		\draw (4,4)
+			to[R,l=$R_2$,f>^=$I_{R2}$,v>=$V_{R2}$,-*] (8,4) 
+			to[R,l=$R_3$,f>^=$I_{R3}$,v>=$V_{R3}$,-*] (8,0)
+			to[short]  (4,0);
+		\draw (8,4)
+			to[L,l=$j\omega L_1$,f>^=$I_{L1}$,v>=$V_{L1}$] (12,4) 
+			to[R,l=$R_4$,f>^=$I_{R4}$,v>=$V_{R4}$] (12,0) 
+			to[short]  (8,0);
+		% DRAWING VOLTAGE LOOPS
+		\draw[rounded corners=10,loop, draw opacity=0.3,->, color=blue] (0.5,0.5) -- (0.5,3.5) -- (3.5,3.5) -- (3.5,0.5) -- (1,0.5) ;
+		\draw[rounded corners=10,loop, draw opacity=0.3,->, color=red] (4.5,0.5) -- (4.5,3.5) -- (7.5,3.5) -- (7.5,0.5) -- (5,0.5) ;
+		\draw[rounded corners=10,loop, draw opacity=0.3,->, color=green] (8.5,0.5) -- (8.5,3.5) -- (11.5,3.5) -- (11.5,0.5) -- (9,0.5) ;
+		\draw[rounded corners=10,loop, draw opacity=0.3,->, color=stewartyellow] (4.5,4.5) -- (4.5,6.5) -- (7.5,6.5) -- (7.5,4.5) -- (5,4.5) ;
+		% DRAWING NODE LABELS
+		\node[shape=circle,draw,inner sep=1pt] at (  0,4.5) {$1$};
+		\node[shape=circle,draw,inner sep=1pt] at (3.5,4.5) {$2$};
+		\node[shape=circle,draw,inner sep=1pt] at (7.5,4.5) {$3$};
+		\node[shape=circle,draw,inner sep=1pt] at ( 12,4.5) {$4$};
+		\node[shape=circle,draw,inner sep=1pt] at ( 6,-0.5) {$5$};
+		
+		% DRAWING LOOP LABELS
+
+		\node[color=blue] at (2,2) {$L1$} ;
+		\node[color=red ] at (6,2) {$L2$} ;
+		\node[color=stewartyellow] at (6,5.3) {$L3$} ;
+		\node[color=green] at (10,2) {$L4$} ;
+        \end{tikzpicture}
+	\caption{Second-order circuit for node analysis example, in the phasorial domain.}
+	\label{fig:nodeanalysis_example_phasorial}
+\end{figure} %>>>
+
+	First, start with the current laws: from the nodes,
+
+\begin{equation} %<<<
+	\left\{\begin{array}{l}
+		(1):\ -I_{V1} - I_{R1} = 0 \\[3mm]
+		(2):\  I_{R1} - I_{R2} - I_{C1} - I_1 = 0 \\[3mm]
+		(3):\  I_{R2} - I_{R3} + I_1 - I_{L1} = 0 \\[3mm]
+		(4):\  I_{L1} - I_{R4} = 0 \\[3mm] 
+		(5):\  I_{V1} + I_{C1} + I_{R3} + I_{R4} = 0 
+	\end{array}\right.
+\end{equation} %>>>
+
+	But since $I_{V1} = -I_{R1}$, eliminate the former:
+
+\begin{equation} %<<<
+	\left\{\begin{array}{l}
+		 I_{R1} - I_{R2} - I_{C1} - I_1 = 0 \\[3mm]
+		 I_{R2} - I_{R3} + I_1 - I_{L1} = 0 \\[3mm]
+		 I_{L1} - I_{R4} = 0 \\[3mm] 
+		 -I_{R1} + I_{C1} + I_{R3} + I_{R4} = 0 
+	\end{array}\right.
+\end{equation} %>>>
+
+	In matrix form,
+
+\begin{equation} %<<<
+%
+	\left[\begin{array}{ccccccc}
+	-1 &  0 &  1 &-1 & 0 & 0\\[3mm]
+	 0 & -1 &  0 & 1 &-1 & 0\\[3mm]
+	 0 &  1 &  0 & 0 & 0 &-1\\[3mm]
+	 1 &  0 & -1 & 0 & 1 & 1
+	\end{array}\right]
+%
+	\left[\begin{array}{c}
+		I_{C1} \\[3mm] I_{L1} \\[3mm] I_{R1} \\[3mm] I_{R2} \\[3mm] I_{R3} \\[3mm] I_{R4}
+	\end{array}\right] =
+%
+	\left[\begin{array}{c}
+		0 \\[3mm] 1 \\[3mm] -1 \\[3mm] 0
+	\end{array}\right]
+%
+	\left[\begin{array}{c}
+		I_1
+	\end{array}\right] \label{eq:example_KCL_phasor}
+\end{equation} %>>>
+
+	Now apply Kirchoff's Voltage Law on the loops:
+
+\begin{equation} %<<<
+	\left\{\begin{array}{l}
+		(L1):\ -V_1 + V_{R1}          = 0 \\[3mm]
+		(L2):\ -V_{C1} + V_{R2} + V_{R1} = 0 \\[3mm]
+		(L3):\  V_{I1} + V_{R2}          = 0 \\[3mm]
+		(L4):\ -V_{R3} + V_{L1} + V_{R4} = 0 
+	\end{array}\right.
+\end{equation} %>>>
+
+	But since $V_{I1} = -V_{R2}$, eliminate the former:
+
+\begin{equation} %<<<
+	\left\{\begin{array}{l}
+		-V_1 + V_{R1}          = 0 \\[3mm]
+		-V_{C1} + V_{R2} + V_{R1} = 0 \\[3mm]
+		-V_{R3} + V_{L1} + V_{R4} = 0 
+	\end{array}\right.
+\end{equation} %>>>
+
+	In matrix form,
+
+\begin{equation} %<<<
+%
+	\left[\begin{array}{ccccccc}
+	 0 &  0 &  1 & 0 & 0 & 0 \\[3mm]
+	-1 &  0 &  0 & 1 & 1 & 0 \\[3mm]
+	 0 &  1 &  0 & 0 &-1 & 1 
+	\end{array}\right]
+%
+	\left[\begin{array}{c}
+		V_{C1} \\[3mm] V_{L1} \\[3mm] V_{R1} \\[3mm] V_{R2} \\[3mm] V_{R3} \\[3mm] V_{R4}
+	\end{array}\right] =
+%
+	\left[\begin{array}{c}
+		1 \\[3mm] 0 \\[3mm] 0
+	\end{array}\right]
+%
+	\left[\begin{array}{c}
+		V_1
+	\end{array}\right]\label{eq:example_KVL_phasor}
+\end{equation} %>>>
+
+	Now using the capacitor, inductor and resistor relationships on \eqref{eq:example_KCL_phasor} and \eqref{eq:example_KVL_phasor},
+
+\begin{gather} %<<<
+%
+	\left[\begin{array}{ccccccc}
+	 j\omega C_1 & 0 & 0 & 0 & 0 & 0 \\[3mm]
+	           0 & 1 & 0 & 0 & 0 & 0 \\[3mm]
+	           0 & 0 & 1 & 0 & 0 & 0 \\[3mm]
+	           0 & 0 & 0 & 1 & 0 & 0 \\[3mm]
+	           0 & 0 & 0 & 0 & 1 & 0 \\[3mm]
+	           0 & 0 & 0 & 0 & 0 & 1
+	\end{array}\right]
+%
+	\left[\begin{array}{c}
+		V_{C1} \\[3mm] V_{L1} \\[3mm] V_{R1} \\[3mm] V_{R2} \\[3mm] V_{R3} \\[3mm] V_{R4}
+	\end{array}\right] =
+%	
+	\left[\begin{array}{ccccccc}
+	  1 &  0           &  0   & 0   & 0   & 0   \\[3mm]
+	  0 &  j\omega L_1 &  0   & 0   & 0   & 0   \\[3mm]
+	  0 &  0           &  R_1 & 0   & 0   & 0   \\[3mm]
+	  0 &  0           &  0   & R_2 & 0   & 0   \\[3mm]
+	  0 &  0           &  0   & 0   & R_3 & 0   \\[3mm]
+	  0 &  0           &  0   & 0   & 0   & R_4
+	\end{array}\right]
+%
+	\left[\begin{array}{c}
+		I_{C1} \\[3mm] I_{L1} \\[3mm] I_{R1} \\[3mm] I_{R2} \\[3mm] I_{R3} \\[3mm] I_{R4}
+	\end{array}\right]
+\end{gather} %>>>
+
+	Solving for the voltages,
+
+\begin{equation} %<<<
+	\left[\begin{array}{c}
+		V_{C1} \\[3mm] V_{L1} \\[3mm] V_{R1} \\[3mm] V_{R2} \\[3mm] V_{R3} \\[3mm] V_{R4}
+	\end{array}\right] =
+%
+	\left[\begin{array}{ccccccc}
+	\left(j\omega C_1\right)^{-1} &  0           &  0   & 0   & 0   & 0   \\[3mm]
+	                            0 &  j\omega L_1 &  0   & 0   & 0   & 0   \\[3mm]
+	                            0 &  0           &  R_1 & 0   & 0   & 0   \\[3mm]
+	                            0 &  0           &  0   & R_2 & 0   & 0   \\[3mm]
+	                            0 &  0           &  0   & 0   & R_3 & 0   \\[3mm]
+	                            0 &  0           &  0   & 0   & 0   & R_4
+	\end{array}\right]
+%
+	\left[\begin{array}{c}
+		I_{C1} \\[3mm] I_{L1} \\[3mm] I_{R1} \\[3mm] I_{R2} \\[3mm] I_{R3} \\[3mm] I_{R4}
+	\end{array}\right] \label{eq:example_KVL_phasor_1}
+\end{equation} %>>>
+
+	Thus substituting \eqref{eq:example_KVL_phasor_1} into \eqref{eq:example_KVL_phasor},
+
+\begin{equation} %<<<
+%
+	\left[\begin{array}{ccccccc}
+	 0 &  0 &  1 & 0 & 0 & 0 \\[3mm]
+	-1 &  0 &  0 & 1 & 1 & 0 \\[3mm]
+	 0 &  1 &  0 & 0 &-1 & 1 
+	\end{array}\right]
+%
+	\left[\begin{array}{ccccccc}
+	\left(j\omega C_1\right)^{-1} &  0           &  0   & 0   & 0   & 0   \\[3mm]
+	                            0 &  j\omega L_1 &  0   & 0   & 0   & 0   \\[3mm]
+	                            0 &  0           &  R_1 & 0   & 0   & 0   \\[3mm]
+	                            0 &  0           &  0   & R_2 & 0   & 0   \\[3mm]
+	                            0 &  0           &  0   & 0   & R_3 & 0   \\[3mm]
+	                            0 &  0           &  0   & 0   & 0   & R_4
+	\end{array}\right]
+%
+	\left[\begin{array}{c}
+		I_{C1} \\[3mm] I_{L1} \\[3mm] I_{R1} \\[3mm] I_{R2} \\[3mm] I_{R3} \\[3mm] I_{R4}
+	\end{array}\right]
+	=
+%
+	\left[\begin{array}{c}
+		1 \\[3mm] 0 \\[3mm] 0
+	\end{array}\right]
+%
+	\left[\begin{array}{c}
+		V_1
+	\end{array}\right]\label{eq:example_KVL_phasor}
+\end{equation} %>>>
+
+	Note that with combined with \eqref{eq:example_KCL_phasor} this system forms a seven-equations-by-six-variable system, meaning one equation is redundant. From the third equation of \eqref{eq:example_KCL_phasor} we note that $I_{L1} = I_{R4}$, and that equation can be removed, leaving a defined system where the remaining currents can be obtained and, from them, all of the rest of the voltages.
+
+\examplebar
+\end{example}%>>>
+
+%-------------------------------------------------
+\section{Complex and Average Power of Static Phasors} %<<<1
+
+	A very convenient and useful result of the complexification $p_S$ is that the current and voltage phasors can also be used to calculate the instantaneous power developed by a particular circuit, as shown in theorem \ref{theo:sfp_complex_apparent_power}; more specifically, the inner product of the complex phasor space $S = \left< V,I\right> = V\overline{I}$ is called the Complex or Apparent Power is equivalent to $S = P + jQ$, where $P$ is called the Active Power and $Q$ called the Reactive Power, and the instantaneous power $p(t) = v(t)i(t)$ is a combination of $P$ and $Q$.
+
+\begin{theorem}[Phasorial Complex Power]\label{theo:sfp_complex_apparent_power} % <<<
+	Let $i = m_i\cos\left(\omega t + \phi_i\right)$ be current through an AC network and $v = m_v\cos\left(\omega t + \phi_v\right)$ be the voltage across the same circuit. Denote $I$ and $V$ as the corresponding phasors of $i$ and $v$. Then the inner product of $V$ and $I$, denoted as the Complex Apparent Power $S \in \mathbb{C}$ calculated as
+
+\begin{equation} S = \dfrac{1}{2}\left<V,I\right> = V\overline{I} = P + jQ, \label{eq:complex_power_def}\end{equation}
+
+	where
+
+\begin{equation}
+\left\{\begin{array}{l}
+	P = \dfrac{1}{2}m_im_v\cos\left(\phi_v-\phi_i\right) = \left\lvert V\right\rvert\left\lvert I\right\rvert\cos\left(\phi_v-\phi_i\right) \\[5mm]
+	Q = \dfrac{1}{2}m_im_v\sin\left(\phi_v-\phi_i\right) = \left\lvert V\right\rvert\left\lvert I\right\rvert\sin\left(\phi_v-\phi_i\right)
+\end{array}\right.
+\end{equation}
+
+	is such that the instantaneous power performed by the circuit can be calculated as
+
+\begin{equation} p(t) = P \left\{1 + \cos\left[2\left(\omega t + \phi_v\right)\right] \right\} + Q \sin\left[2\left(\omega t + \phi_v \right)\right] . \end{equation}
+
+\end{theorem}
+\textbf{Proof:} the instantaneous power is calculated as
+
+\begin{equation} p(t) = v(t)i(t) = m_i m_v \cos\left( \omega t + \phi_v \right)\cos\left(\omega t + \phi_i\right) \end{equation}
+
+	Using that
+
+\begin{equation} \cos(a)\cos(b) = \dfrac{1}{2}\left[\cos(a+b) + \cos(a-b)\right], \label{eq:cos_identity}\end{equation}
+
+	Then
+
+\begin{equation} p(t) = m_i m_v \dfrac{1}{2} \left[ \cos\left(2\omega t + \phi_v + \phi_i\right) + \cos\left(\phi_v - \phi_i\right)\right] \end{equation}
+
+	Denote $\Delta\phi = \phi_v - \phi_i$. Then $\phi_v + \phi_i = 2\phi_v - \Delta\phi$; therefore,
+
+\begin{equation} p(t) = \dfrac{m_i m_v}{2} \left\{\cos\left[2\left(\omega t + \phi_v\right) - \Delta\phi\right] + \cos\left[\Delta\phi\right]\right\} \end{equation}
+
+	Using $\cos(a-b) = \cos(a)\cos(b) + \sin(a)\sin(b)$,
+
+\begin{equation} p(t) = \dfrac{m_i m_v}{2} \left\{\raisebox{5mm}{} \cos\left(\Delta\phi\right)\left\{\raisebox{3mm}{} 1 + \cos\left[2\left(\omega t + \phi_v\right)\right]\right\} + \sin\left(\Delta\phi\right)\sin\left[2\left(\omega t + \phi_v\right)\right] \right\} . \label{eq:sfp_complex_apparent_power_eq1} \end{equation}
+
+	Let
+
+\begin{align}
+	P = \dfrac{m_i m_v}{2} \cos\left(\Delta\phi\right) \\[3mm]
+	Q = \dfrac{m_i m_v}{2} \sin\left(\Delta\phi\right)
+\end{align}
+
+	Then
+
+\begin{equation} p(t) = P\left\{1 + \cos\left[2\left(\omega t + \phi_v\right) \right]\right\} + Q\sin\left[2\left(\omega t + \phi_v \right)\right] . \label{eq:sfp_complex_apparent_power_eq2} \end{equation}
+
+	Now, calculating $S$,
+	
+\begin{align}
+S(t)
+	&= \dfrac{1}{2}\left<V,I\right> = V\overline{I} \nonumber\\[3mm]
+	&= \dfrac{m_vm_i}{2} e^{j\phi_v} e^{-j\phi_i} = \dfrac{m_v m_i}{2} e^{j\Delta\phi} \nonumber\\[3mm]
+	&= \dfrac{m_i m_v}{2} \left[\cos\left(\Delta\phi\right) + j\sin\left(\Delta\phi\right) \right] = P + jQ \label{eq:sfp_complex_apparent_power_eq3}
+\end{align}
+
+	Finally, it is immediate to note the bijection between equations \eqref{eq:sfp_complex_apparent_power_eq1} and \eqref{eq:sfp_complex_apparent_power_eq2}: given $p(t)$, one can construct the complex value $S$; on the other hand, given $S$, one can reconstruct $p(t)$.  \hfill$\blacksquare$
+
+\vspace{5mm}
+\hrule
+\vspace{5mm}
+% >>>
+
+	One note to be made is about the RMS value of sinusoids. More often than not, in the literature a term $\sqrt{2}$ appears in the definition \ref{def:static_phasor_transform}, that is, phasors are defined with an amplitude divided by $\sqrt{2}$. This stems directly from the fact that equation \eqref{eq:complex_power_def} needs a halving of the inner product of voltage and current, which ultimately stems from the $\frac{1}{2}$ of identity \eqref{eq:cos_identity}. Therefore, if we define the SPO as relating $x(t) = K\cos\left(\omega t + \phi\right)$ to 
+
+\begin{equation} X_{\text{RMS}} = \dfrac{K}{\sqrt{2}}e^{j\phi} \end{equation}
+
+	\noindent then the complex power becomes $S = \left\langle V, I\right\rangle$. This is known as the \textbf{power invariant} version of the operator because without this term, the inner product $V\overline{I}$ equates to double the instantaneous power. This fact can also be seen through the non-coincidence that the RMS value of a sinusoid of magnitude $K$ is $K/\sqrt{2}$.
+
+	Theorem \ref{theo:sfp_complex_apparent_power} is seminal in the understanding of how electrical power works in AC grids; yet, as it is presented, not much insight is given as to what exactly are the physical interpretations of the active and reactive components of power. To this extent, there are two ways to give meaning to these componsnets. First, corollary \ref{corollary:direct_quad_current} shows that the active power accounts for a component of current that is in phase with voltage, whereas the reactive power accounts for the component in quadrature to voltage.
+
+\begin{corollary}[Direct and quadrature components of AC currents]\label{corollary:direct_quad_current} %<<<
+	Let $v,i,P,Q$ as defined in theorem \ref{theo:sfp_complex_apparent_power}. Then $i$ can be written as
+
+\begin{equation} i(t) = \dfrac{2P}{m_v}\cos\left(\omega t + \phi_v\right) + \dfrac{2Q}{m_v}\sin\left(\omega t + \phi_v\right) .\end{equation}
+\end{corollary}
+\textbf{Proof:} write
+
+\begin{align}
+	i(t)
+	&= m_i\cos\left(\omega t + \phi_i\right) \nonumber\\[3mm]
+	&= m_i\cos\left(\omega t + \phi_v - \Delta\phi\right) \nonumber\\[3mm]
+	&= m_i\left[\cos\left(\omega t + \phi_v\right)\cos\left(\Delta\phi\right) + \sin\left(\omega t + \phi_v\right)\sin\left(\Delta\phi\right) \right] \nonumber\\[3mm]
+	&= \dfrac{2P}{m_v}\cos\left(\omega t + \phi_v\right) + \dfrac{2Q}{m_v}\sin\left(\omega t + \phi_v\right)
+\end{align} \hfill$\blacksquare$
+
+\vspace{5mm}
+\hrule
+\vspace{5mm} %>>>
+
+	Corollary \ref{corollary:direct_quad_current} implies that the current can also be written in a sum of two components, one in phase with voltage and another one in quadrature. Therefore, $P$ represents the component of the current that is in phase with the voltage; corollary \ref{corollary:sfp_active_average_power} shows that, because of this, the average power over a half-period $T/2 = \pi/\omega$ is exactly $P$; this fact justifies the naming of ``active power'' for $P$. As for $Q$, it is generated by the component of the current that is in quadrature with the voltage; when integrated over time to obtain the average power, this component vanishes. This means $Q$ is a purely oscillatory power flow that is periodically exchanged between capacitances and inductances; this happens most notably in the LC circuit, also called a ``tank'' circuit. Therefore, $Q$ is a power component which energy is deposited on the storing elements (inductances and capacitances) in half a cycle of the sinusoid, but then retrieved on the following half cycle — meaning $Q$ is not a spent power, rather oscillatory, justifying its naming of ``reactive power''. Despite $Q$ not generating any effectively used power, it is nevertheless important because it still generates a current component, meaning it needs to be accounted for in the dimensioning and power spenditure of the grid.
+
+	Another way to give meaning to active and reactive power is
+
+\begin{corollary}[Active power as average power]\label{corollary:sfp_active_average_power} %<<<
+	Let $v,i,P,Q$ as defined in theorem \ref{theo:sfp_complex_apparent_power}. Then for any time instant $t$, the average power in the interval $\left[t,t+T/2\right]$ with $t = 2\pi/\omega$ is equal to
+
+\begin{equation} \dfrac{2}{T} \int_{t}^{t + \frac{T}{2}} v(x)i(x)dx = P .\end{equation}
+\end{corollary}
+\textbf{Proof:} a direct consequence of equation \eqref{eq:sfp_complex_apparent_power_eq2}. Compute the average power:
+
+\begin{gather}
+	\dfrac{2}{T} \int_{t}^{t + \frac{T}{2}} p(x)dx = \dfrac{2}{T}\int_{t}^{T + \frac{T}{2}} \left(\raisebox{5mm}{} P\left\{1 + \cos\left[2\left(\omega x + \phi_v\right) \right]\right\} + Q\sin\left[2\left(\omega x + \phi_v \right)\right]\right)dx \nonumber\\[3mm]
+	= P \left(\dfrac{2}{T}\int_{t}^{t + \frac{T}{2}} \left\{1 + \cos\left[2\left(\omega x + \phi_v\right) \right]\right\}dx\right) + Q\left[ \dfrac{2}{T} \int_{t}^{t + \frac{T}{2}} \sin\left[2\left(\omega x + \phi_v \right)\right]dx \right] .
+\end{gather}
+
+	The integrals of the sine and the cosine vanish in the interval $\left[t,t +T/2\right]$, leaving
+
+\begin{equation} \dfrac{2}{T} \int_{t}^{t + \frac{T}{2}} p(x)dx = P \left(\dfrac{2}{T}\int_{t}^{t + \frac{T}{2}} 1dx\right) = P .\end{equation}
+
+\hfill$\blacksquare$
+
+\vspace{5mm}
+\hrule
+\vspace{5mm} %>>>
+
+	Finally, the fact that $P$ and $Q$ can be calculated directly through the phasors $V$ and $I$ mean that the phasor analysis is sufficient to not only describe the Electrical Grid in time, but also to describe how power is distributed along it; this effectively means that the entirety of the analysis can be carried out in phasorial form, and when a time representation is needed, a simple inverse transform yields the time signals pertaining to voltages, current and power.
+

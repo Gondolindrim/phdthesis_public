@@ -1,0 +1,172 @@
+\documentclass[
+cover=a4,
+spinewidth=50mm,
+flapwidth=10cm,
+wrapwidth=5mm,
+]{bookcover}
+\newbookcovercomponenttype{center rotate}{
+\vfill
+\centering
+\rotatebox[origin=c]{-90}{#1}
+\vfill}
+\usepackage[outline]{contour}% It doesn’t work with xelatex and lualatex
+\contourlength{1pt}
+\usepackage[english]{babel}
+\usepackage{kantlipsum,microtype}
+
+
+\usepackage{GS1,qrcode}
+
+\usepackage{amsthm}
+\usepackage[gelasio]{newtxmath}		% Loads the Times-Roman Math Fonts
+\usepackage{mathtools}
+\usepackage{thmtools}
+\usepackage[svgnames,table]{xcolor}
+\newcommand{\dpo}{\boldsymbol{\sigma}}
+
+
+\usepackage{pgfplots}
+\usepackage{tikz}
+\usetikzlibrary{calc,patterns,angles,quotes,math,external,positioning,shapes,intersections,through,backgrounds,shadings,fadings,decorations, decorations.markings, datavisualization,cd,shapes.geometric,fit
+}
+\usepgfplotslibrary{external} 
+
+\tikzset{
+	testfading/.style n args={3}{
+    postaction={
+    decorate,
+    decoration={
+    markings,
+    mark=between positions 0 and \pgfdecoratedpathlength step 0.5pt with {
+    \pgfmathsetmacro\myval{multiply(
+        divide(
+        \pgfkeysvalueof{/pgf/decoration/mark info/distance from start}, \pgfdecoratedpathlength
+        ),
+        100
+    )};
+    \pgfsetfillcolor{#3!\myval!#2};
+    \pgfpathcircle{\pgfpointorigin}{#1};
+    \pgfusepath{fill};}
+}}}}
+
+
+
+\usepackage[siunitx]{circuitikz}
+\tikzstyle{every node}=[font=\small]
+\ctikzset{bipoles/thickness=1}
+\ctikzset{resistors/scale=0.75}
+\ctikzset{bipoles/diode/height=0.3}
+\ctikzset{bipoles/diode/width=0.3}
+\ctikzset{current arrow scale=24}
+\ctikzset{label distance=4}
+
+\usepackage[outline]{contour}% It doesn’t work with xelatex and lualate
+
+
+\begin{document}
+\begin{bookcover}
+% Remark
+\begin{bookcoverelement}{center}{above front}
+\textcolor{blue}{A dust jacket example}
+\end{bookcoverelement}
+
+\definecolor{darkblue}{RGB}{15,35,65}
+\definecolor{waveblue}{RGB}{150,200,255}
+\definecolor{textwhite}{RGB}{255,255,255}
+
+
+% FRONT <<<1
+\begin{bookcoverelement}{tikz}{front}
+\tikzset{transform shape,>={Stealth[inset=0mm,length=1.5mm,angle'=50]}}
+% Define A4 cover size: 21cm wide, 29.7cm tall
+\fill[darkblue] (part.south west) rectangle (\partwidth, \partheight);
+% Title at the top
+\node[text=white, font=\bfseries\large] at (\partwidth/2, 28) {PHD THESIS};
+\node[text=white, font=\bfseries\Huge, align=center] at (\partwidth/2, 25) {DYNAMIC PHASOR THEORY OF\\ELECTRICAL CIRCUITS\\UNDER NONSTATIONARY REGIMENS};
+%\node[text=white, font=\bfseries\large, align=center] at (10.5, 23) {A STUDY IN MATHEMATICAL ANALYSIS};
+% Multiple sinewaves across the middle
+\foreach \i in {0,...,15} {
+    \draw[white, opacity=0.3, thick, samples=200, domain=0:21] 
+    plot (\x, {17 + 1.5*sin(deg(0.5*\x) + \i*15)});
+}
+% Mathematical formulas
+\node[text=white, font=\large] at (5, 11) {$\displaystyle\sum\limits_{i=0}^n \beta_i^n(t) X^{(i)} - F(t) = 0$};
+\node[text=white, font=\large] at (16, 11) {$ X(t) = \dfrac{R_0(t)}{2\pi j}\displaystyle\int_{B_\alpha} \mathbf{M}{\left[X\right]}\left(\mu\right) e^{\mu  t} d\mu$};
+\node[text=white, font=\large] at (10.5, 8.5) {$\dpo\left[X\right] = \dot{X} + j\omega X$};
+% Author name and department at the bottom
+\node[text=white, font=\bfseries\large] at (\partwidth/2, 6) {ÁLVARO A. VOLPATO};
+\node[text=white, font=\bfseries\large] at (\partwidth/2, 5) {ADVISOR: LUÍS F. C. ALBERTO};
+\node[text=white]                       at (\partwidth/2, 4) {DEPARTMENT OF ELECTRICAL AND COMPUTER ENGINEERING};
+\node[text=white]                       at (\partwidth/2, 3) {SÃO CARLOS SCHOOL OF ENGINEERING};
+\node[text=white]                       at (\partwidth/2, 2) {UNIVERSITY OF SÃO PAULO};
+\begin{scope}[yshift=170mm, xshift=\partwidth/2]
+\draw [fill=none, white, opacity=0.3, thick] (0,0) circle (30 mm) node [gray] {};
+\draw [draw=none, fill=darkblue, opacity=0.75] (0,0) circle (29.8 mm) node [gray] {};
+		\draw [->, thick, white, opacity=0.3] (   -40mm,  0   ) -- (   40mm,  0   );
+		\draw [->, thick, white, opacity=0.3] (      0, -40mm ) -- (   0   ,  40mm);
+		\draw [->, thick, white] (0,0) -- (35mm,0) coordinate(realvec);
+		\draw [->, thick, white] (0,0) -- (0,35mm) coordinate(imagvec);
+		\node [white] (realveclabel) at ([shift=({-15mm,-3mm})]realvec) {$R = 1e^{j0}$};
+		\node [white, right] (realveclabel) at ([shift=({4mm,-2mm})] imagvec) {$I = 1e^{j\frac{\pi}{2}}$};
+		\node [white] (reAxisLabel) at (43mm,0) {Re};
+		\node [white] (imAxisLabel) at (0,43mm) {Im};
+		\draw [->,white, opacity=0.5, thick] ({20mm*cos(290)},{20mm*sin(290)}) arc[start angle=290, end angle = 328, radius = 20mm];
+		\node [color=white, opacity=0.5] (philabelrotated) at ({25mm*cos(310)},{25mm*sin(310)}) {$\phi(t)$};
+		\node (rotX) at ({38mm*cos(330)},{38mm*sin(330)}) {};
+		\node [white] (XomegatLabel) at ({43mm*cos(330)},{43mm*sin(330)}) {$Xe^{j\psi(t)}$};
+		\draw [->,thick, white] (0,0) -- (rotX.center);
+		\node (rotRe) at ({40mm*cos(290)},{40mm*sin(290)}) {};
+		\node (rotIm) at ({40mm*cos(20)},{40mm*sin(20)}) {};
+		\node [label={[white, opacity=0.5,label distance=0.0mm, rotate=290]290:$Re^{j\psi(t)}$}] (ReomgatLabel) at ({44mm*cos(290)},{27mm*sin(290)}) {};
+		\node [label={[white, opacity=0.5,label distance=0.0mm, rotate=20]20:$Ie^{j\psi(t)}$}] (IomegatLabel) at ({15mm*cos(20)},{15mm*sin(20)}) {};
+		\draw [->,thick, white, opacity=0.5] (0,0) -- (rotRe.center);
+		\draw [->,thick, white, opacity=0.5] (0,0) -- (rotIm.center);
+		\draw [->,thick,gray, dashed, line cap = round] (0,0) -- ({30mm*cos(240)},{30mm*sin(240)});
+		\node [label={[gray,label distance=0.0mm]245:$m(t)$}] (mt) at ({30mm*cos(245)},{30mm*sin(245)}) {};
+		%\draw [->,gray,thick] ({6mm*cos(25)},{6mm*sin(25)}) arc[start angle=25, end angle = 63, radius = 6mm];
+		\node [white, opacity=0.5] (omegat) at ({20mm*cos(135)},{20mm*sin(135)}) {$\psi(t)$};
+		\draw [-{Stealth[inset=0mm,length=5mm,angle'=50]}, white, opacity=0.5, line width = 2mm] (13mm,0) arc[start angle=0, end angle = 287, radius = 13mm];
+\end{scope}
+\end{bookcoverelement} %>>>1
+% SPINE <<<1
+\begin{bookcoverelement}{tikz}{spine}
+% Define A4 cover size: 21cm wide, 29.7cm tall
+\fill[darkblue] (part.south west) rectangle (\partwidth, \partheight);
+\node[white,label={[white, label distance=5mm,text depth=-3mm, style={align=center}, rotate=-90]:\Huge DYNAMIC PHASOR THEORY OF ELECTRICAL CIRCUITS}] at (\partwidth/2, \partheight/2) {};
+\node[white,label={[white, label distance=5mm,text depth=-3mm, style={align=center}, rotate=-90]:\Huge UNDER NONSTATIONARY REGIMENS}] at ({\partwidth/2 - 15mm}, {\partheight/2}) {};
+\end{bookcoverelement} %>>>1
+% BACK <<<1
+\begin{bookcoverelement}{tikz}{back}
+\tikzset{transform shape,>={Stealth[inset=0mm,length=1.5mm,angle'=50]}}
+% Define A4 cover size: 21cm wide, 29.7cm tall
+\fill[darkblue] (part.south west) rectangle (\partwidth, \partheight);
+% Multiple sinewaves across the middle
+\foreach \i in {0,...,15} {
+    \draw[white, opacity=0.3, thick, samples=200, domain=0:21] 
+    plot (\x, {17 + 1.5*sin(deg(0.5*\x) + \i*15)});
+}
+%
+\node[text=white, font=\bfseries\large, align=justify, text width = 18cm] at (\partwidth/2, 24) {
+	Despite the many Dynamic Phasor frameworks currently available, none have been able to capture all of the qualities that made Classical Phasors so useful: while some require truncations and approximations to be operationalizable — thus sacrificing precision for modelling convenience — some others can represent and reconstruct some signals of interest but do not offer a good theory of complex power under nonstationary regimens. This thesis comprises an endeavour of building a novel Dynamic Phasor Theory, specifically the construction of a theory that offers a representation of nonstationary sinusoids as Dynamic Phasors, as well as reconstructing those signals in time from their phasorial counterpars without the need for approximations or truncations while offering a theory of complex electrical power in nonstationary regimens, justifying the synchrophasor representation of voltages and currents and the steady-state approximation of complex power.
+};
+%
+\node at (\partwidth/2, 5) {\includegraphics[width=5cm]{../images/uniLogo_white.pdf}};
+\end{bookcoverelement} %>>>1
+% FRONT FLAP <<<1
+\begin{bookcoverelement}{tikz}{front flap and wrap}
+\tikzset{transform shape,>={Stealth[inset=0mm,length=1.5mm,angle'=50]}}
+% Define A4 cover size: 21cm wide, 29.7cm tall
+\fill[darkblue] (part.south west) rectangle (\partwidth, \partheight);
+\end{bookcoverelement} %>>>1
+% BACK FLAP <<<1
+\begin{bookcoverelement}{tikz}{back flap and wrap}
+\tikzset{transform shape,>={Stealth[inset=0mm,length=1.5mm,angle'=50]}}
+% Define A4 cover size: 21cm wide, 29.7cm tall
+\fill[darkblue] (part.south west) rectangle (\partwidth, \partheight);
+\end{bookcoverelement} %>>>1
+
+
+
+
+\end{bookcover}
+\end{document}

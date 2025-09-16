@@ -1,0 +1,1879 @@
+% ---------------------------------------------------------
+\chapter{Dynamic Phasor Functionals}\label{chapter:dpos}
+% ---------------------------------------------------------
+
+	Seen as Passive Linear Circuits define linear differential systems, one of the main aspects of Linear Electrical Circuit Theory is the employment of mathematical tools to solve the Differential Equations that model electrical circuits, following a sequence that progresses in complexity as the input signals considered get more sophisticated. Initially, a circuit network is presented as excited by a sinusoidal signal, and the Classical Phasor approach was shown to sufficient to model circuit networks in steady-state regimen. Then, instead of a static sinewave, a non sinusoidal but still periodic excitation is used; the signal can be decomposed into a set of harmonics by its Fourier Series, and due to the orthogonality of each harmonic, the circuit can be separated into one individual circuit for each harmonic, and the final signal is obtained from the summation of each response of each individual circuit. Further, if the the excitation is neither sinusoidal nor periodic, but still being absolutely integrable — ``stable'' in a certain sense —, the Fourier Transform is used to decompose the input signal as a set of continuous frequency bands. Finally, if the input is non-sinusoidal, aperiodic and possibly unstable, the Laplace Transform (LT) is presented as a generalized case of the Fourier Transform where each harmonic is also decomposed into varying amplitudes, and the combination of continuous frequencies $\omega$ and continuous amplitudes $\sigma$ generates the Laplace frequency variable $s = \sigma + j\omega$. A comprehensive discussion of these tools and the escalable complexity of the excitation signals is found in \cite{scottElementsLinearCircuits1965,desoerBasicCircuitTheory1987}.
+
+	At each step it can be shown that instead of modelling the target circuit using equations of time, leading to time ODEs — which need special procedures and techniques to be solved — the circuit can be modelled in the ``frequency'' or ``complex'' domain, leading to algebraic equations that are much simpler to solve, and the complex functions obtained as solutions of the algebrai equations are proven to be direct representations of the time functions that solve the original ODEs of the circuit. To further refine this process, each tool at each step in the escalation process is imbued with a version of the three main established circuit modelling techniques: Kirchoff's Laws (KLs), the Superposition Principle or Theorem (ST) and the Thèvenin-Norton-Theorems (TNTs).
+
+	Chapter \ref{chapter:dynamic_phasor_theory} of this thesis takes a different approach to this sequence of tools: instead of traditionally escalating Classic or Static Phasors to integral transforms (Fourier and Laplace), Classic Phasors are expanded by using a particular transformation that was called the Dynamic Phasor Transform, which essentially consists of a particular differential operator to represent generalized sinusoidal signals as complex functions called Dynamic Phasors. While certainly powerful, the DPT is quite strenuous to work with, and its operationalization, that is, the process of using it for the specific modelling and equationing, becomes quite effortful. In this chapter, we devise a particular set of transformations in Dynamic Phasor space, which will be called the Dynamic Phasor Functionals, that aim to offer the same algebraic properties that the integral transforms enjoy, and also offer Dynamic Phasor equivalent proofs of the circuit modelling techniques mentioned.
+
+	More specifically, we devise a sequence of functionals $\left\{\ndpo{k}\right\}_{(k\in\mathbb{Z})}$ such that $y(t) = x^{(k)}(t)\Leftrightarrow Y(t) = \ndpo{k}\left[X\right]$, that is, the k-th order differentiation in time is equivalent to the k-th order operator in Dynamic Phasor space. We further prove that these operators form very powerful algebraic structures, which allows for extensive algebraic manipulations and properties. These structures are explored to prove that not only DPFs keep very desirable modelling features like linearity, multiplication and linear combination, but also that impedances and admittances can be defined in the domain of Dynamic Phasors, and versions of Kirchoff's Laws, the Superposition Theorem and the Thèvenin-Norton Theorems are proven for this Dynamic Phasor framework. This, in turn, allows representing and modelling linear circuits under nonstationary regimens in a much clearer and intuitive way than the conventional tools like the Laplace Transform, while keeping intact the phasorial quantities of amplitudes, phases and frequencies.
+
+%-------------------------------------------------
+\section{Motivation: modelling circuit using the Laplace Transform}
+
+	The Laplace Transform of a signal $x(t)$ is defined as
+
+\begin{equation} X(s) = \mathbf{L}\left[x\right] = \int_{\mathbb{R}} x(t)e^{-st}dt . \label{eq:laplace_def}\end{equation}
+
+	In the realm of linear systems, the most useful feature of this transform is the capability to algebraically represent derivatives and integrals in the complex domain, as in \eqref{sys:laplace_properties}, giving the LT a remarkable capacity to streamline the solutions of linear time ODEs.
+
+\begin{equation}\left\{\begin{array}{l} \mathbf{L}\left[\dfrac{dx}{dt}\right] = s\mathbf{L}\left[x\right] - x(0) \stackrel{\raisebox{-2mm}{} x(0)=0}{=} s\mathbf{L}\left[x\right]\\[5mm] \mathbf{L}\left[\displaystyle \int_0^t x(a)da \right] = \dfrac{1}{s}\mathbf{L}\left[x\right]\end{array}\right. \label{sys:laplace_properties} \end{equation}
+	
+	Given a square integrable signal $x(t)$, then its Laplace Transform is smooth and analytic where it is defined, which can be proven using the Dominated Convergence Theorem and Morera's Theorem \pcite{ahlfors1979complex}. This is extensively explored in linear control theory \pcite{chenLinearSystemTheory2013}. Particularly for this field, the Laplace Transform is very useful because it generalizes the notion premiered by Classical Phasors of a transform that translates derivatives in time to algebraic operations in complex space:
+
+\begin{equation} \sum_{k=0}^n \alpha_k x^{(k)} - y(t) = 0 \Leftrightarrow \sum_{k=0}^n \alpha_k s^k X(s) - Y(s) = 0 \Leftrightarrow X(s) = \dfrac{Y(s)}{\displaystyle\sum_{k=0}^n \alpha_k s^k} \end{equation}
+
+	\noindent and, from this equivalence, many useful properties can be drawn and explored. For the Linear Circuits standpoint, the current-voltage differential equations of passive bipoles are transformed into algebraic equations, as shown in \eqref{sys:laplace_impedances}, defining the concepts of Laplace Impedances.
+
+\begin{equation}\left\{\begin{array}{l} v(t) = L\dot{i}(t) \Leftrightarrow V(s) = sLI(s) \text{ (Linear inductor)}\\[3mm] i(t) = C\dot{v}(t) \Leftrightarrow I(s) = sCV(s) \text{ (Linear capacitor)}\\[3mm] v(t) = Ri(t) \Leftrightarrow V(s) = RI(s) \text{ (Linear resistor)}\end{array} \right. ,\label{sys:laplace_impedances}\end{equation}
+
+	\noindent where $V(s)$ and $I(s)$ are the Laplace Transform of the time voltage signal $v(t)$ and current $i(t)$. The complex functions obtained as solutions of the algebraic complex equations are guaranteed to be direct representations of the solutions of the time differential equations of the circuit, which can be retrieved using the inverse Laplace Transform:
+
+\begin{equation} \mathbf{L}^{-1}\left[X(s)\right] = \dfrac{1}{2\pi j} \int_{B_\alpha} X(s)e^{st}ds \label{eq:inverse_laplace_def}\end{equation}
+
+	\noindent where $B_\alpha = \left(\alpha - j\infty,\alpha + j\infty\right)$ is a Brömwich contour, $\alpha$ is at the right of all the poles of $X(s)$. Owing to these propertes, the Laplace Trasform is seen as a be-all-end-all tool that is able to represent any signal in time and solve any linear time ODE algebraically. However, only a very limited catalog of functions have ``convenient'' or ``nice'' (that is, analytically representable) transforms, as well as inverse transforms. As a result, transforming signals to their equivalent complex frequency representations, operating the complex functions, and then going back to time signals requires the functions involved to be in this roster of ``simple'' transforms, meaning the transform is only \textit{operationalizable} in a sense, and ultimately applicable, for a limited set of functions. For an arbitrary signal $x(t)$, even if a transform $X(s)$ exists, it is often too complicated or impossible to be written as a combination of elementary functions.
+
+	Take for instance the RLC circuit of examples \ref{example:rlc_dpt} and \ref{example:dpdomain_secondorder}. In those examples, one must go significant lengths to finally find a differential equations that models the load voltage $V_R$ with respect to the input voltage $V(t)$. In contrast, the same circuit can be modelled with the Laplace Transform, and one can simply use the voltage-current relationships \eqref{sys:laplace_impedances}. The inductor $L$ is substituted by an impedance $sL$, the capacitor by an impedance $1/sC$, and the circuit becomes that of figure \ref{fig:laplace_example}, where one notices that $V_R$ is given by an impedance $sL$ in series with an impedance that is the parallel combination of $R$ and $1/sC$; therefore $V_R(s)$ is simply obtained using an impedance divider formula:
+
+\begin{equation} V_R(s) = V(s) \left( \dfrac{\raisebox{-8mm}{} \dfrac{1}{\raisebox{5mm}{} \dfrac{1}{R} + sC}}{\raisebox{5mm}{} sL + \dfrac{1}{\raisebox{5mm}{} \dfrac{1}{R} + sC}}\right) = V(s)\left( \dfrac{1}{\raisebox{5mm}{} s^2LC + s\dfrac{L}{R} + 1}\right) \label{eq:rlc_laplace_model}\end{equation}
+
+	\noindent showcasing the remarkable operational properties of the Laplace Transform applied to electrical circuits; such properties are not yet available for Dynamic Phasors. At this stage, one calculates $V(s)$ as the Laplace Transform of the excitation $v(t)$, thus obtaining $V_R(s)$, and then uses the inverse LT to obtain $v_R(t)$ from $V_R(s)$. However, one immediately notices that if $v(t)$ is the generalized sinusoid \eqref{eq:example_voltage_freq_def} used in the examples, it does not have an algebraically representable $V(s)$, frustrating the process and outlining the first major advantage of the Dynamic Phasors proposed: the theory proposed allows representing signals like $v(t)$ in a simple manner.
+
+	Further, even if $V_R(s)$ and $v_R(t)$ can be obtained (say, numerically) the resulting $V_R(s)$ loses the notions of a time-varying amplitude and phase, also outlining the fact that the proposed DP theory allows for such notions with a solid correspondence with time signals.
+
+% MODELLING EXAMPLE: RLC CIRCUIT IN LAPLACE DOMAIN<<<
+\begin{figure}[h]
+\centering
+        \begin{tikzpicture}[american,scale=1,transform shape,line width=0.75, cute inductors, voltage shift = 1]
+	\ctikzset{/tikz/circuitikz/voltage/distance from node=10mm}
+		\draw (0,0)
+			to[vsource,sources/scale=1.25, v>=$V(s)$,invert] (0,4)
+			to[L,l=$sL$,f>^=$I_{L}(s)$,v>=$V_{L}(s)$,-*] (4,4) 
+			to[C,l=$\dfrac{1}{sC}$,f>^=$I_{C}(s)$,v>=$V_{C}(s)$,-*] (4,0) 
+			to[short] (0,0); 
+		\draw (4,4)
+			to[short,f>^=$I_{R}(s)$] (7,4) 
+			to[R,l=$R$,v>=$V_{R}(s)$] (7,0) 
+			to[short]  (4,0);
+        \end{tikzpicture}
+	\caption{Second-order circuit for example application of the Laplace Transform.}
+	\label{fig:laplace_example}
+\end{figure} %>>>
+	
+	It becomes clear that one class of the problematic signals that do not have ``nice'' Laplace transforms is that of generalized sinusoids, as defined in this thesis: a generic sinusoid does not have an operationalizable Laplace Transform. As a matter of fact this transform is possibly nonexistant in cases where the system exhibits explosive behavior and the signals involved are unstable. This highlights an inconformity of the available toolset with respect to this class of signals and generating lack of a solid and practical theory to represent circuits and systems under nonstationary sinusoidal regimens. 
+
+	As such, the problem at hand manifests itself as a predicament that one the one hand the Dynamic Phasor Theory proposed can translate generalized sinusoids in phasorial domain, but it lacks the operational properties of the Laplace Transform; on the other, while the Laplace Transform attains such operational features, it lacks a phasorial analytical representation for generalized sinusoids.
+
+	Driven by this predicament, in this chapter we study the possibility of defining specific operations in the complex Dynamic Phasor space so that differentiations in time become algebraic manipulations in DP space, in doing so solving the predicament proposed: by using the DPT one can use Dynamic Phasors, and by using such proposed operations, one can model those Dynamic Phasors algebraically.
+
+% ------------------------------------------------
+\section{The Dynamic Phasor Functionals} \label{sec:operator} %<<<1
+
+%-------------------------------------------------
+\subsection{Motivation: transforming derivatives} \label{subsec:motivation_dpos} %<<<2
+
+	Inasmuch as chapter \ref{chapter:dynamic_phasor_theory} illustrates the validity of the Dynamic Phasor approach proposed in this thesis and its usefulness compared to an established tool like the Laplace Transform, its application is strenuous because transforming the time DEs \eqref{eq:rlc_time_diffeq} into a complex equivalent DE \eqref{eq:rlc_complex_diffeq} still requires calculating the time DEs to then apply the transform. In contrast, the Laplace Transform allows directly modelling a circuit in the $s$ frequency domain by simply using simple circuit modelling techniques, as shown in the fact \eqref{eq:rlc_laplace_model} is obtained in a single line of calculations. Fundamentally, this stems from the fact that the LT transforms derivatives into algebraic operations which evolve into proving circuit techniques like the impedance divider formulas used. In the Dynamic Phasor framework, however, derivatives are transformed into a very specific transformation:
+
+\begin{equation} y_1(t) = \dot{x}(t) \Leftrightarrow Y_1(t) = \dot{X}(t) + j\omega(t) X(t) .\label{eq:first_operator}\end{equation}
+
+	For the second derivative, 
+
+\begin{align}
+	y_2(t) &= \ddot{x}(t) = \dot{y}_1 \Leftrightarrow Y_2(t) = \dot{Y}_1(t) + j\omega(t) Y_1(t) = \nonumber\\[3mm]
+	&= \dfrac{d}{dt}\left[\dot{X}(t) + j\omega(t) X(t)\right] + j\omega(t)\left[\dot{X}(t) + j\omega(t) X(t)\right] = \nonumber\\[3mm]
+	&= \ddot{X}(t) + 2j \omega(t) \dot{X}(t) + \left[ j \dot{\omega}(t) - \omega(t)^2 \right] X(t) . \label{eq:second_operator}
+\end{align}
+
+	Finally, for the third,
+
+\begin{align}
+	y_3(t) &= \dddot{x}(t) = \dot{y}_2 \Leftrightarrow Y_3(t) = \dot{Y}_2(t) + j\omega(t) Y_2(t) = \nonumber\\[3mm]
+	&= \dddot{X}(t) + 3j \omega(t) \ddot{X}(t) + \left[ 3j \dot{\omega}(t) - 3 \omega(t)^2 \right] \dot{X}(t) + \left[ j \ddot{\omega}(t) - 3 \omega(t) \dot{\omega}(t) - j \omega(t)^3 \right] X(t) \label{eq:third_operator}
+\end{align}
+
+	And it becomes clear that the formulas explode in size and become quite complicated as the order $y_n$ grows; as such, using this algorithm for large-scale systems will lead to quite a painful process. Fortunately, theorem \ref{corollary:complex_equivalence_phasorialodes} gives a closed formula for the n-th order relationship.
+
+\begin{theorem}[n-th order Dynamic Phasor Functional]\label{theo:nth_order_relationship} %<<<
+	Let $x(t)$ a nonstationary sinusoidal and $n\in \mathbb{N}$. Consider $\omega(t)\in C^n$ an apparent frequency signal and let $y(t) = x^{(n)}(t)$. Then $y_n(t)$ is a nonstationary sinusoid and its Dynamic Phasor $Y(t)$ is given by
+
+\begin{equation}\left\{\begin{array}{l} \displaystyle Y_n(t) = \sum\limits_{k=0}^n \gamma_k^n(t) X^{(k)}(t) \\ \displaystyle \gamma_k^n(t) = {n\choose k} \left[\sum\limits_{c=0}^{n-k} j^cB_{\left(n-k,c\right)}\left(\omega,\dot{\omega},\ddot{\omega},...,\omega^{(n-k-c)}\right) \right]\end{array}\right. ,\label{eq:gamma_def}\end{equation}
+
+	\noindent with $X(t)$ and $Y_n(t)$ the dynamical phasors of $x(t)$ and $y_n(t)$.
+\end{theorem}
+\textbf{Proof:} apply theorem \ref{corollary:complex_equivalence_phasorialodes} and adopt $\alpha_n = 1$ and $\alpha_k = 0$ for $0 \leq k < n$. \hfill$\blacksquare$\vspace{5mm}\hrule\vspace{5mm} %>>>
+
+	Thus, let us define a functional transformation in the complex space, such that a derivative in the time domain is represented by a first order functional map $\ndpo{1}$, that is,
+
+\begin{equation} \ndpo{1}_\omega \left[X\right] = \left[\mathbf{D}^1 + j\omega(t)\mathbf{I}\right]\left[X\right] , \label{eq:steinmetz_1storder}\end{equation}
+
+	\noindent with $\mathbf{I}$ the identity map. Let us call this the \textbf{first-order Dynamic Phasor Functional}. For the second order functional, from \eqref{eq:second_operator}, $\ndpo{2}$ could be defined as
+
+\begin{equation} \ndpo{2}_\omega \left[X\right](t) = \left\{\raisebox{4mm}{} \mathbf{D}^2 + 2j\omega(t)\mathbf{D}^1 + \left[-\omega^2 + j\dot{\omega}(t)\right]\mathbf{I}\right\}\left[X\right] \label{eq:steinmetz_2ndorder}\end{equation}
+
+	\noindent and from \eqref{eq:third_operator}, the third-order functional $\ndpo{3}$ would be defined as
+
+\small
+\begin{equation} \ndpo{3}_\omega \left[X\right](t) = \left\{\raisebox{4mm}{} \mathbf{D}^3 + 3j \omega(t) \mathbf{D}^2 + \left[ 3j \dot{\omega}(t) - 3 \omega(t)^2 \right] \mathbf{D}^1 + \left[ j \ddot{\omega}(t) - 3 \omega(t) \dot{\omega}(t) - j \omega(t)^3 \right]\mathbf{I}\right\}\left[X\right] \label{eq:steinmetz_3rdorder}\end{equation}
+\normalsize
+
+	Therefore, theorem \ref{theo:nth_order_relationship} induces a naïve definition of a n-th order Dynamic Phasor Functional $\ndpo{n}$ of the form
+
+\begin{equation} \ndpo{n}_\omega = \sum_{k=0}^n \gamma_k^n \left(t\right)\mathbf{D}^k_\mathbb{C} \label{def:operated_dynamic_phasor}, \end{equation}
+
+	\noindent where $\mathbf{D}_\mathbb{C}^k$ is the k-th order differential functional in the space $\left[\mathbb{R}\to\mathbb{C}\right]$ and the $\gamma_k^n$ are defined in \eqref{eq:gamma_def}. Naturally, because the 0-th order derivative is the identity, it is natural to define the 0-th order functional as the identity $\dpo^0_\omega = \mathbf{I}$. This result is also a consequence of theorem \ref{theo:nth_order_relationship}: using $n=0$ one arrives at $\gamma_0^0 = 1$.
+
+	Formally, $\ndpo{n}_\omega$ is part of a larger class of functionals called \textbf{Differential Operators} \pcite{achiezerTheoryLinearOperators1993}, making these functionals a particular set of such differential operators in the space of complex signals.
+
+	Naturally, the DPF depends on the apparent frequency signal $\omega(t)$ chosen, hence the subscript. Since this signal is chosen beforehand, and generally tacitly understood, this subscript will be dropped hereforth, always having such dependence in mind.
+
+%-------------------------------------------------
+\subsection{Linearity, bijectiveness and inverse operator} %<<<2
+
+	Most importantly, we want to prove that the DPFs are linear, which is the most basic property needed from such an operator.
+
+\begin{theorem}[DPFs are linear]\label{theo:dpf_linearity}%<<<
+	The n-th order DPF $\ndpo{n}$ is linear.
+\end{theorem}
+\textbf{Proof:} let $X(t),Y(t)\in\left[\mathbb{R}\to\mathbb{C}\right]$ and $\alpha\in\mathbb{C}$. Then from the definition \ref{theo:nth_order_relationship}, 
+
+\begin{align}
+	\ndpo{n}\left[X + \alpha Y\right] &= \sum\limits_{k=0}^n \gamma_k^n(t) \left[X + \alpha Y\right]^{(k)}(t) = \sum\limits_{k=0}^n \gamma_k^n(t) \left[X^{(k)} + \alpha Y^{(k)}(t)\right] \nonumber\\[3mm]
+	&= \sum\limits_{k=0}^n \gamma_k^n(t) X^{(k)} + \sum\limits_{k=0}^n \alpha Y^{(k)}(t) = \sum\limits_{k=0}^n \gamma_k^n(t) X^{(k)} + \alpha\sum\limits_{k=0}^n Y^{(k)}(t)  \nonumber\\[3mm]
+	&= \ndpo{n}\left[X\right] + \alpha \ndpo{n}\left[Y\right]
+\end{align}
+
+\hfill$\blacksquare$
+\vspace{5mm}
+\hrule
+\vspace{5mm}%>>>
+
+	Further, it is natural that once a transform $\ndpo{n}$ is defined, allowing obtaining $Y(t)$ from $X(t)$, an inverse transform $\ndpo{\left(-n\right)}$ is needed in order to reconstruct $X(t)$ from $Y(t)$. Let $x(t)$ be a nonstationary signal and $y(t)$ such that $x(t) = y^{(n)}(t)$, prompting the definition $Y(t) = \ndpo{\left(-n\right)} \left[X\right]$ or
+
+\begin{equation} X(t) = \sum_{k=0}^n \gamma_k^n (t) Y^{(k)}(t). \label{eq:inverse_steinmetz_def} \end{equation}
+
+	However, in order for the inverse operator to be solid, it needs to be proven that the transform itself is bijective, that is, $Y(t) = \ndpo{n} \left[X\right]$ is unique to $X(t)$, and vice-versa.
+
+\begin{theorem}[Bijectiveness of $\ndpo{n}$] \label{theo:bijection} %<<<
+	Let $X(t)$ be the dynamic phasor of some given signal $x(t)$ at an apparent frequency $\omega(t)\in C^n\left(I\right)$ for $n\geq 1$ and some non-empty $I\subset\mathbb{R}$.
+
+\begin{itemize}
+	\item If $X(t)\in C^n\left(I\right)$, then $Y(t) = \ndpo{n} \left[X\right]$ exists and is unique in $I$, that is, $\ndpo{n}$ is injective; and
+	\item If $X(t)\in C^1\left(I\right)$, then given an initial condition for itself and its $n-1$ derivatives, there exists a unique signal $Y(t)$ in $I$ such that $X(t) = \ndpo{n} \left[Y\right]$, that is, $\ndpo{n}$ is surjective.
+\end{itemize}
+
+\end{theorem}
+\noindent\textbf{Proof:} suppose two $Y_1(t)$ and $Y_2(t)$ qualify as $\ndpo{n} \left[X\right]$. Then 
+
+\begin{equation} Y_1(t) - Y_2(t) = \sum_{k=0}^n \gamma_k^n (t) \dfrac{d^kX(t)}{dt^k} - \sum_{k=0}^n \gamma_k^n (t) \dfrac{d^kX(t)}{dt^k} = 0\end{equation}
+
+	\noindent meaning $Y_1 = Y_2$ and $\ndpo{n}$ is injective. For surjection, suppose $X(t) = \ndpo{n} \left[Y\right]$. Then $X(t)$ satisfies \eqref{eq:inverse_steinmetz_def}. Simple inspection yields $\gamma_n^n(t) = 1$ for any $n \geq 0$; therefore \eqref{eq:inverse_steinmetz_def} can be separated into real and imaginary parts. Let $X_R,X_I,Y_R,Y_I$ be the real and imaginary parts of $X(t)$ and $Y(t)$:
+
+\begin{equation} \left\{\begin{array}{l} \displaystyle X_R(t) = Y_R^{(n)}(t) + \sum_{k=0}^{n-1} a_n^k\left(t\right)Y_R^{(k)} + \sum_{k=0}^{n-1} b_n^k\left(t\right)Y_I^{(k)} \\[5mm] \displaystyle X_I(t) = Y_I^{(n)}(t) + \sum_{k=0}^{n-1} c_n^k\left(t\right)Y_R^{(k)} + \sum_{k=0}^{n-1} d_n^k\left(t\right)Y_I^{(k)} \end{array}\right. \label{eq:theo_bijection_reimsys} \end{equation}
+
+	\noindent where the $a,b,c,d$ are linear combinations of the $\gamma$ functions. Now construct
+
+\begin{equation} \mathbf{y}(t) = \left[ Y_R,\dot{Y}_R,...,Y^{(n-1)}_R,Y_I,\dot{Y}_I,...,Y^{(n-1)}_I\right]^\intercal \label{eq:theo_bijection_ydef}\end{equation}
+
+	Then by \eqref{eq:theo_bijection_reimsys} $Y^{(n)}_R$ and $Y^{(n)}_I$ can be written as
+
+\begin{equation} \left\{\begin{array}{l} Y_R^{(n)}(t) = \displaystyle X_R(t) - \sum_{k=0}^{n-1} a_n^k\left(t\right)Y_R^{(k)} - \sum_{k=0}^{n-1} b_n^k\left(t\right)Y_I^{(k)} = g_R\left(t,X_R(t),\mathbf{y}(t)\right) \\[5mm] Y_I^{(n)}(t) = \displaystyle X_I(t) - \sum_{k=0}^{n-1} c_n^k\left(t\right)Y_R^{(k)} - \sum_{k=0}^{n-1} d_n^k\left(t\right)Y_I^{(k)} = g_I\left(t,X_I(t),\mathbf{y}(t)\right) \end{array}\right. . \end{equation}
+
+	Then, from \eqref{eq:theo_bijection_ydef},
+
+\begin{align} \mathbf{\dot{y}}(t) &= \left[ y_2(t),y_3(t),...,y_{\left(n-1\right)}(t),g_R\left(t,X_R(t),\mathbf{y}(t)\right), y_{\left(n+1\right)}(t),...,y_{(2n-2)}(t),g_I\left(t,X_I(t),\mathbf{y}(t)\right)\right]^\intercal = \nonumber\\& = f\left(t,\mathbf{y}(t)\right) \end{align}
+
+	Because the $\gamma^n_k(t)$ are linear combinations of the $n$ derivatives of $\omega$, they are $C^1\left(I\right)$; the coefficients $a_k^n,b_k^n,c_k^n,d_k^n$ of \eqref{eq:theo_bijection_reimsys} are compositions of the $\gamma_k^n$ therefore they are also $C^1\left(I\right)$. Since the $g_R$ and $g_I$ are functions of these same coefficients and $X(t)$, these two functions are at least $C^1\left(I\right)$ (because $X$ is defined as $C^1\left(I\right)$), therefore $f$ is at least $C^1\left(I\right)$. Thus according to the Picard-Lindelöf Existence and Uniqueness Theorem \pcite{Perko2001}, given an initial condition $\mathbf{y}_0$ at $t_0$ there is a unique vector $\mathbf{y}$ in $I$ satisfying the IVP, meaning there exists unique $Y_R(t)$ and $Y_I(t)$ in $I$, therefore an unique $Y(t)$. \hfill$\blacksquare$\vspace{5mm}\hrule\vspace{5mm} %>>>
+
+	Theorem \ref{theo:bijection} proves that $\ndpo{n}$ is bijective, therefore an inverse transform $\left(\ndpo{n}\right)^{-1}$ is possible and can be defined.
+
+\begin{corollary}[Inverse Dynamic Phasor Functionals]\label{def:inverse} %<<<
+	Given a $X(t)\in\left[\mathbb{R}\to\mathbb{C}\right]$, then $Y(t) = \left(\ndpo{n}\right)^{-1}\left[X\right]$ is defined as the signal that satisfies
+
+\begin{equation} X(t) = \ndpo{n}\left[Y\right] = \sum_{k=0}^n \gamma_k^n (t) Y^{(k)}(t), \end{equation}
+
+	\noindent which by theorem \ref{theo:bijection} exists and unique given the initial conditions $Y(0),Y'(0),\cdots ,Y^{(n-1)}(0)$.
+\end{corollary}%>>>
+
+ The need for initial conditions, necessary for the surjection proof, is not a foreign concept. For instance, the Laplace transform for the n-th derivative of a signal is
+	
+\begin{equation} \mathbf{L}\left[y^{(n)}\right] = s^n \mathbf{L}\left[y\right] - s^{(n-1)}y_0 - s^{(n-2)}y'_0 - \cdots - y^{(n-1)}_0 \label{eq:laplace_nthder_complete} \end{equation}
+
+	\noindent thus $y_0, y'_0, y''_0,...,y^{(n-1)}_0$ must be known. Customarily however \eqref{eq:laplace_nthder_complete} is presented as $\mathbf{L}\left[y^{(n)}\right] = s^n \mathbf{L}\left[y\right]$ which assumes the system starts from a zero-energy state where the initial values of $y$ and its $n-1$ derivatives are null.
+
+%-------------------------------------------------
+\section{Algebraic structures induced by DPFs and the class $\dpS$} \label{subsec:notation_abuse} %<<<2
+	
+	It is immediate from the definition of $\dpo$ that the linear element equations yield
+
+\begin{equation}\left\{\begin{array}{l} v(t) = L\dot{i}(t) \Leftrightarrow V(t) = L \ndpo{1} \left[I\right] \text{ (Linear inductor)}\\[3mm] i(t) = C\dot{v}(t) \Leftrightarrow I(t) = C \ndpo{1} \left[V\right]  \text{ (Linear capacitor)}\\[3mm] v(t) = Ri(t) \Leftrightarrow V(t) = RI(t) \text{ (Linear resistor)}\end{array} \right. \label{sys:dpo_impedances_first}\end{equation}
+
+	\noindent and this is naturally highly resemblant of impedances in the Laplace domain, if it were not for the fact that $\dpo$ are functionals but not a complex number like the Laplace frequency $s$.
+
+	We now dive into the operational properties of the $\ndpo{k}$ and how these properties induce algebraic structures that are able to translate differential equations in time domain to algebraic equations in the DPF space. Specifically, it will be proven that the notions of sums and products of operators is definable and that the n-th order operator $\ndpo{n}$ is an ``n-th power'' of the first-order operator $\ndpo{1}$; further, the operators can be inverted and linearly combined, so that polynomials of operators are also defineable. For the ``impedance equations'' \eqref{sys:dpo_impedances_first} these properties mean that the functional $\dpo$ behaves algebraically just like the complex frequency $s$, so that a notion of impedances in Dynamic Phasor space is well-defined as ratios of polynomials of $\dpo$ much like impedances in the Laplace domain are ratios of polynomials of $s$.
+
+	The mathematical background for these proofs is abstract algebra; the main literature used is \cite{goncalvesIntroducaoAlgebra2021,garciaElementosAlgebra2022,hungerfordAlgebra2010,dummitAbstractAlgebra2003}). We first prove that the space of functionals $\ndpo{n}$ forms algebraic structures of being a group, a ring, a field and a vector space.
+
+%-------------------------------------------------
+\subsection{Group and ring}\label{subsec:group_ring}
+
+	We first prove that the DPFs form a \textit{group}, through the sum of operators.
+
+\begin{definition}[Group]\label{def:algebra_group}%<<<
+	A \textbf{group} is a set $G$ equipped with a binary operation, denoted ``$+$'', such that any two elements $a,b\in G$ combined lead to $c = a + b$ where $c\in G$. Further, the operation fulfills the axioms:
+
+\begin{itemize}
+	\item \textbf{Associativity:} for any $a,b,c\in G$, $\left(a + b\right) + c = a + \left( b + c\right)$;
+	\item \textbf{Neutral element:} there exists an element $e\in G$ such that $a + e = a$ for any $a\in G$;
+	\item \textbf{Inverse element:} for every $a\in G$ there exists some $b\in G$ such that $a + b = b + a = e$.
+\end{itemize}
+
+	Further, $\left(G,+\right)$ is an \textbf{abelian group} if the operation is commutative, that is, $a + b = b + a$ for any two $a,b\in G$.
+
+\end{definition} %>>>
+
+\begin{theorem}[The DPFs form an abelian group]\label{theo:abelian} %<<<
+	The set $\left\{\ndpo{k}\right\}_{(k\in\mathbb{Z})}$ equipped with the sum operation $\left(\ndpo{m} + \ndpo{n}\right)\left[X\right] = \ndpo{n}\left[X\right] + \ndpo{m}\left[X\right]$ and the neutral element $\mathbf{0}$ (the null operator) is an abelian group. \end{theorem}
+\textbf{Proof.} Consider some $X(t)\in\left[\mathbb{R}\to\mathbb{C}\right]$. Let $n,m,p\in\mathbb{N}$, and without loss of generality assume $n\geq m$. Then
+
+\begin{gather}
+	\left(\ndpo{m}\left[X\right] + \ndpo{n}\left[X\right] \right) + \ndpo{p}\left[X\right] = \left(\sum_{i=0}^m \gamma_i^n (t) X^{(i)}(t) + \sum_{k=0}^n \gamma_k^n (t) X^{(k)}(t)\right) + \sum_{c=0}^p \gamma_i^c (t) X^{(c)}(t) = \nonumber\\[3mm]
+	= \sum_{i=0}^m \gamma_i^n (t) X^{(i)}(t) + \left( \sum_{k=0}^n \gamma_k^n (t) X^{(k)}(t) + \sum_{c=0}^p \gamma_i^c (t) X^{(c)}(t)\right) = \ndpo{m}\left[X\right] + \left(\ndpo{n}\left[X\right] + \ndpo{p}\left[X\right]\right)
+\end{gather}
+
+	\noindent and associativity follows from the associativity of complex sums. The neutral element is defined as the null operator, such that $\mathbf{0}\left[X\right] = 0$ for any signal $X(t)$; this means that
+
+\begin{equation} \ndpo{n}\left[X\right] + \mathbf{0}\left[X\right] = \sum_{k=0}^n \gamma_k^n (t) X^{(k)}(t) + 0 = \sum_{k=0}^n \gamma_k^n (t) X^{(k)}(t) = \ndpo{n}\left[X\right] .\end{equation}
+
+	Also naturally, one can define the inverse element of $\ndpo{n}\left[X\right]$ from the linearity of the DPFs, by multiplying $\ndpo{n}$ by $-1$ to obtain $-\ndpo{n}\left[X\right]$. Finally, 
+
+\begin{align} \ndpo{n}\left[X\right] + \ndpo{m}\left[X\right] &= \sum_{k=0}^n \gamma_k^n (t) X^{(k)}(t) + \sum_{i=0}^m \gamma_i^n (t) X^{(i)}(t) = \nonumber\\[3mm] &= \sum_{i=0}^m \gamma_i^n (t) X^{(i)}(t) + \sum_{k=0}^n \gamma_k^n (t) X^{(k)}(t) = \ndpo{m}\left[X\right] + \ndpo{n}\left[X\right]\end{align}
+
+	\noindent proving commutativity.
+
+\vspace{5mm}
+\hrule
+\vspace{5mm} %>>>
+
+	In short, groups generalize the addition operation, and theorem \ref{theo:abelian} proves that the sum of operators follows immediately from the complex sum and the linearity of DPFs. Further, we prove that the DPFs form an even more special structure called a \textit{ring}.
+
+\begin{definition}[Ring]%<<<
+	A \textbf{ring} is a set $G$ equipped with two binary operations: an addition, denoted ``$+$'', and a multiplication, denoted ``$\cdot$'', such that
+
+\begin{itemize}
+	\item $G$ is an abelian group under the addition;
+	\item \textbf{Multiplication is associative:} for any three $a,b,c\in G$, $\left(a\cdot b\right)\cdot c = a\cdot \left(b\cdot c\right)$;
+	\item \textbf{Neutral element of multiplication:} there exists an element $1\in G$ such that $a\cdot 1 = 1\cdot a = a$ for every $a\in G$;
+	\item \textbf{Multiplication is distributive with respect to addition:} for any three $a,b,c\in G$, $a\cdot\left(b + c\right) = a\cdot b + a\cdot c$ (left distributivity) and $\left(b + c\right)\cdot a = b\cdot a + c\cdot a$ (right distributivity).
+\end{itemize}
+
+	Further, $\left(G,+,\cdot\right)$ is a \textbf{commutative ring} if multiplication is commutative, that is, $a \cdot b = b \cdot a$ for any two $a,b\in G$.
+\end{definition} %>>>
+
+\begin{theorem}[The DPFs form a commutative ring]\label{theo:ring}%<<<
+	The set $\left\{\ndpo{k}\right\}_{(k\in\mathbb{Z})}$ equipped with the composition operation
+
+\begin{equation} \left(\ndpo{m}\circ \ndpo{n}\right)\left[X\right] = \left(\ndpo{n}\circ \ndpo{m}\right)\left[X\right] = \ndpo{(n+m)}\left[X\right] \label{eq:ring_composition}\end{equation}
+
+	\noindent and the neutral element $\mathbf{I}$ (the identity or zero-order operator $\ndpo{0}$) is a commutative ring.
+\end{theorem}
+\textbf{Proof.} Starting from the property of differentiation, we know that for any $n,m\in\mathbb{N}$
+
+\begin{equation} \dfrac{d^n}{dt^n}\left(\dfrac{d^m}{dt^m} x(t)\right) = \dfrac{d^m}{dt^m}\left(\dfrac{d^n}{dt^n} x(t)\right) = \dfrac{d^{(n+m)}}{dt^{(n+m)}} x(t) \end{equation}
+
+	\noindent yielding
+
+\begin{equation} \ndpo{n}\left[\raisebox{4mm}{} \ndpo{m}\left[X\right]\right] = \ndpo{m}\left[\raisebox{4mm}{} \ndpo{n}\left[X\right]\right] = \ndpo{(n+m)}\left[X\right] .\end{equation}
+
+	Also from the associativity of differentiation,
+
+\begin{equation} \dfrac{d^n}{dt^n}\left(\dfrac{d^{(m+p)}}{dt^{(m+p)}} x(t)\right) = \dfrac{d^{(n+m+p)}}{dt^{(n+m+p)}} x(t) = \dfrac{d^{((n+m)+p)}}{dt^{((n+m)+p)}} x(t) = \dfrac{d^{(n+m)}}{dt^{(n+m)}} \left(\dfrac{d^{p}}{dt^{p}} x(t)\right) \end{equation}
+
+	\noindent yielding
+
+\begin{equation} \ndpo{n}\left[\raisebox{4mm}{} \ndpo{(m+p)}\left[X\right]\right] = \ndpo{(n+m+p)}\left[X\right] = \ndpo{((n+m)+p)}\left[X\right] = \ndpo{(n+m)}\left[\raisebox{4mm}{} \ndpo{p}\left[X\right]\right] .\end{equation}
+
+	For the neutral element, adopt the identity operator $\mathbf{I}\left[X\right] = X(t)$; therefore
+
+\begin{equation} \ndpo{n}\left[\raisebox{4mm}{} \mathbf{I}\left[X\right]\right] = \ndpo{n}\left[X\right],\ \mathbf{I}\left[\raisebox{4mm}{} \ndpo{n}\left[X\right]\right] = \ndpo{n}\left[X\right] .\end{equation}
+
+	Finally, the distributivity follows from the distributivity of derivatives:
+
+\begin{equation} \dfrac{d^n}{dt^n}\left(\dfrac{d^m}{dt^m}x(t) + \dfrac{d^p}{dt^p}x(t)\right) = \dfrac{d^{(n+m)}}{dt^{(n+m)}}x(t) + \dfrac{d^{(n+p)}}{dt^{(n+p)}}x(t) \end{equation}
+
+	\noindent and it follows from this that
+
+\begin{equation} \ndpo{n}\left[\raisebox{4mm}{} \ndpo{m}\left[X\right] + \ndpo{p}\left[X\right]\right] = \ndpo{(n+m)}\left[X\right] + \ndpo{(n+p)}\left[X\right] .\end{equation}
+
+	Commutativity also follows from the commutativity of differentials.
+\hfill$\blacksquare$
+\vspace{5mm}
+\hrule
+\vspace{5mm}%>>>
+
+	Finally, rings generalize the operation of a multiplication; for DPFs, this means that the composition of operators behaves akin to the complex multiplication. Most importantly, we can notice that the n-th order operator $\ndpo{k}$ is in essence the composition of $n$ first order operators, that is,
+
+\begin{equation} \ndpo{n}\left[X\right] = \overbrace{\ndpo{1}\left[\raisebox{4mm}{} \ndpo{1}\left[\raisebox{3mm}{} \dots \ndpo{1}\left[\right.\right.\right.}^{\text{n times}}  X \left. \raisebox{3mm}{} \left. \raisebox{4mm}{} \left. \right]\right]\right] \end{equation}
+
+	\noindent such that the n-th order operator can be seen as the ``n-th power'' of the first-order operator; because of this, we can drop the ``1'' in the notation and denote $\dpo = \ndpo{1}$. Further, we can also define the inverse operations as ``negative powers'', since the composition or ``multiplication'' of the inverse operator with the operator is the identity:
+
+\begin{equation} \left\{\begin{array}{l}
+	\left(\ndpo{n}\right)^{-1}\left[\raisebox{3mm}{} \ndpo{n}\left[X\right]\right] = X(t) \Leftrightarrow \left(\ndpo{n}\right)^{-1}\circ \ndpo{n} = \mathbf{I} \\[3mm]
+	\ndpo{n}\left[\raisebox{4mm}{} \left(\ndpo{n}\right)^{-1}\left[X\right]\right] = X(t) \Leftrightarrow \ndpo{n}\circ \left(\ndpo{n}\right)^{-1} = \mathbf{I}
+\end{array}\right.
+\end{equation}
+
+	\noindent thus we can denote
+
+\begin{equation} \left(\ndpo{n}\right)^{-1} = \ndpo{(-n)} = \dfrac{\mathbf{I}}{\ndpo{n}} = \left(\dfrac{\mathbf{I}}{\dpo}\right)^n .\end{equation}
+
+	\noindent as the ``division operation''. Interestingly, in the commutative ring of Dynamic Phasor Functionals the multiplicative inverse $\ndpo{(-n)}$ exists for any nonzero element; this immediately causes the space $\left\{\ndpo{k}\right\}_{k\in\mathbb{Z}}$ to be a field, as per definition \ref{def:field}.
+
+	Thence, we can rework the definition of DPFs to allow for negative orders and a recurrence.
+
+\begin{definition}[Dynamic Phasor Functional $\dpo$ (DPF)]\label{def:steinmetzoperator_revisited} %<<<
+	Let $x(t)$ a nonstationary sinusoid with an apparent frequency $\omega(t)$, $X(t)$ its dynamic phasor. Then the \textbf{n-th order Dynamic Phasor Functional}, denoted $\ndpo{n}$, is defined for $n>0$ as 
+
+\begin{equation} \ndpo{n} = \sum_{k=0}^n \gamma_k^n \left(t\right)\mathbf{D^k} , \end{equation}
+
+	where $\mathbf{D}^k$ is the k-th order differential operator:
+
+\begin{equation} \ndpo{n} \left[X\right] = \left(\sum_{k=0}^n \gamma_k^n \left(t\right)\mathbf{D}^k\right) \left[X\right] = \sum_{k=0}^n \gamma_k^n (t) X^{(k)}(t). \end{equation}
+
+	Equivalently, one can define the recursion
+
+\begin{equation}\left\{\begin{array}{l} \ndpo{0}\left[X\right] = X(t) \\[3mm] \ndpo{1}\left[X\right] = \dot{X}(t) + j\omega(t)X(t) \\[3mm] \ndpo{n}\left[X\right] = \ndpo{1}\left[\raisebox{3mm}{} \ndpo{(n-1)}\left[X\right]\right] \end{array}\right. \end{equation}
+
+	For $n < 0$, $\ndpo{n} \left[X\right]$ is the dynamic phasor $Y(t)$ that satisfies $X(t) = \dpo\left[Y\right]$ or
+
+\begin{equation} X(t) = \sum_{k=0}^n \gamma_k^n (t) Y^{(k)}(t), \end{equation}
+
+	\noindent together with a set of known initial conditions $Y(0),Y'(0),\cdots ,Y^{(n-1)}(0)$. Finally, for $n = 0$, $\ndpo{0}$ is the identity operator $\mathbf{I}$, that is, $ \ndpo{0} \left[X\right] = X(t)$.
+\end{definition} %>>>
+
+	Theorems \ref{theo:abelian} and \ref{theo:ring} mean in essence that DPFs can be added and multiplied to compose an entire space of operators; in practicality, these theorems formalize the fact that the DPFs proposed transform derivatives in to algebraic operations.
+
+%-------------------------------------------------
+\subsection{Field and vector space}
+
+	We can also prove that, because any non-null DPF has a non-null inverse, the set of DPFs form a field, as per definition \ref{def:field}.
+
+\begin{theorem}[The DPFs form a field]\label{theo:dpfs_field}%<<<
+	The set $\left\{\ndpo{k}\right\}_{(k\in\mathbb{Z})}$ equipped with the sum operation of theorem \ref{theo:abelian} and the multiplication (composition) operation of theorem \ref{theo:ring} is a field.
+\end{theorem}
+\textbf{Proof:} almost all the properties of fields are already satsfied by the theorems that prove DPFs form an abelian group and a commutative ring; one property is missing, however, that for any non-null element there must be a non-null multiplicative inverse. Indeed pick some $\ndpo{k}$, which obligatorily transforms some non-null signal $X(t)$ into a non-null $Y(t)$. Then the inverse $\ndpo{(-k)}$, which provedly exists, is non-null.
+\vspace{5mm}
+\hrule
+\vspace{5mm}%>>>
+
+	Further, we can define a scaling-by-complex operation of DPFs by the following process. First, we define a family of \textit{scaling} functionals
+
+\begin{definition}[Scaling DPFs]\label{def:scaling_dpfs} %<<<
+	Consider some complex number $\alpha$ and the identity operator $\mathbf{I}$. Then the \textbf{scaling operator} $\alpha\mathbf{I}$ is such that
+
+\begin{equation} \left(\alpha \mathbf{I}\right)\left[X\right] = \alpha X(t).\end{equation}
+
+	And define the family of \textit{scaling} operators, denoted $\mathbb{C}\mathbf{I}\equiv \left\{\alpha \mathbf{I}\right\}_{\alpha\in\mathbb{C}}$. 
+\end{definition} %>>>
+
+	Using scaling operators, we define a multiplication-by-scalar operation in the space of Dynamic Phasor Functionals.
+
+\begin{definition}[Complex scaling of DPFs]\label{def:scaling_dpfs_all} %<<<
+	Consider some complex number $\alpha$, and consider the operator $\ndpo{k}$. Then define the multiplication-by-scalar operation as 
+
+\begin{equation} \alpha \ndpo{k} \equiv \left(\alpha\mathbf{I}\right)\circ\ndpo{k} = \ndpo{k}\circ\left(\alpha\mathbf{I}\right) .\end{equation}
+\end{definition} %>>>
+
+	Essentially, the ``scaled'' DPF is the tandem operation of applying the DPF to a signal and then scaling the result. Due to the commutativity of composition, this also is equivalent to applying the DPF to a scaled signal. Thus we can also define a linear combination of DPFs as $\alpha\ndpo{k} + \beta\ndpo{m}$, where $\alpha\beta\in\mathbb{C}$. Ultimately, this means that DPFs also form a \textbf{vector space} over the complex numbers, as per definition \ref{def:vector_space}. The theory if abstract algebra also proves that linear combinations of DPFs are invertible.
+
+\begin{theorem}[The DPFs form a vector space]\label{theo:vspace}%<<<
+	The set $\left\{\ndpo{k}\right\}_{(k\in\mathbb{Z})}$ equipped with the multiplication-by-scalar operation of definition \ref{def:scaling_dpfs} forms a vector space over the complex numbers.
+\end{theorem}
+\vspace{5mm}
+\hrule
+\vspace{5mm}%>>>
+
+	Moreover, we can see that adopting the field of complex numbers as scalars, then the addition in the DPF space behaves like the complex addition, and the multiplication (composition) in DPF space behaves like the multiplication in complex space. As a matter of fact, we can establish an obvious bijection between any complex number $\alpha$ and the operator $\alpha\mathbf{I}$. This yields that the Dynamic Phasor Functionals are a \textbf{infinite extension field} of the zero-order operators $\left\{\alpha\mathbf{I}\right\}_{\alpha\in\mathbb{C}}$, and also an extension of the complex numbers. 
+
+%-------------------------------------------------
+\subsection{The $\dpS$ space and polynomials of DPFs} %<<<2
+
+	All these results mean that many algebraic entities are defineable in the space of DPFs. For instance, one can define polynomials in the space of DPFs as
+
+\begin{equation} \mathbf{P}\left(\dpo\right) = \sum_{k=0}^n \left(\alpha_k\mathbf{I}\right)\circ \dpo = \sum_{k=0}^n \alpha_k \dpo^{k} \text{ where } \alpha_k\in\mathbb{C} \text{ and } \alpha_n\neq 0, \label{eq:def_dpo_poly}\end{equation}
+	
+	\noindent which is the operator such that
+
+\begin{equation} Y(t) = \mathbf{P}\left[X\right] \Leftrightarrow Y(t) = \sum_{k=0}^n \alpha_k\ndpo{k}\left[X\right] .\end{equation}
+
+	And we denote the set of polynomials of the form $\mathbf{P}\left(\dpL\right)$ with complex coefficients in $\dpS$ as $\mathbb{C}\left[\dpL\right]$ and, by restriction, we denote the set of polynomials of $\dpo$ with complex coefficients as $\mathbb{C}\left[\dpo\right]$. In formal terms, this means that DPFs form a \textbf{polynomial ring}. With these properties in mind, we can find the largest class of operators that fulfill the properties of being a group, a ring, a field — holding all the properties ennunciated. It is obvious that any linear combination of the DPFs, as well as any polynomial, is going to fill the properties; however, we can also consider their inverses. Therefore, we can define the complete space of Dynamic Phasor Functionals as a broader term for a myriad of combinations.
+
+\begin{definition}[Dynamic Phasor Functional Space]\label{def:dpft_space}
+	The \textbf{Dynamic Phasor Functional Space} is the set $\dpS$ built by linear combinations of polynomials of $\dpo$ and also inverse operators of those polynomials, that is, rational functions of $\dpo$:
+
+\begin{equation} \dpS = \left\{\dpL = \dfrac{\mathbf{N}\left(\dpo\right)}{\mathbf{D}\left(\dpo\right)}: \mathbf{N,D}\in\mathbb{C}\left[\dpo\right]\right\} \end{equation}
+\end{definition}
+
+	Thus, one can come up with (literally) several infinities of functionals that belong to $\dpS$; for quick examples, the functionals
+
+\begin{equation} \boldsymbol{\lambda}_1 = \ndpo{2} + \dfrac{4\dpo}{\left(\ndpo{3} - 2\ndpo{2} + 3\mathbf{I}\right)},\ \boldsymbol{\lambda}_2 = \ndpo{2} - 2j\sqrt{2}\ndpo{1} - 2\mathbf{I} = \left(\dpo - j\sqrt{2}\mathbf{I}\right)^2,\ \boldsymbol{\lambda}_3 = \dpo \label{eq:dps_examples}\end{equation}
+
+	\noindent all can be inverted, multiplied, linearly combined, so on and so forth. Obviously, an inverse operation exists for any $\boldsymbol{\lambda}\in\dpS$ except for the null operator.
+
+	Definition \ref{def:dpft_space} comes in handy when we define impedances in the Dynamic Phasor space. It is simple to see that if the functional relationships of \eqref{sys:dpo_impedances_first} are linearly combined, the resulting expressions will be polynomials of $\dpo$ and its inverses; this, $\dpS$ is a space that generalizes the notion of impedances in Dynamic Phasor space. 
+
+	By definition, any $\boldsymbol{\lambda}_1,\boldsymbol{\lambda}_2\in\dpS$ can be multiplied, combined, inverted; as such, $\dpS$ is also an abelian group, a commutative ring, an algebraically closed field, and form a vector space over the complex numbers. Particularly, polynomials in $\dpS$ are linear combinations in $\dpS$, thus transformations in $\dpS$:
+
+\begin{equation} \mathbf{P}\left(\cdot\right): \left\{\begin{array}{rcl} \dpS &\to& \dpS \\[3mm] \boldsymbol{\lambda} &\mapsto& \displaystyle\sum_{k=0}^n \alpha_k \boldsymbol{\lambda}^{k} \end{array}\right. \label{eq:dpfs_poly_def}\end{equation}
+
+	Naturally, because $\dpS$ is closed to powers and linear combinations, any polynomial is a transformation in this space. We now explore the properties of such polynomials; we first start with the most basic of properties known, which is the seemingly simple property that any polynomial $\mathbf{P}$ can be written as a product of its monomials. This property defines very specific structures called algebraically closed fields.
+
+\begin{definition}[Algebraically close fields]
+	A field $F$ is said to be \textbf{algebraically closed} if the Fundamental Theorem of Algebra holds for it, that is, any polynomial in $F$ can be written as the multiplication of the monomials of its roots.
+\end{definition}
+
+	Proving a certain field is algebraically closed, however, is not immediate. Luckily, the theory of abstract algebra offers us many ways to prove this, for instance, 
+
+\begin{theorem}[Algebraically closed fields and irreducible polynomials \pcite{goncalvesIntroducaoAlgebra2021}]
+	A field $F$ is algebraically closed if only irreducible polynomials are those of degree one, that is, given any root $a\in F$, the lowest degree polynomial that has $a$ as a root is $x - a$.
+\end{theorem}
+
+	In the case of $\dpS$, this property is simple to prove.
+
+\begin{theorem}[$\dpS$ is algebraically closed]\label{theo:dps_alg_closed} %<<<
+	The set of DPFs $\dpS$ is algebraically closed.
+\end{theorem}
+\textbf{Proof:} let $\dpL_0\in\dpS$ and let $\mathbf{P}\left(\dpL\right)\in\mathbb{C}\left[\dpL\right]$,\ $\mathbf{P}\left(\dpL_0\right) = \mathbf{0}$. Then $\mathbf{P}\left(\dpL\right)$ is, by a polynomial division, multiple of $\left(\dpL - \dpL_0\right)$. Supposing $\mathbf{P}$ is irreducible (it cannot be factored as the multiplication of two other polynomials), and for any $\dpL_0$ the monomial $\dpL - \dpL_0$ is in $\dpS$, then for any $\dpL_0$ the polynomial $\left(\dpL - \dpL_0\right)$ exists and is the smallest one in degree that has $\dpL_0$ as solution; therefore $\mathbf{P}$ is equal to $\alpha\left(\dpL - \dpL_0\right)$ for some non-zero complex $\alpha$. \hfill$\blacksquare$
+\vspace{5mm}
+\hrule
+\vspace{5mm} %>>>
+
+	It follows from the Fundamental Theorem of Algebra that any polynomial $\mathbf{P}\in\dpS\left[\dpL\right]$ of degree $n$ has exactly $n$ not necessarily distinct roots $\dpL_i$ and can be written as a multiplication of the monomials of these roots:
+
+\begin{equation} \mathbf{P}\left(\boldsymbol{\lambda}\right) = \alpha_n \prod_{i=1}^n \left( \dpL - \dpL_i\right). \label{eq:fundamental_algebra_dpfs}\end{equation}
+
+%-------------------------------------------------
+\subsection{Matrices in $\dpS$}\label{subsec:matrces_in_dpfts} %<<<2
+
+	Following the definition of Dynamic Phasor Functionals as the larger class $\dpS$ as in definition \ref{def:dpft_space}, we now want to explore the feasibility of matrices of these operators. Such matrices become particularly useful in circuit network analysis since their manipulations allow for matrix analysis of circuits in Dynamic Phasor space, allowing us to prove the Superposition Theorem, culminating in Thèvenin and Norton's theorems, as well as the entirety of Network Analysis Theory.
+
+	Initially, one tries to leverage the theory of linear algebra in chapter \ref{chapter:linear_systems} by prove that the space of n coordinates $\dpS^n$ is a complex space, or equivalently, that it can be written as linear combinations of a basis using complex numbers as the underlying field. This would mean that the theory developed in that chapter can be used in its integrity without modications, and the matter would be solved. So to define a matrix in this space, one starts from subsection \ref{sec:bases_matrices_operations} where a matrix is built as the representation of a linear transformation on the space considered represented against some basis. Therefore one would start by adopting the most natural basis possible:
+
+\begin{equation} \mathbf{B} = \left\{\ndpo{k}\right\}_{k\in\mathbb{Z}} = \left\{\cdots,\ndpo{(-3)},\ndpo{(-2)},\ndpo{(-1)},\mathbf{I},\dpo,\ndpo{2},\ndpo{3},\cdots\right\},\end{equation}
+
+	\noindent and immediately any finite Laurent Polynomial $\mathbf{P}\in\mathbb{C}\left[\dpo,\ndpo{(-1)}\right]$, that is, any finite combination
+
+\begin{equation} \mathbf{P}\left(\dpo\right) = \sum_{k\in\mathbb{Z}_n} \alpha_k\ndpo{k} \text{ for some } n\in\mathbb{N} \label{eq:laurent_poly_xi}\end{equation}
+
+	\noindent can be written as a finite linear combination of the elements of the basis $\mathbf{B}$, that is, any such polynomial admits a finite representation under the basis $\mathbf{B}$. However, once one considers the entirety of $\dpS$ which contains not only polynomials of the form \eqref{eq:laurent_poly_xi} but also inverses and linear combinations, this approach does not lead to happy results: we prove now that the space $\dpS$ has infinite dimension over the complex numbers, leading to infinite dimensional matrices. We use a result from Complex Analysis, the Laurent Series, to prove that any element $\dpL\in\dpS$ can be written as an infinite discrete sum of a basis.
+
+\begin{theorem}[Laurent series of a complex function \pcite{ahlfors1979complex}]\label{theo:laurent} %<<<
+
+	Let $f(z)\in\left[\mathbb{C}\to\mathbb{C}\right]$ analytic over some annulus around a certain point $z_0$, that is, there exist $0 \leq r < R$ such that $f(z)$ is analytic in $A = \left\{z\in\mathbb{C}:\ r \leq \left\lvert z - z_0\right\rvert \leq R\right\}$. Let $\gamma$ a continuous clockwise curve in $A$. Then for any $z\in A$,
+
+\begin{equation} f(z) = \sum_{k\in\mathbb{Z}} a_k\left(z - z_0\right)^k \text{, where } a_k = \dfrac{1}{2\pi j} \oint_\gamma \dfrac{f(z)}{\left(z - z_0\right)^{k+1}} dz \end{equation}
+
+\end{theorem} %>>>
+
+	It can be shown that the specific functions that compose $\dpS$ — finite degree polynomials, their inverses and subsequent combinations — are always infinitely differentiable on the entire $\mathbb{C}$ but some finite points, called poles \pcite{ahlfors1979complex} which are simple to work around due to being removable singularities. Thus such functions are holomorphic (infinitely differentiable at some neighborhood of any complex point) and the Laurent series converges and can be calculated about any $z_0\in\mathbb{C}$. This means that this theorem can always be applied to $\dpS$, due to the fact that $\dpS$ is an extension field of $\mathbb{C}$ and a polynomial ring, and that we can adopt the basis $\mathbf{B}$. For instance, adopt
+
+\begin{equation} \dpL = \dfrac{\ndpo{5} - \mathbf{I}}{\ndpo{3} - \dpo + 3\mathbf{I}} .\end{equation}
+
+	The Laurent series of the converse complex polynomial calculated about $z_0 = 0$ is
+
+\begin{equation} f(z) = \dfrac{z^5 - 1}{z^3 - z + 3} = z^2 + 1 - \dfrac{3}{z} + \dfrac{1}{z^2} - \dfrac{7}{x^3} + \dfrac{10}{z^4} - \dfrac{10}{z^5} + \cdots ,\end{equation}
+
+	\noindent thus
+
+\begin{equation} \dpL = \dfrac{\ndpo{5} - \mathbf{I}}{\ndpo{3} - \dpo + 3\mathbf{I}} = \ndpo{2} + \mathbf{I} - 3\ndpo{(-1)} + \ndpo{(-2)} - 7\ndpo{(-3)} + 10\ndpo{(-4)} - 10\ndpo{(-5)} + \cdots .\end{equation}
+
+	\noindent so that we can write $\dpL$ as a representation on the basis $\mathbf{B}$ adopted
+
+\begin{equation} \dpL = \left[\cdots , -10 ,  10 ,  -7 ,  1 ,  -3 ,  1 ,  0 ,  1 , \cdots \right]^\transpose_{\left[\mathbf{B}\right]} \end{equation}
+
+	\noindent consequently $\dpL$ has an infinite-dimensional representation in the basis chosen. Immediately one concludes that the Laurent series of a generic element of $\dpS$ will be infinite, due to the fact that the space contains arbitrary combinations of polynomial inverse functions. Reestated, in order for a particular $\dpL$ to have a finite Laurent series it must necessarily be a finite linear combination of the elements of the basis, namely, be of the form \eqref{eq:laurent_poly_xi} — which is certainly not the case for all members of $\dpS$. Consequently, a tabular arrangement of such vectors with respect to the complex numbers will lead to infinite dimensional matrices, which are not at all useful and would void some basic results in the theory presented, like the Rank-Nullity Theorem \ref{theo:rank_nullity} which depends on finite-dimensional operators, and from which a lot of other results follow.
+
+	To remedy this we take extra steps. First, note that the fact $\dpS$ contains the scaling operators $\left\{\alpha\mathbf{I}\right\}_{\alpha\in\mathbb{C}}$ means ultimately that the space $\dpS^n$ of functional vectors of length $n$ it is a vector space over $\dpS$ itself. To prove this, define an addition operation
+
+\begin{equation} \left(+\right)_{\dpS^n}: \left\{\begin{array}{rcl} \dpS^n\times\dpS^n &\to& \dpS^n \\[5mm] \left(\left[\begin{array}{c} \dpL_1 \\[3mm] \dpL_2 \\[3mm] \vdots \\[3mm] \dpL_n \end{array}\right],\left[\begin{array}{c} \apL_1 \\[3mm] \apL_2 \\[3mm] \vdots \\[3mm] \apL_n \end{array}\right]\right) &\mapsto& \left[\begin{array}{c} \dpL_1 + \apL_1 \\[3mm] \dpL_2 + \apL_2 \\[3mm] \vdots \\[3mm] \dpL_n + \apL_n \end{array}\right] \end{array}\right. \end{equation}
+
+	\noindent where the addition of two operators $(+)$ is the one of theorem \ref{theo:abelian}. Also define a multiplication-by-scalar
+
+\begin{equation} \left(\cdot\right)_{\dpS^n}: \left\{\begin{array}{rcl} \dpS\times\dpS^n &\to& \dpS^n \\[5mm] \left(\boldsymbol{\pi},\left[\begin{array}{c} \dpL_1 \\[3mm] \dpL_2 \\[3mm] \vdots \\[3mm] \dpL_n \end{array}\right]\right) &\mapsto& \left[\begin{array}{c} \boldsymbol{\pi}\cdot\dpL_1 \\[3mm] \boldsymbol{\pi}\cdot\dpL_2 \\[3mm] \vdots \\[3mm] \boldsymbol{\pi}\cdot\dpL_n \end{array}\right] \end{array}\right. \end{equation}
+
+	\noindent where the multiplication $(\cdot)$ of two operators is the one of theorem \ref{theo:ring}. Then these two operations wholly fulfill the definition of a vector space, as per definition \ref{def:vector_space}.
+
+	Thus we define $\dpS$ not as a vector space over the complex numbers, but also over its own elements; we now show that this allows us to undertake the representation of linear operators over vectors in a vector space as in subsection \ref{sec:bases_matrices_operations}.
+
+\begin{lemma} The space $\dpS^n$ of vectors of length $n$ in $\dpS$ is a field over $\dpS$ and has dimension $n$. \end{lemma}
+\textbf{Proof.} Let $\mathbf{e}_k\in\dpS^n$ the vector that has an identity operator $\mathbf{I}$ on the k-th positions and the null operator everywhere else. Consider the collection $\left(\mathbf{e}_1,\mathbf{e}_2,\mathbf{e}_3, \cdots ,\mathbf{e}_n\right)$, and one can easily see that this is a basis of $\dpS^n$. For instance, adopt an arbitrary element of $\dpS^n$:
+
+\begin{equation} \boldsymbol{\Lambda} = \left[\begin{array}{c} \dpL_{1} \\[3mm] \dpL_{2} \\[3mm] \vdots \\[3mm] \dpL_{n} \end{array}\right] \end{equation}
+
+	\noindent and naturally $\boldsymbol{\Lambda} = \sum_{k=1}^n \dpL_k \mathbf{e}_k$, meaning that the span of the collection adopted is $\dpS^n$. Now admit that $\boldsymbol{\Lambda}$ has another set of coordinates in this collection, say $\boldsymbol{\alpha}_k$. Then
+
+\begin{equation} \boldsymbol{\Lambda} = \sum_{k=1}^n \dpL_k \mathbf{e}_k = \boldsymbol{\Lambda} = \sum_{k=1}^n \boldsymbol{\alpha}_k \mathbf{e}_k \Leftrightarrow \sum_{k=1}^n \left(\dpL_k - \boldsymbol{\alpha}_k\right)\mathbf{e}_k = \mathbf{0}_n\end{equation}
+
+	\noindent but since the $\mathbf{e}_k$ are defined as having $\mathbf{I}$ in the k-th position and the null operator everywhere, the only possible solution to this equation is $\dpL_k - \boldsymbol{\alpha}_k = \mathbf{0}$, meaning that the collection of the $\mathbf{e}_k$ span the entire $\dpS^n$ and are linearly independent, thus this collection is a basis of $\dpS^n$. Further, it is simple to see that by removing any of the $\mathbf{e}_k$ from the basis, the resulting collection cannot express the entire $\dpS^n$; meaning that $n$ is the least number of linearly independent vectors needed to span this set — therefore it has dimension $n$.
+
+\begin{theorem}[Existence of DPF matrices] \label{theo:dpf_matrices_exist} %<<<
+	Any linear map $\mathbf{M}\in\left[\dpS^n\to\dpS^n\right]$ admits a matrix representation $\left[\mathbf{M}\right]_{\boldsymbol{\Gamma}}\in\dpS^{(n\times n)}$ under some basis $\boldsymbol{\Gamma}$ of $\dpS^n$, and particularly under the canonical basis $\boldsymbol{\Psi}_n$ of the vectors $\left(\mathbf{e}_k\in\dpS^n\right)_k$:
+
+\begin{equation} \boldsymbol{\Psi}_n = \left(\mathbf{e}_1,\mathbf{e}_2,\mathbf{e}_3, \cdots ,\mathbf{e}_n\right) = \left(\left[\begin{array}{c} \mathbf{I} \\[3mm] \mathbf{0} \\[3mm] \mathbf{0} \\[3mm] \vdots \\[3mm] \mathbf{0} \end{array}\right], \left[\begin{array}{c} \mathbf{0} \\[3mm] \mathbf{I} \\[3mm] \mathbf{0} \\[3mm] \vdots \\[3mm] \mathbf{0} \end{array}\right], \left[\begin{array}{c} \mathbf{0} \\[3mm] \mathbf{0} \\[3mm] \mathbf{I} \\[3mm] \vdots \\[3mm] \mathbf{0} \end{array}\right], \cdots , \left[\begin{array}{c} \mathbf{0} \\[3mm] \mathbf{0} \\[3mm] \mathbf{0} \\[3mm] \vdots \\[3mm] \mathbf{I} \end{array}\right]\right) . \label{eq:dpf_canonical_basis}\end{equation}
+\end{theorem}
+\noindent\textbf{Proof:} the previous lemma shows that $\dpS^n$ is a field over $\dpS$ with dimension $n$. Adopt a basis $\boldsymbol{\Gamma} = \left(\boldsymbol{\gamma}_k\right)_{k=1}^n$ as a basis of $\dpS^n$. Let $\boldsymbol{\Lambda}$ an arbitrary element of $\dpS^n$ with a set of coordinates $\left(\dpL_k\right)_{k=1}^n$ under $\Gamma$:
+
+\begin{equation} \boldsymbol{\Lambda} = \left[\begin{array}{c} \dpL_{1} \\[3mm] \dpL_{2} \\[3mm] \vdots \\[3mm] \dpL_{n} \end{array}\right] \end{equation}
+
+	\noindent and consider $\mathbf{M}\in\left[\dpS^n\to\dpS^n\right]$ some linear mapping. Therefore
+
+\begin{equation} \mathbf{M}\left[\boldsymbol{\Lambda}\right] = \mathbf{M}\left[\begin{array}{c} \dpL_{1} \\[3mm] \dpL_{2} \\[3mm] \vdots \\[3mm] \dpL_{n} \end{array}\right]_{\boldsymbol{\Gamma}} = \mathbf{M}\left[\sum\limits_{k=1}^n \dpL_k \boldsymbol{\gamma}_k \right] = \sum_{k=1}^n \dpL_k \mathbf{M}\left[\boldsymbol{\gamma}_k\right] \end{equation}
+
+	\noindent thereby allowing us to group the vectors $\mathbf{M}\left[\boldsymbol{\gamma}_k\right]$ in a tabular arrangement just like \eqref{eq:tabular_arrangement}:
+
+\begin{equation} \left[\mathbf{M}\right]_{\boldsymbol{\Gamma}} = \left[\raisebox{15mm}{} \begin{array}{cccc} \left[\begin{array}{c} \vdots \\[3mm] \mathbf{M}\left[\boldsymbol{\gamma}_1\right] \\[3mm] \vdots \end{array}\right] & \left[\begin{array}{c} \vdots \\[3mm] \mathbf{M}\left[\boldsymbol{\gamma}_2\right] \\[3mm] \vdots \end{array}\right] & \cdots & \left[\begin{array}{c} \vdots \\[3mm] \mathbf{M}\left[\boldsymbol{\gamma}_n\right] \\[3mm] \vdots \end{array}\right]\end{array}\right]\end{equation}
+
+	\noindent consequently achieving a matrix representation of the map $\mathbf{M}$ under the arbitrary basis $\boldsymbol{\Gamma}$, which is the very definition of a matrix as in \eqref{eq:tabular_arrangement}, and the notion of complex matrices in $\dpS$ is well-defined. Particularly, adopting the canonical basis $\boldsymbol{\Psi}_n$ as defined in \eqref{eq:dpf_canonical_basis}, we achieve a canonical matrix representation of the linear mapping $\mathbf{M}\left[\cdot\right]$.
+\hfill$\blacksquare$\vspace{5mm}\hrule\vspace{5mm} %>>>
+
+\begin{definition}[Matrices in $\dpS$]\label{def:matrices_in_dps} A matrix of DPFs $\mathbf{M}\in\dpS^{(n\times m)}$ is the tabular arrangement 
+
+\begin{equation} \mathbf{M} = \left\{\dpL_{(i,j)}\right\}_{(i\in \mathbb{N}^*_n,j\in \mathbb{N}^*_m)} = \left[\begin{array}{ccccc} 
+	\dpL_{11} & \dpL_{12} & \dpL_{13} & \dots  & \dpL_{1m} \\[3mm]
+	\dpL_{21} & \dpL_{22} & \dpL_{23} & \dots  & \dpL_{2m} \\[3mm]
+	\dpL_{31} & \dpL_{32} & \dpL_{33} & \dots  & \dpL_{3m} \\[3mm]
+	\vdots    & \vdots    & \vdots    & \ddots & \vdots    \\[3mm]
+	\dpL_{n1} & \dpL_{n2} & \dpL_{n3} & \dots  & \dpL_{nm}
+\end{array}\right]_{(n\times m)}\label{eq:dpfs_matrix} \end{equation}
+\end{definition}
+
+	Due to the operational properties in $\dpS$, the linear algebra theory of chapter \ref{chapter:linear_systems} is still available for, and compatible with, this definition as we initially wanted given some minimal adaptations. One can easily define addition of matrices (trivially through the sum of the elements), scaling (trivially through scaling of its elements), matrice-by-vectors multiplications (definitions \ref{def:matrixbyvector} and \ref{def:vectorbymatrix}), multiplication of matrices by matrices of operators (definition \ref{def:matrixbymatrix}).
+
+	Given the definition of matrix multiplication, immediately one notices that the matrix representation of $\boldsymbol{\Psi}_n$ where its vectors are its columns is the identity matrix in the space $\dpS^{(n\times n)}$, another reason to call this basis as the canonical one:
+
+\begin{equation} \boldsymbol{\Psi}_n = \left[\begin{array}{ccccc} \mathbf{I} & \mathbf{0} & \mathbf{0} & \cdots & \mathbf{0} \\[3mm] \mathbf{0} & \mathbf{I} & \mathbf{0} & \cdots & \mathbf{0} \\[3mm] \mathbf{0} & \mathbf{0} & \mathbf{I} & \cdots & \mathbf{0} \\[3mm] \vdots & \vdots & \vdots & \ddots & \vdots \\[3mm] \mathbf{0} & \mathbf{0} & \mathbf{0} & \cdots & \mathbf{I} \end{array}\right]_{(n\times n)} .\end{equation}
+
+	Moreover, since a neutral element of multiplication (the identity matrix) exists, then matrix invertibility (definition \ref{def:invertible_matrix}) is defineable, as well as determinants (definition \ref{def:determinant}) of such matrices. One can also continue down this path towards the eigendecomposition of these matrices and the entirety of linear algebra as presented in chapter \ref{chapter:linear_systems}.
+
+	Finally, let us consider the vector of Dynamic Phasors $\mathbf{x} = \left[X_1(t),X_2(t),\cdots,X_n(t)\right]^\transpose$; let a collection $\left\{\dpL_{ij}\in\dpS\right\}_{i\in\mathbb{N}^*}^{j\in\mathbb{N}^*}$, and consider a linear transformation $\mathbf{M}$ in the space $\left[\mathbb{R}\to\mathbb{C}\right]^n$:
+
+\begin{equation}
+Y(t) = \mathbf{M}\left[X\right] \Leftrightarrow \left[\begin{array}{c} Y_1(t) \\[3mm] Y_2(t) \\[3mm] Y_3(t) \\[3mm] \vdots \\[3mm] Y_n(t) \end{array}\right] =
+%
+\left[\begin{array}{c}
+	\dpL_{11}\left[X_1\right] + \dpL_{12}\left[X_2\right] + \dpL_{13}\left[X_3\right] + \cdots + \dpL_{1n}\left[X_n\right] \\[3mm]
+	\dpL_{21}\left[X_1\right] + \dpL_{22}\left[X_2\right] + \dpL_{23}\left[X_3\right] + \cdots + \dpL_{2n}\left[X_n\right] \\[3mm]
+	\dpL_{31}\left[X_1\right] + \dpL_{32}\left[X_2\right] + \dpL_{33}\left[X_3\right] + \cdots + \dpL_{3n}\left[X_n\right] \\[3mm]
+	\vdots \\[3mm]
+	\dpL_{n1}\left[X_1\right] + \dpL_{n2}\left[X_2\right] + \dpL_{n3}\left[X_3\right] + \cdots + \dpL_{nn}\left[X_n\right]
+\end{array}\right] \label{eq:proposal_application}
+\end{equation}
+
+	\noindent that is, each $Y_i$ is a combination of the elements of $X(t)$
+
+\begin{equation} Y_i(t) = \sum_{k=1}^n \dpL_{ik}\left[X_k\right] .\end{equation}
+
+	This definition is highly resemblant of a matrix-by-vector multiplication where the columns of $\mathbf{M}$ are ``linearly combined'' as in definition \ref{def:matrixbyvector}, but the combination is given in terms of DPFs. Indeed, if we define the multiplication of a DPF and a Dynamic Phasor by their composition, as in $Y(t) = \dpL\circ X(t) = \dpL\left[X\right]$, then the transform \eqref{eq:proposal_application} can be seen as a composition too:
+
+\begin{equation} %<<<
+\mathbf{M}\left[X\right] = \mathbf{M}\circ X(t) =
+%
+\left[\begin{array}{ccccc}
+	\dpL_{11} & \dpL_{12} & \dpL_{13} & \cdots & \dpL_{1n} \\[3mm]
+	\dpL_{21} & \dpL_{22} & \dpL_{23} & \cdots & \dpL_{2n} \\[3mm]
+	\dpL_{31} & \dpL_{32} & \dpL_{33} & \cdots & \dpL_{3n} \\[3mm]
+	\vdots    & \vdots    & \vdots    & \ddots & \vdots    \\[3mm]
+	\dpL_{n1} & \dpL_{n2} & \dpL_{n3} & \cdots & \dpL_{nn}
+\end{array}\right] \circ
+%
+\left[\begin{array}{c} X_1(t) \\[3mm] X_2(t) \\[3mm] X_3(t) \\[3mm] \vdots \\[3mm] X_m(t) \end{array}\right]
+\end{equation}%>>>
+
+	 Therefore we can define the matrix representation $\left[\mathbf{M}\right]_{\boldsymbol{\Psi}_n}$ and the application \eqref{eq:proposal_application} as a ``multiplication'' of a DPF matrix for a signal vector:
+
+\begin{equation} %<<<
+\left(\cdot\right)_{\Xi^n}^{\left[\mathbb{R}\to\mathbb{C}\right]}:
+%
+\left\{\begin{array}{rcl}
+	\Xi^{\left(n\times m\right)} \times \left[\mathbb{R}\to\mathbb{C}\right]^m &\to& \left[\mathbb{R}\to\mathbb{C}\right]^m \\[5mm]
+\left[\begin{array}{ccccc} 
+	\dpL_{11} & \dpL_{12} & \dpL_{13} & \dots  & \dpL_{1m} \\[3mm]
+	\dpL_{21} & \dpL_{22} & \dpL_{23} & \dots  & \dpL_{2m} \\[3mm]
+	\dpL_{31} & \dpL_{32} & \dpL_{33} & \dots  & \dpL_{3m} \\[3mm]
+	\vdots    & \vdots    & \vdots    & \ddots & \vdots    \\[3mm]
+	\dpL_{n1} & \dpL_{n2} & \dpL_{n3} & \dots  & \dpL_{nm}
+\end{array}\right]
+%
+\left[\begin{array}{c} X_1(t) \\[3mm] X_2(t) \\[3mm] X_3(t) \\[3mm] \vdots \\[3mm] X_m(t) \end{array}\right] & \mapsto &
+%
+\left[\begin{array}{c}
+\sum_{k=1}^m \dpL_{1k}\left[X_k\right] \\[3mm]
+\sum_{k=1}^m \dpL_{2k}\left[X_k\right] \\[3mm]
+\sum_{k=1}^m \dpL_{3k}\left[X_k\right] \\[3mm]
+\vdots                                 \\[3mm]
+\sum_{k=1}^m \dpL_{mk}\left[X_k\right]
+\end{array}\right]
+\end{array}\right. \label{eq:matrix_by_dpvec_def}
+\end{equation} %>>>
+
+	Like the matrix-by-vector has a vector-by-matrix equivalent multiplication, we can define the transpose multiplication of a vector of Dynamic Phasors by a matrix of functionals as the linear combination of the matrix rows.
+
+\begin{equation} %<<<
+\left(\cdot\right)^{\Xi^n}_{\left[\mathbb{R}\to\mathbb{C}\right]}:
+%
+\left\{\begin{array}{rcl}
+	\left[\mathbb{R}\to\mathbb{C}\right]^n \times \Xi^{\left(n\times m\right)} &\to& \left[\mathbb{R}\to\mathbb{C}\right]^m \\[5mm]
+%
+\left[\begin{array}{c} X_1(t) \\[3mm] X_2(t) \\[3mm] X_3(t) \\[3mm] \vdots \\[3mm] X_n(t) \end{array}\right]^\transpose 
+\left[\begin{array}{ccccc} 
+	\dpL_{11} & \dpL_{12} & \dpL_{13} & \dots  & \dpL_{1m} \\[3mm]
+	\dpL_{21} & \dpL_{22} & \dpL_{23} & \dots  & \dpL_{2m} \\[3mm]
+	\dpL_{31} & \dpL_{32} & \dpL_{33} & \dots  & \dpL_{3m} \\[3mm]
+	\vdots    & \vdots    & \vdots    & \ddots & \vdots    \\[3mm]
+	\dpL_{n1} & \dpL_{n2} & \dpL_{n3} & \dots  & \dpL_{nm}
+\end{array}\right]& \mapsto &
+%
+\left[\begin{array}{c}
+\sum_{k=1}^m \dpL_{k1}\left[X_k\right] \\[3mm]
+\sum_{k=1}^m \dpL_{k2}\left[X_k\right] \\[3mm]
+\sum_{k=1}^m \dpL_{k3}\left[X_k\right] \\[3mm]
+\vdots                                 \\[3mm]
+\sum_{k=1}^m \dpL_{kn}\left[X_k\right]
+\end{array}\right]^\transpose
+\end{array}\right. \label{eq:dpvec_by_matrix_def}
+\end{equation} %>>>
+
+	Thus these definitions adhere to theorem \ref{theo:vector_trasnp}, that is, given a matrix $\mathbf{M}\in\Xi^{(n\times m)}$ and a vector of Dynamic Phasors $\mathbf{x}\in\left[\mathbb{R}\to\mathbb{C}\right]^n$ then $\left(\mathbf{Mx}\right)^\transpose = \mathbf{x}^\transpose\mathbf{M}^\transpose$. These definitions also adhere to the defintion of matrix multiplication \ref{def:matrixbymatrix}, so that given a matrix of Dynamic Phasors $\mathbf{X}\in\left[\mathbb{R}\to\mathbb{C}\right]^{(m\times n)}$ one can define
+
+\begin{equation} \mathbf{XM} = \left[\raisebox{15mm}{} \begin{array}{cccc} \left[\begin{array}{c} \vdots \\[3mm] \mathbf{X}\mathbf{m}_1 \\[3mm] \vdots \end{array}\right] & \left[\begin{array}{c} \vdots \\[3mm] \mathbf{X}\mathbf{m}_2 \\[3mm] \vdots \end{array}\right] & ... & \left[\begin{array}{c} \vdots \\[3mm] \mathbf{X}\mathbf{m}_n \\[3mm] \vdots \end{array}\right]\end{array}\right] \end{equation}
+
+	\noindent where $\mathbf{m}_k$ is the k-th column of $\mathbf{M}$ and the multiplication $\mathbf{Xm}_k$ is that of \eqref{eq:matrix_by_dpvec_def}. One can also build the converse multiplication $\mathbf{MX}$ using \eqref{eq:dpvec_by_matrix_def} and prove that $\left(\mathbf{MX}\right)^\transpose = \mathbf{X}^\transpose\mathbf{M}^\transpose$.
+
+	With these definitions, one can now write admittance equations like $\left[V\right] = \left[\mathbf{Z}\right]\left[I\right]$:
+
+\begin{equation}
+\left[\begin{array}{c} V_1(t) \\[3mm] V_2(t) \\[3mm] V_3(t) \\[3mm] \vdots \\[3mm] V_n(t) \end{array}\right] =
+%
+\left[\begin{array}{ccccc}
+	\mathbf{Z}_{11} & \mathbf{Z}_{12} & \mathbf{Z}_{13} & \cdots & \mathbf{Z}_{1m} \\[3mm]
+	\mathbf{Z}_{21} & \mathbf{Z}_{22} & \mathbf{Z}_{23} & \cdots & \mathbf{Z}_{2m} \\[3mm]
+	\mathbf{Z}_{31} & \mathbf{Z}_{32} & \mathbf{Z}_{33} & \cdots & \mathbf{Z}_{3m} \\[3mm]
+	\vdots          & \vdots          & \vdots          & \ddots & \vdots          \\[3mm]
+	\mathbf{Z}_{n1} & \mathbf{Z}_{n2} & \mathbf{Z}_{n3} & \cdots & \mathbf{Z}_{nm}
+\end{array}\right]
+%
+\left[\begin{array}{c} I_1(t) \\[3mm] I_2(t) \\[3mm] I_3(t) \\[3mm] \vdots \\[3mm] I_m(t) \end{array}\right] \label{eq:admittance_dpfs}
+\end{equation}
+
+	\noindent where the $V_k$ are the Dynamic Phasors of the node voltages of a network, $I_k$ the branch currents and the matrix the equivalent impedance matrix of the network. One can also write the same equation using the admittance version $\left[I\right] = \left[\mathbf{Y}\right]\left[V\right]$; because the invertibility of matrices of DPFs exist, if $\left[\mathbf{Z}\right]$ and $\left[\mathbf{Y}\right]$ of the same circuit are invertible then $\left[\mathbf{Y}\right] = \left[\mathbf{Z}\right]^{-1}$.
+
+	Also, because sum and multiplication of matrices of DPFs are defined, as well as sum and multiplication of matrices of Dynamic Phasors since they are complex functions, then these matrix equations can be manipulated just like complex static phasor equations.
+
+%-------------------------------------------------
+\subsection{Real and imaginary components, conjugation and the extended DPF space} \label{subsec:real_imag_dpfs}
+	
+	Seen as DPFs are motivated by derivatives and will escalate towards impedances in the DP domain, naturally one asks if the notion of real and imaginary components of DPFs are available so that from impedance operators one can define reactance (the imaginary part of impedance), conductance and susceptance as the real and imaginary parts of admittances. We note that by \eqref{eq:gamma_def} we can separate the numbers $\gamma$ into a real and imaginary part:
+
+\begin{equation} \left\{\begin{array}{l} \Re\left[\gamma_k^n(t)\right] = \displaystyle {n\choose k} \left[\sum\limits_{\substack{ c=0 \\ c\in 2\mathbb{N}}}^{n-k} \left(-1\right)^{\frac{c}{2}} B_{\left(n-k,c\right)}\left(\omega,\dot{\omega},\ddot{\omega},...,\omega^{(n-k-c)}\right) \right]\\[10mm] \Im\left[\gamma_k^n(t)\right] = \displaystyle {n\choose k} \left[\sum\limits_{\substack{ c=1 \\ c\in 2\mathbb{N}+1}}^{n-k} \left(-1\right)^{\frac{c-1}{2}} B_{\left(n-k,c\right)}\left(\omega,\dot{\omega},\ddot{\omega},...,\omega^{(n-k-c)}\right) \right]\end{array}\right. ,\label{eq:gamma_def_imre}\end{equation}
+
+	\noindent where $2\mathbb{N}$ is the set of even naturals and $2\mathbb{N}+1$ the set of odd naturals. In order to derive these equations, have in mind ${n\choose k}$ and the Bell Polynomials are real numbers. Thus
+
+\begin{align} \ndpo{n}\left[X\right] &= \sum\limits_{k=0}^n \left\{ \Re\left[\gamma_k^n(t)\right] + j\Im\left[\gamma_k^n(t)\right]\right\} X^{(k)}(t) = \nonumber\\[3mm] &= \sum\limits_{k=0}^n \Re\left[\gamma_k^n(t)\right] X^{(k)}(t) + j\sum\limits_{k=0}^n \Im\left[\gamma_k^n(t)\right] X^{(k)}(t) .\end{align}
+
+	Therefore, the real and imaginary components of $\ndpo{k}$ are definable as
+
+\begin{equation} \ndpo{n} = \Re\left[\ndpo{n}\right] + j \Im\left[\ndpo{n}\right] \left\{\begin{array}{l} \Re\left[\ndpo{n}\right] = \displaystyle \sum_{k=0}^n \Re\left[\gamma_k^n(t)\right] \mathbf{D^k_\mathbb{C}} \\[10mm] \Im\left[\ndpo{n}\right] = \displaystyle \sum_{k=0}^n \Im\left[\gamma_k^n(t)\right] \mathbf{D^k_\mathbb{C}} \end{array}\right. .\label{eq:ndpo_def_imre}\end{equation}
+
+	Naturally, given real and imaginary parts one wonders if the complex conjugation is available by negating the imaginary part. Given the relationship $Y = \dpL\left[X\right]$ between two complex signals $Y$ and $X$, one asks what is the relationship between the complex conjugate signals $\overline{Y}$ and $\overline{X}$. Borrowing from the definition \ref{def:steinmetzoperator_revisited},
+
+\begin{equation}
+	\overline{\ndpo{n}\left[X\right]} = \overline{\sum_{k=0}^n \gamma_k^n \left(t\right)\mathbf{D}^k_\mathbb{C}\left[X\right]} = \sum_{k=0}^n \overline{\gamma_k^n \left(t\right)\mathbf{D}^k_\mathbb{C}\left[X\right]} = \sum_{k=0}^n \overline{\gamma_k^n \left(t\right)} \overline{\mathbf{D}^k_\mathbb{C}\left[X\right]}
+\end{equation}
+
+	\noindent and using that $\mathbf{D}^k_\mathbb{C}$ and the complex conjucation operation commute,
+
+\begin{equation} \overline{\ndpo{n}\left[X\right]} = \sum_{k=0}^n \overline{\gamma_k^n \left(t\right)} \mathbf{D}^k_\mathbb{C}\left[\overline{X}\right] \end{equation}
+
+	\noindent where
+
+\begin{align}
+	\overline{\gamma_k^n(t)} &= \overline{{n\choose k} \left[\sum\limits_{c=0}^{n-k} j^c B_{\left(n-k,c\right)}\left(\omega,\dot{\omega},\ddot{\omega},...,\omega^{(n-k-c)}\right) \right]} = \nonumber\\[3mm] &= {n\choose k} \left[\sum\limits_{c=0}^{n-k} \left(-1\right)^c j^c B_{\left(n-k,c\right)}\left(\omega,\dot{\omega},\ddot{\omega},...,\omega^{(n-k-c)}\right) \right] 
+\end{align}
+
+	\noindent again having in mind that ${n\choose k}$ and the Bell Polynomials are real numbers. Thus we can define a complex conjugation operator as follows: $\overline{\ndpo{n}}$, for $n\in\mathbb{N}$, is the operator
+
+\begin{equation}\left\{\begin{array}{l} \overline{\ndpo{n}}\left[X\right] = \displaystyle\sum\limits_{k=0}^n \overline{\gamma_k^n(t)} X^{(k)}(t) \\[5mm] \displaystyle \overline{\gamma_k^n(t)} = {n\choose k} \left[\sum\limits_{c=0}^{n-k} \left(-1\right)^c j^cB_{\left(n-k,c\right)}\left(\omega,\dot{\omega},\ddot{\omega},...,\omega^{(n-k-c)}\right) \right]\end{array}\right. ,\label{eq:gamma_def_conj}\end{equation}
+
+	\noindent and one can repeat all theorems up until here to prove that the conjugate operators $\overline{\ndpo{n}}$ are also bijective and form a group, a ring, a vector space, such that they can be summed, multiplied and combined in the same fashion as the $\ndpo{n}$. By this definition and these results, the conjugation operation becomes distributive:
+
+\begin{equation} \overline{\ndpo{n}\left[X\right]} = \left(\overline{\ndpo{n}}\right)\left[\overline{X}\right] \label{eq:ndpo_conj}\end{equation}
+
+	\noindent for any $X\in\left[\mathbb{R}\to\mathbb{C}\right]$.
+
+\begin{example}[Conjugate, real and imaginary parts of $\dpo,\ \ndpo{2}$ and $\ndpo{3}$] %<<<
+
+	From \eqref{eq:gamma_def_conj}, we note that the signal of $\left(-1\right)^c$ on the definition of $\overline{\gamma}$ is inverted if $c$ is odd and maintained if $c$ is even, allowing for easily obtaining the conjugates of $\ndpo{k}$ once the form of this operator is known. For instance, from the definition \eqref{eq:steinmetz_1storder} of $\dpo$,
+
+\begin{equation}
+	\dpo = \mathbf{D}^1 + j\omega(t)\mathbf{I} \left\{\begin{array}{l} \overline{\dpo} = \mathbf{D}^1 - j\omega(t)\mathbf{I} \\[3mm] \Re\left[\dpo\right] = \mathbf{D^1} \\[3mm] \Im\left[\dpo\right] = \omega(t)\mathbf{I} \end{array}\right. 
+\end{equation}
+
+	\noindent and from the definition \eqref{eq:steinmetz_2ndorder} of $\ndpo{2}$
+
+\begin{equation}
+	\ndpo{2} = \mathbf{D}^2 + 2j\omega(t)\mathbf{D}^1 + \left[-\omega^2 + j\dot{\omega}(t)\right]\mathbf{I} \left\{\begin{array}{l} \overline{\ndpo{2}} = \mathbf{D}^2 - 2j\omega(t)\mathbf{D}^1 + \left[-\omega^2 - j\dot{\omega}(t)\right]\mathbf{I} \\[3mm] \Re\left[\ndpo{2}\right] = \mathbf{D}^2  - \omega^2\mathbf{I} \\[3mm] \Im\left[\ndpo{2}\right] = 2\omega(t)\mathbf{D}^1 + \dot{\omega}(t) \mathbf{I}\end{array}\right. .
+\end{equation}
+
+	Finally, from the definition \eqref{eq:steinmetz_3rdorder} of $\ndpo{3}$,
+
+\begin{gather}
+	\ndpo{3} = \mathbf{D}^3 + 3j \omega(t) \mathbf{D}^2 + \left[ 3j \dot{\omega}(t) - 3 \omega(t)^2 \right] \mathbf{D}^1 + \left[ j \ddot{\omega}(t) - 3 \omega(t) \dot{\omega}(t) - j \omega(t)^3 \right]\mathbf{I} \\[15mm]
+%
+	\left\{\begin{array}{l}
+		\overline{\ndpo{3}} = \mathbf{D}^3 - 3j \omega(t) \mathbf{D}^2 + \left[ -3j \dot{\omega}(t) - 3 \omega(t)^2 \right] \mathbf{D}^1 + \left[ -j \ddot{\omega}(t) - 3 \omega(t) \dot{\omega}(t) + j \omega(t)^3 \right]\mathbf{I} \\[3mm]
+%
+		\Re\left[\ndpo{3}\right] = \mathbf{D}^3 - 3 \omega(t)^2 \mathbf{D}^1 - 3 \omega(t) \dot{\omega}(t) \mathbf{I} \\[3mm]
+%
+		\Im\left[\ndpo{3}\right] = 3\omega(t) \mathbf{D}^2 + 3 \dot{\omega}(t) \mathbf{D}^1 + \left[ \ddot{\omega}(t) - \omega(t)^3 \right]\mathbf{I}
+	\end{array}\right.
+\end{gather}
+\examplebar
+\end{example} %>>>
+
+	Notably, like the real and imaginary parts of a complex number are real numbers themselves, the real and imaginary parts of an operator $\ndpo{n}$ can be restricted as transformations of real functions, that is,
+
+\begin{equation} \Re\left(\ndpo{n}\right),\Im\left(\ndpo{n}\right)\in\left[\left[\mathbb{R}\to\mathbb{R}\right]\to\left[\mathbb{R}\to\mathbb{R}\right]\right] . \end{equation}
+
+	This means that much like a complex number is isomorphic to $\mathbb{R}^2$ — meaning any two real numbers $a,b$ define a complex number $a + jb$ — Dynamic Phasor Functionals are isomorphic to the space $\left[\mathbb{R}\to\mathbb{R}\right]^2$, that is, given two transformations of real functions $\mathbf{A}\left[f\right], \mathbf{B}\left[f\right]$, these functions define a transformation in complex signals as
+
+\begin{equation} \mathbf{T}\left[f\right] = \mathbf{A}\left[f\right] + j\mathbf{B}\left[f\right] \end{equation}
+
+	\noindent and if $\mathbf{A}$ and $\mathbf{B}$ have the forms of \eqref{eq:ndpo_def_imre} then $\mathbf{T}$ is equal to $\ndpo{n}$. Furthermore, using \eqref{eq:ndpo_conj}, we can propose the conjugation operator for any $\dpL\in\dpS$: because any such operator is a ratio of polynomials of $\dpo$,
+
+\begin{equation} \dpL = \dfrac{N\left(\dpo\right)}{D\left(\dpo\right)} = \dfrac{\displaystyle \sum_{k=0}^n \alpha_k \ndpo{k}}{\displaystyle\sum_{k=0}^d \beta_k \ndpo{k}} \end{equation}
+
+	\noindent then $\dpL\left[X\right]$ is the signal that satisfies
+
+\begin{equation} \sum_{k=0}^n \alpha_k \ndpo{k}\left[X\right] = \sum_{k=0}^d \beta_k \ndpo{k}\left[\dpL\left[X\right]\right] .\end{equation}
+
+	Conjugating this entire equation,
+
+\begin{gather}
+	\overline{\sum_{k=0}^n \alpha_k \ndpo{k}\left[X\right]} = \overline{ \sum_{k=0}^d \beta_k \ndpo{k}\left[\dpL\left[X\right]\right]}  \nonumber\\[3mm]
+	\sum_{k=0}^n \overline{\alpha_k} \overline{\ndpo{k}\left[X\right]} = \sum_{k=0}^d \overline{\beta_k} \overline{\ndpo{k}\left[\dpL\left[X\right]\right]} 
+\end{gather}
+
+	\noindent and by the definition \eqref{eq:gamma_def_conj} this yields
+
+\begin{gather}
+	\sum_{k=0}^n \overline{\alpha_k} \overline{\ndpo{k}\left[X\right]} = \sum_{k=0}^d \overline{\beta_k} \overline{\ndpo{k}\left[\dpL\left[X\right]\right]} \nonumber\\[3mm]
+	\sum_{k=0}^n \overline{\alpha_k} \overline{\ndpo{k}}\left[\overline{X}\right] = \sum_{k=0}^d \overline{\beta_k} \overline{\ndpo{k}}\left[\overline{\dpL\left[X\right]}\right] \nonumber\\[3mm]
+\end{gather}
+
+	\noindent so the signal $\overline{\dpL\left[X\right]}$ satisfies
+
+\begin{equation} \overline{\dpL\left[X\right]} = \left[\dfrac{\displaystyle \sum_{k=0}^n \overline{\alpha_k}\ \overline{\ndpo{k}}}{\displaystyle\sum_{k=0}^d \overline{\beta_k}\ \overline{\ndpo{k}}}\right] \left[\overline{X}\right] .\label{eq:dpl_conj_1}\end{equation}
+
+	Borrowing from complex polynomials, the conjugate of a polynomial is often denoted as
+
+\begin{equation} P(z) = \sum_{k=0}^n \alpha_k z^k \Leftrightarrow \overline{P}(z) = \sum_{k=0}^n \overline{\alpha_k} z^k \end{equation}
+
+	\noindent so that we can use the same notation for polynomials of $\dpo$ and \eqref{eq:dpl_conj_1} can be written as
+
+\begin{equation} \dpL\left[X\right] = \left[\dfrac{N\left[\dpo\right]}{D\left[\dpo\right]}\right]\left[X\right] \Leftrightarrow \overline{\dpL\left[X\right]} = \left[\dfrac{\overline{N}\left[\overline{\dpo}\right]}{\overline{D}\left[\overline{\dpo}\right]}\right]\left[X\right] ,\label{eq:dpl_conj_2}\end{equation}
+
+	\noindent which induces a definition of $\overline{\dpL}$ as
+
+\begin{equation} \dpL = \dfrac{N\left[\dpo\right]}{D\left[\dpo\right]} \Leftrightarrow \overline{\dpL} = \dfrac{\overline{N}\left[\dpo\right]}{\overline{D}\left[\dpo\right]} ,\label{eq:dpl_conj_3}\end{equation}
+
+	\noindent so that this conjugation definition is also commutative, that is, $\overline{\dpL\left[X\right]} = \overline{\dpL}\left[\overline{X}\right]$. Therefore, we can also define the space of conjugate functionals 
+
+\begin{equation} \overline{\dpS} \vcentcolon = \left\{\overline{\dpL}: \dpL\in\dpS\right\} \end{equation}
+
+	\noindent and one can easily prove $\overline{\dpS}$ is endowed with all the properties of $\dpS$; indeed, if this chapter started by defining $\gamma_k^n$ as its conjugate, not much would change as the resulting functionals would still be invertible (through a very small adaptation of theorem \ref{theo:bijection}) and would form an abelian group, a commutative polynomial ring, and a matrix space (by repeating all theorems from theorem \ref{theo:abelian} through theorem \ref{theo:dpf_matrices_exist}). Therefore one can extend the definition \ref{def:dpft_space} of $\dpS$ to an extended space $\dpS_\mathbb{C}$ so that this space is invariant under conjugation.
+
+\begin{definition}[Extended Dynamic Phasor Functional Space]\label{def:extended_dpft_space}
+	The \textbf{Extended Dynamic Phasor Functional Space} is the set $\dpS_\mathbb{C}\ = \dpS \cup \overline{\dpS}$, that is, the set of all linear combinations of polynomials of $\dpo$, inverse operators of those polynomials, and all their conjugate operators.
+\end{definition}
+
+	Thence, the Extended DPF Space $\dpS_\mathbb{C}$ is also an abelian group, a polynomial commutative ring, a field and a vector space over itself — so that the definitions of linear combinations, polynomials as in \eqref{eq:dpfs_poly_def} are kept in this space. Further, matrices in $\dpS_\mathbb{C}$ are also well defined as are their multiplications by signals (as in \eqref{eq:matrix_by_dpvec_def} and \eqref{eq:dpvec_by_matrix_def}) and the multiplication by scalars and operators and matrices of operators. Thus one can finally define real and imaginary parts in $\dpS_\mathbb{C}$ as
+
+\begin{equation} \Re\left(\dpL\right) = \dfrac{\dpL + \overline{\dpL}}{2},\ \Im\left(\dpL\right) = \dfrac{\dpL - \overline{\dpL}}{2j} \end{equation}
+
+	\noindent and it is trivial to see that not only this definition is compatible with the real and imaginary parts of $\ndpo{k}$ as in \eqref{eq:ndpo_def_imre}, but also that the real and imaginary operations are closed in $\dpS_\mathbb{C}$.
+
+%------------------------------------------------
+\subsection{A topology of Dynamic Phasor Functionals}\label{subsec:topology_dpfs} %<<<2
+
+	Seen as the space of functionals $\dpS$ generalizes the idea of operators in Dynamic Phasor space, as well as impedances for voltage and current signals, we want to define idealized versions of impedance models where the impedance tends to a short-circuit (the norm of the associated operator tends to zero) or to an open circuit (the norm tends to infinity). For instance, idealized transistor and operational amplifier models use small (ideally zero) impedances and very high (ideally infinite) gains.
+
+	In the static phasor context, the limits associated with infinity and zero are well-defined and well-behaved, since complex analysis defines limits of complex functions. This stems from the fact that the norm of complex numbers — the absolute value — is defined and complete in its space. However, to define limits of norms of operators in $\dpS_\mathbb{C}$ one must first define a topology in this space, that is, define a norm of functionals in $\dpS_\mathbb{C}$ which induces a notion of distances.
+
+	As shown in the chapter \ref{chapter:linear_systems} on the theory of linear systems, specifically definition \ref{def:mapping_norm}, the norm of a map is induced by the ratio of the norms of the output and the input space. This means that in order to define a norm of $\dpS$, we must first define a norm for $\left[\mathbb{R}\to\mathbb{C}\right]$. As discussed before in subsection \ref{subsec:characteristics_l1}, there does not exist a total inner product in this space, thus a norm for the entire space is unfeasible; however, Functional Analysis does offer norms for specific subspaces. For instance, for $\dpo\left[X\right]$ to exist for some signal $X(t)$ the signal must be at least differentiable, that is, belong to $C^1$. If this is the case, the output belongs to $C^0$. Gladly there exist a usual norm of $C^n$ as defined in \cite{rudin1991functional} and shown in \eqref{eq:usual_norm_cn}.
+
+\begin{equation} \left\{\begin{array}{l} \left\lVert f\right\rVert_{C^0} = \sup\limits_{t\in\mathbb{R}} \left\lvert f(t)\right\rvert \\[3mm] \left\lVert f\right\rVert_{C^1} = \sup\limits_{t\in\mathbb{R}} \left\lvert f'(t)\right\rvert + \sup\limits_{t\in\mathbb{R}} \left\lvert f(t)\right\rvert \\[3mm] \left\lVert f\right\rVert_{C^2} = \sup\limits_{t\in\mathbb{R}} \left\lvert f''(t)\right\rvert + \sup\limits_{t\in\mathbb{R}} \left\lvert f'(t)\right\rvert + \sup\limits_{t\in\mathbb{R}} \left\lvert f(t)\right\rvert  \\[3mm] \hspace{2cm} \vdots \\[3mm] \displaystyle\left\lVert f\right\rVert_{C^n} = \sum_{k=0}^n \sup\limits_{t\in\mathbb{R}} \left\lvert f^{(k)}(t)\right\rvert \end{array}\right. . \label{eq:usual_norm_cn}\end{equation}
+
+	For the space $\left[\mathbb{R}\to\mathbb{C}\right]$, let us adopt a similar but adjusted norm which we call the ``Dynamic Phasor Norm'' where the supremums are multiplied by the norms of the $\gamma_k^n$.
+
+\begin{definition}[Dynamic Phasor Norm]\label{def:dpnorm} %<<<
+
+	Consider $n\in\mathbb{N},\ \omega(t)\in C^n\left(\left[\mathbb{R}\to\mathbb{R}\right]\right)$ an apparent frequency signal, and $X$ a class $n$ smooth Dynamic Phasor signal, that is, $X\in C^n\left(\left[\mathbb{R}\to\mathbb{C}\right]\right)$. Then the \textbf{Dynamic Phasor Norm (or simply DP norm)} of $C^n$, denoted $\left\lVert \cdot \right\rVert_{D^n}$, is defined as
+
+\begin{equation} \left\lVert \cdot\right\rVert_{{D}^n}:\left\{\begin{array}{rcl} \left[\mathbb{R}\to\mathbb{C}\right] &\to& \mathbb{R}^+ \\[5mm] X(t) &\mapsto& \displaystyle\sum\limits_{k=0}^n \tau_k^n \sup\limits_{t\in\mathbb{R}} \left\lvert X^{(k)}(t)\right\rvert \end{array}\right. \label{eq:def_dpnorm}\end{equation}
+
+	\noindent where $\tau_k^n$ is defined as the norm of $\gamma_k^n$, these being the coefficients of the Dynamic Phasor Transform as defined in \eqref{eq:gamma_def}:
+
+\begin{equation} \mathbb{R}^+ \ni \tau_k^n = \left\lVert \gamma_k^n\right\rVert_{C^0} = \sup\limits_{t\in\mathbb{R}} \left\lvert\gamma_k^n(t) \right\rvert = \sup\limits_{t\in\mathbb{R}} \left\lvert {n\choose k} \left[\sum\limits_{c=0}^{n-k} j^cB_{\left(n-k,c\right)}\left(\omega,\dot{\omega},\ddot{\omega},...,\omega^{(n-k-c)}\right) \right] \right\rvert \end{equation}
+
+	\noindent that is,
+
+\begin{equation}
+	\left\{\begin{array}{l}
+		\left\lVert X\right\rVert_{D^0} = \overbrace{1}^{\left\lVert \gamma_0^0\right\rVert_{C^0}}\sup\limits_{t\in\mathbb{R}} \left\lvert X(t)\right\rvert \\[5mm]
+		\left\lVert X\right\rVert_{D^1} = \overbrace{1}^{\left\lVert \gamma_1^1\right\rVert_{C^0}}\sup\limits_{t\in\mathbb{R}} \left\lvert \dot{X}(t)\right\rvert + \overbrace{\sup\limits_{t\in\mathbb{R}} \left\lvert\omega\right\rvert}^{\left\lVert \gamma_0^1\right\rVert_{C^0}} \sup\limits_{t\in\mathbb{R}} \left\lvert X(t)\right\rvert \\[5mm]
+		\left\lVert X\right\rVert_{D^2} = \overbrace{1}^{\left\lVert \gamma_2^2\right\rVert_{C^0}} \sup\limits_{t\in\mathbb{R}}\left\lvert \ddot{X}(t)\right\rvert + \overbrace{2\sup\limits_{t\in\mathbb{R}}\left\lvert \omega \right\rvert}^{\left\lVert \gamma_1^2\right\rVert_{C^0}} \sup\limits_{t\in\mathbb{R}}\left\lvert \dot{X}(t)\right\rvert + \overbrace{\sup\limits_{t\in\mathbb{R}} \left\lvert -\omega^2 + j\dot{\omega}\right\rvert}^{\left\lVert \gamma_0^2\right\rVert_{C^0}} \sup\limits_{t\in\mathbb{R}}\left\lvert X(t)\right\rvert \\[5mm]
+		\hspace{2cm} \vdots
+	\end{array}\right.
+\end{equation}
+
+\end{definition}%>>>
+\begin{definitionremark} The $\tau_k^n$ are positive reals and bounded because the $B_{(n,k)}$ are polynomials and $\omega(t)$ together with its $n-1$ derivatives are all bounded since $\omega(t)$ is supposed $C^n$. \end{definitionremark}
+
+	Proving that the DP norm of \eqref{eq:def_dpnorm} indeed satisfies the requisites of a norm (see definition \ref{def:norm_vecspaece} for these requisites) is easy to prove: since any positive definite linear combination of norms is itself a norm, and we prove that the DP norm of class $n$ is basically a linear combination of the norms of $C^0,C^1,\dots,C^n$ — and this fact is proven by scalonating the formulas:
+
+\begin{equation}
+	\left\{\begin{array}{l}
+		\left\lVert X\right\rVert_{D^0} = \sup\limits_{t\in\mathbb{R}} \left\lvert X(t)\right\rvert = \left\lVert X\right\rVert_{C^0}\\[5mm]
+		\left\lVert X\right\rVert_{D^1} = \left\lVert X\right\rVert_{C^1} + \left(\sup\limits_{t\in\mathbb{R}} \left\lvert \omega(t)\right\rVert  - 1\right)\left\lVert X\right\rVert_{C^0}\\[5mm]
+		\left\lVert X\right\rVert_{D^2} = \left\lVert X\right\rVert_{C^2} + \left(2\sup\limits_{t\in\mathbb{R}} \left\lvert \omega(t)\right\rVert  - 1\right)\left\lVert X\right\rVert_{C^1} + \left(\sup\limits_{t\in\mathbb{R}} \left\lvert -\omega^2 + j\dot{\omega}\right\rvert - 2\sup\limits_{t\in\mathbb{R}} \left\lvert \omega(t)\right\rVert  - 1\right)\left\lVert X\right\rVert_{C^0}\\[5mm]
+		\hspace{2cm} \vdots
+	\end{array}\right.
+\end{equation}
+
+	\noindent and a general formula is
+
+\begin{equation}\left\{\begin{array}{l} \left\lVert X\right\rVert_{D^0} = \left\lVert X \right\rVert_{C^0} \\[5mm] \displaystyle\left\lVert X\right\rVert_{D^n} = \left\lVert X \right\rVert_{C^n} + \sum\limits_{k=0}^{n-1}\left(\tau_k^n - \sum\limits_{i=k+1}^{n} \tau_i^n\right) \left\lVert X \right\rVert_{C^k} \end{array}\right. .\end{equation}
+
+	Having defined a norm for Dynamic Phasors, a norm for the DPFs is induced as per definition \ref{def:mapping_norm}. We first start with the first-order functional $\ndpo{1}$, and we use the map definition \eqref{eq:norm_map_def_2}:
+
+\begin{equation} \left\lVert \dpo\right\rVert = \sup\left\{ \dfrac{\left\lVert \dpo\left[X\right]\right\rVert_{C^0}}{\left\lVert X\right\rVert_{C^1}}:\ X\in C^1\left(\left[\mathbb{R}\to\mathbb{C}\right]\right)\right\} .\end{equation}
+
+	 We use the properties of the supremum to compute this number, namely, that for any two $f,g$ defined in some space $D$, the supremum of the image of $f+g$ is smaller than the sum of the supremums of the individual images, that is, $\sup\left( (f+g)(D)\right) \leq \sup(f(D)) + \sup(g(D))$:
+
+\begin{equation}
+	\dfrac{\left\lVert \dpo\left[X\right]\right\rVert_{C^0}}{\left\lVert X\right\rVert_{C^1}} = \dfrac{\sup\limits_{t\in\mathbb{R}}\left\lvert \dot{X} + j\omega X\right\rvert}{\sup\limits_{t\in\mathbb{R}}\left\lvert \dot{X} \right\rvert + \sup\limits_{t\in\mathbb{R}}\left\lvert \omega\right\rvert\sup\limits_{t\in\mathbb{R}}\left\lvert X\right\rvert} \leq \dfrac{\sup\limits_{t\in\mathbb{R}}\left\lvert \dot{X}\right\rvert + \sup\limits_{t\in\mathbb{R}} \left\lvert j\omega X\right\rvert}{\sup\limits_{t\in\mathbb{R}}\left\lvert \dot{X} \right\rvert + \sup\limits_{t\in\mathbb{R}}\left\lvert \omega\right\rvert\sup\limits_{t\in\mathbb{R}}\left\lvert X\right\rvert}. \label{eq:dpo_norm_ratio}
+\end{equation}
+
+	Now we use that the supremum of the product set $AB = \left\{ab: a\in A,\ b\in B\right\}$ is the product of the supremums:
+
+\begin{equation}
+	\dfrac{\left\lVert \dpo\left[X\right]\right\rVert_{C^0}}{\left\lVert X\right\rVert_{C^1}} \leq \dfrac{\sup\limits_{t\in\mathbb{R}}\left\lvert \dot{X}\right\rvert + \sup\limits_{t\in\mathbb{R}} \left\lvert \omega \right\rvert\sup\limits_{t\in\mathbb{R}}\left\lvert X\right\rvert}{\sup\limits_{t\in\mathbb{R}}\left\lvert \dot{X} \right\rvert + \sup\limits_{t\in\mathbb{R}}\left\lvert \omega\right\rvert\sup\left\lvert X\right\rvert} = 1 \Rightarrow \left\lVert \dpo\right\rVert \leq 1
+\end{equation}
+
+	However, it is simple to see that the last ratio of \eqref{eq:dpo_norm_ratio} attains unity for any constant non-zero $X(t)$; therefore, $\left\lVert \dpo\right\rVert = 1$. For $\ndpo{2}$, 
+
+\begin{equation} \left\lVert \ndpo{2}\right\rVert = \sup\left\{ \dfrac{\left\lVert \ndpo{2}\left[X\right]\right\rVert_{C^0}}{\left\lVert X\right\rVert_{C^2}}:\ X\in C^2\left(\left[\mathbb{R}\to\mathbb{C}\right]\right)\right\} .\end{equation}
+
+	But
+
+\begin{equation} \dfrac{\left\lVert \ndpo{2}\left[X\right]\right\rVert_{C^0}}{\left\lVert X\right\rVert_{C^2}} = \xfrac{5mm}{3mm}{\sup\limits_{t\in\mathbb{R}}\left\lvert \ddot{X} + 2j\omega \dot{X} + \left[-\omega^2 + j\dot{\omega}\right]X \right\rvert}{ \sup\limits_{t\in\mathbb{R}}\left\lvert \ddot{X} \right\rvert + 2\sup\limits_{t\in\mathbb{R}}\left\lvert \omega \right\rvert \sup\limits_{t\in\mathbb{R}}\left\lvert \dot{X} \right\rvert + \sup\limits_{t\in\mathbb{R}} \left\lvert -\omega^2 + j\dot{\omega}\right\rvert \sup\limits_{t\in\mathbb{R}}\left\lvert X\right\rvert } \end{equation}
+
+	\noindent and clearly one can see that using the same infimum properties one arrives at the same conclusion that this ratio is at most one, and that it achieves unity if $X(t)$ is nonzero and constant, thus $\left\lVert\ndpo{2}\right\rVert = 1$. Therefore we can prove that $\left\lVert\ndpo{n}\right\rVert = 1$ for any order $n$.
+
+\begin{theorem}[Dynamic Phasor Functionals have single norm]\label{theo:dpfs_unitary} %<<<
+	The functional $\ndpo{n}$ has a unitary norm under the DP norm of definition \ref{def:dpnorm}, that is,
+
+\begin{equation} \left\lVert \ndpo{n}\right\rVert = \sup\left\{ \dfrac{\left\lVert \ndpo{n}\left[X\right]\right\rVert_{C^0}}{\left\lVert X\right\rVert_{C^n}}:\ X\in C^n\left(\left[\mathbb{R}\to\mathbb{C}\right]\right)\right\} = 1 \end{equation}
+\end{theorem}
+\textbf{Proof:} computing the ratio,
+
+\begin{equation} \dfrac{\left\lVert \ndpo{n}\left[X\right]\right\rVert_{D^0}}{\left\lVert X\right\rVert_{D^n}} = \xfrac{5mm}{3mm}{\displaystyle \sup\limits_{t\in\mathbb{R}}\left\lvert\sum\limits_{k=0}^n \gamma_k^n (t)X^{(k)}(t)\right\rvert }{\displaystyle \sum\limits_{k=0}^n \tau_k^n \sup\limits_{t\in\mathbb{R}}\left\lvert X^{(k)}(t)\right\rvert } .\end{equation}
+
+	By the summation property of the supremum,
+
+\begin{equation} \xfrac{5mm}{3mm}{\displaystyle \sup\limits_{t\in\mathbb{R}}\left\lvert\sum\limits_{k=0}^n \gamma_k^n (t) X^{(k)}(t)\right\rvert }{\displaystyle \sum\limits_{k=0}^n \tau_k^n \sup\limits_{t\in\mathbb{R}}\left\lvert X^{(k)}(t)\right\rvert } \leq \xfrac{5mm}{3mm}{\displaystyle \sum\limits_{k=0}^n \sup\limits_{t\in\mathbb{R}}\left\lvert\gamma_k^n (t) X^{(k)}(t)\right\rvert }{\displaystyle \sum\limits_{k=0}^n \tau_k^n \sup\limits_{t\in\mathbb{R}}\left\lvert X^{(k)}(t)\right\rvert } \end{equation}
+
+	\noindent and by the multiplication property,
+
+\begin{equation} \xfrac{5mm}{3mm}{\displaystyle \sum\limits_{k=0}^n \sup\limits_{t\in\mathbb{R}}\left\lvert\gamma_k^n(t) X^{(k)}(t)\right\rvert }{\displaystyle \sum\limits_{k=0}^n \tau_k^n \sup\limits_{t\in\mathbb{R}}\left\lvert X^{(k)}(t)\right\rvert } = \xfrac{5mm}{3mm}{\displaystyle \sum\limits_{k=0}^n \sup\limits_{t\in\mathbb{R}}\left\lvert\gamma_k^n(t) \right\rvert \sup\limits_{t\in\mathbb{R}}\left\lvert X^{(k)}\right\rvert }{\displaystyle \sum\limits_{k=0}^n \tau_k^n \sup\limits_{t\in\mathbb{R}}\left\lvert X^{(k)}(t)\right\rvert } = 1. \end{equation}
+
+	\noindent therefore
+
+\begin{equation} \dfrac{\left\lVert \ndpo{n}\left[X\right]\right\rVert_{D^0}}{\left\lVert X\right\rVert_{D^n}} \leq 1 .\end{equation}
+
+	But if $X(t)$ is a constant non-null signal, then this ratio achieves the unity:
+
+\begin{equation} \dfrac{\left\lVert \ndpo{n}\left[X\right]\right\rVert_{D^0}}{\left\lVert X\right\rVert_{D^n}} = \xfrac{5mm}{3mm}{\displaystyle \sup\limits_{t\in\mathbb{R}}\left\lvert\sum\limits_{k=0}^n \gamma_k^n (t)X^{(k)}(t)\right\rvert }{\displaystyle \sum\limits_{k=0}^n \tau_k^n \sup\limits_{t\in\mathbb{R}}\left\lvert X^{(k)}(t)\right\rvert } = \xfrac{5mm}{3mm}{\displaystyle \sup\limits_{t\in\mathbb{R}}\left\lvert \gamma_0^n (t)X(t)\right\rvert }{\displaystyle \tau_0^n \sup\limits_{t\in\mathbb{R}}\left\lvert X(t)\right\rvert } = \xfrac{5mm}{3mm}{\displaystyle \sup\limits_{t\in\mathbb{R}}\left\lvert \gamma_0^n (t)\right\rvert \sup\limits_{t\in\mathbb{R}}\left\lvert X(t)\right\rvert }{\displaystyle \tau_0^n \sup\limits_{t\in\mathbb{R}}\left\lvert X(t)\right\rvert } = 1\end{equation}
+
+	\noindent thus $\left\lVert \ndpo{n}\right\rVert = 1$. \hfill$\blacksquare$
+\vspace{3mm}
+\hrule
+\vspace{3mm}
+%>>>
+
+	It is simple to see that the direct computation of the norms of polynomials of $\dpo$ becomes difficult; however, due to the triangle inequality and the absolute homogeneity of norms (see definition \ref{def:norm_vecspaece}), for any $\mathbf{P}\left(\dpo\right) \in \mathbb{C}\left[\dpo\right]$ one has
+
+\begin{equation} \left\lVert \mathbf{P}\right\rVert = \left\lVert \sum_{k=0}^n \alpha_k\ndpo{k}\right\rVert \leq \sum_{k=0}^n \left\lVert \alpha_k\ndpo{k}\right\rVert = \sum_{k=0}^n \left\lvert \alpha_k\right\rvert \left\lVert \ndpo{k}\right\rVert = \sum_{k=0}^n \left\lvert \alpha_k\right\rvert \end{equation}
+
+	\noindent meaning any polynomial of $\dpo$ is a bounded linear transform. For the inverse operators, due to the sub-multiplicativity of norms,
+
+\begin{equation} 1 = \left\lVert \dpo \ndpo{-1}\right\rVert \leq \left\lVert \dpo \right\rVert \left\lVert\ndpo{-1}\right\rVert \Leftrightarrow \left\lVert\ndpo{-1}\right\rVert \geq 1 .\end{equation}
+
+	Analogously, the inverse of a polynomial $\mathbf{P}$ is such that
+
+\begin{equation} \left\lVert \dfrac{\mathbf{I}}{\mathbf{P}}\right\rVert = \raisebox{-3mm}{$ \left\lVert \raisebox{3mm}{$ \dfrac{\mathbf{I}}{\displaystyle\sum_{k=0}^n \alpha_k\ndpo{k}} $}\right\rVert $} \geq \dfrac{1}{\displaystyle\sum_{k=0}^n \left\lvert \alpha_k\right\rvert} . \label{eq:inverse_poly_norm} \end{equation}
+
+	Therefore, for some arbitrary $\lambda\in\dpS$, the norm is well-defined, and these proofs define a topology for the entire $\dpS$. This allows us to define interesting institutions in this space, for instance, limits: if $\lambda = \mathbf{N}\left(\dpo\right)/\mathbf{D}\left(\dpo\right)$, then $\left\lVert \dpL\right\rVert$ tends to zero if the coefficients of the numerator polynomial are arbitraryly small or those of the denominator are arbitrarily large; conversely, the norm tends to infinity if the coefficients of the denominator are arbitrarily small or those of the numerator are arbitrarily large. This allows us to have idealized models of impedances that are very low (almost short-circuits) or very high (almost open circuits).
+
+	It will be shown later (see theorem \ref{theo:bibo_mutfs} at page \pageref{theo:bibo_mutfs}) that an arbitrary $\lambda = \mathbf{N}\left(\dpo\right)/\mathbf{D}\left(\dpo\right)$ does indeed have a finite norm (thus being a bounded operator) if and only if it is proper (the degree of the denominator is equal or higher than the degree of the numerator) and the roots of the denominator are in the open left half plane.
+
+	It is also simple to see that all the proofs shown are maintained for the conjugate operators $\overline{\ndpo{k}}$, thus all results also extend to the conjugate space $\overline{\dpS}$; therefore, the Dynamic Phasor norm also induces a topology on the Extended Dynamic Phasor Functional space $\dpS_\mathbb{C}$.
+
+%------------------------------------------------
+\section{Circuit modelling techniques using Dynamic Phasors and the DPF} %<<<1
+
+	Having stated and proven that the DPFs $\dpS$ form very powerful algebraic structures that allow us to operate them in convenient and familiar manners, we can explore these structures to prove that the customary circuit modelling techniques find counterparts in the Dynamic Phasor domain by means of operating DPFs. We start with Kirchoff's Laws.
+
+\begin{theorem}[Kirchoff's Current Law in the Dynamic Phasor domain] \label{theo:kirchoff_current}
+Let $i_p(t)$, $p = 1,...,q$ be the generalized sinusoidal currents of a certain network meeting at a node, $I_p(t)$ their dynamic phasors. Then
+
+\begin{equation} \sum\limits_{p=1}^q I_p(t) = 0 \end{equation}
+
+\end{theorem}
+\noindent \textbf{Proof.} By Kirchoff's Current Law in time domain, $\sum i_p(t) = 0$. Applying the dynamic phasor transform and using its linearity yields $\sum I_p(t) = 0$. \hfill$\blacksquare$
+	
+\begin{theorem}[Kirchoff's Voltage Law in the Dynamic Phasor domain] \label{theo:kirchoff_voltage}
+Let $v_p(t)$, $p = 1,...,q$ be the generalized sinusoidal voltages of a certain network around a certain closed loop, $V_p(t)$ their dynamic phasors. Then
+
+\begin{equation} \sum\limits_{p=1}^q V_p(t) = 0 \end{equation}
+
+\end{theorem}
+\noindent \textbf{Proof:} akin to theorem \ref{theo:kirchoff_current}. \hfill$\blacksquare$
+
+	While theorems \ref{theo:kirchoff_current} and \ref{theo:kirchoff_voltage} seem immediate, they have some depth to them. First, we note that the blatant statement of \textit{generalized sinusoids} serves to differ these theorems from their more restrict static sinusoid couterparts \ref{theo:kirchoff_current_phasor} and \ref{theo:kirchoff_voltage_phasor}.
+
+	Further, it may seem like theorems \ref{theo:kirchoff_current} and \ref{theo:kirchoff_voltage} are mere rewritings of the previously proven \ref{theo:kirchoff_current_1p} and \ref{theo:kirchoff_voltage_1p}, when they are more general for while \ref{theo:kirchoff_current_1p} and \ref{theo:kirchoff_voltage_1p} consider that the currents and voltages considered all are defined at the same apparent frequency, after the developments of chapter \ref{chapter:choice_apparent_frequency} the new versions \ref{theo:kirchoff_current} and \ref{theo:kirchoff_voltage} are able to deal with generalized sinusoids defined at different frequencies.
+
+	Indeed, the new versions do not weave considerations about the apparent frequencies upon which the currents meeting at a node (or voltages around a certain loop) are defined. Here, we are supposing that even if each individual current (voltage) is defined at its own apparent frequency, these frequency signals are all mutually equivalent (absolutely integrable as per definition \ref{def:equivalent_freqs}), hence by theorem \ref{theorem:sols_are_nonst} all currents (voltages) can be modelled in a common $\omega(t)$ that is equivalent to all frequency signals, and this common apparent frequency is adopted for the DPT that transforms the time signals into phasors.
+
+%-------------------------------------------------
+\subsection{Dynamic Impedances} %<<<2
+
+	It is immediate from the definition of $\dpo$ that the linear element impedances can be written as
+
+\begin{equation}\left\{\begin{array}{l} v(t) = L\dot{i}(t) \Leftrightarrow V(t) = L \dpo \left[I\right] \text{ (Linear inductor)}\\[3mm] i(t) = C\dot{v}(t) \Leftrightarrow I(t) = C \dpo \left[V\right]  \text{ (Linear capacitor)}\\[3mm] v(t) = Ri(t) \Leftrightarrow V(t) = RI(t) \text{ (Linear resistor)}\end{array} \right. \label{sys:dpo_impedances}\end{equation}
+
+	\noindent which already looks a lot like the Laplace relationships \eqref{sys:laplace_impedances}. Moreover, immediately one notices that these equations are of the form $V(t) = \mathbf{Z}\left[I\right]$ where $\mathbf{Z}$ is an operator that relates the Dynamic Phasor of voltage $V(t)$ and the Dynamic Phasor of the current $I(t)$, a relationship highly suggestive of the idea of impedance:
+
+\begin{equation}\left\{\begin{array}{l} \mathbf{Z}_L = L \dpo \text{ (Linear inductor)}\\[3mm] \mathbf{Z}_C = \dfrac{\mathbf{I}}{\dpo C} \text{ (Linear capacitor)}\\[3mm] \mathbf{Z}_R = R\mathbf{I} \text{ (Linear resistor)}\end{array} \right. \label{sys:dpo_impedances_formula}\end{equation}
+
+	It also becomes clear that as these impedances are combined, inverted and operated in more complex circuits they become ratios of polynomials of $\dpo$, thus elements of $\Xi$. In a general context, in a linear bipole, the time-domain relationship between the voltage and current is given by
+
+\begin{equation} \sum_{k=0}^n a_k v^{(k)}(t) = \sum_{k=0}^d b_k i^{(k)}(t) \label{eq:impedance_time_general}\end{equation}
+
+	\noindent where the $a_k$ and $b_k$ are compositions of the resistances, capacitances and inductances of the bipole. Apply the Dynamic Phasor Functionals to \eqref{eq:impedance_time_general} and obtain
+
+\begin{equation} \sum_{k=0}^{n} a_k \dpo^k\left[V\right] = \sum_{k=0}^{d} b_k \dpo^k\left[I\right] .\end{equation}
+
+        In polynomial notation,
+
+\begin{equation} \left(\sum_{k=0}^{n} a_k \dpo^k\right)\left[V\right] = \left(\sum_{k=0}^{d} b_k \dpo^k\right)\left[I\right] ,\end{equation}
+
+        \noindent and because the DPFs are invertible and the inversion is akin to division, this becomes
+
+\begin{equation} V(t) = \mathbf{Z} \left[I\right],\ \mathbf{Z} = \left(\dfrac{\sum_{k=0}^{n} a_k \dpo^k}{\sum_{k=0}^{d} b_k \dpo^k}\right) \label{eq:def_impedance}\end{equation}
+
+        \noindent meaning that the operator $\mathbf{Z}$ is the notion of impedance in the Dynamic Phasor domain for it relates the Dynamic Phasors of the voltage and that of the current through the bipole; we therefore call this a \textbf{Dynamic Impedance}. It is only natural from the definition to conclude that such Dynamic Impedances span the entire class $\dpS$ because they are defined as ratios of polynomials of $\dpo$.
+
+\begin{definition}[Dynamic Impedances]\label{def:steinmetz_impedance} A \textbf{Dynamic Impedance} is an operator $\mathbf{Z}\in\dpS$ relating the Dynamic Phasors of the voltage and that of the current through a bipole, that is,
+
+\begin{equation} V(t) = \mathbf{Z} \left[I\right] = \left(\dfrac{\displaystyle\sum_{k=0}^{n} a_k \dpo^k}{\displaystyle\sum_{k=0}^{d} b_k \dpo^k}\right) \left[I\right] \label{eq:def_impedance}\end{equation}
+
+	\noindent where the $a_k,b_k$ are complex scalars with $a_n,b_d\neq 0$.
+
+\end{definition}
+
+	Example \ref{example:dynimp_rlc} shows how this process is done when applied to a second-order circuit.
+
+\begin{example}[Dynamic Impedance of a second-order circuit] \label{example:dynimp_rlc} %<<<
+
+	Consider the RLC circuit of figure \ref{fig:dpimp_example} where the inductance, capacitance and resistance are substituted by their impedances as per \eqref{sys:dpo_impedances_formula}. We want to find the differential equation of $V_R$ as a function of $V(t)$, and the operator $\mathbf{Z}$ that is seen by the input voltage $V(t)$, that is, the operator that relates $V(t)$ and $I_L(t)$.
+
+% MODELLING EXAMPLE: RLC CIRCUIT IN DYNAMIC PHASOR DOMAIN<<<
+\begin{figure}[h]
+\centering
+        \begin{tikzpicture}[american,scale=1,transform shape,line width=0.75, cute inductors, voltage shift = 1]
+	\ctikzset{/tikz/circuitikz/voltage/distance from node=10mm}
+		\draw (0,0)
+			to[vsource,sources/scale=1.25, v>=$V(t)$,invert] (0,4)
+			to[L,l=$\dpo L$,f>^=$I_{L}(t)$,v>=$V_{L}(t)$,-*] (4,4) 
+			to[C,l=$\dfrac{1}{\dpo C}$,f>^=$I_{C}(t)$,v>=$V_{C}(t)$,-*] (4,0) 
+			to[short] (0,0); 
+		\draw (4,4)
+			to[short,f>^=$I_{R}(t)$] (7,4) 
+			to[R,l=$R$,v>=$V_{R}(t)$] (7,0) 
+			to[short]  (4,0);
+        \end{tikzpicture}
+	\caption{Second-order circuit for example application of the single-element Dynamic Phasor impedances.}
+	\label{fig:dpimp_example}
+\end{figure} %>>>
+
+	Applying Kirchoff's Current Law in the DP domain (theorem \ref{theo:kirchoff_current_1p}) in node 1 one obtains
+
+\begin{equation} (KCL):\  I_L - I_C - I_R = 0\end{equation}
+
+	\noindent and using Kirchoff's Voltage Law in the DP domain (theorem \ref{theo:kirchoff_voltage_1p}) in the voltage nodes yields
+
+\begin{equation}\left\{\begin{array}{l} (L1):\ V_C - V + V_L = 0 \\[3mm] (L2):\ V_R = V_C \end{array}\right. .\end{equation}
+
+	Finally, using the voltage-current relationships \eqref{sys:dpo_impedances} of the elements,
+
+\begin{equation}\left\{\begin{array}{rl} (KCL):&\ I_L - C\dpo\left[V_C\right] - \dfrac{V_R}{R} = 0 \\[3mm] (L1):&\ V_C - V + L\dpo\left[I_L\right] = 0 \\[3mm] (L2):&\ V_R = V_C \end{array}\right. .\end{equation}
+
+	Applying the third equation to the other two,
+
+\begin{equation}\left\{\begin{array}{l} I_L - C\dpo\left[V_R\right] - \dfrac{V_R}{R} = 0 \\[3mm] V_R - V + L\dpo\left[I_L\right] = 0 \end{array}\right. . \label{eq:example_dpos_1}\end{equation}
+
+	Now, apply $\dpo$ to the entire first equation which is possible because the $\dpo$ is bijective, 
+
+\begin{equation}\left\{\begin{array}{l} \dpo\left[I_L\right] - C\ndpo{2}\left[V_R\right] - \dfrac{1}{R} \dpo\left[V_R\right] = 0 \\[3mm] V_R - V + L\dpo\left[I_L\right] = 0 \end{array}\right. .\end{equation}
+
+	\noindent and substituting $\dpo\left[I_L\right]$ from the second equation into the operated first equation:
+
+\begin{equation} \dfrac{V - V_R}{L} - C\ndpo{2}\left[V_R\right] - \dfrac{1}{R} \dpo\left[V_R\right] = 0 \Leftrightarrow \ndpo{2}\left[V_R\right] + \dfrac{1}{RC} \dpo\left[V_R\right] + \dfrac{1}{LC} V_R - \dfrac{1}{LC} V(t) = 0. \label{eq:dpo_complex_model_rlc}\end{equation}
+
+	Substituting the definition of $\dpo$ \eqref{eq:steinmetz_1storder} and the definition \eqref{eq:steinmetz_2ndorder} of $\ndpo{2}$,
+
+\begin{gather}
+	{\color{stewartblue}\ndpo{2}\left[V_R\right]} + {\color{stewartgreen}\dfrac{1}{RC} \dpo\left[V_R\right]} +{\color{stewartpink} \dfrac{1}{LC} V_R} -{\color{stewartyellow} \dfrac{1}{LC} V(t)} = 0  \nonumber\\[3mm] 
+%
+	{\color{stewartblue} \left\{\raisebox{4mm}{} \ddot{V}_R + 2j\omega(t)\dot{V}_R + \left[-\omega^2 + j\dot{\omega}(t)\right]V_R(t)\right\}} + {\color{stewartgreen} \dfrac{1}{RC} \dot{V}_R(t) + j\dfrac{1}{RC}\omega(t) V_R(t) } + {\color{stewartpink} V_R \dfrac{1}{LC} } + {\color{stewartyellow} - \dfrac{1}{LC} V(t)} = 0,
+\end{gather}
+
+	\noindent and grouping the terms,
+
+\begin{equation} {\color{stewartblue} 1} \ddot{V}_R(t) + \dot{V}_R(t)\left({\color{stewartgreen} \dfrac{1}{RC}} + {\color{stewartblue} 2j\omega(t)}\right) + V_R\left\{ {\color{stewartpink} \dfrac{1}{LC}} {\color{stewartblue} - \omega^2(t)} + j \left[ {\color{stewartblue} \dot{\omega}(t)} + {\color{stewartgreen} \dfrac{1}{RC}\omega(t)}\right]\right\} {\color{stewartyellow} -\dfrac{1}{LC} V(t)} = 0, \end{equation}
+
+	\noindent which is the same equation \eqref{eq:rlc_complex_diffeq} and \eqref{eq:rlc_complex_diffeq_dpt} from examples \ref{example:rlc_dpt} and \ref{example:dpdomain_secondorder}. Further, \eqref{eq:dpo_complex_model_rlc} is also able to yield the model in time domain: since $\dpo$ in the phasor domain is equivalent to $\mathbf{D}_\mathbb{R}$ in the time domain, 
+
+\begin{equation} \ddot{v}_R + \dfrac{1}{RC} \dot{v}_R + \dfrac{1}{LC} v_R - \dfrac{1}{LC} v(t) = 0\end{equation}
+
+	\noindent yielding the exact time domain model \eqref{eq:rlc_time_diffeq}. Finally, to obtain $I_L$ as a function of $V$, isolate $V_R$ from the second equation of \eqref{eq:example_dpos_1} and substitute on the first equation:
+
+\begin{equation}
+	I_L - C\dpo\left[V - L\dpo\left[I_L\right]\right] - \dfrac{V - L\dpo\left[I_L\right]}{R} = 0 .
+\end{equation}
+
+	Now using the linearity of the $\dpo$,
+
+\begin{gather}
+	I_L - C\dpo\left[V\right] + LC\ndpo{2}\left[I_L\right] - \dfrac{V}{R} + \dfrac{L}{R} \dpo\left[I_L\right] = 0 \\[3mm]
+	LC\ndpo{2}\left[I_L\right] + \dfrac{L}{R} \dpo\left[I_L\right] + \mathbf{I}\left[I_L\right] =  C\dpo\left[V\right] + \dfrac{1}{R}\mathbf{I}\left[V\right]
+\end{gather}
+
+	Now we can write equivalent operators for each side based on the linear combination of operators:
+
+\begin{equation} \left(LC\ndpo{2} + \dfrac{L}{R} \dpo + \mathbf{I}\right)\left[I_L\right] = \left( C\dpo  + \dfrac{1}{R}\mathbf{I}\right)\left[V\right] \end{equation}
+
+	\noindent and using the division (inversion),
+
+\begin{equation} \left(\xfrac{3mm}{3mm} {LC\ndpo{2} + \dfrac{L}{R} \dpo + \mathbf{I}}{ C\dpo  + \dfrac{1}{R}\mathbf{I} }\right)\left[I_L\right] = V(t) \Leftrightarrow \mathbf{Z} = \dfrac{LC}{R} \xfrac{3mm}{3mm} {\ndpo{2} + \dfrac{1}{RC} \dpo + \dfrac{1}{LC}\mathbf{I}}{ \dpo  + \dfrac{1}{RC}\mathbf{I} } \label{eq:example_analysis_z}\end{equation}
+
+	\noindent thus showing that the operator $\mathbf{Z}$ sought is indeed a ratio of polynomials of $\dpo$.
+
+\examplebar
+\end{example} %>>>
+
+	Conversely to Dynamic Impedances, we can define \textbf{Dynamic Admittances} as the operator $\mathbf{Y}$ that relates $I(t) = \mathbf{Y} \left[V\right]$, allowing for the definition a short circuit and an open circuit by means of the null operator.
+
+\begin{definition}\label{def:short_opencircuit} In the context of Dynamic Phasors and Impedances, a \textbf{short-circuit} is a bipole which related impedance is the null operator. Conversely, an \textbf{open-circuit} is a bipole which related admittance is the null operator.\end{definition}
+
+	Since $\mathbf{Z}\in\dpS^*$ and $\dpS$ is invariant to inversion, then $\mathbf{Y}\in\dpS^*$. Naturally, for the same bipole, if it is not a short or an open-circuit then $\mathbf{Z}$ and $\mathbf{Y}$ are inverse operators, that is, $\left(\mathbf{Z}\circ \mathbf{Y}\right)\left[V\right] = V(t)$ or $\mathbf{Z}\circ\mathbf{Y} = \mathbf{I}$. In the same way, $\left(\mathbf{Y}\circ \mathbf{Z}\right)\left[I\right] = I(t)$, or $\mathbf{Y}\circ\mathbf{Z} = \mathbf{I}$.
+
+	Furthermore, one can define the resistance $\mathbf{R}$, reactance $\mathbf{X}$, conductance $\mathbf{G}$ and susceptance $\mathbf{B}$ analogously to static impedance counterparts by using the real and imaginary part operations as in subsection \ref{subsec:real_imag_dpfs}:
+
+\begin{equation} \mathbf{Z} = \mathbf{R} + j\mathbf{X}\ \left\{\begin{array}{l} \mathbf{R} = \Re\left[\mathbf{Z}\right] \\ \mathbf{X} = \Im\left[\mathbf{Z}\right]\end{array}\right.  \text{, and } \mathbf{Y} = \mathbf{G} + j\mathbf{B}\left\{\begin{array}{l} \mathbf{G} = \Re\left[\mathbf{Y}\right] \\ \mathbf{B} = \Im\left[\mathbf{Y}\right]\end{array}\right. . \end{equation}
+
+	One immediately notices that if the apparent frequency of the DPT is some constant $\omega_0$, then Dynamic Impedances and admittances become ratios of powers of $j\omega_0$. Additionally, in a static sinusoidal situation (constant amplitudes and phases), the Dynamic Impedance and Admittance becomes a multiplication by exactly the impedances in static phasor domain. Therefore, Dynamic Admittances generalize the concept of impedances.
+
+	It is also immediate to notice that the existence of such impedance operators rely on the fact that polynomials of $\dpo$ exist and are also invertible, as proven in \ref{subsec:notation_abuse}. A natural question that arises from the definition is if, given both voltage and current signals, the impedance operator is unique.
+
+\begin{theorem}[Uniqueness of Dynamic Impedance operators] \label{theo:impedance_uniqueness} %<<<
+	 Given a bipole, $V(t)$ the DP of the voltage across it and $I(t)$ the DP of the current through it, if the bipole is not a short or an open-circuit, then $\mathbf{Z}$ and $\mathbf{Y}$ are unique up to scaling and coprimality of the numerator and denominator polynomials. \end{theorem}
+\noindent\textbf{Proof:} we first consider the fringe cases. If the considered bipole is a short circuit then $\mathbf{Y}$ does not exist and $\mathbf{Z}$ is not unique because any current $I(t)$ yields zero voltage. The converse situation is true for an open-circuit, so let us assume that the bipole in question is neither of those.
+
+	Let $\mathbf{Z}$ as in \eqref{eq:def_impedance}, denoted
+
+\begin{equation} \mathbf{Z} = \dfrac{\mathbf{N}\left(\dpo\right)}{\mathbf{D}\left(\dpo\right)},\ \mathbf{N,D}\in\mathbb{C}\left[\dpo\right] . \end{equation}
+
+	Because the field of DPFs adheres to the Fundamental Theorem of Algebra (see theorem \ref{theo:dps_alg_closed}), then $\mathbf{N}$ and $\mathbf{D}$ can be written as products of their monomials as in \eqref{eq:fundamental_algebra_dpfs}. If $\mathbf{N}$ and $\mathbf{D}$ are not coprime they share a root $\dpL_0$ and their factorization has a common $\left(\dpL - \dpL_0\right)$ term. Thus their factorizations can be simplified until they are coprime. Also, because the polynomials can also be multipled together by any complex factor, define a ``canonical'' version of $\mathbf{Z}$ where numerator and denominator are coprime and monic:
+
+\begin{equation} \mathbf{Z}^* = \dfrac{a_n}{b_d} \left(\dfrac{\dpo^p + \sum_{k=0}^{p-1} \alpha_k \dpo^k}{\dpo^q + \sum_{k=0}^{q-1} \beta_k \dpo^k}\right)\end{equation}
+
+	Because $\mathbf{Z}$ is not a short, we can suppose $a_n,b_d\neq 0$, so let $k_z = a_n/b_d$ and $K(t)$ such that
+
+\begin{equation} \left\{ \begin{array}{l} K(t) = \left[k_z \left(\dpo^p + \sum_{k=0}^{p-1} \alpha_k\dpo^k\right)\right]\left[I\right] \\[3mm] K(t) = \left[\left(\dpo^q + \sum_{k=0}^{q-1} \beta_k \dpo^k\right)\right]\left[V\right] \end{array}\right. \end{equation}
+
+	Because any non-trivial linear combination of powers of $\dpo$ is bijective, as proven in \ref{subsec:notation_abuse}, the first equation dictates, for any combination of coefficients $\alpha$, that $K(t)$ and $I(t)$ are uniquely related; by the second equation, so are $K(t)$ and $V(t)$ for any combination of $\beta$ coefficients. Therefore, by the transitivity of bijection, $V(t)$ and $I(t)$ are bijectively related. \hfill$\blacksquare$ \vspace{5mm}\hrule\vspace{5mm} %>>>
+
+	With all these theorems in our arsenal, we can now prove nice circuit modelling tools like the series-parallel combination of impedances and admittances, as per theorems \ref{theo:series_z} and \ref{theo:parallel_y}.
+
+\begin{theorem}[Series combination of Dynamic Impedances]\label{theo:series_z} %<<<
+	Consider a series combination of $\left(\mathbf{Z}_k\right)_{k\in\mathbb{N}_n^*}$ Dynamic Impedance operators, the Dynamic Phasor voltage $V(t)$ being the voltage across the entire combination as per figure \ref{fig:series_combination}. Then the equivalent impedance $\mathbf{Z}_E$ is $\mathbf{Z}_E = \mathbf{Z}_1 + \mathbf{Z}_2 + ... + \mathbf{Z}_n$, that is, the voltage across the combination and the current through it are related by $V(t) = \mathbf{Z}_E \left[I\right]$. At the same time, the voltage across the each impedance is given by the impedance divider formula
+
+\begin{equation} V_i(t) = \left(\dfrac{\mathbf{Z}_i}{\mathbf{Z}_E}\right) \left[V\right] .\label{eq:impedance_div}\end{equation}
+
+% SERIES COMBINATION OF IMPEDANCES <<<
+\begin{figure}[h]
+\centering
+\scalebox{0.75}{
+\begin{tikzpicture}[american,scale=1,transform shape,line width=0.75, cute inductors, voltage shift = 0.2]
+\ctikzset{/tikz/circuitikz/voltage/distance from node=1mm, bipoles/thickness=1.5, bipole label style/.style={font=\Large}, bipole voltage style/.style={font=\Large}, bipole current style/.style={font=\Large}}
+\draw (0, 0) to [short, o-, f>_={\Large $I(t)$}] ++(0,-2) 
+	to[generic, l=$\mathbf{Z}_1$] ++(2,0)
+	to[generic, l=$\mathbf{Z}_2$] ++(2,0) node (stop1) {}
+	to[open] ++(2,0) node (stop2) {}
+	to[generic, l=$\mathbf{Z}_i$] ++(2,0) node (stop3) {}
+	to[open] ++(2,0) node (stop4) {}
+	to[generic, l=$\mathbf{Z}_n$] ++(2,0)
+	to[short, -o] ++(0,2) node (endpoint) {};
+
+	\node at ($(stop1)!0.35 !(stop2)$) [draw, circle, fill, minimum size = 0.5mm, radius=5mm, inner sep=0mm, outer sep=1mm] (tleft) {} ;
+	\node at ($(stop1)!0.5  !(stop2)$) [draw, circle, fill, minimum size = 0.5mm, radius=5mm, inner sep=0mm, outer sep=1mm] (tmiddle) {} ;
+	\node at ($(stop1)!0.65 !(stop2)$) [draw, circle, fill, minimum size = 0.5mm, radius=5mm, inner sep=0mm, outer sep=1mm] (tright) {} ;
+	
+	\node at ($(stop3)!0.35 !(stop4)$) [draw, circle, fill, minimum size = 0.5mm, radius=5mm, inner sep=0mm, outer sep=1mm] (tleft) {} ;
+	\node at ($(stop3)!0.5  !(stop4) $) [draw, circle, fill, minimum size = 0.5mm, radius=5mm, inner sep=0mm, outer sep=1mm] (tmiddle) {} ;
+	\node at ($(stop3)!0.65 !(stop4)$) [draw, circle, fill, minimum size = 0.5mm, radius=5mm, inner sep=0mm, outer sep=1mm] (tright) {} ;
+	
+	\draw ([shift=({0,-2mm})]$(stop1)!0.5 !(stop2)$) to[open,european,voltage/distance from node=0.5mm, voltage/bump b=3, v_<=$V_i(t)$] ([shift=({0,-2mm})]$(stop3)!0.5 !(stop4)$);
+	
+	\draw (endpoint) to[open,european, voltage/bump b=3, v_>=$V(t)$] (0,0);
+
+\end{tikzpicture}
+}
+\caption{Series combination schematic for theorem \ref{theo:vsi_equiv}.}
+\label{fig:series_combination}
+\end{figure}
+%>>>
+
+\end{theorem}
+\hfill$\blacksquare$\vspace{5mm}\hrule\vspace{5mm} %>>>
+
+\begin{theorem}[Parallel combination of Dynamic Admittances]\label{theo:parallel_y} %<<<
+	Consider a parallel combination of $\left(\mathbf{Y}_k\right)_{k\in\mathbb{N}_n^*}$ Dynamic Impedance operators, the Dynamic Phasor current $I(t)$ being the current injected into the combination as per figure \ref{fig:parallel_combination}. Then the equivalent admittance $\mathbf{Y}_E$ is $\mathbf{Y}_E = \mathbf{Y}_1 + \mathbf{Y}_2 + ... + \mathbf{Y}_n$, that is, the current through the combination and the voltage across it are related by $I(t) = \mathbf{Y}_E \left[V\right]$. At the same time, the current through each admittance is given by the admittance divider formula
+
+\begin{equation} I_i(t) = \left(\dfrac{\mathbf{Y}_i}{\mathbf{Y}_E}\right) \left[I\right] .\label{eq:admittance_div}\end{equation}
+
+% SERIES COMBINATION OF IMPEDANCES <<<
+\begin{figure}[h]
+\centering
+\scalebox{0.75}{
+\begin{tikzpicture}[american,scale=1,transform shape,line width=0.75, cute inductors, voltage shift = 0.2]
+\ctikzset{/tikz/circuitikz/voltage/distance from node=1mm, bipoles/thickness=1.5, bipole label style/.style={font=\Large}, bipole voltage style/.style={font=\Large}, bipole current style/.style={font=\Large}}
+\draw (0, 0)
+	to [short, o-, f>_={\Large $I(t)$}] ++(2,0) node(conn1) {}
+	to[generic, l=$\mathbf{Y}_1$] ++(0,-3) node(conn2) {}
+	to[short,-o] ++(-2,0) node(conn15) {};
+\draw (conn1.center)
+	to[short] ++(2,0) node(conn3) {}
+	to[generic, l=$\mathbf{Y}_2$] ++(0,-3) node(conn4) {}
+	to[short] ++(-2,0);
+\draw (conn3.center)
+	to[open] ++(2,0) node (conn11) {}
+	to[short] ++(1,0) node(conn5) {}
+	to[generic, l=$\mathbf{Y}_i$,f>={\Large $I_i(t)$}] ++(0,-3) node(conn6) {}
+	to[short] ++(-1,0) node(conn13) {};
+\draw (conn5.center) to[short] ++(1,0) node(conn7) {};
+\draw (conn6.center) to[short] ++(1,0) node(conn8) {};
+\draw (conn7.center)
+	to[open] ++(2,0) node(conn12) {}
+	to[short] ++(1,0) node(conn9) {}
+	to[generic, l=$\mathbf{Y}_n$] ++(0,-3) node(conn10) {}
+	to[short] ++(-1,0) node(conn14) {};
+
+\draw (conn15) to[open,european, voltage/bump b=1, v^>=$V(t)$] (0,0);
+	
+\node at ($(conn3)!0.35 !(conn11)$) [draw, circle, fill, minimum size = 0.5mm, radius=5mm, inner sep=0mm, outer sep=1mm] (tleft) {} ;
+\node at ($(conn3)!0.5  !(conn11)$) [draw, circle, fill, minimum size = 0.5mm, radius=5mm, inner sep=0mm, outer sep=1mm] (tmiddle) {} ;
+\node at ($(conn3)!0.65 !(conn11)$) [draw, circle, fill, minimum size = 0.5mm, radius=5mm, inner sep=0mm, outer sep=1mm] (tright) {} ;
+
+\node at ($(conn7)!0.35 !(conn12)$) [draw, circle, fill, minimum size = 0.5mm, radius=5mm, inner sep=0mm, outer sep=1mm] (tleft) {} ;
+\node at ($(conn7)!0.5  !(conn12)$) [draw, circle, fill, minimum size = 0.5mm, radius=5mm, inner sep=0mm, outer sep=1mm] (tmiddle) {} ;	
+\node at ($(conn7)!0.65 !(conn12)$) [draw, circle, fill, minimum size = 0.5mm, radius=5mm, inner sep=0mm, outer sep=1mm] (tright) {} ; 
+
+\node at ($(conn4)!0.35 !(conn13)$) [draw, circle, fill, minimum size = 0.5mm, radius=5mm, inner sep=0mm, outer sep=1mm] (tleft) {} ;
+\node at ($(conn4)!0.5  !(conn13)$) [draw, circle, fill, minimum size = 0.5mm, radius=5mm, inner sep=0mm, outer sep=1mm] (tmiddle) {} ;	
+\node at ($(conn4)!0.65 !(conn13)$) [draw, circle, fill, minimum size = 0.5mm, radius=5mm, inner sep=0mm, outer sep=1mm] (tright) {} ; 
+
+\node at ($(conn8)!0.35 !(conn14)$) [draw, circle, fill, minimum size = 0.5mm, radius=5mm, inner sep=0mm, outer sep=1mm] (tleft) {} ;
+\node at ($(conn8)!0.5  !(conn14)$) [draw, circle, fill, minimum size = 0.5mm, radius=5mm, inner sep=0mm, outer sep=1mm] (tmiddle) {} ;	
+\node at ($(conn8)!0.65 !(conn14)$) [draw, circle, fill, minimum size = 0.5mm, radius=5mm, inner sep=0mm, outer sep=1mm] (tright) {} ;  \end{tikzpicture}
+}
+\caption{Parallel combination schematic for theorem \ref{theo:parallel_y}.}
+\label{fig:parallel_combination}
+\end{figure}
+%>>>
+
+\end{theorem}
+\hfill$\blacksquare$\vspace{5mm}\hrule\vspace{5mm} %>>>
+
+	These formulas allow, for instance, to quickly model circuits in the Dynamic Phasor domain, like done for the Laplace impedance \eqref{eq:rlc_laplace_model} of circuit \ref{fig:laplace_example}.
+
+\begin{example}[Dynamic Impedance of a second-order circuit (again)] \label{example:dynimp_rlc} %<<<
+
+	Consider the same circuit of figure \ref{fig:dpimp_example} in example \ref{example:dynimp_rlc}. Using theorems \ref{theo:series_z} and \ref{theo:parallel_y}, we can see that the load voltage $V_R$ is the individual voltage of an admittance combination that is a series combination of an impedance $\dpo L$ with a parallel combination of the impedances $\left(\dpo C\right)^{-1}$ and $R$, so that
+
+\begin{equation} V_R = \left(\xfrac{8mm}{5mm}{\dfrac{\mathbf{I}}{\dfrac{1}{R} + \dfrac{\mathbf{I}}{\dpo C}}}{\dpo L + \dfrac{\mathbf{I}}{\dfrac{1}{R} + \dfrac{\mathbf{I}}{\dpo C}}}\right)\left[V\right] \end{equation}
+
+	\noindent and ``multiplying'' both numerator and denominator by $R + \frac{\mathbf{I}}{RC}$,
+
+\begin{equation} V_R(t) = \left( \dfrac{\raisebox{-8mm}{} \dfrac{\mathbf{I}}{\raisebox{5mm}{} \dfrac{\mathbf{I}}{R} + \dpo C}}{\raisebox{5mm}{} \dpo L + \dfrac{\mathbf{I}}{\raisebox{5mm}{} \dfrac{\mathbf{I}}{R} + \dpo C}}\right)\left[V\right] = \left( \dfrac{\mathbf{I}}{\raisebox{5mm}{} \ndpo{2}LC + \dpo\dfrac{L}{R} + \mathbf{I}}\right)\left[V\right] = \dfrac{1}{LC} \left( \dfrac{\mathbf{I}}{\raisebox{5mm}{} \ndpo{2} + \dpo\dfrac{1}{RC} + \dfrac{1}{LC}\mathbf{I}}\right)\left[V\right].\label{eq:rlc_dp_model}\end{equation}
+
+	\noindent which is a direct Dynamic Phasor counterpart to \eqref{eq:rlc_laplace_model} and immediately delivers \eqref{eq:dpo_complex_model_rlc} in a single line of calculations. Finally, for the impedance $\mathbf{Z}$ relating $V$ and $I$, we again lay hold of the fact that the total impedance seen by the source $V(t)$ is series combination of an impedance $\dpo L$ with a parallel combination of the impedances $\left(\dpo C\right)^{-1}$ and $R$, yielding
+
+\begin{equation} \mathbf{Z} = \dpo L + \dfrac{\mathbf{I}}{\dfrac{\mathbf{I}}{R} + \dpo C} \end{equation}
+
+	\noindent and using the operational properties of $\dpS$,
+
+\begin{equation} \mathbf{Z} = \dpo L + \dfrac{\mathbf{I}}{\dfrac{\mathbf{I}}{R} + \dpo C} = \xfrac{3mm}{3mm}{ \dpo L \left(\dfrac{\mathbf{I}}{R} + \dpo C\right)}{\dfrac{\mathbf{I}}{R} + \dpo C} + \xfrac{3mm}{3mm}{\mathbf{I}}{\dfrac{\mathbf{I}}{R} + \dpo C} = \xfrac{3mm}{3mm}{ \dpo \dfrac{L}{R} + \ndpo{2} LC + \mathbf{I} }{\dfrac{\mathbf{I}}{R} + \dpo C} = \dfrac{LC}{R} \xfrac{3mm}{3mm}{ \ndpo{2} + \dfrac{1}{RC} \dpo + \dfrac{1}{LC} \mathbf{I} }{\dpo + \dfrac{\mathbf{I}}{RC}}\end{equation}
+
+	\noindent and this equation is exactly as the one obtained before \eqref{eq:example_analysis_z}.
+
+\examplebar
+\end{example} %>>>
+
+%-------------------------------------------------
+\subsection{Superposition, Thèvenin and Norton} %<<<2
+
+	Now using the notion of Dynamic Impedances, theorem \ref{theo:vsi_equiv} proves the duality between a voltage source and a current source in the Dynamic Phasor context. Using this duality, the Superposition Theorem is proven next.
+
+\begin{theorem}[Voltage and current source equivalence for Dynamic Phasors]\label{theo:vsi_equiv} %<<<
+	Consider the series combination of a nonstationary sinusoidal voltage source $V_O(t)$ with an impedance operator $\mathbf{Z}$ in the left part of figure \ref{fig:dual_sources}. Then this circuit is equivalent to a nonstationary sinusoidal current source $I_S(t) = \mathbf{Z}^{-1} \left[V_O\right]$, which is the short-circuit current of the voltage-impedance combination, in parallel with an admittance operator $\mathbf{Y} = \mathbf{Z}^{-1}$, like the right part of figure \ref{fig:dual_sources}.
+\end{theorem} %>>>
+\textbf{Proof:} take the two-port circuits of figure \ref{fig:dual_sources}, and let us start with the circuit on the left. Use Kirchoff's Voltage Law (theorem \ref{theo:kirchoff_voltage}) to yield the equation that describes this circuit:
+
+% VOLTAGE CURRENT DUALITY FIGURE <<<
+\begin{figure}[h]
+\centering
+\scalebox{0.75}{
+\begin{tikzpicture}[american,scale=1,transform shape,line width=0.75, cute inductors, voltage shift = 0.2]
+\ctikzset{/tikz/circuitikz/voltage/distance from node=10mm,amplifiers/scale = 1.5, bipoles/thickness=1.5, bipole label style/.style={font=\Large}, bipole voltage style/.style={font=\Large}, bipole current style/.style={font=\Large}}
+\draw (0, 0) to [short, o-, f>={\Large $I(t)$}] ++(2,0) 
+	to[generic, l=$\mathbf{Z}$] ++(0,-2)
+	to[vsource,sources/scale=1.25, v>=$V_O(t)$] ++(0,-2)
+	to[short] ++(0,-0.3)
+	to[short, -o] ++(-2,0) node (endpoint) {};
+%
+\draw(0,0) to[open,european,voltage/distance from node=0.5mm, voltage/bump b=1, v<=$V(t)$] (endpoint);
+%
+\draw
+	(6, 0) node (istart3) {} to [short, o-, f>={\Large $I(t)$}] ++(2,0) node (istart) {}
+	to[generic, l_=$\mathbf{Z}$, *-*] (istart |- endpoint) node (conn) {}
+	to[short, -o] ++(-2,0) node (iend) {};
+%
+\draw
+	(istart.center) to[short] ++(2,0) node (istart2) {}
+	to[isource,invert,sources/scale=1.25, l=$I_S(t)$] (istart2 |- endpoint)
+	to[short] (conn.center);
+%
+\draw (istart3) to[open,european,voltage/distance from node=0.5mm, voltage/bump b=1, v<=$V(t)$] (iend);
+\end{tikzpicture}
+}
+\caption{Dual sources for the proof of the source duality theorem \ref{theo:vsi_equiv}.}
+\label{fig:dual_sources}
+\end{figure}
+%>>>
+
+\begin{equation} V(t) = V_O(t) + \mathbf{Z}\left[I\right] . \label{eq:kvl_equiv}\end{equation}
+
+	At the same time, use Kirchoff's Current Law (theorem \ref{theo:kirchoff_current}) on the circuit on the right:
+
+\begin{equation} I_S(t) + I(t) = \mathbf{Y}\left[V\right]. \label{eq:kcl_equiv}\end{equation}
+
+	Use $V(t) = 0$ on \eqref{eq:kvl_equiv} to conclude that $I_S(t) = - \mathbf{Y}\left[V_O\right]$ is the short-circuit current of the circuit on the left. Applying $\mathbf{Y}$ to \eqref{eq:kvl_equiv} yields $\mathbf{Y} \left[V_O\right] - I(t) = I_O(t)$, which is exactly \eqref{eq:kcl_equiv} — the equation that describes the circuit on the right — meaning that the circuit on the right describes the one on the left. Similarly, using $I(t) = 0$ on \eqref{eq:kcl_equiv} yields $V_O(t) = \mathbf{Z} \left[I_S\right]$ is the open-circuit voltage of the circuit on the right, and apply $\mathbf{Z}$ on \eqref{eq:kcl_equiv} to yield \eqref{eq:kvl_equiv}, that is, the circuit on the left also describes the one on the right. \hfill$\blacksquare$
+
+\begin{theorem}[Superposition Principle for Dynamic Phasors] \label{theo:superposition}%<<<
+Consider a circuit network composed of resistors, capacitors and inductors, $n_v$ generalized sinusoidal voltage sources (or just ``voltage sources'') listed as $v^S_p(t)$ and $n_i$ generalized sinusoidal current sources (``current sources'') listed as $i^S_q(t)$, where the frequencies at which each source is defined are mutually equivalent. Dependent sources must be linear, that is, the output voltage or current is a linear operator of node voltages and branch currents. Then the Dynamic Phasor of the voltage across any two nodes $V(t)$ can be written as a sum of the DPs of voltages and currents of each source:
+
+\begin{equation} V(t) = \sum_{p=1}^{n_v} \mathbf{A}_p \left[V^S_p\right] + \sum_{q=1}^{n_i} \mathbf{Z}^E_q \left[I^S_q\right] .\label{theo:super_generic_vol}\end{equation}
+
+	where:
+
+\begin{itemize}
+	\item Each $\mathbf{A}_p$ is a dimensionless operator obtained by setting all independent voltage sources but the p-th one as shorts and all current sources as open circuits; and
+	\item the $\mathbf{Z}^E_q$, the ``$E$'' superscript for \textit{equivalent}, are impedance operators obtained by setting all independent current sources as shorts and all current sources but the q-th as open circuits.
+\end{itemize}
+
+	Accordingly, pick a branch and denote $I(t)$ the current through it. Then
+
+\begin{equation} I(t) = \sum_{p=1}^{n_v} \mathbf{Y}_p^E \left[V^S_p\right] + \sum_{q=1}^{n_i} \mathbf{B}_q \left[I^S_q\right] .\label{theo:super_generic_curr}\end{equation}
+
+	where:
+
+\begin{itemize}
+	\item Each $\mathbf{Y}_p^E$ is an admittance operator obtained by setting all independent voltage sources but the p-th one as shorts and all independent current sources as open circuits; and
+	\item the $\mathbf{B}_q$ are dimensionless operators obtained by setting all independent voltage sources as shorts and all independent current sources but the q-th as open circuits.
+\end{itemize}
+
+\end{theorem}
+\textbf{Proof:} if each current and voltage source is defined at a particular apparent frequency, we suppose all these frequency signals are mutually equivalent as per definition \ref{def:equivalent_freqs}. Thus by theorem \ref{theorem:sols_are_nonst}, there is a signal $\omega(t)$ such that all voltage and current sources can be written at $\omega(t)$; adopt this signal for the DPT, and the voltage sources are transformed into their phasorial versions as $\mathbf{P_D^{\left(\omega\right)}}\left[v^S_p\right] = V_S^p(t)$ and $\mathbf{P_D^{\left(\omega\right)}}\left[i^S_q\right] = I_S^q(t)$. Further, adopt the frequency $\omega(t)$ for the DPFs; thus, substitute inductors by their DPF equivalents $\dpo L$, capacitances by $\left(\dpo C\right)^{-1}$ and resistances by $R$, where $\dpo$ is calculated at $\omega(t)$.
+
+	Suppose the circuit has $n$ nodes; use lemma \ref{theo:vsi_equiv} to convert all voltage sources to current sources. Then the circuit will have $n_s = n_v + n_i$ current sources; arrange them such that the first $n_i$ are the original current sources and the following $n_v$ ones are the ``converted'' current sources. Pick two nodes; for convenience, one of these nodes will be numbered node 1 and the other the voltage reference against which all node voltages are measured. Then, for each node use Kirchoff's Current Law to yield
+
+\begin{equation}
+	\begin{array}{ccc} + \mathbf{Y}_{11} \left[V_1\right] - \mathbf{Y}_{12} \left[V_2\right] - ... - \mathbf{Y}_{1n} \left[V_n\right] &=& \left(\sum I\right)_1 \\[1mm] - \mathbf{Y}_{21} \left[V_1\right] + \mathbf{Y}_{22} \left[V_2\right] - ... - \mathbf{Y}_{2n} \left[V_n\right] &=& \left(\sum I\right)_2 \\ \vdots \\ - \mathbf{Y}_{n1} \left[V_1\right] - \mathbf{Y}_{2n} \left[V_2\right] - ... + \mathbf{Y}_{nn} \left[V_n\right] &=& \left(\sum I\right)_n \end{array} \label{eq:superptheo_nodes}
+\end{equation}
+
+	\noindent where:
+
+\begin{itemize}
+	\item $\left(\sum I\right)_j$ is the sum of currents delivered by current sources to node $j$, that is, the sum of the currents of the sources connected to node $j$ where currents injected into the node are positive and currents coming out of the node are negative;
+	\item $V_j$ the voltage at node $j$ with respect to the voltage reference;
+	\item $\mathbf{Y}_{ij}$ the admittance operator between nodes $i$ and $j$ constructed by building the equivalent admittance between both nodes with all voltage sources substituted by short circuits and all current sources by open circuits;
+	\item and $\mathbf{Y}_{ii}$ the total admittance measured at the node $i$, consisting of sums of the opposites of $\mathbf{Y}_{ij}$ for $1\leq j \leq n$.
+\end{itemize}
+
+	This modelling holds even for fringe cases. If there is a voltage source directly conencted to node $k$, then in \eqref{eq:superptheo_nodes} the k-th row is eliminated and in each row $j$ the term $\mathbf{Y}_{jk}V_k$ is transferred to the right side, that is, $V_k$ becomes an equivalent current injection in each node. Also, if node $k$ is connected to a voltage dependent source then $V_k$ can be written as a linear operator in the voltages of other nodes and currents of branches — in the same fashion as in the first case, the k-th row is eliminated and for each j-th line, $\mathbf{Y}_{jk}V_k$ is incorporated into the other variables. The same process happens if a branch current is a dependent current source.
+
+	In all cases, the resulting equations maintain the same form as \eqref{eq:superptheo_nodes}. Then by theorem \ref{theo:dpf_matrices_exist}, we use the matrix representation of DPFs (definition \ref{def:matrices_in_dps}) and the definitions of matrix-by-vector multiplication (\eqref{eq:matrix_by_dpvec_def} and \eqref{eq:dpvec_by_matrix_def}) to yield a matrix representation of \eqref{eq:superptheo_nodes}:
+
+\begin{equation}
+	\left[\begin{array}{cccc} \mathbf{Y}_{11} & - \mathbf{Y}_{12} & ...  & - \mathbf{Y}_{1n} \\[3mm] - \mathbf{Y}_{21} & + \mathbf{Y}_{22} & ...  & - \mathbf{Y}_{2n} \\[3mm] \vdots & \vdots & \ddots & \vdots \\[3mm] - \mathbf{Y}_{11} & - \mathbf{Y}_{12} - & ...  & + \mathbf{Y}_{1n} \end{array}\right]\left[\begin{array}{c} V_1 \\[3mm] V_2 \\[3mm] \vdots \\[3mm] V_n\end{array}\right] = \left[\begin{array}{c} \displaystyle\left(\sum I\right)_1 \\[3mm]\displaystyle \left(\sum I\right)_2 \\[3mm] \vdots \\[3mm]\displaystyle \left(\sum I\right)_n \end{array}\right] \Leftrightarrow \left[\mathbf{Y}\right]\left[V\right] = \left[I\right] .\label{eq:superptheo_nodematrix}
+\end{equation}
+
+	Because by the conclusion of subsection \ref{subsec:matrces_in_dpfts}, the matricial operations for matrices od DPFs are maintained very closely to those in complex matrices; as such, we can use Kramer's Rule in the matrix representation \eqref{eq:superptheo_nodematrix} to obtain
+
+\begin{equation} V_1 = \dfrac{\raisebox{-14mm}{} 
+\det\left(\left[\begin{array}{cccc} \left(\sum I\right)_1 & - \mathbf{Y}_{12} & ... & -\mathbf{Y}_{1n} \\[3mm] \left(\sum I\right)_2 & \phantom{-}\mathbf{Y}_{22} &...& -\mathbf{Y}_{2n} \\[3mm] \vdots & \vdots & \ddots & \vdots \\[3mm] \left(\sum I\right)_n & -\mathbf{Y}_{2n} & ... & \phantom{-}\mathbf{Y}_{nn}\end{array}\right]\right)
+}{\raisebox{12mm}{}
+\det\left(\left[ \begin{array}{cccc} \phantom{-}\mathbf{Y}_{11} & - \mathbf{Y}_{12} & ... & -\mathbf{Y}_{1n} \\[3mm] -\mathbf{Y}_{12} & \phantom{-}\mathbf{Y}_{22} &...& -\mathbf{Y}_{2n} \\[3mm] \vdots & \vdots & \ddots & \vdots \\[3mm] - \mathbf{Y}_{n1} & -\mathbf{Y}_{n2} & ... & \phantom{-}\mathbf{Y}_{nn}\end{array}\right]\right)
+} =
+%
+\dfrac{\Delta_V}{\Delta}
+\label{eq:superptheo_nodematrix_2}
+\end{equation}
+
+	We now argue that the determinant $\Delta$ is not null. If this were the case, then the matrix representation \eqref{eq:superptheo_nodematrix} would mean that the voltage values of the nodes obtained from the current sources in equation \eqref{eq:superptheo_nodes} are not unique, meaning that at least one voltage is not determined by that equation. This is only true in two situations: that particular node is detached from the circuit (so all its coeficcients are null), which cannot be the case because the circuit is defined as a connected one; or, some node is a short-circuit, thus two nodes have the same voltage, which also cannot be true by the definitions of nodes. Thus the matrix $\mathbf{Y}$ is not singular.
+
+	A cofactor expansion of \eqref{eq:superptheo_nodematrix_2} by the first column yields
+
+\begin{equation} V_1 = \sum_{k=1}^n \left(-1\right)^k \dfrac{\Delta_{k}}{\Delta}\left [\left(\sum I\right)_k\right], \end{equation} 
+
+	Since the first $n_i$ current sources are the original curent sources and the following $n_v$ ones are the converted voltage sources, this sum can be broken down into
+
+\begin{align}
+	V_1 &= \left(\Delta\right)^{-1} \sum_{k=1}^n \left(-1\right)^k \left(\sum_{p=1}^{n_i} \Delta_{p} \left[I^S_{p}\right]\right) + \sum_{q=n_i+1}^{n_i + n_v} \Delta_{q} \left[I^S_q \right] \nonumber\\[3mm]
+	    &= \left(\Delta\right)^{-1} \sum_{k=1}^n \left(-1\right)^k \left(\sum_{p=1}^{n_i} \Delta_{p} \left[I^S_{p}\right]\right) + \sum_{q=1}^{n_v}           \left(\Delta_{q} \mathbf{Y}_{q}\right)\left[ V^S_q\right] \nonumber\\[3mm]
+	    &= \sum_{p=1}^{n_i}\left[ \raisebox{-3mm}{ $\overbrace{\left(\sum_{k=1}^n \left(-1\right)^k \dfrac{\Delta_p}{\Delta} \right)}^{\mathbf{A}_p} I^S_{p} $ }\right] + \sum_{q=1}^{n_v}\left[ \raisebox{-3mm}{ $\overbrace{\left( \sum_{k=1}^n \left(-1\right)^k \dfrac{\Delta_q}{\Delta}\mathbf{Z}^{-1}_q \right)}^{\mathbf{Z}_q^E} \left[V^S_{p}\right] $}\right] \label{eq:superptheo_grouping}
+\end{align}
+
+	and \eqref{eq:superptheo_grouping} yields \eqref{theo:super_generic_vol}. The proof of \eqref{theo:super_generic_curr} is similar. \hfill$\blacksquare$
+%>>>
+
+	Thence, finally, Thèvenin's and Norton's Theorems are proven in the Dynamic Phasor context as direct consequences of the Superposition Principle of theorem \ref{theo:superposition}.
+
+\begin{theorem}[Thèvenin's Theorem for Dynamic Phasors] \label{theo:thevenin} %<<<
+Consider a two-port circuit network composed of resistors, capacitors and inductors, nonstationary voltage sources and nonstationary current sources. Then the voltage across the two ports can be written as $V(t) = V_0(t) - \mathbf{Z}\left[I\right]$, $V_0$ the open-circuit voltage of the network, $I(t)$ the current drawn from the ports, $\mathbf{Z}$ the equivalent impedance operator obtained by substituting all voltage sources by short circuits and all current sources by open circuits. Further, $\mathbf{Z}$ is such that $V_0(t) = \mathbf{Z}\left[I_S\right]$, $I_S$ the short-circuit current of the network.
+\end{theorem}
+\textbf{Proof:} suppose the network has $n_v$ voltage sources and $n_i$ current sources. Place a test current source $I(t)$ on the terminals of the network, closing the circuit. Then by the Superposition Principle of theorem \ref{theo:superposition},
+
+\begin{equation} V(t) = \sum_{i=1}^{n_v} \mathbf{A}_i \left[V^S_i\right] + \sum_{i=1}^{n_i} \mathbf{Z}_A \left[I^S_i\right] - \mathbf{Z} \left[I\right] .\label{theo:thevenin_generic}\end{equation}
+
+	If the two ports are placed in open circuit condition, that is, $I(t) = 0$, then the resulting voltage is the open circuit voltage:
+
+\begin{equation} V_0(t) = \sum_{i=1}^{n_v} \mathbf{A}_i \left[V^S_i\right] + \sum_{i=1}^{n_i} \mathbf{Z}_A \left[I^S_i\right].\end{equation}
+
+	\noindent which substituted onto \eqref{theo:thevenin_generic} yields
+
+\begin{equation} V(t) = V_0(t) - \mathbf{Z} \left[I\right] ,\end{equation}
+
+	which proves the first proposition. Then, substituting $V(t) = 0$ for a short-circuit on the terminal ports, one obtains
+
+\begin{equation} V_0(t) = \mathbf{Z} \left[ I_S\right] \tag*{\llap{$\blacksquare$}} \end{equation} %>>>
+
+% SAMPLE CIRCUIT <<<
+\begin{figure}[t]
+\centering
+\scalebox{0.75}{
+\begin{tikzpicture}[american,scale=1,transform shape,line width=0.75, cute inductors, voltage shift = 0.2]
+\ctikzset{/tikz/circuitikz/voltage/distance from node=10mm,amplifiers/scale = 1.5, bipoles/thickness=1.5, bipole label style/.style={font=\Large}, bipole voltage style/.style={font=\Large}, bipole current style/.style={font=\Large}}
+\draw (0, 0) node[op amp, fill=stewartblue!50] (opamp) {}
+	(opamp.-) to[short,i<=$i_N$] ++(-1, 0) coordinate(A)
+	(opamp.out) to[short,-o] ++(2, 0) coordinate(C)
+	(A) to[short] ++(-2,0) coordinate(in1) to[short] ++(0,-0.5) to[R,l_=$R_1$] ++(0, -1.5) to[vsource,sources/scale=1.25,i<^=$i_{1}$, v>=$v_1$, fill=stewartpink!50] ++(0,-2.5) to[short] ++(0,-0.5) coordinate(n1)
+	(in1) to[short] ++(-3,0) coordinate(in2) to[short] ++(0,-0.5) to[R,l_=$R_2$] ++(0, -1.5) to[vsource,sources/scale=1.25,i<^=$i_{2}$, v>=$v_2$, fill=stewartpink!50] coordinate(v2) ++(0,-2.5) to[short] ++(0,-0.5) coordinate(n2)
+	(in2) to[short] ++(-4,0) coordinate(in3) to[short] ++(0,-0.5) to[R,l_=$R_n$] ++(0, -1.5) to[vsource,sources/scale=1.25,i<^=$i_{n}$, v>=$v_n$, fill=stewartpink!50]  coordinate(vn) ++(0,-2.5) to[short] ++(0,-0.5) coordinate(Gn)
+	(A) to[short,i=$i_F$] ++(0,1.5) coordinate(F1) to[short] ++(2,0) to[R=$R_F$] ++(1,0) -| ([shift={(0.5,0)}]opamp.out) 
+	(F1) to[short] ++(0,1.5) to[short] ++(1.5,0) to[C=$C_F$] ++(2,0) -|  ([shift={(0.5,0)}]opamp.out) 
+	(opamp.+) to[short,i<=$i_P$] ++(-1,0) coordinate(posbreak) to[short] ++(0,-0.5) to[R=$R_G$] (posbreak |- Gn) to[short,-o] (C |- Gn) coordinate(VOGND)
+	(VOGND) to [open,v<=$V_o$] (C)
+	(Gn) to[short] (posbreak |- Gn)
+;
+	\draw (posbreak |- Gn) to[short, *-] ++(0,-0.5) node[tlground] {};
+
+\node at ([shift=({0,0.8})]$(v2)!0.45!(vn) $) [draw, circle, fill, minimum size = 0.5mm, radius=5mm, inner sep=0mm, outer sep=1mm] (tmiddle) {} ;
+\node at ([shift=({0,0.8})]$(v2)!0.4!(vn)$) [draw, circle, fill, minimum size = 0.5mm, radius=5mm, inner sep=0mm, outer sep=1mm] (tleft) {} ;
+\node at ([shift=({0,0.8})]$(v2)!0.5!(vn)$) [draw, circle, fill, minimum size = 0.5mm, radius=5mm, inner sep=0mm, outer sep=1mm] (tright) {} ;
+
+\end{tikzpicture}
+}
+\caption{Target operational amplified filter-mixer circuit.}
+\label{fig:amplifier_example}
+\end{figure}
+%>>>
+
+\begin{theorem}[Norton's Theorem for Dynamic Phasors]\label{theo:norton} Consider a two-port circuit network composed of resistors, capacitors and inductors, nonstationary sinusoidal voltage sources and nonstationary current sources. Then the current through the two ports can be written as $I(t) = I_S(t) - \mathbf{Y}\left[V\right]$, $I_S$ the short-circuit current of the network, $V(t)$ the voltage across its terminals, $\mathbf{Y}$ the equivalent admittance operator obtained by substituting all voltage sources by short circuits and all current sources by open circuits. Further, $\mathbf{Y}$ is such that $I_S(t) = \mathbf{Y}\left[V_0\right]$, $V_0$ the open-circuit voltage of the network.
+\end{theorem}
+\textbf{Proof:} using the current portion \eqref{theo:super_generic_curr} of the superposition principle, and applying the same technique as the proof of the Thèvenin Theorem, or using the voltage and current source equivalence (lemma \ref{theo:vsi_equiv}) on the results of Thèvenin's Theorem.
+
+%-------------------------------------------------
+\section{Example application}\label{sec:example_application} %<<<1
+
+%-------------------------------------------------
+\subsection{Target circuit} %<<<2
+	
+	Figure \ref{fig:amplifier_example} shows a first-order filter-mixer circuit based on a commonplace operational amplifier topology with multiple inputs $v_1(t),v_2(t),...,v_n(t)$. We imagine that the many inputs have equivalent frequencies, so a common frequency $\omega(t)$ can be adoptead and each input can be written as
+
+\begin{equation} v_k(t) = m_k(t)\cos\left(\psi(t) + \phi_k(t)\right), \label{eq:input_vis}\end{equation}
+
+	\noindent with $m_k(t),\phi_k(t)$ known and $\psi(t)= \int_0^t \omega(s)ds$. Immediately one draws the Dynamic Phasor representation of the inputs as
+
+\begin{equation} V_k(t) = m_k(t)e^{j\phi_k(t)}. \label{eq:phasor_input_vis}\end{equation}
+
+	Let us assume the operational amplifier has a linear open-loop dynamic model of $v_o$ as a function of the difference $v_p(t) - v_n(t)$ — there is some linear operator $\mathbf{A}$ that is a composition of $\dpo$ and can be expressed phasorially as $V_o = \mathbf{A}\left[V_p - V_n\right]$. For instance, classical first-order delay models such as $g_1\dot{v}_o + g_0 v_o = v_p(t) - v_n(t)$ for two real numbers $g_1,g_0$ are common; such models yield
+
+\begin{equation} V_0 = \left(\dfrac{\mathbf{I}}{g_1 \dpo + g_0 \mathbf{I}}\right)\left[V_p - V_n\right] .\label{eq:first_order_openloop}\end{equation}
+
+	Let us also consider that the input ports are related by an input impedance operator $\mathbf{Z}_A$, completing the Dynamic Phasor equivalent model of the operational amplifier as shown in figure \ref{fig:amplifier_model}.
+
+% OPAMP EQUIVALENT MODEL <<<
+\begin{figure}[t]
+\centering
+\scalebox{0.75}{
+\begin{tikzpicture}[american,scale=1,transform shape,line width=0.75, cute inductors, voltage shift = 0.2]
+\ctikzset{/tikz/circuitikz/voltage/distance from node=10mm,amplifiers/scale = 1.5, bipoles/thickness=1.5, bipole label style/.style={font=\Large}, bipole voltage style/.style={font=\Large}, bipole current style/.style={font=\Large}}
+\draw (0, 0) node[plain amp,scale = 2] (A) {};
+\draw (A.bin up) -- ++(1,0) coordinate (tmp) to [generic, scale=1, l=$\mathbf{Z_A}$] (tmp |- A.bin down) -- (A.bin down);
+\draw (A.bout) -- ++(-1,0) to [cvsourceAM,csources/scale=1.25,fill=stewartblue!50] ++ (-1.25,0) to [short] ++(-0.5,0) to[short] ++(0,-2) node[ground,scale=2] {} ;
+\node[ocirc] at (A.+) {};
+\node[below] at ($(A.+)!0.5!(A.bin down)$) {\Large $+$};
+\node[above] at ($(A.-)!0.5!(A.bin up)$)   {\Large $-$};
+\node[left] at (A.+) {\Large $V_p$};
+\node[left] at (A.-) {\Large $V_n$};
+\node[ocirc] at (A.-) {};
+\node[ocirc] at (A.out) {};
+
+\node[right] at (A.out) {\Large $V_o = \mathbf{A}\left[V_p - V_n\right]$};
+\end{tikzpicture}
+}
+\caption{Op-amp Dynamic Phasor equivalent model.}
+\label{fig:amplifier_model}
+\end{figure} %>>>
+
+	We also assume that the input impedance $\mathbf{Z_A}$ is a Dynamic Phasor Impedance
+
+\begin{equation} \mathbf{Z_A} = \dfrac{\displaystyle\sum_{k=0}^n q_k\ndpo{k}}{\displaystyle\sum_{k=0}^d p_k\ndpo{k}} . \label{eq:impedance_za}\end{equation}
+
+	In an ideal op-amp, $\left\lVert \mathbf{A}\right\rVert \to \infty$; intuitively, a higher $\left\lVert \mathbf{A}\right\rVert$ means that $\left\lVert V_o\right\rVert$ gets higher when $\left\lVert V_p - V_n\right\rVert$ is constant. By equation \eqref{eq:inverse_poly_norm}, this can be achieved with $g_1,g_0 \to 0$ in the case of \eqref{eq:first_order_openloop}.
+
+	Also in the ideal model, $\left\lVert \mathbf{Z}_A\right\rVert \to \infty$, thus ``tending to an open circuit''. According to subsection \eqref{subsec:topology_dpfs}, this can be achieved and is a well-defined concept. Intuitively, this means that the input currents of the inverting and noninverting ports get smaller in size as $\left\lVert V_p - V_n\right\rVert$ is kept. As discussed on subsection \ref{subsec:topology_dpfs}, having an impedance operator with arbitrarily large (thus infinitely growing) norm entails to having a numerator operator with arbitrarily large coefficients or a denominator operator with arbitrarily small coefficients. In the case of the assumed model \eqref{eq:impedance_za}, this means
+
+\begin{equation} \left\lVert \mathbf{Z_A}\right\rVert \to \infty \Leftrightarrow \left\lvert q_k\right\rvert \to \infty \text{ for all } 0 \leq k \leq n \text{ and } \left\lvert p_k\right\rvert \to 0 \text{ for all } 0 \leq k \leq d \end{equation}
+
+	\noindent or equivalently maintaining $\left\lvert q_k\right\rvert$ constant and tending the $\left\lvert p_k\right\rvert$ to zero, or conversely tending the $\left\lvert q_k\right\rvert$ to infinity and maintaining the $\left\lvert p_k\right\rvert$ constant.
+
+	The circuit has $n$ inputs $v_1$ through $v_n$, which are supposed to be nonstationary sinusoids, and a frequency signal $\omega(t)$ is picked. The objectives are:
+
+\begin{itemize}
+	\item Obtain the expression of the gain operator $\mathbf{G}_k$ that relates the contribution of an input $V_k$ to the output voltage $V_o$, first as a generalized expression and then as a particular ideal scenario;
+	\item Find the input impedance seen by each input voltage source, that is, the operator $\mathbf{Z}_k$ that relates an input $V_k$ to the current $I_k$, first as a generalized expression and then as a particular ideal scenario;
+	\item Retrieve the time-domain differential equations of $v_o^k(t)$ and $i_k(t)$ with respect to $v(t)$;
+	%\item Simulate the system in both phasorial and time domain settings and compare the results.
+\end{itemize}
+
+%-------------------------------------------------
+\subsection{Dynamic Phasor domain modelling} %<<<2
+
+	By the Superposition Principle of theorem \ref{theo:superposition}, to obtain the output voltage contribution $v_o^k$ for a particular input source $v_k$ first one substitutes all other outputs as short-circuits, yielding the ``individual'' i-th equivalent circuit of figure \ref{fig:amplifier_example_individual}. The quantities $V_n^k$, $V_p^k$, $V_o^k$, $I_F^k$, $I_G^k$ are the inverting, non-inverting input and output voltages, current through the feedback net and current through $R_G$ due to the i-th input. $R_p^k$ is the equivalent resistance obtained by the parallel equivalent of all $R_1,R_2,...,R_n$ excluding $R_k$.
+
+% EQUIVALENT "INDIVIDUAL" CIRCUIT <<<
+\begin{figure} 
+\centering
+\scalebox{0.75}{
+\begin{tikzpicture}[american,scale=1,transform shape,line width=0.75, cute inductors, voltage shift = 0.2]
+\ctikzset{/tikz/circuitikz/voltage/distance from node=10mm,amplifiers/scale = 1.5, bipoles/thickness=1.5, bipole label style/.style={font=\Large}, bipole voltage style/.style={font=\Large}, bipole current style/.style={font=\Large}}
+\draw
+	(0, -3) coordinate(n1) to[R,l=$R_P^k$] (0,3) coordinate(n2)
+	(n2) to[short] ++(2,0) coordinate (n3) to[R,l=$R_k$] ++(0,-2.5) to[vsource,sources/scale=1.25,i<_=$I_{i}$, v>=$V_k$, fill=stewartpink!50]  ++(0,-3) |- (n1)
+	(n3.center) to[short,i=$I_A^k$] ++(3,0) node (n4) {} to[short,i=$I_G^k$,-*] ++(0,-1.5) node[left=2mm] (VP) {\Large$V_P^k$} to[generic,l=$\mathbf{Z_A}$,-*] ++(0,-2) node[left=2mm] (VN) {\Large$V_N^k$} to[short] ++(0,-0.3) to[R,l=$R_G$] ++(0,-1.5) |- (n3 |- n1)
+	(n4.center) to[short,i=$I_F^k$] ++(2,0) coordinate(n5) to[short] ++(1,0) to[R,l=$R_F$] ++(1,0) to[short] ++(1,0) coordinate(n6) to[short] ++(1,0) coordinate(n7) to[cvsourceAM,csources/scale=1.25,v^=\mbox{$\mathbf{A}\left[V_P^k - V_n^k\right]$},fill=stewartblue!50] (n7 |- n1) coordinate(gndin) to[short] (n4 |- n1)
+	(n5.center) |- ++(0.5,-1.5) to[C,l_=$\dfrac{\mathbf{I}}{\dpo C_F}$] ++(2,0) -| (n6.center)
+	(n7.center) to[short,-o] ++(5,0) coordinate(vout)
+	(n7 |- n1) to[short,-o]  (n1 -| vout) coordinate(voutgnd)
+	(voutgnd) to [open,v<=$V_o^k$] (vout);
+;
+	\draw (gndin) to[short, *-] ++(0,-0.5) node[tlground] {};
+\end{tikzpicture}
+}
+\caption{``Individual'' version of the operational amplifier circuit of figure \ref{fig:amplifier_example}.}
+\label{fig:amplifier_example_individual}
+\end{figure}
+%>>>
+
+	Using Kirchoff's Laws (theorems \ref{theo:kirchoff_voltage} and \ref{theo:kirchoff_current}), the Dynamic Impedance relationships, as well as the series-parallel combination formulas \eqref{eq:impedance_div} and \eqref{eq:admittance_div}, one arrives at \eqref{sys:example_initial_modelling_1} - \eqref{sys:example_initial_modelling_5}.
+
+\begin{align}
+	I_A^k &= I_F^k + I_G^k \label{sys:example_initial_modelling_1} \\[3mm]
+	I_i   &= I_A^k + \left(R_P^k\mathbf{I}\right)^{-1}\left[ V_n^k\right] \label{sys:example_initial_modelling_2}\\[5mm]
+	V_n^k &= V_k - \left(R_k\mathbf{I}\right) \left[I_i\right] \label{sys:example_initial_modelling_3}\\[3mm]
+	V_n^k - V_o^k &= \left(\dfrac{R_F\mathbf{I}}{R_FC_F \dpo + \mathbf{I}}\right) \left[I_F^k\right] \label{sys:example_initial_modelling_4}\\[5mm]
+	V_n^k &= \left(R_G\mathbf{I} + \mathbf{Z}_A\right) \left[I_G^k\right]  \label{sys:example_initial_modelling_5}
+\end{align}
+
+	One can isolate $I_A^k$ in terms of $V_k$ and $V_n^k$ from \eqref{sys:example_initial_modelling_2} and \eqref{sys:example_initial_modelling_3}. $I_F^k$ and $I_G^k$ can be isolated from the three bottom equation and substitute on the top one:
+
+\begin{gather}
+	\dfrac{V_k - V_n^k}{R_k} - V_n^k \dfrac{1}{R_P^k} = \left(\dfrac{R_FC_F \dpo + \mathbf{I}}{C_F\dpo}\right) \left[V_n^k - V_o^k\right] + \left( \dfrac{\mathbf{I}}{R_G + \mathbf{Z}_A}\right) \left[V_n^k\right] \\[3mm]
+	V_k = \left(\dfrac{R_k}{R_P}\mathbf{I} + R_k\dfrac{R_FC_F \dpo + \mathbf{I}}{R_F} + \dfrac{R_k\mathbf{I}}{R_G\mathbf{I} + \mathbf{Z}_A}\right)\left[V_n^k \right] - R_k\left(\dfrac{R_FC_F \dpo + \mathbf{I}}{R_F}\right) \left[V_o^k \right], \label{eq:amplifier_general_kirchoff}
+\end{gather}
+
+	\noindent with $R_P$ the parallel combination of all $R_1,...,R_n$ including $R_k$. Now using the impedance divider equations \eqref{eq:impedance_div}:
+
+\begin{equation} V_p^k = \left(\dfrac{R_G\mathbf{I}}{R_G\mathbf{I} + \mathbf{Z}_A}\right) \left[V_n^k\right] \end{equation}
+
+	Substituting the inverse relation onto the output model of the op-amp, one obtains
+
+\begin{equation} V_o^k = -\left(\dfrac{\mathbf{A}\mathbf{Z}_A}{R_G\mathbf{I} + \mathbf{Z}_A}\right) \left[V_n^k\right] \label{eq:vpi_vi} \end{equation}
+
+	Substitute this equation into \eqref{eq:amplifier_general_kirchoff} to obtain an equation $V_o^k = \mathbf{G}_k \left[V_k\right]$ for the gain operator sought:
+
+\begin{gather}
+	V_k = -\left(\dfrac{R_k}{R_P}\mathbf{I} + R_k\dfrac{R_FC_F \dpo + \mathbf{I}}{R_F} + \dfrac{R_k\mathbf{I}}{R_G\mathbf{I} + \mathbf{Z}_A}\right)\left(\dfrac{\mathbf{A}\mathbf{Z}_A}{R_G\mathbf{I} + \mathbf{Z}_A}\right)^{-1} \left[V_o^k \right] - R_k\left(\dfrac{R_FC_F \dpo + \mathbf{I}}{R_F}\right) \left[V_o^k \right] \nonumber\\[3mm]
+	V_k = \underbrace{-\left[\left(\dfrac{R_k}{R_P}\mathbf{I} + R_k\dfrac{R_FC_F \dpo + \mathbf{I}}{R_F} + \dfrac{R_k\mathbf{I}}{R_G\mathbf{I} + \mathbf{Z}_A}\right)\left(\dfrac{\mathbf{A}\mathbf{Z}_A}{R_G\mathbf{I} + \mathbf{Z}_A}\right)^{-1} + R_k\left(\dfrac{R_FC_F \dpo + \mathbf{I}}{R_F}\right)\right] }_{\mathbf{G}_k} \left[V_o^k \right]  \label{eq:total_gain_gi}
+\end{gather} 
+
+	Now we apply idealized the model $\left\lVert\mathbf{A}\right\rVert,\left\lVert\mathbf{Z_A}\right\rVert\to\infty $. In order to do this, we use the concepts of limits in normed functional spaces which, despite the complexity, become simple to use in this case due to the elementary functions involved:
+
+\begin{align}
+	  & \lim\limits_{\left\lVert\mathbf{A}\right\rVert,\left\lVert\mathbf{Z_A}\right\rVert\to\infty } \mathbf{G}_k = \nonumber\\[3mm]
+	= & \lim\limits_{\left\lVert\mathbf{A}\right\rVert,\left\lVert\mathbf{Z_A}\right\rVert\to\infty } -\left[\left(\dfrac{R_k}{R_P}\mathbf{I} + R_k\dfrac{R_FC_F \dpo + \mathbf{I}}{R_F} + \dfrac{R_k\mathbf{I}}{R_G\mathbf{I} + \mathbf{Z}_A}\right)\left(\dfrac{\mathbf{A}\mathbf{Z}_A}{R_G\mathbf{I} + \mathbf{Z}_A}\right)^{-1} + R_k\left(\dfrac{R_FC_F \dpo + \mathbf{I}}{R_F}\right)\right] \nonumber\\[3mm]
+	= & \lim\limits_{\left\lVert\mathbf{A}\right\rVert,\left\lVert\mathbf{Z_A}\right\rVert\to\infty } -\left[\left(\dfrac{R_k}{R_P}\mathbf{I} + R_k\dfrac{R_FC_F \dpo + \mathbf{I}}{R_F} + \dfrac{R_k\mathbf{I}}{R_G\mathbf{I} + \mathbf{Z}_A}\right)\left(\dfrac{R_G\mathbf{I} + \mathbf{Z}_A}{\mathbf{A}\mathbf{Z}_A}\right) + R_k\left(\dfrac{R_FC_F \dpo + \mathbf{I}}{R_F}\right)\right] \nonumber\\[3mm]
+	= & \lim\limits_{\left\lVert\mathbf{A}\right\rVert,\left\lVert\mathbf{Z_A}\right\rVert\to\infty }  - \raisebox{-4mm}{$ \left[\raisebox{4mm}{$ \underbrace{\left(\dfrac{R_k}{R_P}\mathbf{I} + R_k\dfrac{R_FC_F \dpo + \mathbf{I}}{R_F} + \dfrac{R_k\mathbf{I}}{R_G\mathbf{I} + \mathbf{Z}_A}\right)}_{L_1} \underbrace{\left(\dfrac{R_G\mathbf{Z}_A^{-1} + \mathbf{I}}{\mathbf{A}}\right)}_{L_2} + \underbrace{R_k\left(\dfrac{R_FC_F \dpo + \mathbf{I}}{R_F}\right)}_{L_3} $}\right] $} \label{eq:original_limit}
+\end{align}
+
+	Now breaking down this limit: we use the properties of limits in normed vector spaces that the multiplication of limits is the limit of the multiplication, as well as the linearity of the limits. This expression then breaks down into the limit of three expressions; let's call them $L_1$, $L_2$, $L_3$. Then
+
+\begin{equation} L_1 = \lim\limits_{\left\lVert\mathbf{A}\right\rVert,\left\lVert\mathbf{Z_A}\right\rVert\to\infty } \dfrac{R_k}{R_P}\mathbf{I} + R_k\dfrac{R_FC_F \dpo + \mathbf{I}}{R_F} + \dfrac{R_k\mathbf{I}}{R_G\mathbf{I} + \mathbf{Z}_A} \end{equation}
+
+	The last term of this limit tends to zero because the denominator has a norm that tends to infinity:
+
+\begin{equation} L_1 = \lim\limits_{\left\lVert\mathbf{A}\right\rVert,\left\lVert\mathbf{Z_A}\right\rVert\to\infty } \dfrac{R_k}{R_P}\mathbf{I} + R_k\dfrac{R_FC_F \dpo + \mathbf{I}}{R_F} + \cancelto{0}{\dfrac{R_k\mathbf{I}}{R_G\mathbf{I} + \mathbf{Z}_A}} = \dfrac{R_k}{R_P}\mathbf{I} + R_k\dfrac{R_FC_F \dpo + \mathbf{I}}{R_F} .\end{equation}
+
+	For the second limit of \eqref{eq:original_limit},
+
+\begin{equation} L_2 = \lim\limits_{\left\lVert\mathbf{A}\right\rVert,\left\lVert\mathbf{Z_A}\right\rVert\to\infty } \dfrac{R_G\mathbf{Z}_A^{-1} + \mathbf{I}}{\mathbf{A}}  \end{equation}
+
+	\noindent which is zero because the numerator tends to $\mathbf{I}$ while the norm of the denominator tends to $\infty$. Finally for the third limit of \eqref{eq:original_limit},
+
+\begin{equation}
+	L_3 = \lim\limits_{\left\lVert\mathbf{A}\right\rVert,\left\lVert\mathbf{Z_A}\right\rVert\to\infty } R_k\left(\dfrac{R_FC_F \dpo + \mathbf{I}}{R_F}\right) = R_k\left(\dfrac{R_FC_F \dpo + \mathbf{I}}{R_F}\right) ,
+\end{equation}
+
+	\noindent an obvious result because the expression inside the limit does not depend on $\mathbf{A}$ nor on $\mathbf{Z}_A$. Thus
+
+\begin{align}
+	\lim\limits_{\left\lVert\mathbf{A}\right\rVert,\left\lVert\mathbf{Z_A}\right\rVert\to\infty } \mathbf{G}_k &= -\left(L_1\times L_2 + L_3\right) = -\left(\dfrac{R_k}{R_P}\mathbf{I} + R_k\dfrac{R_FC_F \dpo + \mathbf{I}}{R_F}\right) \times \mathbf{0} - R_k\left(\dfrac{R_FC_F \dpo + \mathbf{I}}{R_F}\right) = \nonumber\\[3mm]
+	&= -R_k\left(\dfrac{R_FC_F \dpo + \mathbf{I}}{R_F}\right),
+\end{align}
+
+	\noindent which is shorthand to
+
+\begin{equation} -V_k = R_k\left( C_F \dpo + \dfrac{1}{R_F} \mathbf{I} \right) \left[ V_o^k\right] \label{eq:vo_vi_gi_diff}\end{equation}
+
+	Using this idealized version and definition of $\dpo$ one arrives at the complex phasorial DE for $V_o^k$
+
+\begin{equation} -V_k = R_kC_F\left(\dot{V}_o^k + j\omega V_o^k\right) +\dfrac{R_k}{R_F}V_o^k = R_kC_F\dot{V}_o^k + V_o^k\left(j\omega R_kC_F + \dfrac{R_k}{R_F}\right) .\label{eq:diffeq_gi_voi}\end{equation}
+
+	TThis modelling holds even for fringe cases. herefore, given the $n$ signals $v_k$ and $\omega$, the DP signals $V_k$ can each be obtained by integrating its equation \eqref{eq:diffeq_gi_voi}. The DP of the total output voltage $V_o$ is obtained by the Superposition Theorem as
+
+\begin{equation} V_o = \sum_{i=1}^n V_o^k = \sum_{i=1}^n \mathbf{G}_k \left[V_k\right] .\label{eq:vo_sum} \end{equation}
+
+	Now, we calculate the input impedance $\mathbf{Z}$. Take equation \eqref{eq:total_gain_gi} and substitute $V_o^k$ from \eqref{eq:vpi_vi}
+
+\begin{align}
+	V_k &= -\left[\left(\dfrac{R_k}{R_P}\mathbf{I} + R_k\dfrac{R_FC_F \dpo + \mathbf{I}}{R_F} + \dfrac{R_k\mathbf{I}}{R_G\mathbf{I} + \mathbf{Z}_A}\right)\left(\dfrac{\mathbf{A}\mathbf{Z}_A}{R_G\mathbf{I} + \mathbf{Z}_A}\right)^{-1} + R_k\left(\dfrac{R_FC_F \dpo + \mathbf{I}}{R_F}\right)\right]\left(\dfrac{\mathbf{A}\mathbf{Z}_A}{R_G\mathbf{I} + \mathbf{Z}_A}\right) \left[V_n^k\right] \nonumber\\[3mm]
+	&= -\left[\left(\dfrac{R_k}{R_P}\mathbf{I} + R_k\dfrac{R_FC_F \dpo + \mathbf{I}}{R_F} + \dfrac{R_k\mathbf{I}}{R_G\mathbf{I} + \mathbf{Z}_A}\right) + R_k\left(\dfrac{R_FC_F \dpo + \mathbf{I}}{R_F}\right)\left(\dfrac{\mathbf{A}\mathbf{Z}_A}{R_G\mathbf{I} + \mathbf{Z}_A}\right)\right] \left[V_n^k\right]
+\end{align}
+
+	\noindent and substituting this into \eqref{sys:example_initial_modelling_3},
+
+\begin{gather}
+	-\left[\left(\dfrac{R_k}{R_P}\mathbf{I} + R_k\dfrac{R_FC_F \dpo + \mathbf{I}}{R_F} + \dfrac{R_k\mathbf{I}}{R_G\mathbf{I} + \mathbf{Z}_A}\right) + R_k\left(\dfrac{R_FC_F \dpo + \mathbf{I}}{R_F}\right)\left(\dfrac{\mathbf{A}\mathbf{Z}_A}{R_G\mathbf{I} + \mathbf{Z}_A}\right)\right]^{-1} \left[V_k\right] = V_k - \left(R_k\mathbf{I}\right) \left[I_i\right] \nonumber\\[3mm]
+%
+	\left\{\mathbf{I} + \left[\left(\dfrac{R_k}{R_P}\mathbf{I} + R_k\dfrac{R_FC_F \dpo + \mathbf{I}}{R_F} + \dfrac{R_k\mathbf{I}}{R_G\mathbf{I} + \mathbf{Z}_A}\right) + R_k\left(\dfrac{R_FC_F \dpo + \mathbf{I}}{R_F}\right)\left(\dfrac{\mathbf{A}\mathbf{Z}_A}{R_G\mathbf{I} + \mathbf{Z}_A}\right)\right]^{-1}\right\} \left[V_n^k\right] = \left(R_k\mathbf{I}\right) \left[I_i\right] \nonumber\\[3mm]
+%
+	\mathbf{Z}_k = \dfrac{R_k\mathbf{I}}{\left\{\mathbf{I} + \left[\left(\dfrac{R_k}{R_P}\mathbf{I} + R_k\dfrac{R_FC_F \dpo + \mathbf{I}}{R_F} + \dfrac{R_k\mathbf{I}}{R_G\mathbf{I} + \mathbf{Z}_A}\right) + R_k\left(\dfrac{R_FC_F \dpo + \mathbf{I}}{R_F}\right)\left(\dfrac{\mathbf{A}\mathbf{Z}_A}{R_G\mathbf{I} + \mathbf{Z}_A}\right)\right]^{-1}\right\}}
+\end{gather}
+
+	Alternatively, one can obtain $\mathbf{Z}_k$ by using Thèvenin's Theorem for Dynamic Phasors (theorem \ref{theo:thevenin}): on figure \ref{fig:amplifier_example_individual}, substitute $V_k$ by a short-circuit and calculate $I_i^S$ as the short-circuit current; then substitute $V_k$ by an open circuit and calculate the open circuit voltage $V_k^O$ on the terminals
+
+	Now we apply idealized the model $\left\lVert\mathbf{A}\right\rVert,\left\lVert\mathbf{Z_A}\right\rVert\to\infty$, but this time we take a more practical approach to calculating the limit of this expression. We separate the denominator in three colored pieces:
+
+\begin{equation}
+	\mathbf{Z}_k = \dfrac{R_k\mathbf{I}}{\left\{\mathbf{I} + \left[{\color{stewartblue} \left(\dfrac{R_k}{R_P}\mathbf{I} + R_k\dfrac{R_FC \dpo + \mathbf{I}}{R_F} + \dfrac{R_k\mathbf{I}}{R_G\mathbf{I} + \mathbf{Z}_A}\right)} + {\color{stewartgreen} R_k\left(\dfrac{R_FC \dpo + \mathbf{I}}{R_F}\right)}{\color{stewartpink} \left(\dfrac{\mathbf{A}\mathbf{Z}_A}{R_G\mathbf{I} + \mathbf{Z}_A}\right)}\right]^{-1}\right\}}
+\end{equation}
+
+% EQUIVALENT THEVENIN CIRCUIT <<<
+\begin{figure}[t]
+\centering
+\scalebox{0.75}{
+\begin{tikzpicture}[american,scale=1,transform shape,line width=0.75, cute inductors, voltage shift = 0.2]
+\ctikzset{/tikz/circuitikz/voltage/distance from node=10mm,amplifiers/scale = 1.5, bipoles/thickness=1.5, bipole label style/.style={font=\Large}, bipole voltage style/.style={font=\Large}, bipole current style/.style={font=\Large}}
+\draw (0,0) coordinate(origin) to[vsource,sources/scale=1.25,i<_=$I_{i}$, v_=$V_1$, fill=stewartpink!50]  ++(0,-3) to[short] ++(4,0) to [generic, l_=$\mathbf{Z}_1$] ++(0,3) to[short] (origin);
+\draw (0,-4) coordinate(origin) to[vsource,sources/scale=1.25,i<_=$I_{2}$, v_=$V_2$, fill=stewartpink!50]  ++(0,-3) coordinate(dotbegin) to[short] ++(4,0) to [generic, l_=$\mathbf{Z}_2$] ++(0,3) to[short] (origin);
+\draw (0,-9) coordinate(origin) to[vsource,sources/scale=1.25,i<_=$I_{n}$, v_=$V_n$, fill=stewartpink!50]  ++(0,-3) to[short] ++(4,0) to [generic, l_=$\mathbf{Z}_n$] ++(0,3) to[short] (origin);
+\node at ([shift=({0,0.8})]$(dotbegin.center)!0.75 !(origin.center) $) [draw, circle, fill, minimum size = 0.5mm, radius=5mm, inner sep=0mm, outer sep=1mm] (tmiddle) {} ;
+\node at ([shift=({0,0.8})]$(dotbegin.center)!0.85 !(origin.center)$) [draw, circle, fill, minimum size = 0.5mm, radius=5mm, inner sep=0mm, outer sep=1mm] (tleft) {} ;
+\node at ([shift=({0,0.8})]$(dotbegin.center)!0.95 !(origin.center)$) [draw, circle, fill, minimum size = 0.5mm, radius=5mm, inner sep=0mm, outer sep=1mm] (tright) {} ;
+
+\draw (12,-12) coordinate(vostart) to [short,o-] ++(-5,0) to[cvsourceAM,csources/scale=1.25,v_=\mbox{$\mathbf{G}_n\left[V_n\right]$},fill=stewartblue!50, invert] ++(0,3) coordinate(vstart);
+\draw (7,-7) coordinate(vend) to[cvsourceAM,csources/scale=1.25,v_=\mbox{$\mathbf{G}_2\left[V_2\right]$},fill=stewartblue!50, invert] ++(0,3) to [short] ++(0,1) to[cvsourceAM,csources/scale=1.25,v_=\mbox{$\mathbf{G}_1\left[V_1\right]$},fill=stewartblue!50, invert] ++(0,3) to[short,-o] ++(5,0) coordinate (voend);
+
+\node at ([shift=({0,0.8})]$(vstart)!0.00!(vend)$) [draw, circle, fill, minimum size = 0.5mm, radius=5mm, inner sep=0mm, outer sep=1mm] (tmiddle) {} ;
+\node at ([shift=({0,0.8})]$(vstart)!0.10!(vend)$) [draw, circle, fill, minimum size = 0.5mm, radius=5mm, inner sep=0mm, outer sep=1mm] (tleft) {} ;
+\node at ([shift=({0,0.8})]$(vstart)!0.20!(vend)$) [draw, circle, fill, minimum size = 0.5mm, radius=5mm, inner sep=0mm, outer sep=1mm] (tright) {} ;
+
+\draw (voend) to[open,v=$V_o$] (vostart);
+
+\draw [draw=black,ultra thick] (2,-13) rectangle (11,1);
+\end{tikzpicture}
+}
+\caption{Thèvenin equivalent circuit of the operational amplifier circuit of figure \ref{fig:amplifier_example} as a ``black box''.}
+\label{fig:amplifier_thevenin}
+\end{figure}
+%>>>
+
+	The norm of the pink piece clearly tends to infinity, while the green piece stays unchanged due to not depending on $\mathbf{A}$ nor $\mathbf{Z}_A$. The blue piece is such that the first two summands remain constant, while the third tends to zero norm. Thus the entire expression in brackets being inverted tends to infinite norm and its inverse tends to the null operator, yielding
+
+\begin{equation} \lim\limits_{\left\lVert\mathbf{A}\right\rVert,\left\lVert\mathbf{Z_A}\right\rVert\to\infty } \mathbf{Z}_k = R_k\mathbf{I} \end{equation}
+
+	\noindent and this equation means that each input voltage $V_k$ contributes a current $I_k = V_k/R_k$; in the phasorial domain. But because $\left\lVert \mathbf{Z}_k\right\rVert \to \infty$ implies $I_n\to 0$, then the current through the feedback branch $I_F$ is the sum of the $I_k$:
+
+\begin{equation} I_F = \sum\limits_{k=0}^n I_k = \sum\limits_{k=0}^n \dfrac{1}{R_k} V_k \label{eq:if_ideal} \end{equation}
+
+%-------------------------------------------------
+\subsection{Correlation with the time domain} %<<<2
+
+	To obtain the correspondent time-domain model, one uses the equivalence between $\dpo$ and derivatives on \eqref{eq:vo_vi_gi_diff} to yield
+
+\begin{equation} -v_k = R_k C_F \dot{v}_o^k + \dfrac{R_k}{R_F}v_o^k \label{eq:vo_vi_gi_diff_time}\end{equation}
+
+	\noindent and because the input impedance as seen by the $k$-th source is $\mathbf{Z}_k = R_k$, then
+
+\begin{equation} i_k = \dfrac{v_k(t)}{R} \label{eq:ik_diff_time}\end{equation}
+
+	\noindent meaning one can solve \eqref{eq:vo_vi_gi_diff_time} for $v_k$ and obtain $i_k = v_k/R_k$.
+
+	One naturally asks if these time domain equations \eqref{eq:vo_vi_gi_diff_time} and \eqref{eq:ik_diff_time} indeed are the same equations that would be obtained if the circuit were modelled in the time domain. It is left to the reader to prove that a time-domain modelling achieves exactly these equations, that is, the time-domain model can be obtained without losses from the Dynamic Phasor model. This is done by modelling the target circuit of figure \ref{fig:amplifier_example} in the time domain using the equivalent differential equations of the operational amplifier gain and impedance
+
+\begin{gather}
+	g_1 \dot{v}_o + g_0 v_o = v_p(t) - v_n(t) \\[5mm]
+	\sum_{k=0}^n q_k\dfrac{d^k}{dt^k}\left[v_p(t) - v_n(t)\right] = \sum_{k=0}^d p_k\dfrac{d^k}{dt^k} i_n(t) \\[5mm]
+	i_n(t) = i_p(t)
+\end{gather}
+
+	\noindent which Dynamic Phasor Functional versions are exactly \eqref{eq:first_order_openloop} and \eqref{eq:impedance_za} previously used. Then, applying the idealized conditions
+
+\begin{equation} \left\{\begin{array}{l} \left\lvert q_k\right\rvert \to \infty \text{ for all } 0 \leq k \leq n \text{ and } \left\lvert p_k\right\rvert \to 0 \text{ for all } 0 \leq k \leq d \\[5mm] \left\lvert g_1\right\rvert,\left\lvert g_0\right\rvert \to 0\end{array}\right.\end{equation}
+
+	\noindent one achieves the exact same ideal model of equations \eqref{eq:vo_vi_gi_diff_time} and \eqref{eq:ik_diff_time} achieved using DPFs.
+
+%-------------------------------------------------
+\subsection{Simulation} %<<<2
+
+	We now simulate the system. We suppose the system has two inputs, $v_1(t)$ and $v_2(t)$. The first input is modulated in amplitude but of fixed frequency:
+
+\begin{equation} v_1 = m_1(t)\cos\left(\theta_1(t)\right) \left\{\begin{array}{l} m_1(t) = m\left[1 + M_1e^{-\alpha_1 t}\sin\left(\beta_1 t\right)\right]  \\ \theta_1(t) = \omega_0 t \end{array}\right.\end{equation}
+
+	\noindent where $m$ is a base amplitude, $\omega_0$ a base frequency. The second input $v_2(t)$, on the other hand, is modulated in frequency, such that it has constant amplitude but a varying frequency
+
+\begin{equation}\hspace{-2mm} v_2(t) = m_2(t)\cos\left(\theta_2(t)\right)\left\{\begin{array}{l} m_2(t) = m \\[5mm] \theta_2 = \displaystyle\int_0^a \omega_2(a)da \text{, where } \omega_2(t) = \omega_0\left[1 + M_2e^{-\alpha_2 t}\sin\left(\beta_2 t\right)\right]\end{array}\right. . \end{equation}
+
+	The numerical values adopted are $\omega_0=120\pi$ rad/s, $\alpha_1=5s^{-1},\beta_1=10\pi\ \text{rad}.s^{-1},M_1=0.2$ for the first input and $\alpha_2=10s^{-1},\beta_2=20\pi\ \text{rad}.s^{-1},M_2=1$ for the second input. The input resistors are $R_1 = 1k\Omega,\ R_2 = 2k\Omega$ and the filter components are $R_F = 1k\Omega$ and $C_F = 10\mu F$.
+
+	To build the Dynamic Phasor model we use the base frequency $\omega_0$ for the DPT arriving at
+
+\begin{equation}\left\{\begin{array}{l} V_1 = m_1e^{j\phi_1} = m\left[1 + M_1e^{-\alpha_1 t}\sin\left(\beta_1 t\right)\right]e^{j0} \\[5mm] V_2 = m_2e^{j\phi_2} \text{ where } \phi_2 = \dfrac{\omega_0 M_2\left\{\beta_2 - e^{-\alpha_2 t}\left[\alpha_2\sin\left(\beta_2 t\right) + \beta_2\cos\left(\beta_2 t\right)\right]\right\}}{\alpha_2^2 + \beta_2^2} \end{array}\right. \end{equation}
+
+	\noindent yielding the differential equations for the contributions
+
+\begin{equation} -m_ke^{j\phi_k} = R_k\left( C_F \dpo + \dfrac{1}{R_F} \mathbf{I} \right) \left[ V_o^k\right] = R_k\left[C_F\dot{V}_o^k + V_o^k\left(j\omega_0C_F + \dfrac{1}{R_F}\right)\right],\ k=1,2 \label{eq:dpo_sim_dpmodel} \end{equation}
+
+	\noindent and the time differential equations are obtained by separating these equations into real and imaginary parts. The Dynamic Phasor of the output is given by $V_o = V_o^1 + V_o^2$, and the reconstructed output is given by $v_o^{\text{DP}} = \Re\left(V_oe^{j\omega_0 t}\right)$, the superscript ``DP'' to highlight this is the output voltage reconstructed from Dynamic Phasors. At the same time, the time model is given by
+
+\begin{equation} -m_k\cos\left(\theta_k(t)\right) = R_k\left(C_F\dot{v}_o^k + \dfrac{1}{R_F}\dot{v}_o^k\right),\ k=1,2 \label{eq:dpo_sim_timemodel} \end{equation}
+
+	\noindent and the time-domain-obtained output is $v_o^{\text{T}} = v_o^1 + v_o^2$, the superscript ``T'' to denote this was obtained from the time-domain model.
+
+	We now calculate the initial conditions. We assume that the system departs from permanent sinusoidal regimens — that is, $\dot{V}_o^1 = \dot{V}_o^2 = 0$ — yielding
+
+\begin{equation} \left(V_o^1\right)_{t=0} = \dfrac{-m}{R_1\left(j\omega_0C_F + \dfrac{1}{R_F}\right)},\ \left(V_o^2\right)_{t=0} = \dfrac{-m}{R_2\left(j\omega_0C_F + \dfrac{1}{R_F}\right)} \end{equation}
+
+	\noindent and we match the time-domain initial conditions
+
+\begin{equation} v_1(0) = \left\lvert\left(V_o^1\right)_{t=0}\right\rvert \cos\left\{\arg\left[\left(V_o^1\right)_{t=0}\right]\right\},\ v_2(0) = \left\lvert\left(V_o^2\right)_{t=0}\right\rvert \cos\left\{\arg\left[\left(V_o^2\right)_{t=0}\right]\right\} .\end{equation}
+
+	Figures \ref{fig:dpo_sim_dpcurves} and \ref{fig:dpo_sim_timecurves} show the simulation results. Figure \ref{fig:dpo_sim_dpcurves} shows the direct and quadrature components of the Dynamic Phasor voltage contributions $V_o^{(1,2)}$. Figure \ref{fig:dpo_sim_timecurves} shows the time signals obtained by the reconstruction of the DP simulation, $v_o^{\text{DP}}$, and obtained by directly integrating the time differential equations, $v_o^{\text{T}}$. The figure shows that these signals are identical, showing that the Dynamic Phasor model indeed reconstructs the time domain model losslessly.
+
+% DIRECT AND QUADRADTURE COMPONENTS OF VOLTAGE CONTRIBUTIONS <<<
+\begin{figure}
+        \begin{center}
+                \beginpgfgraphicnamed{timesim_slow}
+                \begin{tikzpicture}
+                        \begin{axis}[
+				name = ax_main,
+                                width = 1\columnwidth,
+                                height = 1/1.618*\columnwidth,
+                                title={Direct component of voltage contributions},
+                                ylabel={$V_{od}^{(1,2)}$ (V)},
+				xlabel={Time (ms)},
+                                xmin=0, xmax=1,
+                                ymin=-2.2, ymax=2.2,
+                                xtick={0,0.1,...,1},
+                                ytick={-2,-1,...,2}, 
+                                legend pos=north east,
+				legend cell align={left},
+                                ymajorgrids=true,
+                                xmajorgrids=true,
+                                every axis plot/.append style={thick},
+                        ]
+                        \addplot[blue,  smooth] table[col sep=comma,header=false,x index=0,y index=1]{data/dpos/data_dpo_sim.csv};
+			\addlegendentry{$V_{od}^1$}
+                        \addplot[red, smooth] table[col sep=comma,header=false,x index=0,y index=3]{data/dpos/data_dpo_sim.csv};
+			\addlegendentry{$V_{od}^2$}
+                        \end{axis}
+%
+                        \begin{axis}[
+                                name = ax_zoomed,
+                                at={($(ax_main.south west)-(0,0.7*\columnwidth)$)},
+                                title={Quadrature component of voltage contributions},
+                                width = 1\columnwidth,
+                                height = 1/1.618*\columnwidth,
+                                xmin=0, xmax=1,
+                                ymin=-2, ymax=6.6,
+                                xtick={0,0.1,...,1},
+				xlabel={Time (ms)},
+                                ylabel={$V_{oq}^{(1,2)}$ (V)},
+                                ytick={-2,-1,...,6},
+				tick label style={/pgf/number format/fixed},
+				legend cell align={left},
+                                legend pos=north east,
+                                ymajorgrids=true,
+                                xmajorgrids=true,
+                                every axis plot/.append style={thick},
+                        ]
+                        \addplot[blue,  smooth] table[col sep=comma,header=false,x index=0,y index=2]{data/dpos/data_dpo_sim.csv};
+			\addlegendentry{$V_{oq}^1$}
+                        \addplot[red, smooth] table[col sep=comma,header=false,x index=0,y index=4]{data/dpos/data_dpo_sim.csv};
+			\addlegendentry{$V_{oq}^2$}
+                        \end{axis}
+                \end{tikzpicture}
+        \endpgfgraphicnamed
+        \caption
+{Direct and quadrature components of the voltage contributions $V_o^{1}$ and $V_o^{2}$ as calculated using \eqref{eq:dpo_sim_dpmodel}.}
+        \label{fig:dpo_sim_dpcurves}
+        \end{center}
+\end{figure}
+% >>>
+
+% TIME VOLTAGE CURVES <<<
+\begin{figure}
+        \begin{center}
+                \begin{tikzpicture}
+                        \begin{axis}[
+				name = ax_main,
+                                width = 0.9*\columnwidth,
+                                height = 0.9*1/1.618*\columnwidth,
+                                title={Time voltage signals},
+                                xlabel={Time (s)},
+                                ylabel={$v_o^{\text{DP}}(t)$ and $v_o^{\text{T}}(t)$ (V)},
+                                xmin=0, xmax=1,
+                                ymin=-7.2, ymax=7.5,
+                                xtick={0,0.1,...,1},
+                                ytick={-6,-4,...,6}, 
+                                legend pos=south east,
+                                ymajorgrids=true,
+                                xmajorgrids=true,
+                                %grid style=dashed,
+                                every axis plot/.append style={thick},
+				legend columns=2,
+                        ]
+				\addplot[blue, smooth]         table[col sep=comma,header=false,x index=0,y index=5]{data/dpos/data_dpo_sim.csv};
+                        \coordinate (c1) at (axis cs:0  ,-7.2);
+                        \coordinate (c2) at (axis cs:0.1,-7.2);
+%
+                        \coordinate (c3) at (axis cs:0.9,-7.2);
+                        \coordinate (c4) at (axis cs:1.0,-7.2);
+                        \end{axis}
+%
+                        \begin{axis}[
+                                name = ax_zoomed_start,
+                                at={($(ax_main.north east)-(0.9\columnwidth,1.35/1.618*\columnwidth)$)},
+                                width = 0.6*1\columnwidth,
+                                height = 0.6*1/1.618*\columnwidth,
+                                xmin=0, xmax=0.2,
+                                ymin=-7.2, ymax=7.5,
+                                xtick={0,0.02,...,0.2},
+				xlabel={Time (ms)},
+				xticklabels={$0$,$20$,$40$,$60$,$80$,$100$,$120$,$140$,$160$,$180$,$200$},
+                                ytick={-6,-4,...,6},
+				tick label style={/pgf/number format/fixed},
+				legend columns=2,
+				legend style={/tikz/every even column/.append style={column sep=0.5cm}},
+                                ymajorgrids=true,
+                                xmajorgrids=true,
+                                %grid style=dashed,
+                                every axis plot/.append style={thick},
+                        ]
+				\addplot[blue, smooth]         table[col sep=comma,header=false,x index=0,y index=5]{data/dpos/data_dpo_sim.csv};
+				\addlegendentry{$v_o^{\text{DP}}$}
+				\addplot[red,  smooth, dashed, dash pattern=on 4pt off 4pt, line cap=round] table[col sep=comma,header=false,x index=0,y index=6]{data/dpos/data_dpo_sim.csv};
+				\addlegendentry{$v_o^{\text{T}}$}
+                        \end{axis}
+                        % draw dashed lines from rectangle in first axis to corners of second
+                        \draw [gray,dashed] (c1) -- (ax_zoomed_start.north west);
+                        \draw [gray,dashed] (c2) -- (ax_zoomed_start.north east);
+%
+                        \begin{axis}[
+                                name = ax_zoomed_final,
+                                at={($(ax_main.north east)-(0.4\columnwidth,1.9/1.618*\columnwidth)$)},
+                                width = 0.6*1\columnwidth,
+                                height = 0.6*1/1.618*\columnwidth,
+                                xmin=0.9, xmax=1,
+                                ymin=-4, ymax=4,
+                                xtick={0.90,0.91,...,1},
+				xlabel={Time (ms)},
+				xticklabels={$900$,$910$,$920$,$930$,$940$,$950$,$960$,$970$,$980$,$990$,$1000$},
+                                ytick={-4,-3,...,4},
+				tick label style={/pgf/number format/fixed},
+                                ymajorgrids=true,
+                                xmajorgrids=true,
+                                %grid style=dashed,
+                                every axis plot/.append style={thick},
+                        ]
+				\addplot[blue, smooth]         table[col sep=comma,header=false,x index=0,y index=5]{data/dpos/data_dpo_sim.csv};
+				\addplot[red,  smooth, dashed, dash pattern=on 4pt off 4pt, line cap=round] table[col sep=comma,header=false,x index=0,y index=6]{data/dpos/data_dpo_sim.csv};
+                        \end{axis}
+                        % draw dashed lines from rectangle in first axis to corners of second
+                        \draw [gray,dashed] (c3) -- (ax_zoomed_final.north west);
+                        \draw [gray,dashed] (c4) -- (ax_zoomed_final.north east);
+                \end{tikzpicture}
+        \caption
+[Output voltage signals as reconstructed from the DP simulations and obtained from the time domain model.]
+{Output voltage signals as reconstructed from the DP simulations \eqref{eq:dpo_sim_dpmodel} and obtained from the time domain model \eqref{eq:dpo_sim_timemodel}. In blue the voltage reconstructed by adding the time signals reconstructed from the Dynamic Phasors $V_o^{(1,2)}$ depicted in figure \ref{fig:dpo_sim_dpcurves}. In dashed red the output voltage signal obtained from directly integrating the time-domain model. }
+        \label{fig:dpo_sim_timecurves}
+        \end{center}
+\end{figure}
+% >>>

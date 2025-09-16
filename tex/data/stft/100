@@ -1,0 +1,512 @@
+\begin{tikzpicture}[y=1mm, x=1mm, scale=3.5,>={Stealth[inset=0mm,length=1.5mm,angle'=50]}]
+
+% ADJUST THESE TWO LINES FOR LIMITS
+\path[fill=white,nonzero rule,line width=0.0mm] (-1.0, 21.0) -- (40.8,  21.0) -- (40.8, 41.0) -- (-1.0, 41.0) -- cycle(0.0, 21.0);
+\path[fill=white,nonzero rule,line width=0.0mm] (0.0, -24.0) -- (37.8, -24.0) -- (37.8, 19.0) -- (0.0, 19.0) -- cycle;
+
+\path[fill=cfdfdfd,nonzero rule,line width=0.1mm,shift={(0,8.000000227777779)},scale=0.2] (72.0, -36.0) -- (79.6, -36.0) -- (79.6, -34.5) -- (72.0, -34.5) -- (72.0, -36.0);
+
+\path[fill=cfdfdfd,nonzero rule,line width=0.0mm] (18.0, 21.4) -- (19.9, 21.4) -- (19.9, 21.8) -- (18.0, 21.8) -- (18.0, 21.4);
+
+\path[fill=cfdfdfd,nonzero rule,line width=0.0mm] (18.0, 21.8) -- (19.9, 21.8) -- (19.9, 22.2) -- (18.0, 22.2) -- (18.0, 21.8);
+
+\path[fill=cfdfdfd,nonzero rule,line width=0.0mm] (18.0, 22.2) -- (19.9, 22.2) -- (19.9, 22.5) -- (18.0, 22.5) -- (18.0, 22.2);
+
+\path[fill=cfdfdfd,nonzero rule,line width=0.0mm] (18.0, 22.5) -- (19.9, 22.5) -- (19.9, 22.9) -- (18.0, 22.9) -- (18.0, 22.5);
+
+\path[fill=cfdfdfd,nonzero rule,line width=0.0mm] (18.0, 22.9) -- (19.9, 22.9) -- (19.9, 23.3) -- (18.0, 23.3) -- (18.0, 22.9);
+
+\path[fill=cfcfcfc,nonzero rule,line width=0.0mm] (18.0, 23.3) -- (19.9, 23.3) -- (19.9, 23.6) -- (18.0, 23.6) -- (18.0, 23.3);
+
+\path[fill=cfcfcfc,nonzero rule,line width=0.0mm] (18.0, 23.6) -- (19.9, 23.6) -- (19.9, 24.0) -- (18.0, 24.0) -- (18.0, 23.6);
+
+\path[fill=cfcfcfc,nonzero rule,line width=0.0mm] (18.0, 24.0) -- (19.9, 24.0) -- (19.9, 24.4) -- (18.0, 24.4) -- (18.0, 24.0);
+
+\path[fill=cfcfcfc,nonzero rule,line width=0.0mm] (18.0, 24.4) -- (19.9, 24.4) -- (19.9, 24.8) -- (18.0, 24.8) -- (18.0, 24.4);
+
+\path[fill=cfcfcfc,nonzero rule,line width=0.0mm] (18.0, 24.8) -- (19.9, 24.8) -- (19.9, 25.1) -- (18.0, 25.1) -- (18.0, 24.8);
+
+\path[fill=cfbfbfb,nonzero rule,line width=0.0mm] (18.0, 25.1) -- (19.9, 25.1) -- (19.9, 25.5) -- (18.0, 25.5) -- (18.0, 25.1);
+
+\path[fill=cfbfbfb,nonzero rule,line width=0.0mm] (18.0, 25.5) -- (19.9, 25.5) -- (19.9, 25.9) -- (18.0, 25.9) -- (18.0, 25.5);
+
+\path[fill=cfafafa,nonzero rule,line width=0.0mm] (18.0, 25.9) -- (19.9, 25.9) -- (19.9, 26.2) -- (18.0, 26.2) -- (18.0, 25.9);
+
+\path[fill=cf9f9f9,nonzero rule,line width=0.0mm] (18.0, 26.2) -- (19.9, 26.2) -- (19.9, 26.6) -- (18.0, 26.6) -- (18.0, 26.2);
+
+\path[fill=cf8f8f8,nonzero rule,line width=0.0mm] (18.0, 26.6) -- (19.9, 26.6) -- (19.9, 27.0) -- (18.0, 27.0) -- (18.0, 26.6);
+
+\path[fill=whitesmoke,nonzero rule,line width=0.0mm] (18.0, 27.0) -- (19.9, 27.0) -- (19.9, 27.4) -- (18.0, 27.4) -- (18.0, 27.0);
+
+\path[fill=cf3f3f3,nonzero rule,line width=0.0mm] (18.0, 27.4) -- (19.9, 27.4) -- (19.9, 27.7) -- (18.0, 27.7) -- (18.0, 27.4);
+
+\path[fill=ce5e5e5,nonzero rule,line width=0.0mm] (18.0, 27.7) -- (19.9, 27.7) -- (19.9, 28.1) -- (18.0, 28.1) -- (18.0, 27.7);
+
+\path[fill=silver,nonzero rule,line width=0.0mm] (0.0, 28.1) -- (2.9, 28.1) -- (2.9, 28.5) -- (0.0, 28.5) -- (0.0, 28.1);
+
+\path[fill=cbfbfbf,nonzero rule,line width=0.0mm] (2.9, 28.1) -- (4.8, 28.1) -- (4.8, 28.5) -- (2.9, 28.5) -- (2.9, 28.1);
+
+\path[fill=silver,nonzero rule,line width=0.0mm] (4.8, 28.1) -- (6.7, 28.1) -- (6.7, 28.5) -- (4.8, 28.5) -- (4.8, 28.1);
+
+\path[fill=silver,nonzero rule,line width=0.0mm] (6.7, 28.1) -- (8.5, 28.1) -- (8.5, 28.5) -- (6.7, 28.5) -- (6.7, 28.1);
+
+\path[fill=cbfbfbf,nonzero rule,line width=0.0mm] (8.5, 28.1) -- (10.4, 28.1) -- (10.4, 28.5) -- (8.5, 28.5) -- (8.5, 28.1);
+
+\path[fill=silver,nonzero rule,line width=0.0mm] (10.4, 28.1) -- (12.3, 28.1) -- (12.3, 28.5) -- (10.4, 28.5) -- (10.4, 28.1);
+
+\path[fill=silver,nonzero rule,line width=0.0mm] (12.3, 28.1) -- (14.2, 28.1) -- (14.2, 28.5) -- (12.3, 28.5) -- (12.3, 28.1);
+
+\path[fill=cbfbfbf,nonzero rule,line width=0.0mm] (14.2, 28.1) -- (16.1, 28.1) -- (16.1, 28.5) -- (14.2, 28.5) -- (14.2, 28.1);
+
+\path[fill=cbfbfbf,nonzero rule,line width=0.0mm] (16.1, 28.1) -- (18.0, 28.1) -- (18.0, 28.5) -- (16.1, 28.5) -- (16.1, 28.1);
+
+\path[fill=ccccccc,nonzero rule,line width=0.0mm] (18.0, 28.1) -- (19.9, 28.1) -- (19.9, 28.5) -- (18.0, 28.5) -- (18.0, 28.1);
+
+\path[fill=grey,nonzero rule,line width=0.0mm] (0.0, 28.5) -- (2.9, 28.5) -- (2.9, 28.8) -- (0.0, 28.8) -- (0.0, 28.5);
+
+\path[fill=c7f7f7f,nonzero rule,line width=0.0mm] (2.9, 28.5) -- (4.8, 28.5) -- (4.8, 28.8) -- (2.9, 28.8) -- (2.9, 28.5);
+
+\path[fill=grey,nonzero rule,line width=0.0mm] (4.8, 28.5) -- (6.7, 28.5) -- (6.7, 28.8) -- (4.8, 28.8) -- (4.8, 28.5);
+
+\path[fill=grey,nonzero rule,line width=0.0mm] (6.7, 28.5) -- (8.5, 28.5) -- (8.5, 28.8) -- (6.7, 28.8) -- (6.7, 28.5);
+
+\path[fill=c7f7f7f,nonzero rule,line width=0.0mm] (8.5, 28.5) -- (10.4, 28.5) -- (10.4, 28.8) -- (8.5, 28.8) -- (8.5, 28.5);
+
+\path[fill=grey,nonzero rule,line width=0.0mm] (10.4, 28.5) -- (12.3, 28.5) -- (12.3, 28.8) -- (10.4, 28.8) -- (10.4, 28.5);
+
+\path[fill=grey,nonzero rule,line width=0.0mm] (12.3, 28.5) -- (14.2, 28.5) -- (14.2, 28.8) -- (12.3, 28.8) -- (12.3, 28.5);
+
+\path[fill=c7f7f7f,nonzero rule,line width=0.0mm] (14.2, 28.5) -- (16.1, 28.5) -- (16.1, 28.8) -- (14.2, 28.8) -- (14.2, 28.5);
+
+\path[fill=c7f7f7f,nonzero rule,line width=0.0mm] (16.1, 28.5) -- (18.0, 28.5) -- (18.0, 28.8) -- (16.1, 28.8) -- (16.1, 28.5);
+
+\path[fill=cbfbfbf,nonzero rule,line width=0.0mm] (18.0, 28.5) -- (19.9, 28.5) -- (19.9, 28.8) -- (18.0, 28.8) -- (18.0, 28.5);
+
+\path[fill=silver,nonzero rule,line width=0.0mm] (0.0, 28.8) -- (2.9, 28.8) -- (2.9, 29.2) -- (0.0, 29.2) -- (0.0, 28.8);
+
+\path[fill=silver,nonzero rule,line width=0.0mm] (2.9, 28.8) -- (4.8, 28.8) -- (4.8, 29.2) -- (2.9, 29.2) -- (2.9, 28.8);
+
+\path[fill=silver,nonzero rule,line width=0.0mm] (4.8, 28.8) -- (6.7, 28.8) -- (6.7, 29.2) -- (4.8, 29.2) -- (4.8, 28.8);
+
+\path[fill=silver,nonzero rule,line width=0.0mm] (6.7, 28.8) -- (8.5, 28.8) -- (8.5, 29.2) -- (6.7, 29.2) -- (6.7, 28.8);
+
+\path[fill=cbfbfbf,nonzero rule,line width=0.0mm] (8.5, 28.8) -- (10.4, 28.8) -- (10.4, 29.2) -- (8.5, 29.2) -- (8.5, 28.8);
+
+\path[fill=silver,nonzero rule,line width=0.0mm] (10.4, 28.8) -- (12.3, 28.8) -- (12.3, 29.2) -- (10.4, 29.2) -- (10.4, 28.8);
+
+\path[fill=silver,nonzero rule,line width=0.0mm] (12.3, 28.8) -- (14.2, 28.8) -- (14.2, 29.2) -- (12.3, 29.2) -- (12.3, 28.8);
+
+\path[fill=cbfbfbf,nonzero rule,line width=0.0mm] (14.2, 28.8) -- (16.1, 28.8) -- (16.1, 29.2) -- (14.2, 29.2) -- (14.2, 28.8);
+
+\path[fill=silver,nonzero rule,line width=0.0mm] (16.1, 28.8) -- (18.0, 28.8) -- (18.0, 29.2) -- (16.1, 29.2) -- (16.1, 28.8);
+
+\path[fill=ccbcbcb,nonzero rule,line width=0.0mm] (18.0, 28.8) -- (19.9, 28.8) -- (19.9, 29.2) -- (18.0, 29.2) -- (18.0, 28.8);
+
+\path[fill=ce3e3e3,nonzero rule,line width=0.0mm] (18.0, 29.2) -- (19.9, 29.2) -- (19.9, 29.6) -- (18.0, 29.6) -- (18.0, 29.2);
+
+\path[fill=cf1f1f1,nonzero rule,line width=0.0mm] (18.0, 29.6) -- (19.9, 29.6) -- (19.9, 30.0) -- (18.0, 30.0) -- (18.0, 29.6);
+
+\path[fill=cf3f3f3,nonzero rule,line width=0.0mm] (18.0, 30.0) -- (19.9, 30.0) -- (19.9, 30.3) -- (18.0, 30.3) -- (18.0, 30.0);
+
+\path[fill=cf6f6f6,nonzero rule,line width=0.0mm] (18.0, 30.3) -- (19.9, 30.3) -- (19.9, 30.7) -- (18.0, 30.7) -- (18.0, 30.3);
+
+\path[fill=cf7f7f7,nonzero rule,line width=0.0mm] (18.0, 30.7) -- (19.9, 30.7) -- (19.9, 31.1) -- (18.0, 31.1) -- (18.0, 30.7);
+
+\path[fill=cf8f8f8,nonzero rule,line width=0.0mm] (18.0, 31.1) -- (19.9, 31.1) -- (19.9, 31.4) -- (18.0, 31.4) -- (18.0, 31.1);
+
+\path[fill=cf8f8f8,nonzero rule,line width=0.0mm] (18.0, 31.4) -- (19.9, 31.4) -- (19.9, 31.8) -- (18.0, 31.8) -- (18.0, 31.4);
+
+\path[fill=cf8f8f8,nonzero rule,line width=0.0mm] (18.0, 31.8) -- (19.9, 31.8) -- (19.9, 32.2) -- (18.0, 32.2) -- (18.0, 31.8);
+
+\path[fill=cf8f8f8,nonzero rule,line width=0.0mm] (18.0, 32.2) -- (19.9, 32.2) -- (19.9, 32.6) -- (18.0, 32.6) -- (18.0, 32.2);
+
+\path[fill=cf8f8f8,nonzero rule,line width=0.0mm] (18.0, 32.6) -- (19.9, 32.6) -- (19.9, 32.9) -- (18.0, 32.9) -- (18.0, 32.6);
+
+\path[fill=cf8f8f8,nonzero rule,line width=0.0mm] (18.0, 32.9) -- (19.9, 32.9) -- (19.9, 33.3) -- (18.0, 33.3) -- (18.0, 32.9);
+
+\path[fill=cf8f8f8,nonzero rule,line width=0.0mm] (18.0, 33.3) -- (19.9, 33.3) -- (19.9, 33.7) -- (18.0, 33.7) -- (18.0, 33.3);
+
+\path[fill=cf7f7f7,nonzero rule,line width=0.0mm] (18.0, 33.7) -- (19.9, 33.7) -- (19.9, 34.1) -- (18.0, 34.1) -- (18.0, 33.7);
+
+\path[fill=cf6f6f6,nonzero rule,line width=0.0mm] (18.0, 34.1) -- (19.9, 34.1) -- (19.9, 34.4) -- (18.0, 34.4) -- (18.0, 34.1);
+
+\path[fill=cf3f3f3,nonzero rule,line width=0.0mm] (18.0, 34.4) -- (19.9, 34.4) -- (19.9, 34.8) -- (18.0, 34.8) -- (18.0, 34.4);
+
+\path[fill=cf1f1f1,nonzero rule,line width=0.0mm] (18.0, 34.8) -- (19.9, 34.8) -- (19.9, 35.2) -- (18.0, 35.2) -- (18.0, 34.8);
+
+\path[fill=white,nonzero rule,line width=0.0mm] (19.9, 34.8) -- (21.7, 34.8) -- (21.7, 35.2) -- (19.9, 35.2) -- (19.9, 34.8);
+
+\path[fill=white,nonzero rule,line width=0.0mm] (21.7, 34.8) -- (23.6, 34.8) -- (23.6, 35.2) -- (21.7, 35.2) -- (21.7, 34.8);
+
+\path[fill=white,nonzero rule,line width=0.0mm] (23.6, 34.8) -- (25.5, 34.8) -- (25.5, 35.2) -- (23.6, 35.2) -- (23.6, 34.8);
+
+\path[fill=white,nonzero rule,line width=0.0mm] (25.5, 34.8) -- (27.4, 34.8) -- (27.4, 35.2) -- (25.5, 35.2) -- (25.5, 34.8);
+
+\path[fill=white,nonzero rule,line width=0.0mm] (27.4, 34.8) -- (29.3, 34.8) -- (29.3, 35.2) -- (27.4, 35.2) -- (27.4, 34.8);
+
+\path[fill=white,nonzero rule,line width=0.0mm] (29.3, 34.8) -- (31.2, 34.8) -- (31.2, 35.2) -- (29.3, 35.2) -- (29.3, 34.8);
+
+\path[fill=white,nonzero rule,line width=0.0mm] (31.2, 34.8) -- (33.1, 34.8) -- (33.1, 35.2) -- (31.2, 35.2) -- (31.2, 34.8);
+
+\path[fill=white,nonzero rule,line width=0.0mm] (33.1, 34.8) -- (35.0, 34.8) -- (35.0, 35.2) -- (33.1, 35.2) -- (33.1, 34.8);
+
+\path[fill=white,nonzero rule,line width=0.0mm] (35.0, 34.8) -- (36.8, 34.8) -- (36.8, 35.2) -- (35.0, 35.2) -- (35.0, 34.8);
+
+\path[fill=ce4e4e4,nonzero rule,line width=0.0mm] (18.0, 35.2) -- (19.9, 35.2) -- (19.9, 35.5) -- (18.0, 35.5) -- (18.0, 35.2);
+
+\path[fill=white,nonzero rule,line width=0.0mm] (19.9, 35.2) -- (21.7, 35.2) -- (21.7, 35.5) -- (19.9, 35.5) -- (19.9, 35.2);
+
+\path[fill=white,nonzero rule,line width=0.0mm] (21.7, 35.2) -- (23.6, 35.2) -- (23.6, 35.5) -- (21.7, 35.5) -- (21.7, 35.2);
+
+\path[fill=white,nonzero rule,line width=0.0mm] (23.6, 35.2) -- (25.5, 35.2) -- (25.5, 35.5) -- (23.6, 35.5) -- (23.6, 35.2);
+
+\path[fill=white,nonzero rule,line width=0.0mm] (25.5, 35.2) -- (27.4, 35.2) -- (27.4, 35.5) -- (25.5, 35.5) -- (25.5, 35.2);
+
+\path[fill=white,nonzero rule,line width=0.0mm] (27.4, 35.2) -- (29.3, 35.2) -- (29.3, 35.5) -- (27.4, 35.5) -- (27.4, 35.2);
+
+\path[fill=white,nonzero rule,line width=0.0mm] (29.3, 35.2) -- (31.2, 35.2) -- (31.2, 35.5) -- (29.3, 35.5) -- (29.3, 35.2);
+
+\path[fill=white,nonzero rule,line width=0.0mm] (31.2, 35.2) -- (33.1, 35.2) -- (33.1, 35.5) -- (31.2, 35.5) -- (31.2, 35.2);
+
+\path[fill=white,nonzero rule,line width=0.0mm] (33.1, 35.2) -- (35.0, 35.2) -- (35.0, 35.5) -- (33.1, 35.5) -- (33.1, 35.2);
+
+\path[fill=white,nonzero rule,line width=0.0mm] (35.0, 35.2) -- (36.8, 35.2) -- (36.8, 35.5) -- (35.0, 35.5) -- (35.0, 35.2);
+
+\path[fill=ccbcbcb,nonzero rule,line width=0.0mm] (18.0, 35.5) -- (19.9, 35.5) -- (19.9, 35.9) -- (18.0, 35.9) -- (18.0, 35.5);
+
+\path[fill=cbfbfbf,nonzero rule,line width=0.0mm] (19.9, 35.5) -- (21.7, 35.5) -- (21.7, 35.9) -- (19.9, 35.9) -- (19.9, 35.5);
+
+\path[fill=cbfbfbf,nonzero rule,line width=0.0mm] (21.7, 35.5) -- (23.6, 35.5) -- (23.6, 35.9) -- (21.7, 35.9) -- (21.7, 35.5);
+
+\path[fill=silver,nonzero rule,line width=0.0mm] (23.6, 35.5) -- (25.5, 35.5) -- (25.5, 35.9) -- (23.6, 35.9) -- (23.6, 35.5);
+
+\path[fill=cbfbfbf,nonzero rule,line width=0.0mm] (25.5, 35.5) -- (27.4, 35.5) -- (27.4, 35.9) -- (25.5, 35.9) -- (25.5, 35.5);
+
+\path[fill=cbfbfbf,nonzero rule,line width=0.0mm] (27.4, 35.5) -- (29.3, 35.5) -- (29.3, 35.9) -- (27.4, 35.9) -- (27.4, 35.5);
+
+\path[fill=silver,nonzero rule,line width=0.0mm] (29.3, 35.5) -- (31.2, 35.5) -- (31.2, 35.9) -- (29.3, 35.9) -- (29.3, 35.5);
+
+\path[fill=cbfbfbf,nonzero rule,line width=0.0mm] (31.2, 35.5) -- (33.1, 35.5) -- (33.1, 35.9) -- (31.2, 35.9) -- (31.2, 35.5);
+
+\path[fill=cbfbfbf,nonzero rule,line width=0.0mm] (33.1, 35.5) -- (35.0, 35.5) -- (35.0, 35.9) -- (33.1, 35.9) -- (33.1, 35.5);
+
+\path[fill=silver,nonzero rule,line width=0.0mm] (35.0, 35.5) -- (37.8, 35.5) -- (37.8, 35.9) -- (35.0, 35.9) -- (35.0, 35.5);
+
+\path[fill=cbfbfbf,nonzero rule,line width=0.0mm] (18.0, 35.9) -- (19.9, 35.9) -- (19.9, 36.3) -- (18.0, 36.3) -- (18.0, 35.9);
+
+\path[fill=grey,nonzero rule,line width=0.0mm] (19.9, 35.9) -- (21.7, 35.9) -- (21.7, 36.3) -- (19.9, 36.3) -- (19.9, 35.9);
+
+\path[fill=grey,nonzero rule,line width=0.0mm] (21.7, 35.9) -- (23.6, 35.9) -- (23.6, 36.3) -- (21.7, 36.3) -- (21.7, 35.9);
+
+\path[fill=grey,nonzero rule,line width=0.0mm] (23.6, 35.9) -- (25.5, 35.9) -- (25.5, 36.3) -- (23.6, 36.3) -- (23.6, 35.9);
+
+\path[fill=c7f7f7f,nonzero rule,line width=0.0mm] (25.5, 35.9) -- (27.4, 35.9) -- (27.4, 36.3) -- (25.5, 36.3) -- (25.5, 35.9);
+
+\path[fill=c7f7f7f,nonzero rule,line width=0.0mm] (27.4, 35.9) -- (29.3, 35.9) -- (29.3, 36.3) -- (27.4, 36.3) -- (27.4, 35.9);
+
+\path[fill=grey,nonzero rule,line width=0.0mm] (29.3, 35.9) -- (31.2, 35.9) -- (31.2, 36.3) -- (29.3, 36.3) -- (29.3, 35.9);
+
+\path[fill=grey,nonzero rule,line width=0.0mm] (31.2, 35.9) -- (33.1, 35.9) -- (33.1, 36.3) -- (31.2, 36.3) -- (31.2, 35.9);
+
+\path[fill=c7f7f7f,nonzero rule,line width=0.0mm] (33.1, 35.9) -- (35.0, 35.9) -- (35.0, 36.3) -- (33.1, 36.3) -- (33.1, 35.9);
+
+\path[fill=c7f7f7f,nonzero rule,line width=0.0mm] (35.0, 35.9) -- (37.8, 35.9) -- (37.8, 36.3) -- (35.0, 36.3) -- (35.0, 35.9);
+
+\path[fill=ccccccc,nonzero rule,line width=0.0mm] (18.0, 36.3) -- (19.9, 36.3) -- (19.9, 36.7) -- (18.0, 36.7) -- (18.0, 36.3);
+
+\path[fill=silver,nonzero rule,line width=0.0mm] (19.9, 36.3) -- (21.7, 36.3) -- (21.7, 36.7) -- (19.9, 36.7) -- (19.9, 36.3);
+
+\path[fill=silver,nonzero rule,line width=0.0mm] (21.7, 36.3) -- (23.6, 36.3) -- (23.6, 36.7) -- (21.7, 36.7) -- (21.7, 36.3);
+
+\path[fill=silver,nonzero rule,line width=0.0mm] (23.6, 36.3) -- (25.5, 36.3) -- (25.5, 36.7) -- (23.6, 36.7) -- (23.6, 36.3);
+
+\path[fill=silver,nonzero rule,line width=0.0mm] (25.5, 36.3) -- (27.4, 36.3) -- (27.4, 36.7) -- (25.5, 36.7) -- (25.5, 36.3);
+
+\path[fill=silver,nonzero rule,line width=0.0mm] (27.4, 36.3) -- (29.3, 36.3) -- (29.3, 36.7) -- (27.4, 36.7) -- (27.4, 36.3);
+
+\path[fill=silver,nonzero rule,line width=0.0mm] (29.3, 36.3) -- (31.2, 36.3) -- (31.2, 36.7) -- (29.3, 36.7) -- (29.3, 36.3);
+
+\path[fill=silver,nonzero rule,line width=0.0mm] (31.2, 36.3) -- (33.1, 36.3) -- (33.1, 36.7) -- (31.2, 36.7) -- (31.2, 36.3);
+
+\path[fill=cbfbfbf,nonzero rule,line width=0.0mm] (33.1, 36.3) -- (35.0, 36.3) -- (35.0, 36.7) -- (33.1, 36.7) -- (33.1, 36.3);
+
+\path[fill=cbfbfbf,nonzero rule,line width=0.0mm] (35.0, 36.3) -- (37.8, 36.3) -- (37.8, 36.7) -- (35.0, 36.7) -- (35.0, 36.3);
+
+\path[fill=ce4e4e4,nonzero rule,line width=0.0mm] (18.0, 36.7) -- (19.9, 36.7) -- (19.9, 37.0) -- (18.0, 37.0) -- (18.0, 36.7);
+
+\path[fill=cf2f2f2,nonzero rule,line width=0.0mm] (18.0, 37.0) -- (19.9, 37.0) -- (19.9, 37.4) -- (18.0, 37.4) -- (18.0, 37.0);
+
+\path[fill=cf4f4f4,nonzero rule,line width=0.0mm] (18.0, 37.4) -- (19.9, 37.4) -- (19.9, 37.8) -- (18.0, 37.8) -- (18.0, 37.4);
+
+\path[fill=cf7f7f7,nonzero rule,line width=0.0mm] (18.0, 37.8) -- (19.9, 37.8) -- (19.9, 38.1) -- (18.0, 38.1) -- (18.0, 37.8);
+
+\path[fill=cf8f8f8,nonzero rule,line width=0.0mm] (18.0, 38.1) -- (19.9, 38.1) -- (19.9, 38.5) -- (18.0, 38.5) -- (18.0, 38.1);
+
+\path[fill=cf9f9f9,nonzero rule,line width=0.0mm] (18.0, 38.5) -- (19.9, 38.5) -- (19.9, 38.9) -- (18.0, 38.9) -- (18.0, 38.5);
+
+\path[fill=cf9f9f9,nonzero rule,line width=0.0mm] (18.0, 38.9) -- (19.9, 38.9) -- (19.9, 39.3) -- (18.0, 39.3) -- (18.0, 38.9);
+
+\path[fill=cf9f9f9,nonzero rule,line width=0.0mm] (18.0, 39.3) -- (19.9, 39.3) -- (19.9, 39.6) -- (18.0, 39.6) -- (18.0, 39.3);
+
+\path[fill=cf9f9f9,nonzero rule,line width=0.1mm,shift={(0,8.000000227777779)},scale=0.2] (72.0, 38.5) -- (79.6, 38.5) -- (79.6, 40.0) -- (72.0, 40.0) -- (72.0, 38.5);
+
+\path[fill=cfbfbfb,nonzero rule,line width=0.0mm] (9.5, 7.2) -- (28.4, 7.2) -- (28.4, 7.3) -- (9.5, 7.3) -- (9.5, 7.2);
+
+\path[fill=cfafafa,nonzero rule,line width=0.0mm] (9.5, 7.3) -- (28.4, 7.3) -- (28.4, 7.3) -- (9.5, 7.3) -- (9.5, 7.3);
+
+\path[fill=cfafafa,nonzero rule,line width=0.0mm] (9.5, 7.3) -- (28.4, 7.3) -- (28.4, 7.3) -- (9.5, 7.3) -- (9.5, 7.3);
+
+\path[fill=cf9f9f9,nonzero rule,line width=0.0mm] (9.5, 7.3) -- (28.4, 7.3) -- (28.4, 7.4) -- (9.5, 7.4) -- (9.5, 7.3);
+
+\path[fill=cf7f7f7,nonzero rule,line width=0.0mm] (9.5, 7.4) -- (28.4, 7.4) -- (28.4, 7.4) -- (9.5, 7.4) -- (9.5, 7.4);
+
+\path[fill=whitesmoke,nonzero rule,line width=0.0mm] (9.5, 7.4) -- (28.4, 7.4) -- (28.4, 7.5) -- (9.5, 7.5) -- (9.5, 7.4);
+
+\path[fill=cf2f2f2,nonzero rule,line width=0.0mm] (9.5, 7.5) -- (28.4, 7.5) -- (28.4, 7.5) -- (9.5, 7.5) -- (9.5, 7.5);
+
+\path[fill=ce4e4e4,nonzero rule,line width=0.0mm] (9.5, 7.5) -- (28.4, 7.5) -- (28.4, 7.5) -- (9.5, 7.5) -- (9.5, 7.5);
+
+\path[fill=cbfbfbf,nonzero rule,line width=0.0mm] (0.0, 7.5) -- (9.5, 7.5) -- (9.5, 7.6) -- (0.0, 7.6) -- (0.0, 7.5);
+
+\path[fill=ccccccc,nonzero rule,line width=0.0mm] (9.5, 7.5) -- (28.4, 7.5) -- (28.4, 7.6) -- (9.5, 7.6) -- (9.5, 7.5);
+
+\path[fill=grey,nonzero rule,line width=0.0mm] (0.0, 7.6) -- (9.5, 7.6) -- (9.5, 7.6) -- (0.0, 7.6) -- (0.0, 7.6);
+
+\path[fill=cbfbfbf,nonzero rule,line width=0.0mm] (9.5, 7.6) -- (28.4, 7.6) -- (28.4, 7.6) -- (9.5, 7.6) -- (9.5, 7.6);
+
+\path[fill=silver,nonzero rule,line width=0.0mm] (0.0, 7.6) -- (9.5, 7.6) -- (9.5, 7.6) -- (0.0, 7.6) -- (0.0, 7.6);
+
+\path[fill=ccccccc,nonzero rule,line width=0.0mm] (9.5, 7.6) -- (28.4, 7.6) -- (28.4, 7.6) -- (9.5, 7.6) -- (9.5, 7.6);
+
+\path[fill=ce4e4e4,nonzero rule,line width=0.0mm] (9.5, 7.6) -- (28.4, 7.6) -- (28.4, 7.7) -- (9.5, 7.7) -- (9.5, 7.6);
+
+\path[fill=cf2f2f2,nonzero rule,line width=0.0mm] (9.5, 7.7) -- (28.4, 7.7) -- (28.4, 7.7) -- (9.5, 7.7) -- (9.5, 7.7);
+
+\path[fill=whitesmoke,nonzero rule,line width=0.0mm] (9.5, 7.7) -- (28.4, 7.7) -- (28.4, 7.8) -- (9.5, 7.8) -- (9.5, 7.7);
+
+\path[fill=cf7f7f7,nonzero rule,line width=0.0mm] (9.5, 7.8) -- (28.4, 7.8) -- (28.4, 7.8) -- (9.5, 7.8) -- (9.5, 7.8);
+
+\path[fill=cf8f8f8,nonzero rule,line width=0.0mm] (9.5, 7.8) -- (28.4, 7.8) -- (28.4, 7.8) -- (9.5, 7.8) -- (9.5, 7.8);
+
+\path[fill=cfafafa,nonzero rule,line width=0.0mm] (9.5, 7.8) -- (28.4, 7.8) -- (28.4, 7.9) -- (9.5, 7.9) -- (9.5, 7.8);
+
+\path[fill=cfafafa,nonzero rule,line width=0.0mm] (9.5, 7.9) -- (28.4, 7.9) -- (28.4, 7.9) -- (9.5, 7.9) -- (9.5, 7.9);
+
+\path[fill=cfbfbfb,nonzero rule,line width=0.0mm] (9.5, 7.9) -- (28.4, 7.9) -- (28.4, 7.9) -- (9.5, 7.9) -- (9.5, 7.9);
+
+\path[fill=cfbfbfb,nonzero rule,line width=0.0mm] (9.5, 7.9) -- (28.4, 7.9) -- (28.4, 8.0) -- (9.5, 8.0) -- (9.5, 7.9);
+
+\path[fill=cfcfcfc,nonzero rule,line width=0.0mm] (9.5, 8.0) -- (28.4, 8.0) -- (28.4, 8.0) -- (9.5, 8.0) -- (9.5, 8.0);
+
+\path[fill=cfcfcfc,nonzero rule,line width=0.0mm] (9.5, 8.0) -- (28.4, 8.0) -- (28.4, 8.1) -- (9.5, 8.1) -- (9.5, 8.0);
+
+\path[fill=cfcfcfc,nonzero rule,line width=0.0mm] (9.5, 8.1) -- (28.4, 8.1) -- (28.4, 8.1) -- (9.5, 8.1) -- (9.5, 8.1);
+
+\path[fill=cfcfcfc,nonzero rule,line width=0.0mm] (9.5, 8.1) -- (28.4, 8.1) -- (28.4, 8.1) -- (9.5, 8.1) -- (9.5, 8.1);
+
+\path[fill=cfdfdfd,nonzero rule,line width=0.0mm] (9.5, 8.1) -- (28.4, 8.1) -- (28.4, 8.2) -- (9.5, 8.2) -- (9.5, 8.1);
+
+\path[fill=cfdfdfd,nonzero rule,line width=0.0mm] (9.5, 8.2) -- (28.4, 8.2) -- (28.4, 8.2) -- (9.5, 8.2) -- (9.5, 8.2);
+
+\path[fill=cfdfdfd,nonzero rule,line width=0.0mm] (9.5, 8.2) -- (28.4, 8.2) -- (28.4, 8.3) -- (9.5, 8.3) -- (9.5, 8.2);
+
+\path[fill=cfdfdfd,nonzero rule,line width=0.0mm] (9.5, 8.3) -- (28.4, 8.3) -- (28.4, 8.3) -- (9.5, 8.3) -- (9.5, 8.3);
+
+\path[fill=cfdfdfd,nonzero rule,line width=0.0mm] (9.5, 14.6) -- (28.4, 14.6) -- (28.4, 14.6) -- (9.5, 14.6) -- (9.5, 14.6);
+
+\path[fill=cfcfcfc,nonzero rule,line width=0.0mm] (9.5, 14.6) -- (28.4, 14.6) -- (28.4, 14.7) -- (9.5, 14.7) -- (9.5, 14.6);
+
+\path[fill=cfcfcfc,nonzero rule,line width=0.0mm] (9.5, 14.7) -- (28.4, 14.7) -- (28.4, 14.7) -- (9.5, 14.7) -- (9.5, 14.7);
+
+\path[fill=cfcfcfc,nonzero rule,line width=0.0mm] (9.5, 14.7) -- (28.4, 14.7) -- (28.4, 14.8) -- (9.5, 14.8) -- (9.5, 14.7);
+
+\path[fill=cfbfbfb,nonzero rule,line width=0.0mm] (9.5, 14.8) -- (28.4, 14.8) -- (28.4, 14.8) -- (9.5, 14.8) -- (9.5, 14.8);
+
+\path[fill=cfbfbfb,nonzero rule,line width=0.0mm] (9.5, 14.8) -- (28.4, 14.8) -- (28.4, 14.8) -- (9.5, 14.8) -- (9.5, 14.8);
+
+\path[fill=cfafafa,nonzero rule,line width=0.0mm] (9.5, 14.8) -- (28.4, 14.8) -- (28.4, 14.9) -- (9.5, 14.9) -- (9.5, 14.8);
+
+\path[fill=cfafafa,nonzero rule,line width=0.0mm] (9.5, 14.9) -- (28.4, 14.9) -- (28.4, 14.9) -- (9.5, 14.9) -- (9.5, 14.9);
+
+\path[fill=cf8f8f8,nonzero rule,line width=0.0mm] (9.5, 14.9) -- (28.4, 14.9) -- (28.4, 14.9) -- (9.5, 14.9) -- (9.5, 14.9);
+
+\path[fill=cf7f7f7,nonzero rule,line width=0.0mm] (9.5, 14.9) -- (28.4, 14.9) -- (28.4, 15.0) -- (9.5, 15.0) -- (9.5, 14.9);
+
+\path[fill=whitesmoke,nonzero rule,line width=0.0mm] (9.5, 15.0) -- (28.4, 15.0) -- (28.4, 15.0) -- (9.5, 15.0) -- (9.5, 15.0);
+
+\path[fill=cf2f2f2,nonzero rule,line width=0.0mm] (9.5, 15.0) -- (28.4, 15.0) -- (28.4, 15.1) -- (9.5, 15.1) -- (9.5, 15.0);
+
+\path[fill=ce4e4e4,nonzero rule,line width=0.0mm] (9.5, 15.1) -- (28.4, 15.1) -- (28.4, 15.1) -- (9.5, 15.1) -- (9.5, 15.1);
+
+\path[fill=ccccccc,nonzero rule,line width=0.0mm] (9.5, 15.1) -- (28.4, 15.1) -- (28.4, 15.1) -- (9.5, 15.1) -- (9.5, 15.1);
+
+\path[fill=cbfbfbf,nonzero rule,line width=0.0mm] (28.4, 15.1) -- (37.8, 15.1) -- (37.8, 15.1) -- (28.4, 15.1) -- (28.4, 15.1);
+
+\path[fill=cbfbfbf,nonzero rule,line width=0.0mm] (9.5, 15.1) -- (28.4, 15.1) -- (28.4, 15.2) -- (9.5, 15.2) -- (9.5, 15.1);
+
+\path[fill=c7f7f7f,nonzero rule,line width=0.0mm] (28.4, 15.1) -- (37.8, 15.1) -- (37.8, 15.2) -- (28.4, 15.2) -- (28.4, 15.1);
+
+\path[fill=ccccccc,nonzero rule,line width=0.0mm] (9.5, 15.2) -- (28.4, 15.2) -- (28.4, 15.2) -- (9.5, 15.2) -- (9.5, 15.2);
+
+\path[fill=silver,nonzero rule,line width=0.0mm] (28.4, 15.2) -- (37.8, 15.2) -- (37.8, 15.2) -- (28.4, 15.2) -- (28.4, 15.2);
+
+\path[fill=ce4e4e4,nonzero rule,line width=0.0mm] (9.5, 15.2) -- (28.4, 15.2) -- (28.4, 15.3) -- (9.5, 15.3) -- (9.5, 15.2);
+
+\path[fill=cf2f2f2,nonzero rule,line width=0.0mm] (9.5, 15.3) -- (28.4, 15.3) -- (28.4, 15.3) -- (9.5, 15.3) -- (9.5, 15.3);
+
+\path[fill=whitesmoke,nonzero rule,line width=0.0mm] (9.5, 15.3) -- (28.4, 15.3) -- (28.4, 15.3) -- (9.5, 15.3) -- (9.5, 15.3);
+
+\path[fill=cf7f7f7,nonzero rule,line width=0.0mm] (9.5, 15.3) -- (28.4, 15.3) -- (28.4, 15.4) -- (9.5, 15.4) -- (9.5, 15.3);
+
+\path[fill=cf9f9f9,nonzero rule,line width=0.0mm] (9.5, 15.4) -- (28.4, 15.4) -- (28.4, 15.4) -- (9.5, 15.4) -- (9.5, 15.4);
+
+\path[fill=cfafafa,nonzero rule,line width=0.0mm] (9.5, 15.4) -- (28.4, 15.4) -- (28.4, 15.4) -- (9.5, 15.4) -- (9.5, 15.4);
+
+\path[fill=cfafafa,nonzero rule,line width=0.0mm] (9.5, 15.4) -- (28.4, 15.4) -- (28.4, 15.5) -- (9.5, 15.5) -- (9.5, 15.4);
+
+\path[fill=cfbfbfb,nonzero rule,line width=0.0mm] (9.5, 15.5) -- (28.4, 15.5) -- (28.4, 15.5) -- (9.5, 15.5) -- (9.5, 15.5);
+
+\path[fill=cfbfbfb,nonzero rule,line width=0.0mm] (9.5, 15.5) -- (28.4, 15.5) -- (28.4, 15.6) -- (9.5, 15.6) -- (9.5, 15.5);
+
+\path[fill=cfcfcfc,nonzero rule,line width=0.0mm] (9.5, 15.6) -- (28.4, 15.6) -- (28.4, 15.6) -- (9.5, 15.6) -- (9.5, 15.6);
+
+\path[fill=cfcfcfc,nonzero rule,line width=0.0mm] (9.5, 15.6) -- (28.4, 15.6) -- (28.4, 15.6) -- (9.5, 15.6) -- (9.5, 15.6);
+
+\path[fill=cfcfcfc,nonzero rule,line width=0.0mm] (9.5, 15.6) -- (28.4, 15.6) -- (28.4, 15.7) -- (9.5, 15.7) -- (9.5, 15.6);
+
+\path[fill=cfdfdfd,nonzero rule,line width=0.0mm] (9.5, 15.7) -- (28.4, 15.7) -- (28.4, 15.7) -- (9.5, 15.7) -- (9.5, 15.7);
+
+\path[fill=cfdfdfd,nonzero rule,line width=0.0mm] (9.5, 15.7) -- (28.4, 15.7) -- (28.4, 15.7) -- (9.5, 15.7) -- (9.5, 15.7);
+
+\path[fill=cfdfdfd,nonzero rule,line width=0.0mm] (9.5, 15.7) -- (28.4, 15.7) -- (28.4, 15.8) -- (9.5, 15.8) -- (9.5, 15.7);
+
+\path[fill=cfdfdfd,nonzero rule,line width=0.0mm] (9.5, 15.8) -- (28.4, 15.8) -- (28.4, 15.8) -- (9.5, 15.8) -- (9.5, 15.8);
+
+\path[fill=cfdfdfd,nonzero rule,line width=0.0mm] (9.5, 15.8) -- (28.4, 15.8) -- (28.4, 15.9) -- (9.5, 15.9) -- (9.5, 15.8);
+
+\path[fill=cfdfdfd,nonzero rule,line width=0.0mm] (9.5, 15.9) -- (28.4, 15.9) -- (28.4, 15.9) -- (9.5, 15.9) -- (9.5, 15.9);
+
+\path[fill=cfdfdfd,nonzero rule,line width=0.0mm] (9.5, 15.9) -- (28.4, 15.9) -- (28.4, 15.9) -- (9.5, 15.9) -- (9.5, 15.9);
+
+\path[fill=cfefefe,nonzero rule,line width=0.0mm] (9.5, 15.9) -- (28.4, 15.9) -- (28.4, 16.0) -- (9.5, 16.0) -- (9.5, 15.9);
+
+\path[fill=cfefefe,nonzero rule,line width=0.0mm] (9.5, 16.0) -- (28.4, 16.0) -- (28.4, 16.0) -- (9.5, 16.0) -- (9.5, 16.0);
+
+%\path[draw=black,line cap=round,line join=round,line width=0.1mm] (0.0, 19.0) -- (37.8, 19.0);
+%
+%\path[draw=black,line cap=round,line join=round,line width=0.1mm] (-0.0, 21.0) -- (37.8, 21.0);
+%
+%\path[draw=black,line cap=round,line join=round,line width=0.1mm] (15.9, 20.0) -- (19.9, 20.0);
+
+
+
+\begin{pgflowlevelscope}{\pgftransformscale{0.25}}
+
+	\begin{axis}[
+		at={(0mm,81.9mm)},
+		width=167mm,
+		height=96mm,
+		xlabel = {$t\ (ms)$},
+		ylabel = {$f\ (kHz)$},
+		%tick style={draw=none},
+		axis lines=middle,
+		xtick = {-50,-40,...,50},
+		ytick = {1,...,5},
+		x tick style={color=black},
+		y tick style={color=black},
+		xmin = -51, xmax = 51,
+		ymin = -0.2, ymax = 5.2,
+		xlabel = {$t\ \left(ms\right)$},
+		xlabel style = {at={(axis cs:50,0.5)},anchor=north},
+		ylabel = {$f\ \left(kHz\right)$},
+		ylabel style = {at={(axis cs:1,5)},anchor=west}
+		]
+		\node[anchor=west] at (axis cs:35,2) {$f_h = 1kHz$};
+		%\draw (axis cs:5,2.15) -- (axis cs:10,2.15);
+		%\draw (axis cs:5,1.85) -- (axis cs:10,1.85);
+		\draw [->] (axis cs:-15 ,2.5 ) -- (axis cs:-15,2.2);
+		\draw [->] (axis cs:-15,1.5) -- (axis cs:-15,1.8);
+		\node at (axis cs: -15, 1.3) {$\Delta f_h$};
+
+		%\draw      (axis cs:2.75, 3.25) -- (axis cs:2.75,3.75);
+		%\draw      (axis cs:-2.75,3.25) -- (axis cs:-2.75,3.75);
+		\draw [->] (axis cs: 7,   3.5 ) -- (axis cs: 3,3.5);
+		\draw [->] (axis cs:-7,   3.5 ) -- (axis cs:-3,3.5);
+		\node at (axis cs: 10, 3.5) {$\Delta t_h$};
+	\end{axis}
+
+	\begin{axis}[
+		at={(0mm,-3.1mm)},
+		clip=false,
+		clip mode = individual,
+		width=167mm,
+		height=97.7mm,
+		%tick style={draw=none},
+		axis lines=middle,
+		xtick = {-50,-40,...,50},
+		ytick = {1,...,5},
+		x tick style={color=black},
+		y tick style={color=black},
+		xmin = -51, xmax = 51,
+		ymin = -0.2, ymax = 5.2,
+		xlabel = {$t\ \left(ms\right)$},
+		xlabel style = {at={(axis cs:50,0.5)},anchor=north},
+		ylabel = {$f\ \left(kHz\right)$},
+		ylabel style = {at={(axis cs:1,5)},anchor=west}
+		]
+		\node[anchor=west] at (axis cs:35,2) {$f_s = 100Hz$};
+
+		%\draw (axis cs:5,2.075) -- (axis cs:10,2.075);
+		%\draw (axis cs:5,1.925) -- (axis cs:10,1.925);
+		\draw [->] (axis cs:7.5,2.5) -- (axis cs:7.5,2.1);
+		\draw [->] (axis cs:7.5,1.5) -- (axis cs:7.5,1.9);
+		\node at (axis cs: 7.5, 1.3) {$\Delta f_s$};
+        
+		\draw      (axis cs:-25.5,3.75) -- (axis cs:-25.5,3.25);
+		\draw      (axis cs: 25.5,3.75) -- (axis cs: 25.5,2.25);
+		\node (deltat) at (axis cs:-15, 3.5) {$\Delta t_s$};
+		\draw [<- ](axis cs:-25, 3.5) -- (deltat.west);
+		\draw [-> ](deltat.east) -- (axis cs: 25 ,3.5 );
+	\end{axis}
+
+	\begin{axis}[
+		at={(0mm,-90mm)},
+		width=167mm,
+		height=96mm,
+		xlabel = {$t\ (ms)$},
+		ylabel = {$f\ (kHz)$},
+		%tick style={draw=none},
+		axis lines=middle,
+		xtick = {-50,-40,...,50},
+		ytick = {1,...,5},
+		x tick style={color=black},
+		y tick style={color=black},
+		xmin = -51, xmax = 51,
+		ymin = -0.2, ymax = 5.2,
+		xlabel = {$t\ \left(ms\right)$},
+		xlabel style = {at={(axis cs:50,0.5)},anchor=north},
+		ylabel = {$f\ \left(kHz\right)$},
+		ylabel style = {at={(axis cs:1,5)},anchor=west}
+		]
+		\node[anchor=west] at (axis cs:35,2) {Ideal scenario};
+		\draw [-, black] (axis cs:-51,2) -- (axis cs:0,2);
+		\draw [-, black] (axis cs:0,4) -- (axis cs:52,4);
+
+		%\draw (axis cs:5,2.15) -- (axis cs:10,2.15);
+		%\draw (axis cs:5,1.85) -- (axis cs:10,1.85);
+		\draw [->] (axis cs:-15, 2.5 ) -- (axis cs:-15,2.05);
+		\draw [->] (axis cs:-15, 1.5 ) -- (axis cs:-15,1.95);
+		\node at (axis cs: -15, 1.3) {$\Delta f\to 0$};
+
+		\draw [->] (axis cs: 3, 3.5) -- (axis cs: 0.5,3.5);
+		\draw [->] (axis cs:-3, 3.5) -- (axis cs:-0.5,3.5);
+		\node [anchor=west] at (axis cs: 5, 3.5) {$\Delta t \to 0$};
+
+	\end{axis}
+
+
+
+
+  \end{pgflowlevelscope}
+
+\end{tikzpicture}

@@ -1,0 +1,718 @@
+% ---------------------------------------------------------
+\chapter{Introduction}\label{chapter:intro}
+% ---------------------------------------------------------
+
+	\lettrine{C}{lassical} Phasor Theory was first developed by Charles Steinmetz and published in his crucial paper \textit{Complex Quantities and their use in Electrical Engineering} \pcite{Steinmetz1893} to simplify the analysis of alternate current (AC) circuits. In this theory, Steinmetz proposes a functional operator that takes sinewaves and represents them as complex numbers. The first benefit of such operator is that, due to the simple algebra of complex numbers, operations on the space of sinewaves are reduced to operations in the complex space — much simpler and intuitive due to their geometric nature. The second benefit of the operator is that it transforms the time differential equations (DEs) of a circuit into complex algebraic equations and, due to this algebraic nature rather than differential, these new equations are much easier to solve and operate than sinewaves and differential equations; yet, the solutions of the algebraic complex equations are guaranteed to be direct representations of the steady-state solutions of the original DEs of the circuit without approximations or truncation — rendering an effective way to solve time DEs in the phasor or ``frequency'' domain. In his seminal book \textit{Theory and Calculation of Alternating Current Phenomena} \pcite{steinmetzTheoryCalculationAlternating1897}, Steinmetz proceeds to define ``true'' and ``wattless'' powers, modernly known as \textit{active} and \textit{reactive} power: complex representations of the portions of instantaneous power respectively in phase and in quadrature with voltage.
+
+	The transformation of differential equations into algebraic ones is a major feature of the phasorial operator. The ease of operations means that circuit equations can be easily manipulated; parametric analysis of circuits, as well as their frequency response and transient behavior are greatly ameliorated. Further, several results from DC (Direct Current) regimens circuits can be imported to circuits in AC (Alternate Current) regimens — such as Kirchoff's Laws, the Superposition Theorem, the Thèvenin and Norton Theorems, further enhancing the circuit analysis theory of circuits under alternate regimens. As a consequence of Steinmetz' work and the further refinement of the theory that followed, phasor analysis of AC circuits has become a cornerstone of Electrical Engineering, permeating the whole field by becoming part of elementary circuit theory and a matter of introductory books and courses \pcite{scottElementsLinearCircuits1965,desoerBasicCircuitTheory1987}.
+
+	Ellegant as it is, however, Classical Phasor Theory has increasingly become unsuitable for modern circuits and systems due to the growing need for the modelling of transient phenomena in \textit{nonstationary sinusoidal regimens} where amplitudes, frequencies and phases vary. Reestated, the signals and excitations involved have a certain ``sinusoidal shape'' but time-varing parameters; such new excitation signals clearly do not adhere to the Classical Phasor Theory which only embraces \textit{static sinusoidal regimens}. This prompts for the enhancement of classical phasor theory to a wider class of signals called \textbf{nonstationary sinusoids}. This problem is not a new one in Electrical Engineering literature, for it preconizes several instances where treating such signals with rigour is needed, yet no solid theory exists. For this matter, through the decades works have coined many terms like ``nonstationary regimens'', ``varying sinusoids'', ``functions shaped like sinewaves'', aiming to offer some formalization.
+
+	Fundamentally, building a theory of time-varying phasors is a matter of Time-Frequency Analysis (TFA), an area of mathematics dealing with representing operators and signals in frequency domain \pcite{Gabor1946TheoryOC,grochenigFoundationsTimeFrequencyAnalysis2001}. But because spectral analysis is a major field of application for several subfields of Electrical Engineering like signal processing, circuit theory, and systems modelling, engineers have been notorious for proposing many such theories — especially Electrical Power Systems (EPSs) researchers. While the first works arose in the 1940s throughout the 1990s (see \cite{Venkatasubramanian1995a,Venkatasubramanian1995}), there is a modern insurgence of theories due to the fast penetration of distributed generators across electrical grids worldwide. Over the past decades \pcite{Morsi2009,Henschel1999,rupasingheAssessmentDynamicPhasor2021,stankovicDynamicPhasorsModeling2002}, electrical engineers and researchers have proposed a multitude of approaches aiming to expand the notion of classical phasors (also called \textit{static phasors} since they are defined as constant amplitude, phase and frequency) to time-varying complex functions, called \textit{dynamic phasors} (DPs) by extension, with the aim of representing nonstationary sinusoidal signals in a phasorial manner in order to accurately model circuit networks manifesting transient phenomena and behaviors more sophisticated than simple stationary sinewaves. DPs find a myriad of applications in electrical engineering, ranging from power systems stability and control to power electronics, signal modulation \pcite{rupasingheAssessmentDynamicPhasor2021}, telecommunications \pcite{stankovicDynamicPhasorsModeling2002} and information theory \pcite{Gabor1946TheoryOC}.
+
+	Notwithstanding the many strides that have been made in the literature, the present frameworks are incomplete in the sense that they are unable to mirror the exact qualities that made static phasors such a paramount tool, and a ``complete'' theory is still sorely lacking. This thesis aims to offer such a formal theory, based on motivations and results from the literature of EPSs but has a potential for a wide application in various sub-areas of Electrical Engineering. The theory proposed is built using classical phasors theory as a template, and is shown to be an expansion of that classical theory in that is proven that classical phasors are a particular version of the dynamic phasors proposed. Further, the proposed theory opens up a wide array of theoretical results in Linear Circuit Theory, which greatly enhance our current understanding of linear circuits and considerably widen the reach of phasors by solving the problem of proving the Quasi-Static Modelling or Hypothesis, defining impedances, proving circuit modelling theorems, and offering an elementary control theory for linear systems in nonstationary sinusoidal regimens.
+
+% ---------------------------------------------------------
+\section{Motivation: the Quasi-Static Modelling}\label{subsec:intro_motivation} %<<<1
+% ---------------------------------------------------------
+
+	The so-called ``classical'' Power Systems literature is comprised of the analysis, control and simulation of large distribution systems powered by electrical machines, most commonly synchronous generators. Traditional dynamical models of Power Systems uses Phasor Equivalent (PE) models: instead of simulating Power Systems using differential equations of the voltages and currents in the time domain (called ElectroMagnetic Transient simulation or EMT), the system is transformed from the time domain to a phasorial domain where the quantities obtained are phasors that purportedly represent signals in time domain with a certain degree of accuracy.
+	
+	There are many advantages from a phasorial representation: first, the obviety of having quantities represented in terms of magnitudes and phases, which beget the notions of inductive or capacitive or resistive loads, as well as active, reactive and complex power — trivial and seminal concepts in Electrical Engineering. In some cases, phasorial representation is not only preferred but required: for instance, most Power System controllers control active and reactive power or power factor, eminently phasorial concepts. Second, while the time domain quantities vary (almost) sinusoidally at (or close to) the synchronous frequency (50 or 60Hz), the phasor quantities in general vary from fractions to the units of hertz, meaning that simulating the system in the phasorial domain is simpler and faster from a numerical standpoint seen as the numerical solvers can adopt larger timesteps due to the slower varying signals.
+
+% EXAMPLE: MACHINE MODEL <<<
+\begin{figure}
+\centering
+        \begin{tikzpicture}[american,scale=1.2,transform shape,line width=0.75, cute inductors,>={Stealth[inset=0mm,length=1.5mm,angle'=50]}]
+		\draw (-2,-0.5) [vsourcesin,sources/scale=1.2,name=vin] to (-2,0.5);
+		\draw (-1.5,0) to[short,current/distance=0.3,i=$I(t)$] (1,0);
+		\draw[line width=1mm] (0,-1)--(0,1); % V voltage
+		\node (vtlabel) at (0,1.3) {$V(t)$};
+		\draw[->] ([shift=({-1.1,0.3})]vin.90) -- +(1,0) node [midway,above] {$E_{FD}$};
+		\draw[->] ([shift=({-1.1,-0.3})]vin.90) -- +(1,0) node [midway,below] {$P_{m}$};
+		\node [draw, minimum width=25mm, very thick, minimum height=15mm, right=1, text width=20mm, align=center] (tab_block) {Transmission system};
+        \end{tikzpicture}
+	\caption{Schematic of synchronous machine model \eqref{eq:machine_2a_model}.}
+	\label{fig:machine_model}
+\end{figure} %>>>
+
+	Conceptually however, there is no guarantee that the phasorial quantities obtained from the Phasor Equivalent models are indeed verosimile to the time-domain quantities they represent. To make sure that phasorial quantities reconstruct the time domain signals of electrical systems, there are several hypotheses and simplifications assumed. The umbrella term of these simplifying hypotheses is called the \textbf{Quasi-Static Modelling or Hypothesis}, abbreviated QSM or QSH. The name stems from the crucial notion that, in order to obtain phasor-equivalent models of the electromagnetic transient models, one assumes that the frequency disturbances are slow and small — meaning that, albeit time-varying, the sinusoidal signals involved are ``almost static''.
+
+% ---------------------------------------------------------
+\subsection{Synchronous machine modelling}\label{subsec:synchmachine_modelling} %<<<2
+% ---------------------------------------------------------
+
+	The inception of the QSM starts at the modelling of the synchronous machine that power classical Power Systems. For instance, \cite{Ramos2000} is entirely dedicated to developing such phasorial models for Synchronous Machines; the book first starts with a time-domain (EMT) modelling that does not suppose any particular frequency signal, and uses currents and flux linkages to model the machine behavior. Once the EMT model is complete, several simplifications are made: first that the system frequency $\omega(t)$ is close to the synchronous frequency $\omega_0$ (50 or 60Hz), and that the rotor electro-rotational dynamics are much slower than the electrical dynamics of the stator, allowing disconsidering the stator transients and supposing it is in a permanent sinusoidal state. Following this, several simplifications follow and the machine is described as a phasor-equivalent dynamical, algebraic-differential model \eqref{eq:machine_2a_model} known as the ``two-axis'' model.
+
+% MACHINE 2A MODEL <<<
+\begin{equation}
+	\left\{\begin{array}{l}
+		\dot{E}_d = \dfrac{E_{FD} - E'_d + \left(x_q - x'_q\right)I_q}{\tau'_{q0}} \\[5mm]
+		\dot{E}_q = -\dfrac{E'_q + \left(x_d - x'_d\right)I_d}{\tau'_{d0}} \\[5mm]
+		\dot{\omega} = \dfrac{P_m - P_e - D\omega}{2H} \\[5mm]
+		\dot{\delta} = \omega \\[5mm]
+		P_e = E'_dI_d + E'_qI_q + \left(x'_q - x'_d\right)I_dI_q \\[5mm]
+		V_d = E'_d - rI_d + x'_qI_q \\[5mm]
+		V_q = E'_q - rI_q - x'_dI_d 
+	\end{array}\right. \label{eq:machine_2a_model}
+\end{equation} %>>>
+
+	In \eqref{eq:machine_2a_model}, all quantities are noted in a per-unit measurement system. $P_m$ is the mechanical power applied to the machine shaft coming from a governor, $P_e$ active the electrical power developed by the stator, and $E_{FD}$ is a voltage supplied to the field coil by a field actuator like an AVR+PSS pair. Hence these are input quantities supplied by external devices which are generally subject to other control mechanism. $E(t)$ is the internal induced voltage in the stator, $I(t)$ the stator current supplied to the bus and $V(t)$ the terminal voltage of the machine at the point of connection. A schematic is shown in figure \ref{fig:machine_model}.
+
+	In terms of behaviors, equations \eqref{eq:machine_2a_model} are essentially separated in three parts. The first two equations describe the ``electrical'' portion, and model the behavior of the internal voltage $E = E_d + jE_q$ induced on the stator by the  rotor across which coils is applied field voltage $E_{FD}$, generating a rotating magnetic field that interacts with the stator current $I = I_d + jI_d$. As a matter of fact, \eqref{eq:machine_2a_model} is known as ``two-axis'' due to the fact it models both $E_d$ and $E_q$.
+
+	 The two middle equations for $\dot{\omega}$ and $\dot{\delta}$ are the electromechanical portion of the model and describe the machine rotor angle with respect to the synchronous reference; the angular frequency $\omega$ is governed by the \textit{swing equation}, which defines that the variation in frequency is given by Newton's Second Law in a rotational frame where the accelerating torque, coming from the mechanical power supplied at the shaft from a governor, is counteracted by the electrical torque $P_e$ generated by the stator current interacting with the field coil magnetic rotating field, and also a damping-friction coefficient $D$ (small enough that it is most of the times ignored) resulting from mechanical losses on the shaft like the air drag on the rotor and mechanical friction on bushings, sockets and bearings.
+
+	Again, supposing small frequency swings, two approximations are made. First, that the electrical power $P_e$ is equivalent to the active power developed at the stator; however, there is no equivalent definition of a ``time-varying active power''. If the frequency swings are small, then the active power definition is taken as a time-varying equivalent of the static classical power $P = \left\lvert V\right\rvert\left\lvert I\right\rvert\cos\left(\phi_v - \phi_i\right)$, equalling the expression noted in \eqref{eq:machine_2a_model}.
+
+	Second, since rotational power is torque times angular frequency, the mechanical power on the shaft is given by $P_m = \tau_m\omega$ and, since $\omega\approx 1$ in a per-unit measurement system where the synchronous frequency $\omega_0$ is the single unit, then $P_m \approx \tau_m$ — the benefit being that mechanical power is easier to measure and model than torque. The same approximation is used with the counter-accelerating electrical torque, also a modelling benefit because the electrical power is simple to calculate in terms of the voltages and currents. Finally, The last two algebraic equations describe the machine terminal voltage $V = V_d + jV_q$ as a function of the iternaln induced voltage $E$ and the stator current $I$.
+
+	The machine model \eqref{eq:machine_2a_model} can be further approximated, leading to the better-known ``classical'' version. First, one supposes that the transient disturbances are too quick for the field and governor controllers to act upon these quantities in the same timescale as the disturbances, thus $P_m$ and $E_{FD}$ are kept constant and generally obtained from the equilibrium equations. Also, one supposes that the induced voltage $E(t)$ is such that its amplitude is constant, and that the time-domain signal $e(t)$ is a sinusoid at the constant synchronous frequency but time-varying angle $\delta$, as in
+
+\begin{equation} e(t) = \left\lvert E\right\rvert\cos\left(\omega_0 t + \delta(t)\right) \label{eq:equivalent_emt_E} \end{equation}
+
+	\noindent which is known as a \textit{synchrophasor}, as defined in the IEEE Standard C37.118.1-2011 for Synchrophasor Measurements for Power Systems \pcite{IEEEStandardSynchrophasor2011}. Further, one imagines that the machine used has a smooth rotor construction (as opposed to salient rotor), entailing to identical synchronous impedances $x_d = x_q = x$ and transient impedances $x'_d = x'_q = x'$. Hence the machine is approximated for a model of a phasor voltage $E(t)$ with constant amplitude and constant frequency but time-varying phase behind an impedance $r + jx'$, eliminating the differential equations for $E(t)$. Additionally it is assumed the mechanical losses on the shaft are negligible, yielding $D = 0$ leading to \eqref{eq:machine_2a_model_classical}, which is the known ``classical model'' of synchronous machines, with a schematization in figure \ref{fig:machine_model_classic}. In short, this model supposes that the induced voltage $E(t)$ has constant amplitude and frequency, and the electromechanical frequency swings are accumulated in the time-varying phase $\delta$.
+
+% MACHINE CLASSICAL MODEL <<<
+\begin{equation}
+	\left\{\begin{array}{l}
+		\dot{\omega} = \dfrac{P_m - P_e}{2H} \\[5mm]
+		\dot{\delta} = \omega \\[5mm]
+		P_e = E'_dI_d + E'_qI_q \\[5mm]
+		V_d = E'_d - rI_d + x'I_q \\[5mm]
+		V_q = E'_q - rI_q - x'I_d 
+	\end{array}\right. \label{eq:machine_2a_model_classical}
+\end{equation} %>>>
+
+% EXAMPLE: MACHINE MODEL <<<
+\begin{figure}[h]
+\centering
+        \begin{tikzpicture}[american,scale=1.2,transform shape,line width=0.75, cute inductors,>={Stealth[inset=0mm,length=1.5mm,angle'=50]}]
+		\draw (0,0.5) [vsourcesin,sources/scale=1.2,name=vin] to(0,-0.5);
+		\draw (vin.90) to[short,f=$I(t)$] ++(2,0) node(estart) {} to[short] ++(0.5,0) to[R,l=$r$] ++(1,0) to [L,l=$x'$] ++(2,0) node (vstart) {} to [short] ++(0.5,0);
+		\draw[line width=1mm] ([shift=({0,0.5})]estart.center) -- ++(0,-1); % V voltage
+		\node (elabel) at ([shift=({0,0.75})]estart.center) {$E(t)$};
+		\node (elabel) at ([shift=({0,1.1})]vin.center) {$E(t) = \left\lvert E\right\rvert e^{j\delta(t)}$};
+%
+		\draw[line width=1mm] ([shift=({0,0.5})]vstart.center) -- ++(0,-1); % V voltage
+		\node (vlabel) at ([shift=({0,0.75})]vstart.center) {$V(t)$};
+%
+		\draw[->] ([shift=({-1.1,0.3})]vin.270) node [left] {$E_{FD}$} -- +(1,0) ;
+		\draw[->] ([shift=({-1.1,-0.3})]vin.270) node [left] {$P_{m}$} -- +(1,0);
+        \end{tikzpicture}
+	\caption{``Classical'' model approximation as per \eqref{eq:machine_2a_model_classical}.}
+	\label{fig:machine_model_classic}
+\end{figure} %>>>
+
+	These equations define the open-loop synchronous machine. To achieve the model of a power system, one couples the machine to a transmission system by writing an expression for the current $I(t)$ as related to the terminal voltage $V(t)$. The simplest possible transmission system is the OMIB (One Machine Infinite Bus) depicted in Figure \ref{fig:example_omib}. This system supposes that the machine is attached to an orders-of-magnitude larger generation-transmission system — so overwhelmingly larger in fact that the particular machine under consideration has virtually no effect on it and the transmission system may be approximated by a constant voltage $V_\infty$ unwaivering to how much power that is required from, or injected into it, by the machine. Thus $V_\infty$ has constant amplitude $\left\lvert V_\infty\right\rvert$ and constant phase $\phi_\infty$, as shown in figure \ref{fig:example_omib}. The machine is attached to such Inifinte Bus through a transmission line or a particular resistive-inductive behavior. 
+
+	If the frequency swings $\omega - \omega_0$ are kept to a minimal, the line behaves ``almost sinusoidally'', that is, as a constant impedance $R_L + jX_L$, yielding the voltage-current relationship
+
+\begin{equation} V_\infty - V = I\left(R_L + jX_L\right) \label{eq:omib_line}\end{equation}
+
+	\noindent thus resulting in a differential-algebraic model of the system without controllers. After the system is modelled and simulated, then it is assumed that the phasorial signals obtained from the simulations are directly related by the formula
+
+\begin{equation} x(t) = \left\lvert X\right\rvert \cos\left(\omega_0 t + \phi_x(t)\right) \label{eq:equivalent_emt_X}\end{equation}
+
+	\noindent where $x(t)$ denotes a synchrophasor signal in time being reconstructed, $X$ is the phasorial number obtained from simulation and $\phi_X(t)$ its argument, $\omega_0$ the synchronous frequency.
+
+% EXAMPLE: OMIB <<<
+\begin{figure}[h]
+\centering
+        \begin{tikzpicture}[american,scale=1.2,transform shape,line width=0.75, cute inductors,>={Stealth[inset=0mm,length=1.5mm,angle'=50]}]
+		\ctikzset{sources/scale=1.2}
+		\node [shape=vsourcesinshape, rotate=-90] (gen1) at (-2,0) {} ;
+		\draw[->] ([shift=({-1.1,0.3})]gen1.south) -- +(1,0) node [midway,above] {$E_{FD}$};
+		\draw[->] ([shift=({-1.1,-0.3})]gen1.south) -- +(1,0) node [midway,below] {$P_{m}$};
+
+		\draw (gen1.north) to[short,current/distance=0.3,i=$I(t)$] ++(2,0) coordinate(terminalbar)
+			to[L,l=$L$,-] ++(2,0) 
+			to[R,l=$R$] ++(2,0) coordinate(vinfbar);
+
+		\draw[line width=1mm] ([shift=({0,1})]terminalbar) -- ++(0,-2); % V voltage
+		\node (vtlabel) at ([shift=({0,1.5})]terminalbar) {$V(t)$};
+
+		\draw[line width=1mm] ([shift=({0,1})]vinfbar) -- ++(0,-2); % V voltage
+
+		\node (vinfsource) [shape=vsourcesinshape, rotate=-90] at ([shift=({1,0})]vinfbar) {};
+		\node[right] () at ([shift=({0.5,0})]vinfsource) {$V_\infty {=} \left\lvert V_\infty\right\rvert e^{j\phi_\infty}$};
+
+		\draw (vinfbar.center) to (vinfsource.south);
+	\end{tikzpicture}
+
+  	\caption{One-Machine-Infinite-Bus System.}
+	\label{fig:example_omib}
+\end{figure} %>>>
+
+	In general, the fact that the model equations \eqref{eq:machine_2a_model} and \eqref{eq:omib_line} suppose many modelling hypothesis leading to significant simplification is not discussed in the Power System literature — swept under the proverbial rug —  if even cited at all. Particularly for the heavily approximated classical model \eqref{eq:machine_2a_model_classical}, this fact is especially egregious due to the extensive approximations needed to achieve it, despite its wide usage in the literature. When being introduced to the literature, one (student or researcher, and certainly myself when I was introduced) cannot help but notice that the equation of the line \eqref{eq:omib_line} uses a phasorial approach given by $V = ZI$, which supposes eminently that the current and voltage signals involved are constant sinusoids of static amplitude, frequency and phase and yet the differential model of \eqref{eq:machine_2a_model} defines $E(t),V(t),I(t),\omega(t)$ as time-varying, placing a blatant contradition which is in part quenched by the supposition of small frequency swings. The very same literature also uses such models extensively in simulations of Power Systems, even under large disturbances — in contradiction with the hypotheses that made the models possible. 
+
+	This contradiction is carried throughout the literature; in so far as the system of Figure \ref{fig:example_omib} is comprised of a single machine and the inertial approximation of a large power system (the infinite bus), it yields preliminary results and simplified analyses of the system. Nevertheless, it can already exhibit an abundance of transient behaviors — some of them of sophisticated nature, including chaos \pcite{chiangChaosSimplePower1993} and bifurcations \pcite{kwatnyLocalBifurcationPower1995}. In fact, my graduation thesis \cite{Volpato2017} deals with the specific task of finding criteria that lead the OMIB system to Hopf bifurcations — manifestly complex phenomena for such a simple system.
+
+% ---------------------------------------------------------
+\subsection{Large and multimachine Power Systems}\label{subsec:largemulti} %<<<2
+% ---------------------------------------------------------
+
+	The dissonance between the \textit{time-varying phasorial model} of electrical machines and the \textit{static phasorial model} of the transmission systems that they are attached to is even more prevalent in larger multimachine Electric Power Systems \pcite{darochaComputacaoAltoDesempenho2024}, like that of Figure \ref{fig:large_eps}. In such cases, each machine is modelled as an algebraic-differential system like \eqref{eq:machine_2a_model} or \eqref{eq:machine_2a_model_classical} and the transmission system is modelled as an \textbf{Admittance Matrix} $\mathbf{Y}$ such that the complex vector of terminal voltages and the complex vector of bus currents are related by
+
+\begin{equation} \left[\begin{array}{c} V_1 \\[3mm] V_2 \\[3mm] V_3 \\[3mm]\vdots \\[3mm] V_n \end{array}\right] = \left[\begin{array}{ccccc} Y_{11} & Y_{12} & Y_{13} & \cdots & Y_{1n} \\[3mm] Y_{21} & Y_{22} & Y_{23} & \cdots & Y_{2n} \\[3mm] Y_{31} & Y_{32} & Y_{33} & \cdots & Y_{3n} \\[3mm] \vdots & \vdots & \vdots & \ddots & \vdots \\[3mm] Y_{n1} & Y_{n2} & Y_{n3} & \cdots & Y_{nn} \end{array}\right] \left[\begin{array}{c} I_1 \\[3mm] I_2 \\[3mm] I_3 \\[3mm] \vdots \\[3mm] I_n \end{array}\right] \label{eq:multimachine_admittance}\end{equation}
+
+	\noindent and this accomplishes an algebraic-differential model of the system. Again, there is a contradiction that the transmission system is modelled as constant admittances while the machines are modelled as dynamic phasors. This contradiction is also justified under the assumption that the frequency swings are small in amplitude and slow in bandwidth; this means that the transmission grid is at an ``almost-static-sinusoidal'' state where the transients vanish quickly \pcite{azevedoMetodologiaFasorialPara2024}, yielding the set of complex algebraic equations \eqref{eq:multimachine_admittance}.
+
+	For large-scale transmission systems, PE models present an immense benefit both in the methodologic and numerical aspects: if the system were modelled in an EMT framework, every capacitance and inductance element of the grid would be represented by a differential equation, and the grid model would become difficult to compute analytically but also prohivitively large to simulate; at the same time, using complex phasorial algebraic equations, a transmission system comprised of possibily thousands of nodes is reduced to a complex matrix of the same size as there are agents acting on the grid, greatly simplifying the time needed for modelling and the computational resources needed for simulation.
+
+	In large and multimachine systems, power flow in the transmission lines is also a concern, even though as beforesaid the notions of active and reactive power in nonstationary regimens are not well-defined. Again supposing small and slow frequency swings, one uses the quasi-static modelling of the grid in \eqref{eq:multimachine_admittance} and adopts the active power $P$ and $Q$ as very close to their static or classical formulas, originating the expressions \eqref{eq:power_flow_eqs} called ``power flow equations'' describing active and reactive power transfer between two nodes $k$ and $m$:
+
+\begin{equation} \left\{\begin{array}{l} P_{km} = V_kV_m \left[G_{km}\cos\left(\theta_k - \theta_m\right) + B_{km}\sin\left(\theta_k - \theta_m\right)\right]\\[3mm] Q_{km} = V_kV_m \left[G_{km}\sin\left(\theta_k - \theta_m\right) - B_{km}\cos\left(\theta_k - \theta_m\right)\right] \end{array}\right. \label{eq:power_flow_eqs},
+\end{equation}
+
+	\noindent where $V_ke^{j\theta_k}$ and $V_me^{j\theta_m}$ are the absolute values of the phasors of the node voltages, $B_{km}$ the susceptance between the two nodes and $G_{km}$ the conductance — both taken from the real and imaginary parts $\mathbf{Y} = \mathbf{G} +  j\mathbf{B}$, where $\mathbf{Y}$ is the admittance matrix of the ``static approximated'' transmission system \ref{eq:multimachine_admittance}. These formulas are generally simplified considering that the transmission lines have almost null resistive behavior, such that $G_{km}\approx 0$ yielding
+
+\begin{equation} P_{km} \approx V_kV_m B_{km} \sin\left(\theta_k - \theta_m\right),\ Q_{km} \approx - V_kV_m B_{km} \cos\left(\theta_k - \theta_m\right). \label{eq:approx_power_flow_eqs}\end{equation}
+
+	A thorough development of these power flow equations, their derivations and the simplifications involved can be found in \cite{Monticelli1999}.
+
+% MODELLING EXAMPLE: LARGE POWER SYSTEM <<<
+\begin{figure}[h]
+\centering
+        \begin{tikzpicture}[american,scale=1.2,transform shape,line width=0.75, cute inductors]
+		\draw (-2,-0.5) [vsourcesin,sources/scale=1.2, l=$V_1(t)$] to (-2,0.5);
+		\draw (-1.5,0) to[short,current/distance=0.3,i=$I_1(t)$] (0.5,0);
+%
+
+		\draw (-2,-2) [vsourcesin,sources/scale=1.2, l=$V_2(t)$] to (-2,-1);
+		\draw (-1.5,-1.5) to[short,current/distance=0.3,i=$I_2(t)$] (0.5,-1.5);
+%
+		\foreach \n in {-0.6,-0.3,0}  \node at (-2,-3-\n)[circle,fill,inner sep=0.5pt]{};
+%
+		\draw (-2,-4.5) [vsourcesin,sources/scale=1.2, l=$V_n(t)$] to (-2,-3.5);
+		\draw (-1.5,-4) to[short,current/distance=0.3,i=$I_n(t)$] (0.5,-4);
+%
+	\draw [draw=black,ultra thick] (0.5,1) rectangle (2.5,-5);
+%
+	\node at (1.5,-2) {$\mathbf{Y}$};
+	\node at (1.5,-1.5) {Large EPS};
+        \end{tikzpicture}
+	\caption{Simplified ``black box'' representation of a large multimachine power system.}
+	\label{fig:large_eps}
+\end{figure} %>>>
+
+%\newpage
+\null
+% EXAMPLE: DROOP, AVR + PSS <<<
+\begin{figure}
+\centering
+\scalebox{0.75}{
+        \begin{tikzpicture}[>={Stealth[inset=0mm,length=1.5mm,angle'=50]}, rotate=90, transform shape]
+	\coordinate (origin) at (0,0);
+
+	\node (machineblock) [draw, minimum width=20mm, very thick, minimum height=40mm] at (origin)  {};
+	\node (machinelabel) [above=1mm of machineblock.north] {Machine};
+
+	\node (efdinput) [below=12mm of machineblock.west] {};
+	\node[right] (efdlabel) at (efdinput) {$E_{FD}$};
+
+	\node (pminput) [above=12mm of machineblock.west] {};
+	\node[right] (pmlabel) at (pminput) {$P_m$};
+
+	\node (eout) [above=12mm of machineblock.east] {};
+	\node[left] (elabel) at (eout) {$E'$};
+	\draw[->] (elabel) -- ++(120mm,0);
+
+	\node (omegaout) [above=3mm of machineblock.east] {};
+	\node[left] (omegalabel) at (omegaout) {$\omega$};
+	\draw[->] (omegalabel) -- ++(120mm,0);
+
+	\node (deltaout) [below=3mm of machineblock.east] {};
+	\node[left] (deltalabel) at (deltaout) {$\delta$};
+	\draw[->] (deltalabel) -- ++(120mm,0);
+
+	\node (vout) [below=12mm of machineblock.east] {};
+	\node[left] (vlabel) at (vout) {$V$};
+	\draw[->] (vlabel) -- ++(120mm,0);
+
+	% PSS BLOCK
+	\node (washout) [below=20mm of machineblock.south, draw, stewartyellow, minimum width=25mm, very thick, minimum height=15mm] {$\dfrac{sT_w}{sT_w + 1}$};
+
+	\node at (washout) [minimum width=105mm, minimum height=3cm] (pssrounded) {};
+
+	\node (psslabel) [above=0mm of pssrounded, stewartyellow] {\Large PSS};
+
+	\node (delayadvance) [left=10mm of washout, draw, stewartyellow, minimum width=25mm, very thick, minimum height=15mm] {$\dfrac{sT_1 + 1}{sT_2 + 1}$};
+
+	\node (pssinputgain) [draw, very thick, isosceles triangle, shape border rotate=180, stewartyellow, minimum height=15mm, minimum width=15mm, right=15mm of washout] {$k_{PSS}$};
+
+	\draw[->,stewartyellow] (pssinputgain.apex) -- ([shift=({1mm,0})]washout.east);
+
+	\draw[->,stewartyellow] (washout.west) -- ([shift=({1mm,0})]delayadvance.east);
+
+	\draw[<-,stewartyellow,preaction={draw,white,line width=4pt}] ([shift=({1mm,0})]pssinputgain.east) -- ++(10mm,0) coordinate (omegabreak) -- (omegabreak |- omegaout);
+
+	\draw[stewartyellow,fill] (omegabreak |- omegaout) circle (0.75mm) ;
+
+	\node at (washout) [draw, rounded corners, stewartyellow, fill=stewartyellow, fill opacity=0.2, very thick, dashed, line cap = round, minimum width=105mm, minimum height=3cm] (pssrounded) {};
+
+	% AVR BLOCK
+	\node (avrfilter) [below=30mm of delayadvance, draw, stewartblue, minimum width=25mm, very thick, minimum height=15mm] {$\dfrac{K_e}{sT_e + 1}$};
+
+	\coordinate (avrcircle) at ([shift=({20mm,0})]avrfilter.east);
+	\node[stewartblue] at ([shift=({-3mm, 7mm})]avrcircle.north) {$-$};
+	\node[stewartpurple] at ([shift=({7mm, 3mm})]avrcircle.east) {$+$};
+
+	\draw[stewartblue, very thick] (avrcircle)  circle (5mm);
+
+	\node at ($(avrcircle)!0.63!(avrfilter)$) [draw, rounded corners, stewartblue, fill=stewartblue, fill opacity=0.2, very thick, dashed, line cap = round, minimum width=60mm, minimum height=3cm] (avrrounded) {};
+	\node[stewartblue, below=2mm of avrrounded.south] {\Large AVR};
+
+	\draw[<-,stewartblue] ([shift=({0,6mm})]avrcircle.north) -- ++(0,16mm) -- ++(80mm,0) coordinate(avrbreak)-- (avrbreak |- vout);
+
+	\draw[stewartblue,fill] (avrbreak |- vout) circle (0.75mm) ;
+
+	\draw[->, stewartblue] ([shift=({-5mm,0mm})]avrcircle.west) -- ([shift=({1mm,0mm})]avrfilter.east) ;
+
+	\node[left=30mm of delayadvance.west] (efdcircle) {};
+	\draw[very thick] (efdcircle)  circle (5mm);
+
+	\draw[->] ([shift=({0mm,3.8mm})]efdcircle.north) |- ([shift=({-1mm,0mm})] efdinput) ;
+	
+	\draw[->, stewartyellow] ([shift=({-0mm,0})]delayadvance.west) -- ([shift=({5mm,0mm})] efdcircle.east) node[above, near end] {$V_{PSS}$} ;
+
+	\draw[->, stewartblue] ([shift=({-0mm,0})]avrfilter.west) -| ([shift=({0mm,-5mm})] efdcircle.south) node[left,near end] {$V_{AVR}$} ;
+
+	\draw[->] ([shift=({-20mm,0})] efdcircle.west) node[left] (efdlabel) {$E_{FD0}$} -- ([shift=({-5mm,0mm})] efdcircle.west) ;
+
+	% REACTIVE DROOP BLOCK
+	\node (qdroopgain) [right=120mm of avrrounded.west, draw, very thick, isosceles triangle, shape border rotate=180, stewartpurple, minimum height=15mm, minimum width=15mm] {$k_Q$};
+
+	\node[right=20mm of qdroopgain.east] (qdroopinputsum) {};
+	\node[left=20mm of qdroopgain.west] (qdroopoutputsum) {};
+
+	\node at ($(qdroopinputsum)!0.5!(qdroopoutputsum)$) [draw, rounded corners, stewartpurple, fill=stewartpurple, fill opacity=0.2, very thick, dashed, line cap = round, minimum width=90mm, minimum height=3cm] (qdrooprounded) {};
+	\node[stewartpurple, below=2mm of qdrooprounded.south] {\Large Reactive Droop};
+
+	\draw[stewartpurple, very thick] (qdroopinputsum)  circle  [radius=5mm];
+	\draw[stewartpurple, very thick] (qdroopoutputsum) circle  [radius=5mm];
+
+	\node (qcompute) [above=30mm of qdroopinputsum.north, draw, stewartpurple, minimum width=25mm, very thick, minimum height=15mm] {$Q\left(V,\delta\right)$};
+
+	\node (qcompute_inputleft) at ([shift=({-5mm,1mm})]qcompute.north) {};
+	\draw[<-,stewartpurple] (qcompute_inputleft.center) -- (qcompute_inputleft |- vout);
+	\draw[stewartpurple,fill] (qcompute_inputleft |- vout) circle (0.75mm) ;
+
+	\node (qcompute_inputright) at ([shift=({5mm,1mm})]qcompute.north) {};
+	\draw[<-,stewartpurple,preaction={draw,white,line width=4pt}] (qcompute_inputright.center) -- (qcompute_inputright |- deltaout);
+	\draw[stewartpurple,fill] (qcompute_inputright |- deltaout) circle (0.75mm) ;
+
+	\draw[->,stewartpurple] (qcompute.south) -- ([shift=({0,5mm})]qdroopinputsum.north);
+
+	\draw[->,stewartpurple] ([shift=({-3.5mm,0mm})]qdroopinputsum.west) -- ([shift=({1mm,0mm})]qdroopgain.east);
+	\draw[->,stewartpurple] (qdroopgain.apex) -- ([shift=({4.5mm,0mm})]qdroopoutputsum.east);
+
+	\draw[<-,stewartpurple] ([shift=({0,-5mm})]qdroopinputsum.south) -- ++(0mm,-12mm) node[below] {$Q_0$};
+	\draw[<-,stewartpurple] ([shift=({0,-5mm})]qdroopoutputsum.south) -- ++(0mm,-12mm) node[below] {$V_0$};
+
+	\draw[->,stewartpurple] ([shift=({-3.8mm,0})]qdroopoutputsum.west) -- ([shift=({6mm,0mm})]avrcircle.east) node[above, midway] {$V_{REF}$};
+	
+	% ACTIVE DROOP
+	\node[above=20mm of machineblock.north, rounded corners, minimum width=80mm, minimum height=3cm] (activedrooprounded) {}; 
+
+	\node[stewartgreen] at ([shift=({0mm,4mm})] activedrooprounded.north) {\Large Active Droop};
+
+	\node[left=10mm of activedrooprounded.east] (pdroopinputsum) {};
+
+	\draw[<-,stewartgreen] ([shift=({0mm,5mm})] pdroopinputsum.north) -- ++(0,12mm) node[above] (w0label) {$\omega_0$};
+
+	\draw[stewartgreen, very thick] (pdroopinputsum)  circle  [radius=5mm];
+	
+	\node (pdroopgain) [left=20mm of pdroopinputsum.center, draw, very thick, isosceles triangle, shape border rotate=180, stewartgreen, minimum height=15mm, minimum width=15mm] {$k_P$};
+
+	\draw[->,stewartgreen] ([shift=({-6mm,0mm})] pdroopinputsum.east) -- ([shift=({1mm,0})]pdroopgain.east) ;
+
+	\node[left=18mm of pdroopgain.apex] (pdroopsum) {};
+	\draw[stewartgreen, very thick] (pdroopsum) circle  [radius=5mm];
+
+	\draw[->,stewartgreen] ([shift=({1mm,0mm})] pdroopgain.apex) -- ([shift=({5mm,0})]pdroopsum.east) ;
+
+	\draw[<-,stewartgreen] ([shift=({0mm,5mm})] pdroopsum.north) -- ++(0,12mm) node[above] (p0label) {$P_0$};
+
+	\node (pdroopinput) at ([shift=({10mm,0mm})] omegabreak |- omegaout) {};
+
+	\draw[->,stewartgreen,preaction={draw,white,line width=4pt}] (pdroopinput.center) |- ([shift=({5mm,0})]pdroopinputsum.east) ;
+
+	\draw[stewartgreen,fill] (pdroopinput) circle (0.75mm) ;
+
+	\node[draw, above=20mm of machineblock.north, rounded corners, stewartgreen, fill=stewartgreen, fill opacity=0.2, very thick, dashed, line cap = round, minimum width=80mm, minimum height=3cm] (activedrooprounded) {};
+
+
+	% TURBINE-GOVERNOR
+	\node[draw, left=15mm of pminput, rounded corners, stewartpink, fill=stewartpink, fill opacity=0.2, very thick, dashed, line cap = round, minimum width=70mm, minimum height=3cm] (tgblock) {};
+
+	\node (governorblock) [left=5mm of tgblock.center, draw, stewartpink, minimum width=25mm, very thick, minimum height=15mm] {$\dfrac{k_G}{sT_G + 1}$};
+	\node[stewartpink] at ([shift=({0mm,-3mm})] governorblock.south) {\large Governor};
+
+	\node (turbineblock)  [right=5mm of tgblock.center, draw, stewartpink, minimum width=25mm, very thick, minimum height=15mm] {$\dfrac{k_T}{sT_T + 1}$};
+	\node[stewartpink] at ([shift=({0mm,-3mm})] turbineblock.south) {\large Turbine};
+
+	\draw[<-,stewartgreen] ([shift=({0mm,1mm})] governorblock.north) |- ([shift=({-3.8mm,0})]pdroopsum.west) node[near end, above] {$P_{REF}$};
+	\draw[->,stewartpink] (governorblock.east) -- ([shift=({-1mm,0})]turbineblock.west) ;
+	\draw[->,stewartpink] (turbineblock.east) -- ([shift=({-1mm,0})]pminput) ;
+
+        \end{tikzpicture}
+}
+	\caption{Control schematic of ``complete'' synchronous machine model with automatic control.}
+	\label{fig:machine_model_controls}
+\end{figure} %>>>
+%\vfill
+%\newpage
+
+% ---------------------------------------------------------
+\subsection{Control of Power Systems} \label{subsec:power_system_control}%<<<2
+% ---------------------------------------------------------
+
+	Beyond modelling, the representation of a power system by an algebraic equation \ref{eq:multimachine_admittance} also originates a lot of the controllers extensively used in the control of Power Systems. Such controllers are designed using the phasor-equivalent models \eqref{eq:machine_2a_model} and \eqref{eq:omib_line}, therefore using the notions of time-varying phasors generated by such models. However, these controllers also use notions of time-varying complex power based on those models, despite there not being a clear and consistent way of defining such power concepts in nonstationary regimens. As such, there is a \textit{conceptual} problem with transient controllers in phasor space, namely that there is no guarantee that the controllers in phasor space control the very time signals they intend to because they control complex phasorial quantities that only approximate the functions in time.
+
+	Of course, for static phasors, there is a clear bijection between the phasor quantities and the time signals; thus, parametric analysis in phasor space is guaranteed to yield results in the time domain. Again, this fact is leveraged using the QSH, supposing that the system approximates its steady-state behavior once frequency swings are small and slow. However, if such is not the case, there is no guarantee that the phasorial quantities controlled by and output by these controllers indeed produce time signals that achieve the control objectives; these controllers are stable and do adhere to their objectives in phasor space, but without a clear-cut way to translate the time-varying phasors to time signals and vice-versa, it cannot be guaranteed that the control objectives are fulfilled for the time domain.
+
+	For instance, one consequence of the QSH on frequency and voltage control in Power Systems is the decoupling between frequency-active power and voltage-reactive power. This is justified by a sensitivity analysis on the equations \eqref{eq:approx_power_flow_eqs}:
+
+\begin{align}
+        \dfrac{\partial P_{km}}{\partial \theta_k} &= V_k V_m B_{km}\cos\left(\theta_k - \theta_m\right) \\[5mm]
+%
+        \dfrac{\partial P_{km}}{\partial \theta_m} &= V_kV_m B_{km}\cos\left(\theta_k - \theta_m\right) \\[5mm]
+%                         {km}
+        \dfrac{\partial P_{km}}{\partial V_k} &= 2V_k B_{km}\sin\left(\theta_k - \theta_m\right) \\[5mm]
+%                         {km}
+        \dfrac{\partial P_{km}}{\partial V_m} &= V_k B_{km}\sin\left(\theta_k - \theta_m\right) \\[5mm]
+%                         {km}
+        \dfrac{\partial Q_{km}}{\partial\theta_k} &= V_kV_m B_{km}\sin\left(\theta_k - \theta_m\right) \\[5mm]
+%                         {km}
+        \dfrac{\partial Q_{km}}{\partial\theta_m} &= -V_kV_m G_{km} B_{km}\sin\left(\theta_k - \theta_m\right) \\[5mm]
+%                         {km}
+        \dfrac{\partial Q_{km}}{\partial V_k} &= -V_m B_{km}\cos\left(\theta_k - \theta_m\right) \\[5mm]
+%                         {km}
+        \dfrac{\partial Q_{km}}{\partial V_m} &= - V_k B_{km}\cos\left(\theta_k - \theta_m\right)
+\end{align}
+
+	Considering that the lines are ``strong'' enough (the values $\left\lvert G_{km}\right\rvert$ and $\left\lvert B_{km}\right\rvert$ are sufficiently large), we can consider that the angle difference $\theta_k - \theta_m$ is small enough to consider its sine approximately itself and its cosine as almost unitary; the derivative of the active power $P_{km}$ with respect to voltages becomes small, as does the derivative of $Q_{km}$ with respect to any angle. Thus, one concludes that the active power has a larger influence on the angles (thus the frequency), while the reactive power has more influence over the voltages. Therefore, in a very short simplification, this causes the ``active'' part of the circuit and the frequency behavior to be decoupled from the ``reactive'' and voltage behaviors. By virtue of these facts, one concludes that to adjust frequency one must control active power, and to adjust voltage magnitudes one must control reactive power.
+
+	At a first glance, the simplest controllers that can be drawn from these conclusions are ones that adjust frequency linearly with active power, and voltage linearly with reactive power, called \textbf{Droop control}. The main notion is that if the grid is accelerating in frequency, then by the decoupling conclusion it has more active power offered to it than its loads can consume; therefore, the Droop controllers force generators to reduce active power injection. Conversely, a dip in frequency means more active loading than offered, thus making the generators ramp up active power injection. Similarly, one concludes that if the system has too high voltage levels, the grid is consuming less reactive power than is offered, and generators are forced to supply less reactice power, and vice-versa.
+
+	Figure \ref{fig:machine_model_controls} shows the control block of a synchronous machine containing such controllers, augmented by other conventional control loops. In {\color{stewartgreen} green}, the active Droop control adjusts the mechanical power supplied to the machine based on variations of the frequency $\omega$ in a linear fashion, measured with respect to the synchronous frequency (that is, if the machine is at $\omega_0$ then $\omega = 0$ in the model). The active Droop control does this by a linear relationship
+
+\begin{equation} P_{REF} - P_0 = k_P\left(\omega - \omega_0\right) \end{equation}
+
+	\noindent where $P_{0}$ is the operating active power at the synchronous frequency, $\omega_0$ a reference frequency (generally the synchronous) and $k_P$ some gain. The signal $P_{REF}$ is a reference power that is sent to the machine governor-turbine group, represented in {\color{stewartpink} pink} in the model. These blocks model the delays and gains of governor and turbine in the form of the gains $k_G,k_T$ and time constants $T_G$ and $T_T$. This group is responsible for applying the reference power $P_{REF}$ to the machine shaft, supplying the reference power to the machine.
+
+	On the bottom side, the machine field coil is controlled by a pair of controllers called Automatic Voltage Regulator (AVR) and a Power System Stabilizer (PSS), in what is called the excitation control group. The AVR, noted in {\color{stewartblue} blue}, is designed to adjust the field voltage $E_{FD}$ to achieve a terminal voltage reference $V_{REF}$, using a gain $K_e$ and a delay $T_e$. Indeed, it can be seen from \eqref{eq:machine_2a_model} that higher $E_{FD}$ leads to a higher $E'_q$, thus inducing a larger voltage. The reference terminal voltage $V_{REF}$ is supplied by an active Droop control, denoted in {\color{stewartpurple} purple}; this control group works in the same way as the active Droop: it adjusts the terminal voltage reference $V_{REF}$ based on swings in active power according to another linear relationship
+
+\begin{equation} V_{REF} - Q_0 = k_Q\left(V - V_0\right) \end{equation}
+
+	\noindent where $Q_0,V_0$ are reference values and $k_Q$ a gain.
+
+	Finally, the system is also equipped with a PSS, noted in {\color{stewartyellow} yellow} color. This controller aims to adjust field voltage $E_{FD}$ in order to dampen frequency swings using a delay-advance controller; additionally, a washout block is used to remove low-frequency disturbances. This controller is a transient stabilizer, as opposed to the AVR which is aimed at voltage (thus mid- and long-term) stability. The PSS also has the objective of damping harmful oscillations caused by needed high AVR gains \pcite{Volpato2017}.
+
+	All these controllers are ultimately based on the phasorial models, time-varying notions of active and reactive power, and the approximations that follow considering many simplification hypotheses. More importantly, however, is the fact that all the controllers are designed based on small-signal analysis, specifically the eigenanalysis of the linearized equations of the system around an operating point. For instance, \cite{demelloConceptsSynchronousMachine1969} first described the harmful feedback loop brought by AVRs because essentially they inject oscillations in phase with the frequency transfer function, and the PSS was designed to inject oscillations in counterphase with frequency through the advance-delay controller tuning. Modern tuning algorithms for AVRs and PSSs still rely on small-signal analysis, for instance, in \cite{kimNovelControlStrategy2023,xuSmallSignalStabilityAnalysis2024,sarkarFractionalOrderPIDPSS2025}. Since these techniques rely on small signal disturbances, they expect phasorial signals, as well as frequency, to vary little and slowly; ultimately, this means that the QSH is ingrained within the very design, evaluation and tuning of such controllers.
+
+% -------------------------------------------------------
+\subsection{The QSM beyond Power Systems} %<<<2
+% ---------------------------------------------------------
+
+	What subsections \ref{subsec:synchmachine_modelling}, \ref{subsec:largemulti} and \ref{subsec:power_system_control} intend to show is that the apparently simple supposition of small and slow frequency variations has a wide and deep reach over most aspects of Power System studies, in all its forms: signal representation, machine and transmission system modelling, and control and stability theories. This supposition is then known as the \textbf{Quasi-Static Hypothesis or Modelling} (QSH or QSM): the widely permeating hypothesis in Power System literature that the dynamic models suppose slow and small frequency variations.
+
+	Due to its reach and depth, the literature has made efforts to justify the QSM. From a practical point of view, the qualitative and quantitative results stemming from these simulations have been shown verosimile, and widely discussed in the literature, for instance in \cite{zhuDWTBasedAggregatedLoad2018} where the quasi-static modelling is compared to a Discrete Wavelet Transform modelling and in \cite{gustafssonWavePropagationCharacteristics2015} which studies propagation of low-frequency waves in HVDC cables. I, myself, have published a paper \pcite{volpatoDynamicPhasorTransform2022} using the Short-Time Fourier Transform to theoretically support the QSH.
+
+	From a theoretical point of view, the QSH is a intuitive way to think about ``slow-varying'' nonstationary signals. Formally, the QSH represents two facts that are supposed true in Power System literature. First, that the agents (machines) powering the electrical networks that model the transmission line are ``almost sinusoidal'', that is, they convey almost pure sinewaves with very small and very low bandwidth distortion. This allows converting the EMT models of agents into PE models, and that the phasor quantities obtained from the PE simulations reconstruct signals (like that of \eqref{eq:equivalent_emt_X}) that approximate the time domain EMT signals with a sufficient degree of precision. Second, since the excitation signals are ``slow-varying'', the network circuit modelling the grid is supposed very fast, in such a way that all its phasorial transients vanish swiftly and the grid dynamic equations reach steady-state quickly; therefore, the grid equations can be accurately approximated by their steady-state (algebraic) phasorial models at all time instants. This allows for using \eqref{eq:omib_line} as a nigh-faultless model of the transmission line, and using the admittance matrix as in \eqref{eq:multimachine_admittance} to model a big transmission system.
+
+	It must be noted that the issue of representing signals and differential equations under nonstationary regimens is not exclusive of the Power System Literature, but permeates several other fields of Electrical Engineering and Applied Mathematics. For instance, the semicondutor literature is proficient in enhancing quasi-static models of electronic devices: \cite{crupiAnalysisQuasistaticAssumption2006} analyzes the effectiveness of a quasi-static model for a FinFET device, while \cite{allmanQuasistaticResponseMOS1981} analyzes the quasi-static behavior of a MOS FET under constant gate bias. The literature on electromagnetics is also known for studying quasi-static models of electromagnetic phenomena; for instance, \cite{mazauricGalileanCovarianceMaxwell2014} shows Galilean Electromagnetism is the equivalent of quasi-static solutions to Maxwell's Equations.
+
+ 	For a more ellaborate example, take a Frequency Modulated (FM) signal demodulator, the simplest of which is based on a first-order Phase-Locked-Loop as shown in figure \ref{fig:example_pll}. The objective of this PLL is to receive a certain frequency-modulated signal $x(t) = \sin\left(\theta(t)\right)$ and produce an estimation of the quantity $\dot{\theta}$, which is the de-modulated message or signal. To do this, an estimated signal $x_e(t) = \sin\left(\theta_e(t)\right)$ is produced, and multiplied in a mixer with $x(t)$. Using the sine product-to-sum formulas,
+
+\begin{equation} x(t)x_e(t) = \sin\left(\theta(t)t\right)\sin\left(\theta_e(t)t\right) = \dfrac{1}{2}\left\{\raisebox{4mm}{} \sin\left[\raisebox{3mm}{} \theta(t) + \theta_e(t)\right] + \sin\left[\raisebox{3mm}{}\theta(t) - \theta_e(t)\right]\right\} . \end{equation}
+
+	Applying a version of the Quasi-Static Hypothesis, if the swings of $\omega(t)$ are not fast nor wide, then $\omega_e(t)$ stays fairly close to $\omega(t)$ such that the sine of their sum has close to double the bandwidth of $\omega(t)$; therefore, the multiplication is passed through a Low-Pass filter which ``removes'' the sine of sum portion leaving only the sine of difference. Again, if $\omega(t)$ is slow enough, $\omega_e(t)$ will be fairly close to it and the difference will be sufficiently small that the sine of the difference is almost equal to the difference itself:
+
+\begin{equation} e(t) \approx \dfrac{1}{2}\sin\left[\raisebox{3mm}{}\theta(t) - \theta_e(t)\right] \approx \dfrac{1}{2}\left[\raisebox{3mm}{}\theta(t) - \theta_e(t)\right] . \end{equation}
+
+	This signal $e(t)$ then approximates the error deviation from $\theta(t)$ and the estimation $\theta_e(t)$ and is passed to a PI controller, which adjusts $\theta_e(t)$ itself to vanish the error signal. Again, supposing that the frequency variations are sufficiently slow, then the PI controller will be able to continuously track the estimation $\theta_e$ that vanishes the error. This estimation is then passed to a Voltage Controlled Oscillator (VCO) that produces $x_e(t)$.
+
+% PLL SUBSYSTEM FIGURE <<<
+\begin{figure} 
+\centering
+\begin{tikzpicture}[>={Stealth[inset=0mm,length=1.5mm,angle'=50]}]
+
+% Sum shape
+\node[draw, circle, minimum size=0.6cm] (sum) at (0,0){};
+ 
+%\node at ([shift=({-3.5mm,3mm})]sum.center){\tiny $+$};
+%\node at ([shift=({-3mm,-4mm})]sum.center){\tiny $-$};
+
+\node (breaknode) at ([shift=({0,-20mm})]sum.center) {};
+
+\draw (sum.south west) -- (sum.north east);
+\draw (sum.south east) -- (sum.north west);
+ 
+% LPF
+\node [draw, very thick, minimum width=2cm, minimum height=1.2cm, right=1cm of sum]  (controller) {};
+\node at ([shift=({ 0  , 1})]controller.center) {LPF};
+
+\draw [->, very thick]  ([shift=({-0.8,-0.5})]controller.center) -- ([shift=({-0.8, 0.5})]controller.center);
+\draw [->, very thick]  ([shift=({-0.9,-0.4})]controller.center) -- ([shift=({ 0.9,-0.4})]controller.center);
+\draw ([shift=({-0.8, 0.2})]controller.center) -- ([shift=({ 0.2  , 0.2})]controller.center);
+\draw ([shift=({ 0.2, 0.2})]controller.center) -- ([shift=({ 0.6,-0.4})]controller.center);
+
+% PI
+\node [draw, very thick, minimum width=2cm, minimum height=1.2cm, right=2cm of controller]  (picontroller) {PI};
+ 
+% System H(s)
+\node [draw, minimum width=2cm, very thick, minimum height=1.2cm, right=1.5cm of picontroller] (system) {VCO};
+
+% Phase detector
+\node [draw, thick, rounded corners, dashed, line cap = round, red, minimum width=5cm, minimum height=3cm, left=1.25cm of picontroller]  (detector) {};
+\node [red] at ([shift=({ 0  , 2mm})]detector.north) {Phase detector group};
+ 
+% Arrows with text label
+
+\draw[->] (sum.east) -- ([shift=({-0.1,0})]controller.west) node[midway,above]{};
+       
+\draw[->] (controller.east) -- ([shift=({-0.1,0})]picontroller.west) node[near end,above] {$e(t)$};
+       
+\draw[->] (picontroller.east) -- ([shift=({-0.1,0})]system.west) node[midway](piout){}  node[midway,above]{};
+      
+\draw[->] (system.east) -- ++ (1.25,0) node[midway] (output) {} ;
+       
+\node[->] (xoeout) at ([shift=({12mm,0})]output.center) {$x_e(t)$};
+                                               
+\draw (output.center) |- (breaknode.center);
+                                               
+\draw[->] (breaknode.center) -- ([shift=({0,-0.1})]sum.south) node[near end,left]{};
+ 
+\draw[->] ([shift=({-1.5,0})]sum.west) -- ([shift=({-0.1,0})]sum.west) node[near start,above]{$x(t)$};
+
+\node[->] (thetaout) at ([shift=({0,20mm})]xoeout.center) {$\theta_e(t)$};
+
+\draw[->] (piout.center) |- (thetaout);
+
+% Integrator
+
+\node [draw, very thick, minimum width=1.5cm, minimum height=1.5cm, above=3cm of piout] (integrator) {$\dfrac{d}{dt}$};
+
+\draw[->] (piout.center) -- ([shift=({0,-0.1})]integrator.south);
+
+\node[->] (omegaout) at (integrator.center -| xoeout.center) {$\omega_e(t)$};
+
+\draw[->] (integrator.east) |- (omegaout.west);
+\end{tikzpicture}
+\caption{Simple first-order Phase Locked Loop synchronization subsystem.}
+\label{fig:example_pll}
+\end{figure}
+%>>>
+
+	The signal $\omega_e(t)$ obtained from the PLL subsystem is then the demodulated function which is later on used for the target application. Again, there is a theoretical dissonance in this modelling in that the signals $\theta(t)$ is ``slow-varying'', which in turn means that the filtering and feedback are very resemblant of a sinusoidal state; yet, this PLL system is used even when the circuit or control scheme in study is subjected to large transients.
+
+	From an Applied Mathematics point of view, the issue of the QSH lies in the realm of Differential Equations and Functional Analysis. In general, a passive time invariant linear circuit can be modelled as a Linear Time Invariant Ordinary Differential Equation
+
+\begin{equation} \dot{\mathbf{x}} = \mathbf{Ax + Bf}(t), \label{eq:lincircuit_ode_general}\end{equation}
+
+	\noindent where $\mathbf{x}$ are the system states (capacitor voltages and inductor currents), $\mathbf{A}$ a matrix comprised of combinations of the R, L and C values of the circuit, $\mathbf{B}$ an adjacency matrix of the excitations and $\mathbf{f}(t)$ the vector of excitations or ``forcings''. It is known from the theory of Differential Equations that if $\mathbf{A}$ has certain characteristic (\textit{videlicet}, that it is Hurwitz Stable) then $\mathbf{x}$ will exponentially approach a stable steady-state solution; if the vector of excitations $\mathbf{f}$ is composed of sinusoidal voltages and current sources at a particular frequency $\omega$, the steady-state solution of $\mathbf{x}$ will also be made of sinusoidal signals at the excitation frequency $\omega$. This allows for developing the theory of Classical Phasors by transforming the signals $\mathbf{x,f}$ into phasor-equivalent forms and \eqref{eq:lincircuit_ode_general} is transformed into the PE model
+
+\begin{equation} \mathbf{0} = \left(\mathbf{A} - j\omega\mathbf{I}_n \right)\mathbf{X + BF} \Leftrightarrow \mathbf{X} = -\left(\mathbf{A} - j\omega\mathbf{I}_n \right)^{-1}\mathbf{BF}, \label{eq:lincircuit_ode_phasor}\end{equation}
+
+	\noindent where $j$ is the imaginary unit, $\mathbf{F}$ and $\mathbf{X}$ are the phasorial versions of the forcings $\mathbf{f}$ and the steady-state solution of $\mathbf{x}$, $\mathbf{I}_n$ the n-th order identity matrix, and the invertibility of the matrix $\mathbf{A} - j\omega\mathbf{I}_n$ is guaranteed by the fact that in a passive linear circuit $\mathbf{A}$ has real stable eigenvalues. In simpler terms, if the vanishing transient portions of $\mathbf{x}$ are disconsidered, the original time-domain differential equation \eqref{eq:lincircuit_ode_general} is transformed into an algebraic complex equation \eqref{eq:lincircuit_ode_phasor} which solution is, both analytically and computationally, exceptionally simple: the only ``challenge'' is the inversion of the matrix $\mathbf{A}$ which, albeit a classically computationally expensive task, is still leagues of magnitude simpler than solving the EMT model \eqref{eq:lincircuit_ode_general} in time.
+
+	If $\mathbf{f}$ is not exactly sinusoidal but \textit{almost sinusoidal}, that is, its sinusoidal components are ``close to $\omega$'' in that their frequencies are small deviations from $\omega$, it is also known from Functional Analysis that if the forcing $\mathbf{f}$ in \eqref{eq:lincircuit_ode_general} is continuous (in the Banach Space of functions) with respect to $\omega$  then the solution of the ``almost-sinusoidally-forced'' ODE \eqref{eq:lincircuit_ode_general} will be closed to the solution of the perfectly sinusoidal one; formally, writing $\mathbf{f}$ as a vector of $k$ forcings
+
+\begin{equation} \mathbf{f}(t) = \left[\begin{array}{c} \left\lvert f_1(t)\right\rvert\cos\left(\omega(t)t + \phi_1(t)\right) \\[3mm] \left\lvert f_2(t)\right\rvert\cos\left(\omega(t)t + \phi_2(t)\right) \\[3mm] \vdots \\[3mm] \left\lvert f_k(t)\right\rvert\cos\left(\omega(t)t + \phi_k(t)\right)\end{array}\right]\end{equation}
+
+	\noindent and if the variations of amplitudes $\left\lvert f_i(t)\right\rvert$ and phases $\phi_i(t)$ are small and slow, and if the time-varying frequency $\omega(t) = \omega_0 + \Delta\omega(t)$ for some constant $\omega_0$, then one can conceive a ``time-varying'' sinusoidal phasorial forcing
+
+\begin{equation} \mathbf{F}(t) = \left[\begin{array}{c} \left\lvert f_1(t)\right\rvert e^{j\phi_1(t)} \\[3mm] \left\lvert f_2(t)\right\rvert  e^{j\phi_2(t)}\\[3mm] \vdots \\[3mm] \left\lvert f_k(t)\right\rvert  e^{j\phi_k(t)} \end{array}\right]\end{equation}
+
+	\noindent such that the phasorial signal
+
+\begin{equation} \mathbf{X}(t) = -\left(\mathbf{A} - j\omega_0\mathbf{I}_n \right)^{-1}\mathbf{BF}(t) \label{eq:lincircuit_ode_phasor_steadystate} \end{equation}
+
+	\noindent reconstructs the solution $\mathbf{x}$ of the time-domain differential equation with some degree of accuracy through the reconstruction formula \eqref{eq:equivalent_emt_X}. However, as it is common with mathematics, and often a source of grief between mathematicians and engineers, this procees is not able to determine ``how close'' $\mathbf{f}$ has to be to a perfect sinusoidal excitation so that $\mathbf{x}$ is ``close enough'' to its sinusoidal version, which is a major concern in engineering because in Power Systems voltage and frequency deviations are not only problematic for their potentially damaging effects in consumer and industry applications, but also heavily regulated in real world systems.
+
+% ---------------------------------------------------------
+\subsection{Modern Power Systems}\label{subsec:in} %<<<2
+% ---------------------------------------------------------
+
+	The Quasi-Static Hypothesis is a major point of fracture in the Power System literature because it depends on a very specific nature of the electrical grid and particularly of the agents that power it. In the classical EPS literature, because the majority of the agents involved are large electrical machines, the QSH becomes a reasonable modelling hypothesis for machines are large devices with significant mass and rotational inertia representing a lot of mechanical energy stored in the rotating stator, making the system inherently ``slow''. Further, the presence of strong magnetic fields generated by large and long coils also stores a large amount of magnetic energy in those fields, so that the transmission grid is inherently ``quicker'' than the sinusoidal waves injected by machines. Classical grids are also many times composed of transformers, feeders and condensers, all electromechanical in nature with huge inductances and masses, providing yet another layer of inertia. Beyond the very nature of the devices that compose the grid, most large systems have a collaborative and centralized control that monitors some key nodes in the grid and takes actions to ensure some proper functioning of the system. These constructive, inertial and controlling characteristics of the grid result in a high level of reasonability when using the Quasi-Static Hypothesis.
+
+	More recently, the EPS literature has been growingly occupied with integrating distributed generators to modern grids, spearheaded by the growing adoption of Renewable Energy Sources (RES) like photovoltaic and wind generators, as well as the integration of battery systems. Because these more modern systems are based on electronic power devices like converters and inverters, they lack the inertial characteristics of machines and transformers; further, because the generators are distributed and generally not a part of the centralized control that large systems may have, they can take only localized actions without much information of the overall system they are connected to. Several key concepts are also inherently different from large power systems: for instance, conventional generators like machines and turbines are dispatchable, that is, there is a reasonable interval of control where the operator can reduce or enhance power output based on stability and power criteria, like for instance, varying active and reactive power outputs using Droop controllers like those of figure \ref{fig:machine_model_controls}. A diesel generator can control its fuel intake, a hydro power plant can control the aperture of watergates, a nuclear power plant can control the pressure of the circulating water, and so on. RES devices, on the other hand, are intermittent: a photovoltaic power plant can only generate power depending on how much insolation and temperature it receives, a wind generator depends on the speed of the wind through it, a seawave power generator depends primarily on currents, breaking wind, tides, water temperature.
+
+	%Further, the economics of modern power grids introduce new challenges to the already large list of operating constraints and requirements of traditional grids. Where classical EPSs are primarily concerned with the power quality and stability of the grid, as well as maintaining proper functioning of key areas of the system (such as basic infrastructure like hospitals, public stations and emergency services) while being robust to faults, modern power systems also need to be aware of how much power they are producing and ideally maximizing power output since, in general, individual power plants generate revenue for its operators — and this revenue is obviously based on how much power is produced — and, although having considerably smaller maintenance and running costs than machines (like the cost of fuel and operation), they have high implementation initial costs, pressuring for economical returns.
+
+	%, where the multiple control objectives can become contradictory. Famously, in 2013 the California Independent System Operator (CAISO) released, in its annual report \pcite{caiso2013AnnualReport2014}, data and analysis that outline some concern regarding the overgeneration ocurring from the increased integration of photovoltaic power plants. The now famous ``Duck Curve'' \pcite{caisoFastFactsWhat2016} shows that during the specific times when PV generation is at a day-high (the particular hours between 9AM and 3PM) it provides more energy that the system can effectively use, forcing the larger grid to operate below safe levels. Further, at the specific time interval between 3PM wnd 6PM, there is a vertiginous fall in PV power production, yet a comparable vertiginous rise in power consumption; this leads to a double-whammy mechanism where the traditional generators have to accelerate too quick, leading to instability and in some extreme cases damage to grid components. These problems, then, lead to a myriad of technical and economical challenges on power system economics and operation stemming from procedural, regulatory and operational challenges brought about by distributed, intermittent generation.
+
+	The fact that the newer power devices cannot afford the system such inertia cracks down on every possible aspect of classical power systems discussed until here. If the frequency swings are not slow and small, the modelling of agents as phasor-equivalent models like \eqref{eq:machine_2a_model} and \eqref{eq:machine_2a_model_classical} is not possible anymore due to the consequent frailty of the supposition that the agents supply ``almost sinusoidal'' voltages and currents to the system. Further, a static modelling of the grid like in \eqref{eq:multimachine_admittance} is not possible, because the transient phenomena are now much different than pure sinusoids, and the voltage-current relationships are no longer given by simple impedance equations $V = ZI$. As a consequence, the power flow equations \eqref{eq:power_flow_eqs} are also invalid. Because not only the static admittance modelling is asunder, but also the notions of time-varying active and reactive power are not approximable from their static counterparts, the ``decoupling'' between active power and frequency, and reactive power and voltages is also not valid. Finally, this also undermines the validity of the linear controllers designed for the system, and particularly the active-reactive Droop adjustment controllers, as in figure \ref{fig:machine_model_controls}.
+
+	Naturally, the limits of these approximations lie specifically on \textit{how quick} the system is and if the frequency swings are acceptably small and slow. In practice, albeit it being known that the approximations are conceptually invalid, it is supposed that for however imprecise they are, they become better as frequency swings subside; truthfully, such is indeed the case for the majority of systems and study cases, where the system is able to restore itself to equilibrium after faults.
+
+	Thus, the intermittent, faster and ``less inertial'' nature of power electronics devices places modern power systems in a rather difficult state of affairs where new stability results and transient phenomena must be identified and studied, yet the underlying QSH assumption of the models used is not satisfied by the devices employed. This undermines the timescales argument made when justifying the QSH, which by its own volition undermines the phasorial theory used to represent Electrical Power Systems, by consequence putting a question mark on whether the controllers designed, simulation results obtained, and the stability theory developed using these rutted phasor theories are really reflective of the systems they model. 
+
+	There is an already large yet still growing body of literature dedicated simply to find and analyze the new stability (in all its forms) and power balance issues stemming from the harsher and less-forgiving nature of generators that depend on the environment. Much of the current theory lies, for instance, in studying under which conditions the stability analysis results of classical Power Systems like small-signal analyses \pcite{mishraPhillipsHeffronModelPVDG2013} indirect energy methods \pcite{sauerPowerSystemDynamics2017} and even to use certain control schemes to make converter-based systems mimic the behavior of machines, like the Virtual Synchronous Machine (also called Synchroverter) controllers \pcite{moEvaluationVirtualSynchronous2017}. Further, there is an increasing preoccupation with the fact that modern power grids are in essence cyberphysical systems that communicate using modern protocols and techniques, meaning they are subject to cyber attacks and the detection and prevention of such attacks is needed \pcite{karanfilDetectionMicrogridCyberattacks2023}. From the theoretical perspective of this thesis, the problem is born at a much fundamental step: the inception of a theory that supports the phasorial models used in the nigh-entirety of Power System studies, especially those involving modern grids.
+
+% ---------------------------------------------------------
+\section{Problems this thesis aims to tackle}\label{subsec:intro_problems_tackle}
+% ---------------------------------------------------------
+
+	Given the introductory discussion, it becomes clear that the target of this thesis is the development of a Dynamic Phasors theory that justifies the classical power system literature from a theoretical point of view, but also embraces fast-responding power systems and offers a more complete framework to represent, model and control modern power systems.
+
+	Initially, due mine and Prof. Luís' backgrounds in Power Systems, the motivations and examples we used initially were naturally aimed at that particular field. However, as I developed this research we noted that the theory that unfolded strayed ever so farther away from our initial motivation of building a Dynamic Phasor Theory for Power Systems, and we delved further and further into Linear Circuit Theory. We started asking ourselves more qualitative questions, like \textit{``how can we guarantee a circuit built of linear components is Hurwitz-stable?''} or \textit{``what does it mean for a signal to have a time-varying frequency?''}. Eventually we convinced ourselves that this was to be a study on a more fundamental, basic matter of theory and not specifically on the application of Power Systems. In reading more on the literature, we also noted that many subfields of Electrical Engineering suffered from the same affliction as we did: the lack of a complete theory for representing Nonstationary Sinusoids in a phasorial form highly resemblant of the original, or Classical, Phasors.
+
+	As a consequence of the breadth of this problem among many fields of engineering and the depth with which it impacts Linear Circuit Theory, this thesis is built as a text on Linear Circuit Theory with the specific aim to cater to a wider audience of engineers, and obviously, electrical engineers specially, but without losing its inceptive motivational application to Power Systems.
+
+% ---------------------------------------------------------
+\subsection{Static Phasors as a template}\label{subsec:timephasor}
+% ---------------------------------------------------------
+
+	Initially, we looked at the ``static'' or ``classical phasors'' theory, as proposed by Steinmetz when he was studying stability of electrical machines connected to large systems, in order to build requirements — maybe a template if possible — for the theory we envisioned. Formally, static phasors are based on an operator that takes some sinusoidal signal $x(t) = K\cos\left(\omega t + \phi\right)$ and delivers the complex number $X = Ke^{j\phi}$. This operator has the immediate benefit that, while linearly combining sinusoids needs complicated formulas known as the Prostaph\ae resis formulas, linearly combining phasors is a matter of simple complex number geometry.
+
+	Beyond its operational capabilities, an even bigger advantage of phasors is that the Phasor Operator has the benefit of transforming a differential equation in the time domain to an algebraic equation in the complex domain, for if $X = Ke^{j\phi}$ is the phasor of $x(t)$, then $Y = j\omega K e^{j\phi}$ is the phasor of $y(t) = \dot{x}(t)$. Therefore, consider a time ODE
+
+\begin{equation} \sum_{k=0}^n \alpha_k x^{(k)} + M\cos\left(\omega t\right) = 0 \label{eq:steinmets_ode}\end{equation}
+
+	\noindent and by the transform of derivative this ODE is transformed to the phasor equivalent
+
+\begin{equation} \sum_{k=0}^n \alpha_k \left(j\omega\right)^k X + M = 0 \Leftrightarrow X = M\ \dfrac{1}{\displaystyle\sum_{k=0}^n \alpha_k \left(j\omega\right)^k} \label{eq:steinmets_ode_algebraic}\end{equation}
+
+	Due to the simple nature of complex algebra, solving this ODE is simple:
+
+\begin{equation} X = M\dfrac{\overbrace{\left(\alpha_0 - \alpha_2\omega^2 + ...\right)}^{\text{Even exponents}} - j\overbrace{\left(\alpha_1\omega - \alpha_3\omega^3 + ...\right)}^{\text{Odd exponents}}}{\left(\alpha_0 - \alpha_2\omega^2 + ...\right)^2 + \left(\alpha_1\omega - \alpha_3\omega^3 + ...\right)^2} \label{eq:netgrid_original_phasor_sol}\end{equation}
+
+	\noindent and this signal reconstructs
+
+\begin{equation} x_s(t) = K\cos\left(\omega t + \phi\right)\ \left\{\begin{array}{l} K = \dfrac{M}{\sqrt{\left(\alpha_0 - \alpha_2\omega^2 + ...\right)^2 + \left(\alpha_1\omega - \alpha_3\omega^3 + ...\right)^2}}\\[10mm] \tan\left(\phi\right) = -\dfrac{\left(\alpha_1\omega - \alpha_3\omega^3 + ...\right)}{\left(\alpha_0 - \alpha_2\omega^2 + ...\right)} \end{array}\right. ,\end{equation}
+
+	\noindent which can be proven as being the exponentially stable steady-state solution to \eqref{eq:steinmets_ode}. Therefore, the phasor operation translates algebraic complex quantities that have a bijective representation of the time quantities they represent, such that the time signals can be reconstruced from the phasorial ones without any approximations or truncations.
+
+% ---------------------------------------------------------
+\subsection{Electrical power in AC regimen}\label{subsec:acpower}
+% ---------------------------------------------------------
+
+	 Apart from the bijective relationship between phasors and solutions of differential equations, classical phasors also offer the concept of complex power, or electrical power in Alternate Current regimens. Let $V = m_ve^{j\phi_v}$ and $I = m_ie^{j\phi_i}$ the phasors of the voltage over and current through a bipole. Then the instantaneous power can be shown to be calculated as
+
+\begin{equation} p(t) = P\left[1 + \cos\left(2\omega t + 2\phi_v\right)\right] + Q\sin\left(2\omega t + 2\phi_v\right) \label{eq:time_inst_power}\end{equation}
+
+	\noindent where $P$ and $Q$ are calculated as
+
+\begin{equation} P = \dfrac{m_vm_i}{2}\cos\left(\phi_v - \phi_i\right), Q = \dfrac{m_vm_i}{2}\sin\left(\phi_v - \phi_i\right) . \label{eq:static_pq}\end{equation}
+
+	Now observe that the number $S = \frac{1}{2}\left<V,I\right> = \frac{1}{2}V\overline{I}$ (``$<>$'' denoting the complex internal product), called \textit{complex power}, is such that the real part of $S$ is exactly $P$ and its imaginary part is exactly $Q$. This means that there is a direct bijection between $S$ and the instantaneous power \eqref{eq:time_inst_power}. The physical interpretations of $P$ and $Q$ become clear in two ways: first, integrating $p(t)$ over a period $T = 2\pi/\omega$ results that $P$ is the average power over $T$ while the sine part $Q$ fades on the integral — meaning $P$ is the power spent by the active elements of the circuits over a period while $Q$ is a power cyclically stored in the reactive elements, originating their namesakes. Second, one can easily prove that
+
+\begin{equation} i(t) = \dfrac{2 P}{m_v} \cos\left(\omega t + \phi_v \right) + \dfrac{2 Q}{m_v}\sin\left(\omega t + \phi_v\right), \label{eq:active_reactive_current} \end{equation}
+
+	\noindent meaning that the active power $P$ corresponds to the component of the current that is in phase with the voltage, whilst the reactive power $Q$ corresponds to the component in quadrature with the voltage. The biunivocity between phasors and steady-state solutions of the time LTI ODEs that model the network grid and the complex power representation for instantaneous power mean that the entire analysis of the circuit can be undertaken in the phasor domain, while the time-domain counterparts are accurately represented by the phasorial quantities.
+
+% ---------------------------------------------------------
+\subsection{The current literature}\label{subsec:currentlit}
+% ---------------------------------------------------------
+
+	These characteristics of classical phasors delineate the initial duty of this thesis: that of constructing a functional transform, defined in the space of nonstationary sinusoids, that produces a phasorial model in the same fashion and with the same results as the classical model. More specifically, considering an ODE
+
+\begin{equation} \sum_{k=0}^n \alpha_k x^{(k)} + M(t)\cos\left(\omega(t) t + \phi(t)\right) = 0, \label{eq:steinmets_ode_timevar} \end{equation}
+
+	\noindent then the primary objective is to build a functional transform that takes $x(t)$ and delivers a time-varying complex function $X(t)$ that transforms \eqref{eq:steinmets_ode_timevar} into a differential equation in the phasor domain like the classical operator transforms \eqref{eq:steinmets_ode} into \eqref{eq:steinmets_ode_algebraic}, such that the phasorial quantities accurately reconstruct the time domain signals. 
+
+	Further, the theory proposed aims to offer a theory of complex power under nonstationary regimens, that is, achieve notions of active and reactive power as in \eqref{eq:static_pq} such that the instantaneous power can be reconstructed from these quantities, like \eqref{eq:time_inst_power} is reconstructed from $P$ and $Q$ of \eqref{eq:static_pq}. Moreover, these new notions of complex power should have the same or similar physical interpretations: $P$ should be the average power over some interval where $Q$ fades, and the current decomposed in some form through $P$ and $Q$.
+
+	Finally the theory developed must generalize the Classical Phasor Theory, as in, classical phasors have to be a particularization of the Dynamic Phasors proposed.
+
+	Several works dealt with this matter, yet none fulfills all these requirements. The literature lacks a solid framework that represents nonstationary sinusoidal signals as time-varying complex functions, keeping intact desirable phasor characteristics familiar to engineers like phase, amplitude and angular frequency. The most widely used framework to represent such signals, the Short-Time Fourier Transform (STFT), presents a major setback by generating a model composed of several (possibly infinite) complex differential systems to solve in order to reconstruct a certain signal in time. Engineers tackle this issue by considering the majority of the signal power is concentrated on the first harmonic, truncating the modelling to the first term only \pcite{veeramrajuDynamicModelACAC2024}, abdicating higher order harmonics and therefore accuracy. Nevertheless, STFT DPs have been extensively used in the literature due to their proximity with Fourier Analysis, as engineers are used to transient impedances and power formul\ae brought by this framework, despite knowledge of their modelling inaccuracy.
+
+	Other approaches have been proposed to represent nonstationary signals while maintaining the idea of phasors, like the Gabor-Wigner Transform \pcite{Cho2010} and the S-Transform \pcite{dashPowerQualityAnalysis2003}. More recently, some researchers have proposed abandoning the idea of phasors altogether in favour of the Hilbert Transform \pcite{derviskadicPhasorsModelingPower2020}, which is able to accurately represent some signals of interest in a frequency domain as long as the signal has limited bandwidth and certain specific characteristics, making the transform limited in scope. The wavelet transform has also been used in power system studies \pcite{Morsi2009} to represent nonstationary signals with varying degrees of success due to the plethora of available wavelet transforms.
+
+ 	It was upon reading \cite{Mendes2020} and \cite{Henschel1999}, very detailed works in Dynamic Phasor Theory, that a common point among the theoretical frameworks available became apparent: they almost solely on integral transforms which, while certainly powerful, bring their own set of challenges. \cite{Henschel1999}, for instance, shows that the numerical integration process required to solve systems of complex differential equations built using such transforms is a particularly problematic one when it comes to numerical simulation because integrals inherently need to be differentiated at some point, but numerical differentiation is always reliant on approximations and invariably generate numerical artifacts especially when discontinuous disturbances like steps and impulses are involved.
+
+	\cite{Mendes2020} is particularly concerned with integral trasforms for the specific purpose of reaching a Dynamic Phasor Theory of Power Systems, and makes an argument about the fact that integral transforms have a problem when dealing with the issue of complex power representation since integral transforms generally transform a multiplication into a convolution. As such, extracting specific components like the active or reactive power from the convoluted signal is rather difficult, not to say impossible: it is hard to obtain analytical results from any convolution. The Laplace Transform, in particular, requires the convolution to be calculated at a \textit{stable contour} in the complex space, known as a Brömwich contour, making analytical computation impossible for arbitrary signals. The matter of complex power in nonstationary regimens has its own niche in the literature and has been the target of many discussion over the years: the most used theories used rely heavily on the Quasi-Static Hypothesis and lay heavy hold in approximations and truncations. Further, the current transforms do not offer a theory of complex power under nonstationary regimens, which the literature has been sorely lacking for decades: while the classical concepts of active, reactive and complex power in AC regimen are well understood and widely used, there is no unified representation of such quantities for systems under nonstationary conditions \pcite{Kukacka2016}. This means that there is no standard definition of active and reactive power in nonstationary regimens, despite the fact the literature features several theories \pcite{Kusters1979,emanuelSummaryIEEEStandard2004,Kukacka2016}, including an IEEE Standard cataloguing definitions \pcite{ieeepowerandenergysocietyIEEEStandard421520162016}. The available proposed theories are often contradictory or simply prolix, bringing several concepts like distortion power, fundamental power, nonactive power \pcite{Emanuel1996} \textit{et cetera}, some suggesting complex power should be interpreted as a three or even four-dimensional quantity, a notion close to hypercomplex algebras like quaternion numbers \pcite{eisaNewNotionsSuggested2008}. None of these theories have been widely adopted, consequence of their inadequacy to cater to the natural meaning or significant physical notion of components of the instantaneous power \pcite{eisaPhysicalInterpretationElectric2016} and build nonstationary alternatives to the well-understood active, reactive and apparent power in AC systems, which have clear physical and theoretical interpretations.
+
+	As a consequence, engineers and researchers make up for this using the static phasor definitions to make quasistationary approximations of the classical concepts for complex power \pcite{zhaoDynamicAnalysisUniformity2024}, that is, adopting
+
+\begin{equation} P(t) = \dfrac{m_v(t)m_i(t)}{2}\cos\left(\phi_v(t) - \phi_i(t)\right), Q(t) = \dfrac{m_v(t)m_i(t)}{2}\sin\left(\phi_v(t) - \phi_i(t)\right) . \label{eq:static_pq}\end{equation}
+
+	\noindent which obviously do not reconstruct instantaneous power, requiring again the QSH to justify them. This justifies, for instance, the the power flow formulas \eqref{eq:power_flow_eqs}; for the control of Power Systems, the highly approximated nature of these equations is underwhelming, because the analysis of complex power in nonstationary regimens is a seminal concept for the real-time monitoring of power systems where power quality and harmonics must be assessed in real time (like the Droop controllers of figure \ref{fig:machine_model_controls}), as well as power flow analysis, dynamical state estimation and power system stability where active and reactive power are used proheminently in frequency and voltage control.
+
+	There are some works in the literature that have tried to define notions of Dynamic Phasors without resorting to integral transforms. For instance, \cite{darochaComputacaoAltoDesempenho2024,danielSimuladorTransitoriosEletromagneticos2018,azevedoMetodologiaFasorialPara2024,almeidaModelagemFasorialTrifasica2024} argumented that because sine and cosine are orthogonal functions, a signal of the form
+
+\begin{equation} x(t) = x_d(t)\cos\left(\omega t \right) - x_q(t)\sin\left(\omega t\right) \end{equation}
+
+	\noindent can be represented by some phasor $x_d(t) + jx_q(t)$, akin to the Shifted Frequency Analysis debuted by \cite{zhangSynchronousMachineModeling2007}. \cite{Venkatasubramanian1994} defines that a signal $e_o(t) = E(t)\cos\left(\omega_0 t + \phi(t)\right)$ can be \textit{associated} to a phasor $\hat{e}_0(t) = E(t)e^{j\phi(t)}$, and proceeds to develop ``phasor calculus'', in an approach called \textit{linear operator approach} because such association is linear.
+
+	However, all these strategies fundamentally require that the signal under consideration is limited in its spectrum; for the Shifted Frequency Analysis method, it is supposed that the signal has ``\textit{frequencies within a band centered around a fundamental frequency}''.  The linear operator approach requires that ``(...) we restrict the choice of phasors to those with bandwidths less than the carrier frequency $\omega_0$''. Therefore, ultimately, these tools also limit the set of signals that they can operate.
+
+
+\section{This text} %<<<1
+% ------------------------------------------------
+
+%-------------------------------------------------
+\subsection{To whom and for what this text is intended}
+%-------------------------------------------------
+
+	The text is meant as an self-contained theory of Linear Circuits using particular applications. It is however natural that, since both I and Professor Luís are researchers of Power Systems, the motivations, examples and discussions are biased towards that particular field. ``Self-contained'' means that the text should be readable as an entire theory without the need of big dives into further literature, if anything to check a theorem or a concept that is unfamiliar to engineers. Even then, the text is not meant as an introductory course on Linear Circuits; as a matter of fact, it is expected the reader has undergone a basic course on the subject. It is supposed that the reader is acquainted with Kirchoff's Laws and Graph Theory to describe circuits. Knowledge of Differential Equations and Linear Algebra are also needed. Due to the nature of this text — a doctorate thesis — it is first and foremost aimed to a graduate-level reader, although someone in final years of undergraduate studies should not have issues. For chapters \ref{chapter:dpos} and \ref{chapter:control_theory}, it is desirable that the reader is acquainted with Complex Analysis, Abstract Algebra, and Functional Analysis. For chapter \ref{chapter:control_theory}, which deals with elementary control theory in the Dynamic Phasor space, the reader is also expected to have undergone courses on Linear Control Theory and Signals and Systems.
+
+%-------------------------------------------------
+\subsection{Objective, contributions and thesis overview}
+%-------------------------------------------------
+
+	The progression of the thesis and its contributions is as follows:
+
+\begin{enumerate}
+	\item A theory on linear systems is introduced with specific results in Linear Differential Equations that support the thesis throughout;
+	\item Hence the theory of Classical Phasors is presented as a natural consequence of the Linear Systems theory presented, building the template for the Dynamic Phasor Theory proposed;
+	\item The proposed Dynamic Phasors Theory is shown, as motivated by Classical Phasors and the shortcomings of the current theories;
+	\item An adaptation of the theory for three-phase circuits is developed;
+	\item Using this theory, the formal justification and proof of the Quasi-Stationary Hypothesis is shown, as well as some analysis on multi-frequency systems;
+	\item A definition of impedances under nonstationary regimens using Dynamic Phasor Functionals (DPFs), a specific set of functional transforms in Dynamic Phasor space;
+	\item Proofs of circuit modelling theorems (Kirchoff's Laws, Voltage-current source duality, Superposition Principle, Thèvenin-Norton Theorems) in their Dynamic Phasor equivalents are shown using DPFs;
+	\item An elementary control theory of linear systems under nonstationary regimens is developed using the DPFs and linear systems analysis.
+\end{enumerate}
+
+	The text is separated into three parts. Part \ref{part:linearsys_phasor_theory} deals with what could be called as ``classical'' theory, that is, the theory of Linear Systems and the theory of Classical Phasors that stems from it. This part debuts with chapter \ref{chapter:linear_systems} presenting a solid mathematical background on the theory of linear algebra and linear dynamical systems. More specifically, this chapter develops Linear Algebra and Linear Differential Equations in a straightforward way so as to mathematically support the definitions and theorems that come later. This first part has the primary objective to develop the theory of linear algebra from the ground up, starting from the very definitions of vector spaces and linear combinations, then defining matrices as tabular representations of linear maps under a basis. While this is seemingly too elementary for a doctorate thesis, it is precisely these definitions in the specific sequence and construction they are presented in that allow the building of matrices and polynomials of Dynamic Phasor Functionals, which will later expand into an entire theory of network analysis in nonstationary regimen. Further, the definitions of norms of linear maps as well as inner products allow for the development of the Functional Analysis in the Banach Space $L^2$ that originates the fundamental control theory in generalized sinusoidal regimens of chapter \ref{chapter:control_theory}.
+
+	Thence, chapter \ref{chapter:linear_systems} continues with the aim to develop the general solution to a Linear Differential Equation by presenting the matrix exponential as a natural consequence of Jordan Decomposition and the construction of a Jordan Chain of solutions; with a slight introduction to Dynamical Systems, the chapter finishes by proving any stable homogeneous linear system is exponentially stable, and shows definitions of Hurwitz and Lyapunov Stability.
+
+	Further, chapter \ref{chapter:classical_phasors} presents the theory of Classical Phasors a natural consequence of the Hurwitz Stability of linear electrical circuits. The phasor mapping is shown to be an operator in the space of static sinusoids, and several properties are shown like its linearity and complexification of linear differential equations. The theory on complex power under Alternate Current regimen is also presented, followed by some small network analysis section that will be expanded in the Dynamic Phasor domain. This chapter serves as a quick recap on phasor theory in order to build the template and requirements set out for the upcoming a Dynamic Phasors Theory. With the goal of straightforward rememberance rather than comprehensive development of the classical theory, this chapter is purposefully thin and quick; for instance, circuiy analysis techniques in the phasor domain are left unproven, but cited, because their generalized Dynamic Phasor counterparts will be shown and proven in detail later.
+
+	Part \ref{part:dynphasor_theory} deals specifically with Dynamic Phasor Theory. In the first chapter of this part, chapter \ref{chapter:dynamic_phasor_theory}, the motivation and problem of Dynamic Phasors is presented, and the current techniques and frameworks for Dynamic Phasors are presented. The two main techniques modernly used — Short-Time Fourier Transform and the Hilbert Transform — are presented to some detail, with the intent to make a critical review of these techniques, pinpointing exactly what characteristics they lack or cannot provide, this asserting why a new Dynamic Phasor Theory is needed. Ultimately, understanding the shortcomings of these current techniques is the main motivator for the development of the proposed Dynamic Phasors Theory and all that comes next.
+
+	Thence the development of the proposed theory of Dynamic Phasors is presented, by means of what was called the Dyamic Phasor Transform (DPT). Dynamic Phasors are constructed as the result of a specific class of differential operators in the space of complex functions of time. As such, this first chapter of part \ref{part:dynphasor_theory} shows novel results and comprise the fundamental contribution of this thesis. This chapter is the cornerstone of the thesis and should be read more carefully. First it is shown that this proposed theory is a direct mirror of the Classical Phasors theory as it offers the same results for the generalized class of sinusoids It is shown that this theory can construct complex time-varying functions, known as Dynamic Phasors, that directly mirror the nonstationary signals such that one can be reconstructed from the other; in other words, the Dynamic Phasors proposed reconstruct the time-signals they represent without any losses, approximation or truncation. Then, it is shown that this technique can transform a linear differential equation in time to a complex differential equation in the space of Dynamic Phasors, just like classical phasors transform an equation \eqref{eq:steinmets_ode} into an algebraic equation in complex space \eqref{eq:steinmets_ode_algebraic}.
+
+	Further, it is shown that this framework also achieves nonstationary notions of active, reactive and complex power, that have the same expressions \eqref{eq:static_pq} and physical meaning as their static counterparts: $P$ and $Q$ reconstruct instantaneous power just like \eqref{eq:time_inst_power}, the active power is the average power over some interval where the reactive power vanishes and the current can be decomposed in the same way as \eqref{eq:active_reactive_current}, that is, the active power relates to a component of current in phase with voltage while reactive power corresponds to a portion of current in quadrature with voltage.
+
+	Chapter \ref{chapter:dynamic_phasor_theory} also deals with Three-Phase Dyamic Phasors. The idea is to carry the results from single-phase quantities to three-phase, thus keeping this three-phase section shorter and quicker. The main challenge with three-phase Dynamic Phasors is dealing with the added dimension — the zero-sequence component — and asking what kinds of excitations lead to balanced three-phase waves. It is shown that a linear system does not necessarily need to be excited by a balanced three-phase voltage to yield balanced behavior; thus a larger and more permissive condition for balanced behavior is developed.
+
+	Chapter \ref{chapter:choice_apparent_frequency} studies the effects of the choice of the time-varying frequency in the models and results produced by the Dynamic Phasor Theory proposed. This chapter shows a proof that frequency swings in nonstationary sinusoidal excitations add certain dynamic contribution to the circuit response which naturally cannot be ignored. In short, it is shown that if the circuit network is ``much faster'' than the frequency signal adopted, then the circuit differential equations achieve steady-state before the frequency swings happen, meaning steady-state approximation is the more accurate the ``faster'' the circuit is. This consists essentially of a formal proof of the the Quasi-Static Approximation under the Dynamic Phasor Theory proposed, thus justifying classical phasor equivalent models like those of \eqref{eq:machine_2a_model} and \eqref{eq:machine_2a_model_classical} The Dynamic Phasors Theory proposed. It also shows that under such conditions, the impedance relationships although time-varying become essentially their static counterparts, justifying admittance models for large grids like \eqref{eq:multimachine_admittance}.
+
+	Chapter \ref{chapter:choice_apparent_frequency} also investigates what happens if a particular system is modelled using different frequency references; the main result is that if the two frequency signals are ``close enough'' (integrable), then there is a diffeomorphism between the complex systems of differential equations that they produce, meaning that it does not really matter in which frequency reference the system is modelled in, for as long as the solution exists on one of them, it exists for all other ones. Here more important results are shown, for instance, that if a linear circuit is excited by nonstationary sinusoids at a particular time-varying frequency, all voltages and currents will also be nonstationary sinusoids at that particular frequency. This again shows that the theory proposed generalizes Classical Phasor Theory: it is very well known that if a linear circuit is excited by static sinusoids at a particular fixed frequency, voltages and currents are also sinusoids at that frequency, thus a particularization of the larger result if the frequency adopted is fixed. This justifies ``fixed-frequency but time-varying phase models'' like \eqref{eq:equivalent_emt_E} and \eqref{eq:equivalent_emt_X}.
+
+	Following part \ref{part:dynphasor_theory}, part \ref{part:applications} expands the Dynamic Phasor Theory proposed with the idea of Dynamic Phasor Functionals, first presented in chapter \ref{chapter:dpos}. These transforms are the attempt to operationalize the Dynamic Phasor Transform to allow a swifter and more intuitive modelling of linear systems and circuit networks under nonstationary regimens. They are built a special class of complex functional transforms that form powerful algebraic structures, such that differentials in the time domain become algebraic manipulations in Dynamic Phasor space — a notion close to modelling circuits in more mainstream tehcniques like Laplace Transforms. It is proven that a notion of Dynamic Impedances is defineable, and that the paramount theorems of Kirchoff's Laws, the Superposition Principle and the Thèvenin-Norton Theorems also find Dynamic Phasor counterparts. In essence, this contribution means that Dynamic Phasors have the exact same properties as the complex functions obtained from those commonplace frameworks: transforming derivatives and integrals into algebraic complex equations that can be much more easily operated yet are biunivocal and complete representations.
+
+	Because impedance relationships become algebraic, this chapter also shows that a matrix representation of large grids like \eqref{eq:multimachine_admittance} is also possible in the Dynamic Phasor domain without and approximations or QSH.
+
+	Further, chapter \ref{chapter:control_theory} shows that from the Dynamic Phasor Transform a notion of a ``Laplace-like'' transform can be built, which is called the $\mu$ Transform or just ``$\mu$T''' for short. This transform can be used to build Dynamic Phasor Transfer Functions (DPFTs) and the elementary Control Theory in Dynamic Phasor space. In this chapter it is shown that very important control results are also carried to the Dynamic Phasor Space, like the fact that in $\mu$Ts, the system is \textit{Bounded Input Bounded Output} stable (sometimes called BIBO stability or input-output stability) if the roots of the denominator lie in the open left half complex plane. It is shown that tese results allow building more intuitive and better define control structures for systems under nonstationary regimens, like Power Systems.
+
+	This chapter essentially proves that there can be controllers made specifically for systems in nonstationary regimens where controlling the phasor quantities does indeed reflect a control on the time domain, and guaranteedly so because the Dynamic Phasor Transform is biunivocal ans lossless. Thus, this chapter validades controllers like those of subsection \ref{subsec:power_system_control}; further, the chapter gives an example on how to design these controllers for linear systems — effectively solving the ``conceptual issue'' with phasor-domain controllers mentioned in subsection \ref{subsec:power_system_control}.
+
+	Finally, part \ref{part:ending} finishes the thesis with some applications, discussion and conclusion. Chapter \ref{chapter:applications} shows three applications of the entire theory, discussed and developed in detail, showing how this theory can be used in Electric Power Systems and Electronic Circuits to produce phasorial models of these systems with relative ease and high resemblance to current techniques. Chapter \ref{chapter:discussion_conclusion} shows the discussion and conclusion, where some critic view of the theory presented is shown as well as the capabilities of the theory developed. Some further investigations are also discussed.
+
+%-------------------------------------------------
+\section{Associated papers} %<<<2
+%-------------------------------------------------
+
+	As of the writing of this thesis and its submission (june of 2025), several journal and conference papers were written, all of which were authored by me and Professor Luís:
+
+\begin{itemize}
+	\item ``Towards a New Dynamic Phasor Theory for Modeling IBG Penetrated Power Grids'', presented at the International Symposium on Circuit and Systems 2025 \pcite{volpatoNewDynamicPhasor2025};
+	\item ``Dynamic Phasor and Nonstationary Power Theory as an extension of Classical Phasor Theory'', published in the Transactions on Circuits and Systems I \pcite{volpatoDynamicPhasorNonstationary2025};
+	\item ``Dynamic Phasor Functionals for Modelling and Simulating Circuits and Systems in Nonstationary Sinusoidal Regimens'' submitted for publication \pcite{volpatoDynamicPhasorFunctionals2025};
+	\item ``A Rigorous Approach to Quasistationary and Phasor-Equivalent Modelling of Power Systems'', manuscript \pcite{volpatoRigorousApproachQuasistationary2025};
+	\item ``Effects of Apparent Frequency Choice in Dynamic Phasor Transformations'', manuscript \pcite{volpatoEffectsApparentFrequency2025};
+	\item ``Representation of Dynamic Phasor Operators as Transfer Functions in Control Systems under Nonstationary Sinusoidal Regimens'', manuscript \pcite{volpatoRepresentationDynamicPhasor2025}.
+\end{itemize}
+
+	In the construction of this theory, two papers were published still during my master's degree dealing with some investigations which led to the development of this theory:
+
+\begin{itemize}
+	\item ``The Dynamic Phasor Transform Applied to Simulation and Control of Grid-Connected Inverters'', published in the Journal of Control, Automation and Electrical Systems \pcite{volpatoDynamicPhasorTransform2022};
+	\item ``Grid-connected Inverters per-unit Dynamic Phasor Modelling, Simulation And Control'', presented at the VIII Brazilian Simposium on Electrical Systems SBSE \pcite{A.Volpato2021}.
+\end{itemize}

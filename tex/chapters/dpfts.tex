@@ -1,0 +1,1716 @@
+\chapter{Elementary Control Theory in Dynamic Phasor Space}\label{chapter:control_theory}
+% ---------------------------------------------------------
+
+	From a circuits and modelling perspective, DPFs present a great tool because, in a very short description, they transform derivatives in the time domain into algebraic structures with a broad spectrum of properties. From the perspective of Differential Equations, this means DPFs present a more convenient way to solve ODEs in the time domain, especially those excited by generalized sinusoids. In this chapter we explore the DPFs from the perspective of a linear systems and control design.
+
+	Let us take a closer look at example \ref{example:3p_eps_modelling}. The target system of figure \ref{fig:ibr_modelling_example} is controlled by two subsystems that are eminently phasorial: first, the PLL of figure \ref{fig:3p_pll_curr_control} and the current control system of figure \ref{fig:3p_curr_control}. 
+
+	This current controller is a widely used controller in literature, with the specific intent of adjusting the bus current $I$ to a setpoint $I_d^* + jI_q^*$. The first discomfort one finds with this controller is that the control is is done by decoupling the $d$ and $q$ frames and generating two PI controllers, one for each component, such that $V_d$ and $V_q$ are adjusted to vanish the current error; naturally one asks whether it is simply not possible to regulate the complex Dynamic Phasor $I(t)$ to a reference $I^*$.
+
+	Further, as discussed in the example, the current control aims to regulate terminal voltage, but the inverter is unable to control the terminal voltage directly — rather, it can adjust the bridge output voltage $E$. It is assumed that $V$ and $E$ are related by 
+
+\begin{equation} E = V + \left(r + j\omega L\right)I ,\label{eq:pi_adjust_e}\end{equation}
+
+	\noindent resulting in the ``crossed current signals'' multiplied by $\omega L$. This equation shows that it is assumed that the $V_d,V_q$ quantities obtained by this process obey the ``classic phasor'' relationship that if the Dynamic Phasor of a signal $x(t)$ is $X(t)$, its derivative is represented by $j\omega X(t)$, originating equations like \eqref{eq:pi_adjust_e}. This is obviously not true, as proven by the Dynamic Phasor Theory shown in this thesis. 
+	Hence, in this chapter we show that the capacity of DPFs to express ODEs is not only a powerful tool to model electrical circuits but also to express control systems, particularly ones operating on nonstationary sinusoidal regimens like most controllers in Power Systems. We show that an integral transform called the $\mu$-Transform can be defined, allowing the notions of $\mu$ Transfer Functions ($\mu$TFs) like those based on Laplace Transforms for rational systems; unlike the Laplace Transform, however, using Dynamic Phasor Operators leads to much more intuitive and simple notations for power control systems, allowing to obtain the involved Dynamic Phasors in time, their amplitudes and phases, unlike current techniques. For instance, it is shown that the current controller of figure \ref{fig:3p_curr_control} can be instead represented by an equivalent PI controller in the DPFT domain, which not only is much more intuitive and useful but guaranteedly reconstructs the current and voltage signals in time.
+
+	More importantly, it is clear that that no clear stability analysis is possible from the controller as it is. Analyzing the effects of the PI controller gains $k_P^d,k_I^d,k_P^q,k_I^q$ is not possible preemptively, and the simplest way to do it is through simulations. However, modelling that controler using $\mu$TFs allows for obtaining clear stability results and dynamical characteristics of the control system based on the poles and zeros of the DPFT.
+
+	The new Transfer Functions also allow drawing important results about the control systems they represent, unwaivering to the input signal used; for instance, like a Laplace Transfer Function is represented in time by a impulse response, the DPTFs allow characterizing a system using its impulse response in time, or other time response to reference signals in complex domain. Further, like proper rational and Hurwitz-stable Transform functions define input-output stable linear systems (also called BIBO stability), this result is also proven for $\mu$TFs.
+
+%-------------------------------------------------
+\section{Decomposition of complex signals} %<<<1
+
+	In order to accomplish a control theory, we dive into more fundamental characteristics of DPFs. Studying the essential structure of any linear operators inevitably starts with analyzing the core structures of these operators, like the kernel and the eigenspace, and how the vector spaces are decomposed onto such structures. In order to do this for the DPFs $\ndpo{k}$, we dive a little bit further into abstract algebra.
+
+%-------------------------------------------------
+\subsection{The Fundamental Theorem of Homomorphisms} \label{subsec:first_homo}%<<<2
+
+	Following the definition \ref{def:algebra_group} of a group, we suppose two groups $V$ and $W$, equipped with the operations $\left(+\right)_V$ and $(+)_W$ respectively, as well as the identity or neutral elements $0_V$ and $0_W$. Suppose there is a surjective mapping $\phi\in\left[V\to W\right]$ that preserves the algebraic structure, that is,
+
+\begin{equation}\left\{\begin{array}{l} \phi\left(v_1 \left(+\right)_V v_2\right) = \phi\left(v_1\right)\left(+\right)_W\phi\left(v_2\right) \forall v_1,v_1\in V \\[5mm] \phi\left(0_V\right) = 0_W\end{array}\right. . \label{eq:homomorphism_def}\end{equation}
+
+	Then $\phi$ is called a \textbf{homomorphism} (``same form'' or ``shape'') because it presevers the algebraic structure of the sets. We define the kernel of this mapping as $\Ker\left(\phi\right)$ as the counter-image of the zero element:
+
+\begin{equation} \Ker\left(\phi\right) = \left\{k\in V: \phi\left(k\right) = 0_W\right\} .\end{equation}
+
+	It is simple to see that this kernel with the $(+)_V$ operation is a group itself; thus it is a \textbf{subgroup} of $V$. It is also simple to see, from the definition \eqref{eq:homomorphism_def} of homomorphisms, that the image of $\phi$ through $G$, denoted $\phi(G)$, is a subgroup of $W$.
+
+	For cleanliness, we henceforth denote $(+)_V$ and $(+)_W$ by just $+$, still having in mind they are the specific operations of their particular groups. Naturally, for any $v\in V$ and any $k\in\Ker\left(\phi\right)$, $\phi\left(v+ k\right) = \phi(v)$. This is shown in figure \ref{fig:group_homo}.
+
+% GROUP HOMOMORPHISM SCHEMATIC <<<
+\begin{figure}[h]
+\centering
+\begin{tikzpicture}[>={Stealth[inset=0mm,length=1.5mm,angle'=50]}]
+\clip(-2,-4) rectangle(8,5); % This is needed because for some reason the figure gets too tall with a blank space?
+\draw[color=stewartgreen, fill=stewartgreen, fill opacity = 0.2] (0,0) ellipse[x radius=2, y radius=4] +(-1.5,4); \node[above,black] at (0,4.25) (vlabel) {$V$};
+\draw[color=stewartblue, fill=stewartblue, fill opacity = 0.2] (6,0) ellipse[x radius=2, y radius=4] +(-1.5,4); \node[above,black] at (6,4.25) (wlabel) {$W$};
+
+\draw[->] (vlabel) -- (wlabel) node[midway,above] {$\phi$};
+
+\draw[thick,draw=none, fill=white] (-0.25,-2) ellipse[x radius=1, y radius=1.5] +(-1.5,4);
+\draw[thick,draw=none, fill=stewartyellow, fill opacity = 0.3] (-0.25,-2) ellipse[x radius=1, y radius=1.5] +(-1.5,3);
+\draw[thick,dashed, line cap = round, color=stewartyellow] (-0.25,-2) ellipse[x radius=1, y radius=1.5] +(-1.5,4); \node[above,black] at (-0.25,-0.5) (klabel) {$\Ker\left(\phi\right)$};
+
+\draw[thick,draw=none, fill=white] (0.25,2) ellipse[x radius=1, y radius=1.5] +(-1.5,4);
+\draw[thick,draw=none, fill=stewartpink, fill opacity = 0.3] (0.25,2) ellipse[x radius=1, y radius=1.5] +(-1.5,3);
+\draw[thick,dashed, line cap = round, color=stewartpink] (0.25,2) ellipse[x radius=1, y radius=1.5] +(-1.5,4); \node[above,black] at (-1.25,1.5) (vlabel) {$[v]$};
+
+\draw[fill] (0.3,2.75) circle (0.05) node (velement) {};
+\node at ([shift=({-0.25,0})]velement) {$v$};
+
+\draw[fill] (0.75,1.5) circle (0.05) node (vpkelement) {};
+\node at ([shift=({-0.75,0})]vpkelement) {$v + k$};
+
+\draw[fill] (-0.2,-1.3) circle (0.05) node (kelement) {};
+\node at ([shift=({-0.25,0})]kelement) {$k$};
+
+\draw[fill] (0,-2.5) circle (0.05) node (0velement) {};
+\node at ([shift=({-0.4,0})]0velement) {$0_V$};
+
+\draw[fill] (5.5,2) circle (0.05) node (welement) {};
+\node at ([shift=({ 1,0})]welement) {$w = \phi\left(v\right)$};
+
+\draw[fill] (6,-1) circle (0.05) node (0welement) {};
+\node at ([shift=({ 0.4,0})]0welement) {$0_W$};
+
+\draw[->] (velement) -- ([shift=({-0.3,0})]welement.north) ;
+\draw[->] (vpkelement) -- ([shift=({-0.3,0})]welement.west) ;
+\draw[->] (kelement) -- ([shift=({-0.1,0.2})]0welement) ;
+\draw[->] (0velement) -- ([shift=({-0.3,-0.1})]0welement.west) ;
+
+\draw[dashed,gray, line cap = round] (-0.25,-0.5) -- (0welement);
+\draw[dashed,gray, line cap = round] (-0.25,-3.5) -- (0welement);
+
+\draw[dashed,gray, line cap = round] (0.25,0.5) -- (welement);
+\draw[dashed,gray, line cap = round] (0.25,3.5) -- (welement);
+
+\end{tikzpicture}
+\caption
+[{Schematic of a homomorphism $\phi$ showing an element $[v]$ of $V/\Ker(\phi)$.}]
+{{Schematic of a homomorphism $\phi$ showing an element $[v]$ of $V/\Ker(\phi)$ correspondent to a particular element $v$. Note that by definition any $v + k$ maps into $\phi(v)$, so that $[v]$ is formed by adding $v$ and all elements of $\Ker(\phi)$; this is denoted as $[v] = v\oplus\Ker(\phi)$.}}
+\label{fig:group_homo}
+\end{figure} %>>>
+
+	Naturally, it would be simpler if $\phi$ were bijective, called an \textbf{isomorphism}; this would only happen if the kernel of $\phi$ were composed of only the neutral element, that is, $\Ker\left(\phi\right) = \left\{0_V\right\}$. When this is not the case, reconstructing any element of $V$ by its image is inherently problematic, because if we take an element $w\in W$, there are multiple elements that fulfill $v = \phi^{-1}\left(w\right)$, thus this inverse is not a function. Alternatively, we can say $\phi$ is not injective.
+
+	However, we can construct some restriction of $\phi$, such that this restriction is injective, and bijective from the definition of a homomorphism. Pick a particular $w\in W$ and let $v$ an element of the pre-image of $w$. Then define
+
+\begin{equation} \left[v\right] = v \oplus \Ker\left(\phi\right) \end{equation}
+
+	\noindent where the direct sum is defined as $v \oplus K = \left\{v + k: k\in K\right\}$. Naturally, if $v'\in V$ and $\phi\left(v'\right) = w$, then $v'\in\left[v\right]$. Thus, $\left[v\right] = \phi^{-1}\left(w\right)$. Therefore, each $w$ in the image of $\phi$ through $V$, denoted $\phi\left(V\right)$, defines a subset in $V$. It can be easily proven that this subset is also a subgroup of $V$. Let us define the set of all subgroups constructed in such a way, that is, the set of all left cosets of $\Ker\left(\phi\right)$ in $V$, defined as the \textbf{quotient group}:
+
+\begin{equation} V/\Ker\left(\phi\right) = \left\{\raisebox{4mm}{}  \left[v\right] = v \oplus \Ker\left(\phi\right): v\in V\right\} .\end{equation}
+
+	The intuition here is that any group belonging to this quotient is such that it is ``compressed'' into a single element and no other element of the quotient group maps into $w$, that is, for any $w\in W$ there exists a single $Z \in V/\Ker\left(\phi\right)$ that is singularly mapped into $w$, or formally,
+
+\begin{equation} \left(\forall w\in W\right)\left(\raisebox{4mm}{} \exists! Z \in V/\Ker\left(\phi\right): \phi\left(Z\right) = \left\{w\right\}\right) .\end{equation}
+
+	The problem now lies in the fact that we went from groups to sets, causing a loss of structure since sets are a weaker concept (they have no standard summation nor specific properties). We would like to define a group structure for this quotient, so the algebraic entity of a quotient group is still itself a group; this allows us, for instance, to define the sum of two groups $V_1$ and $V_2$ in the quotient space as the set $\left(v_1 + v_2\right)\oplus \Ker\left(\phi\right)$.
+
+	Thus pick two $a,b\in V$ and we want to define an addition operation $(+)_q$ (the subscript ``q'' for ``quotient'') in $V/\Ker\left(\phi\right)$ that makes it a group, that is, $\left[a\right](+)_q\left[b\right]$ fulfills the definition of a group addition. We naturaly require that the map $V\mapsto V/\Ker\left(\phi\right)$ be a homomorphism to keep the algebraic structures intact. But this means that
+
+\begin{equation} \left[a+ b\right] = \left(a + b\right) \oplus \Ker\left(\phi\right) = \left[a\right] (+)_q\left[b\right] = \left(a\oplus \Ker\left(\phi\right)\right) (+)_q \left(b \oplus\Ker\left(\phi\right)\right) \end{equation}
+
+	\noindent and this definition only makes sense if for any $k\in\Ker\left(\phi\right)$, $k + a = a + k$ for any $a\in V$ which is immediately true from the definition of the kernel; thus, for any $k\in\Ker\left(\phi\right)$, the \textbf{conjugation operation} of an element $a\in V$ by $k$, denoted $a + k + \left(-a\right)$ is exactly $k$, that is,
+
+\begin{equation} k = a + k + \left(-a\right)\ \forall a\in V. \end{equation}
+
+	This means that the kernel is not only a subgroup of $V$, but it is special in that it invariant under the conjugation operation which causes it to be invertible through the group quotient operation, and the quotients built in such a way keep the group properties intact. Thus the kernel is known as a \textbf{normal subgroup}, and this whole process is ennunciated in theorem \ref{theo:homo_fundamental}.
+
+	The idea of a normal subgroup is important because the kernal having such property thus each $w\in W$ defines such a unique set $V'$ that belongs to $V/\Ker\left(\phi\right)$, that is, there is a bijection between $\phi\left(V\right)$ and $V/\Ker\left(\phi\right)$. This is shown in figure \ref{fig:first_homo}.
+
+\begin{theorem}[Fundamental Theorem of Homomorphisms \pcite{garciaElementosAlgebra2022}]\label{theo:homo_fundamental}
+	Let $V,W$ two groups and a homomorphism $\phi$ between them. Then $\Ker\left(\phi\right)$ is a normal subgroup of $G$, $\phi\left(G\right)$ is a subgroup of $H$ and $G/\Ker\left(\phi\right)$ is isomorphic to $\phi\left(G\right)$.
+\end{theorem}\vspace{3mm}\hrule\vspace{3mm}
+
+% FIRST HOMOMORPHISM THEOREM SCHEMATIC <<<
+\begin{figure}[h]
+\centering
+\begin{tikzpicture}[>={Stealth[inset=0mm,length=1.5mm,angle'=50]}]
+\clip(-2,-4) rectangle(8,5); % This is needed because for some reason the figure gets too tall with a blank space?
+
+\draw[color=stewartgreen, fill=stewartgreen, fill opacity = 0.2] (0,0) ellipse[x radius=2, y radius=4] +(-1.5,4); \node[above,black] at (0,4.25) (vlabel) {$V$};
+\draw[color=stewartblue, fill=stewartblue, fill opacity = 0.2] (6,0) ellipse[x radius=2, y radius=4] +(-1.5,4); \node[above,black] at (6,4.25) (wlabel) {$W$};
+
+\draw[->] (vlabel) -- (wlabel) node[midway,above] {$\phi$};
+
+\draw[thick, draw=none,  fill=white] (-0.5,-2.5) ellipse[x radius=0.5, y radius=1] +(-1.5,4);
+\draw[thick, draw=none, fill=stewartyellow, fill opacity = 0.3] (-0.5,-2.5) ellipse[x radius=0.5, y radius=1] +(-1.5,4);
+\draw[thick, dashed, line cap = round, color=stewartyellow] (-0.5,-2.5) ellipse[x radius=0.5, y radius=1] +(-1.5,4); \node[above,black] at (-0.5,-1.5) (klabel) {$\Ker\left(\phi\right)$};
+
+\draw[thick, draw=none, fill=white] (0.5,0) ellipse[x radius=0.5, y radius=1] +(-1.5,4);
+\draw[thick, draw=none, fill=stewartpink, fill opacity=0.3] (0.5,0) ellipse[x radius=0.5, y radius=1] +(-1.5,4);
+\draw[thick, dashed, line cap = round, color=stewartpink] (0.5,0) ellipse[x radius=0.5, y radius=1] +(-1.5,4); \node[above,black] at (-0.5,0) (V1label) {$V_{(w_1)}$};
+
+\draw[thick, draw=none, fill=white] (-0.3,2.5) ellipse[x radius=0.5, y radius=1] +(-1.5,4);
+\draw[thick, draw=none, fill=stewartpurple, fill opacity=0.3] (-0.3,2.5) ellipse[x radius=0.5, y radius=1] +(-1.5,4);
+\draw[thick, dashed, line cap = round, color=stewartpurple] (-0.3,2.5) ellipse[x radius=0.5, y radius=1] +(-1.5,4); \node[above,black] at (-1.2,1.5) (V1label) {$V_{(w_2)}$};
+
+\draw[fill] (0.7,0) circle (0.05) node (v1element) {};
+\node at ([shift=({-0.35,0})]v1element) {$\alpha_1$};
+
+\draw[fill] (-0.1,2.5) circle (0.05) node (v2element) {};
+\node at ([shift=({-0.35,0})]v2element) {$\alpha_2$};
+
+\draw[fill] (-0.2,-2.5) circle (0.05) node (kelement) {};
+\node at ([shift=({-0.25,0})]kelement) {$k$};
+
+\draw[fill] (6,-0.1) circle (0.05) node (w1element) {};
+\node at ([shift=({1.1,0})]w1element) {$w_1 = \phi\left(v_1\right)$};
+
+\draw[fill] (5.2,2.2) circle (0.05) node (w2element) {};
+\node at ([shift=({1.1,0})]w2element) {$w_2 = \phi\left(v_2\right)$};
+
+\draw[fill] (6,-2) circle (0.05) node (0welement) {};
+\node at ([shift=({ 0.4,0})]0welement) {$0_W$};
+
+\draw[->] (v1element) -- (w1element.west) ;
+\draw[->] (v2element) -- (w2element.west) ;
+\draw[->] (kelement) -- ([shift=({-0.1,0.2})]0welement) ;
+
+\draw[dashed,gray, line cap = round] (-0.25,-1.5) -- (0welement);
+\draw[dashed,gray, line cap = round] (-0.25,-3.5) -- (0welement);
+
+\draw[dashed,gray, line cap = round] (0.5, 1) -- (w1element);
+\draw[dashed,gray, line cap = round] (0.5,-1) -- (w1element);
+
+\draw[dashed,gray, line cap = round] (-0.3,1.5) -- (w2element);
+\draw[dashed,gray, line cap = round] (-0.3,3.5) -- (w2element);
+
+\end{tikzpicture}
+\caption
+[Schematic of the Fundamental Theorem of Homomorphisms.]
+{{Schematic of the Fundamental Theorem of Homomorphisms showing two derived subgroups $V_{(w_1)}$ and $V_{(w_2)}$ generated by two images $w_1$ and $w_2$. These subgroups are represented by two elements $\alpha_1$ and $\alpha_2$ respectively so that $V_{(w_1)} = \alpha_1\oplus\Ker(\phi)$ and identically wth $V_{(w_2)} = \alpha_2\oplus\Ker(\phi)$.}}
+\label{fig:first_homo}
+\end{figure} %>>>
+
+	The Fundamental Theorem of Homomorphisms has many consequences on the fundamental theory of abstract algebra, and through this, on a great portion of mathematics. For the purposes of this analysis, the main property we are looking for is that this theorem allows us to ``remove the kernel'' of our transformation from the analysis because we can, in a simple manner, construct subgroups of $V$ such that $\phi$ is bijective on $V$ and $V$ is reconstructed from $V'$ by ``adding the kernel back''.
+
+	Indeed, since to each $w\in\phi\left(V\right)$ corresponds a set $V_{(w)} \in V/\Ker\left(\phi\right)$, which is the set of all elements that map into $w$, we can choose one $\alpha_{(w)}\in V_{(w)}$, and we let $V'$ be the set of all such $\alpha_{(w)}$. Further, we can reconstruct $V$ as $V = V' \oplus \Ker\left(\phi\right)$, that is, any element of $V$ can be obtained as the sum of an element of $V'$ and an element of the kernel, and this is guaranteed by the fact that the kernel is a normal subgroup. In simpler terms, using $V'$ we get the best of both worlds: $\phi$ is bijective on $V'$ and the other elements of $V$ are easily accessible from $V'$. Figure \ref{fig:first_homo} shows two such sets pertaining to two chosen $\alpha_1$ and $\alpha_2$, pertaining to $w_1$ and $w_2$ respectively, generating two sets $V_1$ and $V_2$.
+
+%-------------------------------------------------
+\subsection{Consequences on DPFs} %<<<2
+
+	It is simple to see that that each $\ndpo{k}$ is a homomorphism from the set $\left[\mathbb{R}\to\mathbb{C}\right]$ to itself (thus a \textit{self-homomorphism}). By theorem \ref{theo:bijection}, any $\ndpo{k}$ is bijective in the entire set, requiring a set of initial conditions which will construct the kernel of the transform, as we will see later. Therefore, given this set of initial conditions, any $\ndpo{k}$ is a bijective homomorphism (thus an isomorphism) of $\left[\mathbb{R}\to\mathbb{C}\right]$ unto itself, called an \textit{automorphism}. This is to say that the image of $\ndpo{k}$ is the entire space $\left[\mathbb{R}\to\mathbb{C}\right]$.
+
+	 By the Fundamental Theorem on Homomorphisms, the image of $\ndpo{k}$ through $\left[\mathbb{R}\to\mathbb{C}\right]$ is isomorphic to the quotient group $\left[\mathbb{R}\to\mathbb{C}\right]/\Ker\left(\ndpo{k}\right)$; this means that any vector $Y$ in the image of $\ndpo{k}$ can be built by choosing some $X_\eta\in\Ker\left(\ndpo{k}\right)$; then for every $Y(t)$ there corresponds a single $X_\varepsilon(t)$ such that
+
+\begin{equation} Y(t) = \ndpo{n}\left[X\right] \Leftrightarrow X(t) = X_\varepsilon(t) + X_\eta(t) ,\end{equation}
+
+	\noindent and $X_\varepsilon$ is not in the kernel except in the trivial case. By fixing $X_\eta$ the relationship $X(t)\leftrightarrow Y(t)$ is bijective. Effectively, this establishes an equivalence relationship between $X$ and $X_\varepsilon$; reestated, every $X_\eta\in\Ker\left(\ndpo{k}\right)$ defines a equivalence relationship that we will call \textbf{null-equivalence} such that two elements $X_1$ and $X_2$ are null-equivalent with respect to $X_\eta$ if they belong to the subspace $X_\eta \bigoplus \left[\mathbb{R}\to\mathbb{C}\right]$.
+
+%-------------------------------------------------
+\subsection{Nullspace of the DPO} %<<<2
+
+	We now investigate what exactly is the kernel $\Ker\left(\ndpo{k}\right)$; the objective is to find a basis of this space. We first consider the negative index functionals, for instance,
+
+\begin{equation} \ndpo{(-1)}\left[X\right] = 0 \Leftrightarrow X = \dot{0} + j\omega 0 = 0, \end{equation}
+
+	\noindent and quickly one notes that the kernel of any $\ndpo{(-n)}$ is trivial as it only contains the null signals. For the zero-th functional, it is obvious that the kernel of $\ndpo{0} = \mathbf{I}$ is the null signal.
+
+	Then we consider positive order functionals. For the first-order functional, we want to find $V$ such that $\dpo\left[V\right] = 0$:
+
+\begin{equation}  \dpo\left[V\right] = 0 \Leftrightarrow \dot{V} + j\omega V = 0, \label{eq:1st_order_null_ode}\end{equation}
+
+	\noindent and we use theorem \ref{theo:first_order_general} to solve this equation.
+
+\begin{theorem}[General solution to first-order complex ODE]\label{theo:first_order_general} %<<<
+	Let $p(t),q(t)\in\left[\mathbb{R}\to\mathbb{C}\right]$ and consider the differential equation
+
+\begin{equation} y'(t) + p(t)y(t) = q(t).\end{equation}
+
+	Then the general solution to this ODE is
+
+\begin{equation} y(t) = e^{-P(t)}\int e^{P(t)}q(t)dt,\ P(t) = \int p(t)dt. \end{equation}
+\end{theorem}
+\textbf{Proof.} Consider some function $I(t)$ and multiply the original ODE by this function: 
+
+\begin{equation} I(t)y'(t) + I(t)p(t)y(t) = I(t)q(t). \label{eq:first_order_eq1}\end{equation}
+
+	Now note that if $I(t)$ satisfies $I'(t) = I(t)p(t)$, then the left side of \eqref{eq:first_order_eq1} becomes $I(t)y'(t) + I'(t)y(t)$, which by the multiplication rule is $\left(I(t)y(t)\right)'$. Finding such a function is simple: adopt $\Ln$ as some branch of the complex logarithm and
+
+\begin{equation} I'(t) = I(t)p(t) \Leftrightarrow \dfrac{I'(t)}{I(t)} = p(t) \Leftrightarrow \dfrac{d}{dt}\Ln\left(I(t)\right) = p(t) \Leftrightarrow I(t) = e^{\int p(t)dt} = e^{P(t)}. \label{eq:first_order_eq2}\end{equation}
+
+	Therefore \eqref{eq:first_order_eq1} becomes
+
+\begin{equation} \dfrac{d}{dt}\left[e^{P(t)}y(t)\right] = e^{P(t)}q(t) \Leftrightarrow e^{P(t)}y(t) = \int e^{P(t)}q(t)dt \Leftrightarrow y(t) = e^{-P(t)}\int e^{P(t)}q(t)dt. \label{eq:first_order_eq3}\end{equation}
+
+\hfill$\blacksquare$
+\vspace{5mm}
+\hrule
+\vspace{5mm} %>>>
+
+	Thus the solution to \eqref{eq:1st_order_null_ode} is $kR_0(t)$ where $k$ is a complex number and
+
+\begin{equation} R_0\left(t\right) = e^{-j\psi(t)},\ \psi(t) = \int_{0}^{t} \omega(a)da\end{equation}
+
+	\noindent so the kernel of $\dpo$ is the span of $R_0$, that is, $R_0$ alone generates the kernel $\Ker\left(\dpo^1\right)$. For the kernel of the second-order operator $\Ker\left(\dpo^2\right)$,
+
+\begin{equation} \dpo^2\left[V\right] = 0 \left\{\begin{array}{l} V = ke^{-j\psi(t)},\ k\in\mathbb{C} \text{ or } \\[3mm] \dpo\left(V\right) = ke^{-j\psi(t)},\ k\in\mathbb{C} \end{array}\right. \end{equation}
+
+	Therefore let $R_1$ the solution to $\dpo\left(R_1\right) = R_0$; then $R_0$ and $R_1$ generate $\Ker\left(\dpo^2\right)$. But
+
+\begin{equation} \dpo\left[R_1\right] = R_1 \Leftrightarrow \dot{R}_1 + j\omega R_2 = R_0 \end{equation}
+
+	\noindent and by theorem \ref{theo:first_order_general} the general solution to this ODE is
+
+\begin{equation} R_1 = C_3R_0(t) \left[C_1 + \int \left(\dfrac{C_2}{R_0(s)}\right) R_0(s)ds\right] \end{equation}
+
+	\noindent and without loss of generality we can choose $C_3 = C_2 = 1$ because we want basis vectors and $C_1 = 0$ because otherwise $R_1$ will have a term of $R_0$ which is already contemplated in the basis by $R_0$ itself. Therefore, $R_1 = tR_0(t)$ is an element of the base of the kernel, and $\left\{R_0(t),R_1(t)\right\}$ generates $\Ker\left(\ndpo{2}\right)$. These results suggest that
+
+\begin{equation} R_i = \dfrac{t^{i}}{i!} R_0(t),\ 0\leq i \leq k - 1 \label{eq:ri_kerdef}\end{equation}
+
+	\noindent is a base for $\Ker\left(\ndpo{k}\right)$. This is forthproven by a double induction. First, it needs to be established that the $R_i$ satisfying the recursion
+
+\begin{equation}\left\{\begin{array}{l} R_0 = e^{j\psi(t)} \\[3mm] \dpo\left[R_i\right] = R_{(i-1)}\end{array}\right. \label{sys:ri_def_ind}\end{equation}
+
+	\noindent for $1\leq i \leq k - 1$ form a basis of $\Ker\left(\ndpo{k}\right)$. Suppose this true for $k-1$. Then
+
+\begin{equation} \ndpo{k}\left[X\right] = 0 \Leftrightarrow  \dpo\left(\ndpo{(k-1)}\left(X\right)\right) = 0 \end{equation}
+
+	which is true if and only if either $X\in\Ker\left(\ndpo{\left(k-1\right)}\right)$ or $X$ satisfies $\ndpo{(k-1)}\left(X\right) = R_0$, that is, $\Ker\left(\ndpo{k}\right) = \Ker\left(\ndpo{(k-1)}\right)\cup \left\{R_{k}\right\}$ where $R_{k}$ satisfies $\dpo\left(R_{k}\right) = R_{(k-1)}$, and the proof is complete. The second induction proves that the $R_i$ as defined in \eqref{eq:ri_kerdef} satisfy \eqref{sys:ri_def_ind}. Suppose this true for $k-1$; then 
+
+\begin{equation} \dpo\left(R_{k}\right) = R_{(k-1)} \Leftrightarrow \dot{R}_{k} + j\omega R_{k} = R_{(k-1)} \end{equation}
+
+	\noindent and by theorem \ref{theo:first_order_general} the general solution to this ODE is
+
+\begin{equation} R_{k} = C_3R_0(t) \left[C_1 + \int \left(\dfrac{C_2}{R_0(s)}\right) R_{(k-1)}(s)ds\right] .\end{equation}
+
+	As exposed before, without loss of generality we can assume $C_3 = 1$, $C_2 = \left[\left(k-1\right)!\right]^{-1}$ because we are looking for basis vectors and $C_1 = 0$ otherwise $R_k$ will have terms of $R_0(t)$ that are already considered by $R_{0}$ itself. Therefore,
+
+\begin{equation} R_{k} = R_0(t)\left(C_4 + \dfrac{t^{k}}{k!}\right) \substack{(C_4 = 0)\\ =} \dfrac{t^k}{k!} R_0(t) . \label{eq:rk_formula}\end{equation}
+
+	Hence, the kernel of $\ndpo{n}$ is generated by the basis $\left\{R_k\right\}_{k\in\mathbb{N}}$ where $R_k(t)$ is given by \eqref{eq:rk_formula}. Finally, having obtained the basis for the kernel of $\ndpo{k}$ and simplified the analysis of null equivalence, we condlude that any element in the kernel — like the null decomposition $X_\eta$ of a signal $X(t)$ — entails to decomposing it into the basis of the space, which is simple seen as the kernel has a Schauder Basis (infinite but countable basis), meaning that any $X_\eta\in\Ker\left(\ndpo{k}\right)$ can be written as:
+
+\begin{equation} X_\eta = \sum_{k\in\mathbb{N}} \eta_k^{\left[X\right]} R_k(t) \end{equation}
+
+	\noindent for a sequence of complex scalars $\eta_k^{\left[X\right]}$; 
+
+%-------------------------------------------------
+\subsection{The nature of the null component} %<<<2
+
+	Having characterized the kernel of $\ndpo{k}$, we now ask ourselves what truly is the nature of the kernel and the null component $X_\eta$, and for this we retake the discussion on the Fundamental Theorem of Homomorphisms. Consider two real NS signals $x(t)$ and $y(t)$ such that
+
+\begin{equation} x^{(n)}(t) = y^{(n)}(t) \text{ for some natural } n.\end{equation}
+
+	Sequentially integrating this equation one concludes $x$ and $y$ differ by some polynomial of order $n$:
+
+\begin{equation} x = y + \sum_{k=0}^{n} \dfrac{\left[x_{(0)}^{(k)} - y_{(0)}^{(k)}\right]}{k!} t^k \label{eq:time_initial_conds}\end{equation}
+
+	\noindent which is to say $x(t)$ and $y(t)$ differ by their initial conditions and, as they get successively integrated, these initial conditions become polynomials. Using the Dynamic Phasor Transform on \eqref{eq:time_initial_conds} yields
+
+\begin{equation} X = Y + \sum_{k=0}^{n} \dfrac{\left[x_{(0)}^{(k)} - y_{(0)}^{(k)}\right]}{k!} t^k R_0(t) = Y +\sum_{k=0}^{n} \left(x_{(0)}^{(k)} - y_{(0)}^{(k)}\right)R_k(t) . \label{eq:dp_initial_conds}\end{equation}
+
+	Immediately one notices that the difference between $X$ and $Y$ is an element of the kernel; reestated, $X$ and $Y$ are null-equivalent, that is, $\ndpo{n}\left[X\right] = \ndpo{n}\left[Y\right]$. A careful examing of the Fundamental Theorem of Homomorphisms of section \ref{subsec:first_homo} alludes to the fact that $X$ and $Y$ belong to the same kernel equivalence class, seen as they have the same image while being different signals. This means that $X$ and $Y$ belong to the same $V_{(w)}$ set of figure \ref{fig:first_homo}.
+
+	Thus, we can pick and choose the elements of $\left[\mathbb{R}\to\mathbb{C}\right]$ to represent the entire space, that is, we can choose the equivalence class we want (the set $V'$) so that $\ndpo{k}$ becomes a bijective homomorphism thus an isomorphism. Naturally, we choose the class of Zero-Energy Signals, that is, signals with null initial conditions:
+
+\begin{definition}[Smoothness index] Let $x(t)$ a complex signal. Then the smoothness index of $x(t)$ is the operator denoted $\mathbf{c}\left[x\right]$ that gives the maximum natural $k$ such that the k-th derivative $x^{(k)}$ exists. \end{definition}
+
+\begin{definition}[Zero-energy start signal] A complex signal $x(t)$ is said to have Zero Energy Start or ZES if $x(0) = x'(0) = x''(0) = \cdots = x^{\left(\mathbf{c}\left[x\right]\right)}(0) = 0$. \end{definition}
+
+	Just like the set $V$ can be obtained by adding the chosen $V'$ to the kernel of the mapping, the direct consequence of this definition is that any signal $x(t)$ is equivalent to a ZES signal through
+
+\begin{equation} \tilde{x}(t) = x(t) - \sum_{k=0}^{\mathbf{c}\left[x\right]} x^{(k)}_{(0)}\ \dfrac{t^k}{k!} \end{equation}
+
+	\noindent with $x^{(k)}_{(0)}$ the k-th derivative at $t=0$; applying the DPT to this equation yields
+
+\begin{equation} \tilde{X}(t) = X(t) - \sum_{k=0}^{\mathbf{c}\left[x\right]} X^{(k)}_{(0)}\ \dfrac{t^k}{k!}R_0(t) = X(t) - \sum_{k=0}^{\mathbf{c}\left[x\right]} X^{(k)}_{(0)} R_k(t) \label{eq:zfs_reconst}\end{equation}
+
+	\noindent where $X^{(k)}_{(0)}$ represents the k-th derivative at $t=0$, also has smoothness index $\mathbf{c}\left[x\right]$ and is a ZES signal, but $\tilde{X}(t)$ and $X(t)$ are biunivcally related as in, one can be reconstructed from the other. Adopting the null-decomposition as
+
+\begin{equation} \eta_k^{\left[X\right]} = \left\{\begin{array}{l} x^{(k)}_{(0)}, 0\leq k \leq \mathbf{c}\left[x\right] \\[3mm] 0,\ k > \mathbf{c}\left[x\right] \end{array}\right.\end{equation}
+
+	\noindent for any signal $x(t)$, then yields that $\tilde{X}(t)$ is null-equivalent to the null function. In other words, we choose the ZES signals $\tilde{X}$ as the equivalence class to represent the entire $\left[\mathbb{R}\to\mathbb{C}\right]$, and while $\ndpo{k}$ is bijective with respect to ZES signals (isomorphic in their space) any other signal $X(t)$ can be reconstructed from its ZES equivalent: all we have to do is use \eqref{eq:zfs_reconst}. Therefore, much like the Fundamental Theorem of Homomorphisms allows us to ``remove the kernel'' from analysis, this reflects on Dynamic Phasors as the benefit that we do not have to worry about initial conditions, ``removing'' them from our analysis. Again, we get the best of both worlds: $\ndpo{k}$ becomes bijective and the entire space of functions can be obtained from the class of ZES signals and the kernel of $\ndpo{k}$.
+
+	The fact that the $\ndpo{k}$ are bijective in the space of ZES signals has big consequences for differential equations, and especially Laplace Transforms. Notably, this shows that the essence of the null component in the DPO space is that of taking account for initial conditions, like the same phenomenon happens in the Laplace Transform: so much so that the Transform of the derivative of a signal is
+
+\begin{equation} \mathbf{L}\left[x^{(n)}\right] = s^n\mathbf{L}\left[X\right] - \sum_{k=0}^{n-1} s^{(n-k+1)}x_{(0)}^{(n-k)} .\label{eq:laplace_initial_conds}\end{equation}
+
+	\noindent essentially accomodating the initial conditions. For a ZES signal, however, 
+
+\begin{equation} \mathbf{L}\left[x^{(n)}\right] = s^n\mathbf{L}\left[X\right] \end{equation}
+
+	\noindent which is the simpler, more used formula. We hereforth suppose, unless specifically stated, that all signals are ZES, so as to make analysis simpler. This can be done without loss of generality because, as shown, any signal can be represented by a ZES version and vice-versa. 
+
+%-------------------------------------------------
+\subsection{Eigenanalysis of the DPO} %<<<2
+
+	We now ask if we could obtain a basis of functions that can generate the largest possible pool of ZES signals $X$. This would mean that we could reconstruct any signal from a pool (basis) of fixed signals and represent $X$ as coordinates in this basis. Functional analysis gives us a way to do this by means of the eigendecomposition of $\ndpo{k}$. Let $V$ be an eigenvector of $\dpo$ for some eigenvalue $\mu$; then
+
+\begin{equation} \dpo\left[V\right] = \mu V \Leftrightarrow \dot{V} + j\omega V = \mu V \end{equation}
+
+	\noindent and theorem \ref{theo:first_order_general} gives us the solution
+
+\begin{equation} V = ke^{\mu t} R_0(t),\ k\in\mathbb{C} \label{eq:dpo_eigen}\end{equation}
+
+	\noindent meaning $e^{\mu t}R_0(t)$ is an eigenvector of $\dpo$ with eignvalue $\mu$ for any complex $\mu$. For $\ndpo{2}$, this implies
+
+\begin{equation} \dpo\left[\raisebox{4mm}{} \dpo\left[e^{\mu t}R_0\right]\right] = \dpo\left[\mu e^{\mu t}R_0\right] = \mu\dpo\left[e^{\mu t}R_0\right] = \mu^2 e^{\mu t}R_0, \end{equation}
+
+	\noindent therefore $e^{\mu t}R_0$ is an eigenvector of $\dpo^2$ with eigenvalue $\mu^2$; by induction, $e^{\mu t}R_0$ is an eigenvalue of $\ndpo{k}$ with eigenvalue $\mu^k$. This means that the eigenspace of $\ndpo{k}$, denoted $\Eig\left(\ndpo{k}\right)$, is generated by $e^{\mu t}R_0$, with eigenvalues $\mu^k$.
+
+	The decomposition on the eigenspace however is more difficult as compared to that on the kernel because the eigenspace is an uncountably infinite space, seen as any complex $\mu$ generates an eigenvector. If we are to write the coordinates of a particular $X_\varepsilon$ with respect to a basis of the eigenvectors \eqref{eq:dpo_eigen}, we need a way to extract the coordinates of that particular function with respect to the basis.
+
+	Fortunately, as discussed in subsection \ref{subsec:inner_prod_norms}, there is a rather simple way to do this. If we can define an internal product $\left<\cdot\right>$ in the space $\left[\mathbb{R}\to\mathbb{C}\right]$, then as a direct consequence of the definition of an internal product as per equation \eqref{eq:coordinate_extraction}, the coordinate of $X$ with respect to the eigenvector $e^{\mu t}R_0(t)$ would be given by
+
+\begin{equation} X\left(\mu\right) = \left<X, e^{\mu t} R_0(t)\right> .\end{equation}
+
+	An issue arises, however: as discussed in subsection \ref{subsec:characteristics_l1}, there is no basis that can generate $\left[\mathbb{R}\to\mathbb{C}\right]$ unconditionally, that is, generate any vector in that space. Reestated, once a basis is admitted, we are in essence limiting our analysis to those signals which can be built using the basis and the inner product adopted. Again borrowing from Functional Analysis, we adopt the internal product
+
+\begin{equation} \left< f(t),g(t)\right> = \int_{-\infty}^{\infty} f(t)\overline{g(t)} dt \label{eq:internal_prod} \end{equation}
+
+	\noindent and we leave to the reader the proof that this operation indeed satisfies all properties of an inner product as outlined in definition \ref{def:complex_inner_prod}. Notably, this inner product induces a norm, as per definition \ref{def:norm_complex}:
+
+\begin{equation} \left\lVert f(t)\right\rVert = \sqrt{\left< f(t),f(t)\right>} = \sqrt{\int_{-\infty}^{\infty} f(t)\overline{f(t)} dt} = \sqrt{\int_{-\infty}^{\infty} \left\lvert f(t)\right\rvert^2 dt}\end{equation}
+
+	\noindent thus the inner product adopted induces notions of distances within the space being considered, therefore making possible the notions of sequences. It is generally said of this fact that \textit{the inner product adopted induces a topology for the space}. Furthermore, we can clearly see that the price we pay by adopting the inner product \eqref{eq:internal_prod} is that we confine ourselves to the functions that \textit{conform to this topology}, that is,  which norm is not infinite as induced by the inner product adopted. Specifically in this case, the set of such functions is the set $L^2$, called the set of \textit{square-integrable functions}:
+
+\begin{equation} L^2\left(\mathbb{R}\right) = \left\{f\in\left[\mathbb{R}\to\mathbb{C}\right]: \int_{-\infty}^{\infty} \left\lvert f(t)\right\rvert^2 dt < \infty\right\}. \end{equation}
+
+	It can be proven that the space $L^2$ is not only a Banach Space (a space with a notion of distance between vectors) but it is also a Hilbert Space, that is, the norm induced is complete in that every Cauchy sequence converges to a limit. Thus, in the space $L^2$ the notions of differentials and integrals are well-defined, like using the Frechèt Derivative of \eqref{eq:def_frechet}.
+
+	Another perk of a Hilbert Space is that the inner product adopted can give a notion of the decomposition of a vector $X$ with respect to a basis, like that of theorem \ref{theo:orthobasis_decomp}, by calculating by the internal product of $X$ and the constituents of that basis. In this case we are using the basis of eigenvectors, yielding an integral functional transform $\mathbf{T} \left[X\right]$:
+
+\begin{equation} \mathbf{T} \left[X\right]\left(\mu\right) = \left< X(t), e^{\mu t} R_0(t)\right> = \int_{-\infty}^{\infty} X(t) e^{\overline{\mu} t} \overline{R_0(t)}dt ,\label{eq:tmu_def}\end{equation}
+
+	It must be noted that this equation denotes some form of decomposition but it does not give a \textit{complete decomposition} in the same sense as the one of theorem \ref{theo:orthobasis_decomp} because the basis adopted is uncountably infinite and the elements of the basis are not orthonormal. Indeed, if one atempts to find the inner product of two eigenvectors $e^{\mu t}R_0(t)$ they will find that the resulting integral simply does not converge; even worse, the norm of an eigenvector is infinite for any $\mu$.
+
+	Naturally one asks whether an orthonormal basis of $L^2$ can be found because if so the decomposition is given and certain. Unfortunately, the answer is simply no: in the case of uncountably infinite sets such as $L^2$, there is no proof such a basis exists. Even for the ``simpler'' case of transfinite (countably infinite) dimensional spaces, it can be shown \pcite{halmosNaiveSetTheory1974} that finding such basis is possible but the process is quite contrived and requires supposition of certain logical axioms, and this discussion gravely overextends the intent of this thesis as it depends on a much larger (and honestly out of my mathematical capabilities) discussion on logic, the ZFC axiomatic theory and the quite divisive Axiom of Choice.
+
+	That being the case, we stop the discussion on the characteristics of $L^2$ because from this point forward there lie dragons. It suffices for the purposes of this text that the decomposition onto the eigenbasis in the form of the integral transform \eqref{eq:tmu_def} is possible, exists for the specific class $L^2$ and, as will be shown later, if $\mathbf{T} \left[X\right]\left(\mu\right)$ is known then the component of $X(t)$ that belongs to the eigenspace can be reconstructed from it using an inverse transform. Hence, in a short description, it makes us fairly happy to know that the projection of a complex signal $X$ onto the kernel of $\ndpo{k}$ yields its null component $X_\eta$, and the projection of $X$ onto the eigenspace yields a ZES signal $\tilde{X}$ that represents it in the correspondent equivalence class of ZES signals, such that $X(t)$ can be completely reconstructed from the sum of $\tilde{X} + X_\eta$.
+
+%-------------------------------------------------
+\section{Connection with the Laplace Transform} \label{sec:laplace_connection}%<<<1
+
+	Having defined the transform $\mathbf{T}\left[X\right]$ as the projection of a particular element onto the eigenbasis of $\ndpo{k}$, we can adjust its definition to yield a new transfom
+
+\begin{equation} \mathbf{M}\left[X\right]\left(\mu\right) = \mathbf{T}\left[X\right]\left(-\overline{\mu}\right) = \int_{-\infty}^{\infty} X(t) e^{-\mu t} \overline{R_0(t)}dt = \mathbf{L}\left[X(t) \overline{R_0(t)}\right]\left(\mu\right) ,\label{eq:mtransf_mu_def}\end{equation}
+
+	\noindent that is, $\mathbf{M}\left[X\right]$ is in essence a Laplace Transform of $X$ rotated by $\psi(t)$. Interestingly, this number is exactly the projection of $X$ onto the real axis of its stationary frame, as per figure \ref{fig:dynamic_phasor_imreaxis} — wherefore one concludes that the transform $\mathbf{M}\left[X\right]$ is basically rotating the Dynamic Phasor back to the static frame and applying the Laplace Transform at the projected quantity. However, because the originary frame is stationary, this means that \textbf{this transform does not depend on the apparent frequency signal chosen}.
+
+	This can be seen by the fact that if a certain generalized sinusoid $x(t) = m(t)\cos\left(\theta(t)\right)$ is given, one can obtain the transform of its Dynamic Phasor without actually calculating the Dynamic Phasor itself:
+
+\begin{equation} \mathbf{M}\left[X\right] = \mathbf{L} \left[m(t)e^{j\theta(t)}\right], \label{eq:mutransf_from_time}\end{equation}
+
+	\noindent and the absolute angle $\theta(t)$ does not depend on $\omega(t)$. Thus, if $x(t)$ has two Dynamic Phasor representations, $X(t)$ and $\tilde{X}$, each measured at its own apparent frequencies but these frequencies are equivalent, they have the exact same $\mu$ Transform, which is the conclusion of theorem \ref{theo:muT_indep_freq}.
+
+\begin{theorem}[The $\mu$T is invariant to the apparent frequency signal chosen]\label{theo:muT_indep_freq} Let $X(t)\in\left[\mathbb{R}\to\mathbb{C}\right]$ produced at an apparent frequency signal $\omega(t)$, and suppose $X(t)$ admits a $\mu$ Transform. Let $\tilde{X}$ produced at the apparent frequency $\tilde{\omega}$ where $\tilde{\omega}$ is equivalent to $\omega(t)$ (see the definition \ref{def:equivalent_freqs} of equivalence between apparent frequency signals). Then the $\mu$ Transform of $\tilde{X}$ at $\tilde{\omega}$ is equal to the $\mu$ Transform of $X(t)$ at $\omega(t)$.
+\end{theorem}\vspace{3mm}\hrule\vspace{3mm}
+
+	Another curious consequence of equation \eqref{eq:mtransf_mu_def} is that if $\omega(t) = 0$ then $\psi = \int_0^t \omega(s)ds = 0$, so
+
+\begin{equation} \mathbf{M}\left[X\right]\left(\mu\right) = \mathbf{L}\left[X(t) e^{j0}\right] = \mathbf{L}\left[X\right], \end{equation}
+
+	\noindent therefore $\mathbf{M}$ coincides with $\mathbf{L}$. In a certain sense, this means that the Laplace Transform is a particular case of the $\mu$ Transform.
+
+	Thus let us  henceforth call $\mathbf{M}$ as the $\mu$-Transform or $\mu$T for short. Because of this connection with the Laplace Transform the properties of $\mathbf{L}$ apply here, mainly that $\mathbf{M}\left[X\right]\left(\mu\right)$ has a Region of Convergence denoted by
+
+\begin{equation}\text{ROC}\left(\mathbf{M}\left[X\right]\right) = \left\{\mu\in\mathbb{C}: \int_{-\infty}^{\infty} \left\lvert X e^{-\text{Re}\left(\mu\right) t}\right\rvert dt < \infty \right\} \end{equation}
+
+	\noindent such that a signal $X(t)$ admits a $\mu$T if the ROC is not empty; also, alike the Laplace Transform, $\mathbf{M}\left[X\right]\left(\mu\right)$ is analytic in the ROC. Also, if $X(t)$ is a causal signal then the ROC is of the form $\text{Re}\left(\mu\right) > a$ for some real $a$, possibly containing some points of the line $\text{Re}\left(\mu\right) = a$.
+
+	Curiously, substituting \eqref{eq:mutransf_from_time} into the condition for the ROC, and using the fact that $\left\lvert e^{jx}\right\rvert = 1$ for any real $x$,
+
+\begin{equation} \int_{-\infty}^{\infty} \left\lvert m(t)e^{j\theta(t)} e^{-\text{Re}\left(\mu\right) t}\right\rvert dt < \infty \Leftrightarrow \int_{-\infty}^{\infty} \left\lvert m(t) e^{-\text{Re}\left(\mu\right) t}\right\rvert dt < \infty \end{equation}
+
+	\noindent yielding the conclusion that a Dynamic Phasor has a $\mu$-Transform if and only if its amplitude $m(t)$ has a Laplace Transform, that is, if $X(t)$ has a Laplace Transform itself.
+
+	Therefore, the admissibility of a $\mu$ Transform is closely related to the admissibility of a Laplace Transform; furtermore, the absolute angle $\theta(t)$ of a sinusoid, nor the argument of its Dynamic Phasor, play a part in such admissibilities. The list of such conclusions proves theorem \ref{theo:admissible}.
+
+\begin{theorem}[Admissibility of a $\mu$ Transform]\label{theo:admissible} Consider a sinusoid $x(t)$, $X(t)\in\left[\mathbb{R}\to\mathbb{C}\right]$ its correspondent Dynamic Phasor at some apparent frequency, Then the following sentences are equivalent:
+
+\begin{itemize}
+	\item The Dynamic Phasor $X(t)$ admits a $\mu$ Transform;
+	\item The Dynamic Phasor $X(t)$ admits a Laplace Transform;
+	\item The sinusoid $x(t)$ admits a Laplace Transform;
+	\item The amplitude $m(t)$ of $x(t)$ and $X(t)$ admits a Laplace Transform;
+	\item There exists $\alpha\in\mathbb{R}$ such that $\left\lvert m(t)\right\rvert e^{\alpha t} = \left\lvert X(t)\right\rvert e^{\alpha t}$ is square-integrable.
+\end{itemize}
+
+\end{theorem}\hrule\vspace{3mm}
+
+	Moreover, naturally we ask if the argument $X(t)$ can be retrieved from $\mathbf{M}\left[X\right]$ through some inversion formula, that is, if given $\mathbf{M}\left[X\right] = F\left(\mu\right)$ there is some inverse transform onto $F$ that yields $X(t)$. The connection with the Laplace Transform naturally yields a candidate to inverse transform
+
+\begin{align}
+	\mathbf{M}^{-1}\left[F\right](t) &= \mathbf{L}^{-1}\left[F\left(\mu\right)R_0(t)\right] = \dfrac{1}{2\pi j}\lim_{\beta\to\infty} \int_{\alpha- j\beta}^{\alpha + j\beta} F\left(\mu\right) R_0(t) e^{\mu  t} d\mu = \nonumber\\[3mm] &= \dfrac{R_0(t)}{2\pi j}\lim_{\beta\to\infty} \int_{\alpha- j\beta}^{\alpha + j\beta} F\left(\mu\right) e^{\mu  t} d\mu = R_0(t)\mathbf{L}^{-1}\left[F\right].\label{eq:xmu_inverse_prop}
+\end{align}
+
+	One concludes that this prospective inverse transform makes a lot of sense: since $\mathbf{M}$ is essentially a rotation of its argument onto the stationary frame and the subsequent Laplace Transform of the projected signal, the inverse transform is the inverse Laplace Transform and then a rotation back to the DQ frame generated by the Dynamic Phasor Transform. Again we notice that if the apparent frequency $\omega(t) = 0$ then $\mathbf{M}^{-1}$ coincides with $\mathbf{L}^{-1}$, again showcasing that the $\mu$ Transform is some generalization of the Laplace Transform.
+
+	We now prove that the formula \ref{eq:xmu_inverse_prop} indeed reconstructs the time signal intended in theorem \ref{theo:xmu_reconst}. 
+
+\begin{theorem}[Inverse $\mu$ Transform]\label{theo:xmu_reconst} %<<<
+	Let $X(t)\in\left[\mathbb{R}\to\mathbb{C}\right]$ a ZES signal and suppose there is some real $\alpha$ such that $Xe^{\alpha t}$ and $X'(t)e^{\alpha t}$ are Lebesgue integrable (in $L^1\left(\mathbb{R}\right)$). Take $\mathbf{T}\left[X\right]$ as in \eqref{eq:tmu_def}. Then 
+
+	\begin{equation} X(t) = \dfrac{R_0(t)}{2\pi j}\lim_{\beta\to\infty} \int_{\alpha- j\beta}^{\alpha + j\beta} \mathbf{M} \left[X\right]\left(\mu\right) e^{\mu  t} d\mu \label{eq:xmu_inverse}\end{equation}
+
+	\noindent or succintly
+        
+	\begin{equation} X(t) = \dfrac{R_0(t)}{2\pi j}\int_{B_\alpha} \mathbf{M}_{\left[X\right]}\left(\mu\right) e^{\mu  t} R_0\left(t\right) d\mu \label{eq:xmu_inverse_brom}\end{equation}
+        
+	\noindent where $B_\alpha = \left(\alpha - j\infty,\alpha + j\infty\right)$ is a Brömwich contour.
+\end{theorem}
+\textbf{Proof:} define
+
+\begin{equation} D(t) = \dfrac{1}{2} + \dfrac{1}{\pi}\int_{-\infty}^t \dfrac{\sin\left(s\right)}{s}ds \end{equation}
+
+	Notably, $D(t)$ is bounded and by the Dirichlet Integral
+
+\begin{equation} \lim_{\alpha\to\infty} D\left(\alpha t\right) = H(t) = \left\{\begin{array}{l} 1 \text{, if } t > 0 \\[3mm] \dfrac{1}{2} \text{, if } t = 0 \\[3mm] 0 \text{, if } t < 0 \end{array}\right. \end{equation}
+
+	\noindent with $H(t)$ an adapted version of the Heaviside step function. Take $X(t)$ as defined in the \textit{caput}. Then
+
+\begin{align}
+	I(t) &= \dfrac{R_0(t)}{2\pi} \int_{-\beta}^{\beta} \mathbf{M}\left[X\right]\left(\alpha + j\gamma\right) e^{\left(\alpha + j\gamma\right)  t} d\gamma \nonumber\\[3mm]
+	     &= \dfrac{R_0(t)}{2\pi} \int_{-\beta}^{\beta} \left(\int_{-\infty}^{\infty} X(s) e^{\left(\alpha + j\gamma\right) s} \overline{R_0(s)}ds\right) e^{\left(\alpha + j\gamma\right)  t} \gamma\nonumber\\[3mm]
+	     &= \dfrac{R_0(t)}{2\pi} \int_{-\beta}^{\beta} \left(\int_{-\infty}^{\infty} X(s) e^{\left(\alpha - j\gamma\right) s} \overline{R_0(s)}ds\right) e^{\left(-\alpha + j\gamma\right)  t} d\gamma
+\end{align}
+
+	By Fubini's Theorem, the integration order can be changed:
+
+\begin{align}
+	I(t) &= \dfrac{R_0(t)}{2\pi} \int_{-\infty}^{\infty} X(s) e^{\left(\alpha - j\gamma\right) s} \overline{R_0(s)} \left(\int_{-\beta}^{\beta} e^{\left(-\alpha + j\gamma\right)  t}  d\gamma\right)ds \nonumber\\[3mm]
+	     &= \dfrac{R_0(t)}{2\pi} \int_{-\infty}^{\infty} X(s) e^{\alpha\left(s - t\right)} \overline{R_0(s)} \left(\int_{-\beta}^{\beta} e^{j\gamma\left(t - s\right)} d\gamma\right)ds \nonumber\\[3mm]
+	     &\hspace{-3mm}= R_0(t) \left[\int_{-\infty}^{\infty} X(s) e^{\alpha\left(s - t\right)} \overline{R_0(s)} \left\{\dfrac{\sin\left[\beta\left(t-s\right)\right]}{\pi\left(t-s\right)} \right\} ds \right]
+\end{align}
+
+	By the assumption, $X(s)e^{\alpha s}$ and $\left(Xe^{\alpha s}\right)' = \left(X'(s) + \alpha X(s)\right)e^{\alpha s}$ are $L^1$. This can only be possible if both $X$ and its derivative converge exponentially to zero as the infinites, that is, $X(s)e^{\alpha s}\to 0$ and $X'(s)e^{\alpha s},\to 0$ as $s\to \pm\infty$. Because $\left\lvert R_0(s)\right\rvert$ = 1, this also yields $X(s)e^{\alpha s}\overline{R_0(s)}\to 0$ and $X'(s)e^{\alpha s}\overline{R_0(s)}\to 0$ as $s$ goes to positive or negative infinity and integration by parts yields
+
+\begin{align}
+	I(t) &= R_0(t) \left\{ \begin{array}{l} \left[X(s) e^{\alpha\left(s - t\right)} D\left[\beta\left(s-t\right)\right]\overline{R_0(s)}\right]_{s\to -\infty}^{s\to\infty} + \\[3mm] \hspace{1cm}+\displaystyle\int_{-\infty}^{\infty} \left[X(s)e^{\left(s-t\right)\alpha}\overline{R_0(s)}\right]'D\left[\beta\left(s-t\right)\right] ds \end{array}\right\}
+\end{align}
+
+	\noindent and because $H$ is bounded, the first term vanishes, yielding
+
+\begin{equation} I(t) = R_0(t)\left[\int_{-\infty}^{\infty} \left[X(s)e^{\left(s-t\right)\alpha}\overline{R_0(s)}\right]'D\left[\beta\left(s-t\right)\right] ds\right] \end{equation}
+
+	Taking the limit $\beta\to\infty$, because $H$ tends to $u(t)$ which is integrable, the Dominated Convergence Theorem guarantees that the limit can operate inside the integral and
+
+\begin{align}
+	I(t) &= R_0(t)\int_{-\infty}^{\infty} \left[X(s)e^{\left(s-t\right)\alpha}\overline{R_0(s)}\right]' H\left(s-t\right) ds \nonumber\\[3mm] &= -R_0(t)\left[X(s)e^{\left(s-t\right)\alpha}\overline{R_0(s)}\right]_{s=t}^{s\to\infty} \nonumber\\[3mm] &= R_0(t) \overline{R_0(t)} X(t) = \left\lvert R_0(t)\right\rvert^2 X(t) = X(t)
+\end{align}
+\hfill$\blacksquare$\vspace{5mm}\hrule\vspace{5mm} %>>>
+
+	Thus, for $F\in\left[\mathbb{C}\to\mathbb{C}\right]$ we define the \textbf{Inverse $\boldsymbol{\mu}$ Transform} $\mathbf{M}^{-1}$ or simply $\mu$T$^{-1}$ as
+
+	\begin{equation} \mathbf{M}^{-1}\left[F\right] = \dfrac{R_0(t)}{2\pi j}\int_{B_\alpha} F\left(\mu\right) e^{\mu  t} d\mu = R_0(t)\mathbf{L}^{-1}\left[F\right] \label{eq:inv_muT_def}\end{equation}
+
+	Notably, given $X(t) = \mathbf{M}^{-1}\left[F\right]$, the generalized sinusoid that $X$ reconstructs is given by
+
+\begin{equation} x(t) = \Re\left(X(t)e^{j\psi(t)}\right) = \Re\left(X \overline{R_0}(t)\right) = \Re\left(\mathbf{L}^{-1}\left[F\right]R_0(t)\overline{R_0}(t)\right) = \Re\left(\mathbf{L}^{-1}\left[F\right]\right)\end{equation}
+
+	\noindent again hinting at the fact that for some real signal $x(t)$ the $\mu$T of its Dynamic Phasor is independent of the frequency signal $\omega(t)$ chosen. Furthermore, the connection of the $\mu$T with $\mathbf{L}$ also allows for calculating the inverse through the Residue Theorem, in the same pattern as the Laplace Inversion Theorem. Theorem \ref{theo:xmu_reconst_residue} shows that given a $F(z)\in\left[\mathbb{C}\to\mathbb{C}\right]$, one can obtain the Dynamic Phasor reconstructed by this function through the use of two seminal theorems from Complex Analysis: Cauchy's Residue Theorem (theorem \ref{theo:residue_theorem}) and Jordan's Lemma (theorem \ref{theo:jordans_lemma}).
+
+\begin{theorem}[Cauchy's Residue Theorem \pcite{ahlfors1979complex}]\label{theo:residue_theorem} %<<<
+	Let $U$ a simply connected open subset of $\mathbb{C}$, and a list of points $\left(a_1,a_2,\cdots,a_n\right)$. Let $U_0 = U\setminus\left\{a_1,a_2,\cdots,a_n\right\}$ and consider a function $f(z)$ is holomorphic on $U_0$. Let $\gamma$ a closed rectifyiable curve in  $U_0$, and denote the residue of $f$ around a point $c$ as
+
+\begin{equation} \Res\left(f,c\right) = \dfrac{1}{2\pi j}\oint_{\gamma_c} f(z)dz ,\end{equation}
+
+	\noindent where $\gamma_c$ is a clockwise circular path around $c$ of radius small so as not to enclose any other singularities but $c$. Also denote the winding number of $\gamma$ around a point $c$ as
+
+\begin{equation} I\left(\gamma,c\right) = \dfrac{1}{2\pi j}\oint_\gamma \dfrac{1}{z} dz\end{equation}.
+
+	Then
+
+\begin{equation} \dfrac{1}{2\pi j}\oint_\gamma f(z)dz = \sum_{k=1}^n I\left(\gamma,a_k\right)\Res\left(f,a_k\right) .\end{equation}
+
+	Particularly, if $\gamma$ is positively oriented and simple, all its winding numbers are $1$ and
+
+\begin{equation} \dfrac{1}{2\pi j}\oint_\gamma f(z)dz = \sum_{k=1}^n \Res\left(f,a_k\right) .\end{equation}
+
+\end{theorem}\vspace{3mm}\hrule\vspace{3mm}%>>>
+
+\begin{theorem}[Jordan's Lemma]\label{theo:jordans_lemma} %<<<
+	Consider the semicircular contour $C_R = \left\{Re^{j\theta}: 0\leq \theta\leq \pi\right\}$ with $R$ a positive radius, consisting of a semicircle on the upper-half plane center at the origin. If $f(z)$ is of the form $f(z) = e^{jaz}g(z)$ in $C_R$, with a positive parameter $a$, then
+
+\begin{equation} \left\lvert \int_{C_R} f(z)dz\right\rvert \leq \dfrac{\pi M}{a},\ \text{where } M = \max\limits_{0\leq\theta\leq\pi} \left\lvert g\left(Re^{j\theta}\right)\right\rvert .\end{equation}
+
+	Particularly, if $f$ is continuous on $C_R$ for all large $R$ and 
+
+\begin{equation} \lim_{R\to\infty} M = 0 \end{equation}
+
+	\noindent then
+
+\begin{equation} \lim_{R\to\infty} \int_{C_R} f(z)dz = 0 .\end{equation}
+
+\end{theorem}\vspace{3mm}\hrule\vspace{3mm} %>>>
+
+\begin{theorem}[Calculating the $\mu$T$^{-1}$ through complex poles]\label{theo:xmu_reconst_residue} %<<<
+	Let $X(t)\in\left[\mathbb{R}\to\mathbb{C}\right]$ ZES, and choose $\alpha$ such that the line $\Re\left(z\right) < \alpha$ contains all poles of $\mathbf{M}\left[X\right]\left(\mu\right)$, that is, all poles of $\mathbf{M}$ are on the left of $\alpha$. Then
+
+	\begin{equation} X(t) = R_0(t)\int_{\alpha - j\infty}^{\alpha + j\infty} \mathbf{M}\left[X\right]\left(\mu\right) e^{\mu t} d\mu = 2\pi jR_0(t) \sum \Res\left(\mathbf{M}\left[X\right]\left(\mu\right) e^{\mu t},\mu_p\right) \end{equation}
+
+	\noindent where $\mu_p$ are the poles of $\mathbf{M}\left[X\right]\left(\mu\right)$.
+\end{theorem}
+
+% SEMICIRCLE CONTOUR DRAWING <<<
+\begin{figure}[htb!]
+\centering
+\scalebox{1}{
+	\begin{tikzpicture}[scale=2,>={Stealth[inset=0mm,length=1.5mm,angle'=50]}]
+		\draw [->] (   -10mm,  0   ) -- (   20mm,  0   ) node[right] (xaxis) {$\Re$};
+		\draw [->] (      0, -15mm ) -- (   0   ,  15mm) node[above] (yaxis) {$\Im$};
+		\draw[->,gray,dashed,line cap = round] (12mm,0) -- ({12mm - 14.5mm*cos(45)},{0mm - 14.5mm*sin(45)}) node[midway,label={[label distance = -1mm, rotate=45]above:$R$}] {};
+		\node at (13mm,-1mm) {$\alpha$};
+		\node[stewartpink,right] at (13mm,7.5mm) {$L_1$};
+		\draw [->, stewartpink](12mm,-15mm) -- (12mm,-5mm);
+		\draw [->, stewartpink](12mm,-5mm) -- (12mm,+10mm);
+		\draw [    stewartpink](12mm,10mm) -- (12mm,+15mm);
+		\draw [->,stewartblue] (12mm,15mm) arc[start angle=90, end angle = 160, radius = 15mm] node (start1) {};
+		\node[stewartblue] at ({12mm + 18mm*cos(160)},{0mm + 18mm*sin(160)}) {$C_1$};
+		\draw [   stewartblue] (start1) arc[start angle=160, end angle = 270, radius = 15mm] {};
+		\draw[fill] (12mm,0) circle (0.25mm);
+	\end{tikzpicture}
+	}
+	\caption{Integration contours for theorem \ref{theo:xmu_reconst}.}
+	\label{fig:semicircle_complex_1}
+\end{figure} %>>>
+\textbf{Proof:} consider the semicircle path ${\color{stewartblue} C_1}$ and the horizontal path ${\color{stewartpink} L}$, and let $\gamma_1$ their union. Denote $\mathbf{M}\left[X\right]\left(\mu\right) = F\left(\mu\right)$. Then
+
+\begin{align}
+	R_0\left(t\right)\oint_{\gamma_1} F\left(\mu\right)e^{\mu t}d\mu &= R_0\left(t\right)\int_{C_1} Fe^{\mu t}\left(\mu\right)d\mu + R_0\left(t\right)\int_{L_1} Fe^{\mu t}\left(\mu\right)d\mu = \nonumber\\[3mm]
+%
+	&= R_0\left(t\right)\int_{C_1} Fe^{\mu t}\left(\mu\right)d\mu + R_0\left(t\right)\int_{\alpha - jR}^{\alpha + jR} Fe^{\mu t}\left(\mu\right)d\mu .
+\end{align}
+
+	But by Cauchy's Residue Theorem, since $\gamma$ is positively oriented and simple,
+
+\begin{equation} R_0\left(t\right)\oint_{\gamma_1} Fe^{\mu t}\left(\mu\right)d\mu = 2\pi j R_0\left(t\right)\sum_{c\in\Gamma} \Res\left(Fe^{\mu t},c\right) ,\end{equation}
+
+	\noindent where $\Gamma$ is the are enclosed by the curve $\gamma$, that is, the $c$ are the poles of $Fe^{\mu t}$ enclosed by $\gamma_1$, that is, the poles at the left of $\alpha$; thus
+
+\begin{equation} R_0\left(t\right)\int_{C_1} Fe^{\mu t}\left(\mu\right)d\mu + R_0\left(t\right)\int_{\alpha - jR}^{\alpha + jR} Fe^{\mu t}\left(\mu\right)d\mu = 2\pi j R_0\left(t\right)\sum_{c\in\Gamma} \Res\left(Fe^{\mu t},c\right) .\end{equation}
+
+	Naturally, the integral over $\left[\alpha - jR,\alpha + jR\right]$ becomes the integral we require as $R\to \infty$; it is obvious that as $R\to\infty$, $\Gamma$ becomes the half semiplane left of $\alpha$; thus the poles enclosed by $\gamma_1$ become the poles such that $\Re\left(c_k\right) < \alpha$, that is,
+
+\begin{equation} R_0\left(t\right)\lim_{R\to\infty} \int_{C_1} Fe^{\mu t}\left(\mu\right)d\mu + R_0\left(t\right)\int_{\alpha - j\infty}^{\alpha + j\infty} Fe^{\mu t}\left(\mu\right)d\mu = 2\pi j R_0\left(t\right)\sum_{\Re\left(c\right) < \alpha} \Res\left(Fe^{\mu t},c\right) .\end{equation}
+
+	We want to use Jordan's Lemma to prove that the integral over $C_1$ vanishes at $R\to \infty$. Writing $\mu = jz + \alpha$ we translate and rotate $\mu$ so that the integration curve is now the upper semicircle center at the origin:
+
+\begin{equation} F(\mu)e^{\mu t} = \mathbf{M}\left[X\right]\left(jz + \alpha\right) e^{jz + \alpha}. \end{equation}
+
+	Using Jordan's Lemma, we note that this integral is of the form
+
+\begin{equation} F(\mu)e^{\mu t} = \left[\raisebox{4mm}{} \mathbf{M}\left[X\right]\left(jz + \alpha\right) e^{\alpha t}\right]e^{jtz}. \end{equation}
+
+	If $\alpha$ is inside the ROC of $\mathbf{M}$ and $R$ is large enough so $z$ does not touch singularities, then the absolute value of the term in brackets inevitably goes to zero as $R\to\infty$; thus, by Jordan's Lemma,
+
+\begin{equation} \lim_{R\to\infty} \int_{C_R} F(\mu)e^{\mu t}d\mu = 0 \end{equation}
+
+	\noindent yielding
+
+\begin{equation} R_0\left(t\right)\int_{\alpha - j\infty}^{\alpha + j\infty} Fe^{\mu t}\left(\mu\right)d\mu = 2\pi j R_0\left(t\right)\sum \Res\left(Fe^{\mu t},c\right) \end{equation}
+
+	\noindent where the $c$ are all the residues of $Fe^{\mu t}$. Now note that $e^{\mu t}$ is differentiable everywhere (holomorphic) and has no poles, thus the poles of $Fe^{\mu t}$ are the same poles as $\mathbf{M}$; therefore,
+
+\begin{equation} R_0\left(t\right)\int_{\alpha - j\infty}^{\alpha + j\infty} Fe^{\mu t}\left(\mu\right)d\mu = 2\pi j R_0\left(t\right)\sum \Res\left(Fe^{\mu t},\mu_p\right) \end{equation}
+
+	\noindent where the $\mu_p$ are the poles of $\mathbf{M}\left[X\right]\left(\mu\right)$. \hfill$\blacksquare$\vspace{5mm}\hrule\vspace{5mm} %>>>
+
+	Thus, given some complex function $M\left(\mu\right)$, theorem \ref{theo:xmu_reconst_residue} gives a simple way to reconstruct the time signal that the transform defines.
+
+	We now give an example of the application of theorem \ref{theo:xmu_reconst_residue}. As discussed in chapter \ref{chapter:dpos}, the Laplace Transform of a generic signal (and particularly Nonstationary Sinusoids) is not analyticaly representable; this means that any example that we try to build will be in some way innocuous since most probably the signal reconstructed by some simple $\mu$T is probably not applicable to any examples. Such is indeed the case in example \ref{example:muT_reconst}, a sample function is adopted and the signal built from it is reconstructed.
+
+\begin{example}[Reconstruction of a $\mu$T through Residue Theorem]\label{example:muT_reconst} %<<<
+
+	Consider $M\in\left[\mathbb{C}\to\mathbb{C}\right]$:
+
+\begin{equation} M\left(\mu\right) = \dfrac{3\mu - 22}{\left(\mu - 2j\right)\left(\mu + 5\right)^2} \end{equation}.
+
+	Then $M$ has poles at $\mu = 2j$ and $\mu = -5$, the latter being a double pole; thus it reconstructs the signal
+
+\begin{equation} X(t) = 2\pi j R_0\left(t\right)\left[ \Res\left(M\left(\mu\right) e^{\mu t},2j\right) + \Res\left(M\left(\mu\right) e^{\mu t},-5\right)\right] .\end{equation}
+
+	To calculate the residues, we use Laurent's Series (theorem \ref{theo:laurent}): the residue of a pole of order $n$ is calculated as
+
+\begin{equation} \Res\left(f,z_0\right) = \dfrac{1}{\left(n-1\right)!} \lim_{z\to z_0} \dfrac{d^{(n-1)}}{dz^{(n-1)}} \left[\left(z - z_0\right)^n f(z)\right] \end{equation}
+
+	Starting with the simple pole at $\mu = 2j$,
+
+\begin{align}
+	\Res\left(M\left(\mu\right) R_0\left(t\right)e^{\mu t},2j\right) &= \lim_{\mu\to 2j}\left(\mu-2j\right)M\left(\mu\right) R_0\left(t\right)e^{\mu t} = R_0\left(t\right) \lim_{\mu\to 2j} \dfrac{3\mu - 22}{\left(\mu + 5\right)^2} e^{\mu t} = \nonumber\\[3mm] &= R_0\left(t\right) \dfrac{6j - 22}{\left(2j + 5\right)^2} e^{2jt} =  \dfrac{-342 + j566}{841} e^{j\left(2t + \psi(t)\right)}
+\end{align}
+
+	And for the double pole at $\mu = -5$,
+
+\begin{align}
+	R_0(t) \Res\left(M\left(\mu\right)e^{\mu t},2j\right) &= \lim_{\mu\to 2j}\left(\mu-2j\right)M\left(\mu\right) R_0\left(t\right)e^{\mu t} = R_0\left(t\right) \lim_{\mu\to 2j} \dfrac{3\mu - 22}{\left(\mu + 5\right)^2} e^{\mu t} = \nonumber\\[3mm] &= R_0\left(t\right) \dfrac{6j - 22}{\left(2j + 5\right)^2} e^{2jt} = \dfrac{6j - 22}{\left(2j + 5\right)^2} e^{j2t - j\psi(t)}
+\end{align}
+
+	For the second pole,
+
+\begin{align}
+	R_0(t) \Res\left(M\left(\mu\right)e^{\mu t},2j\right) &= R_0(t) \dfrac{1}{1!} \lim_{\mu\to -5} \dfrac{d}{d\mu}\left[\left(\mu+5\right)^2 M\left(\mu\right) e^{\mu t}\right] = \nonumber\\[3mm]
+%
+	&= R_0\left(t\right) \lim_{\mu\to -5} \dfrac{d}{d\mu}\left[\dfrac{\left(3\mu - 22\right)e^{\mu t}}{\left(\mu - 2j\right)}\right] \nonumber\\[3mm]
+%
+	&= R_0\left(t\right) \lim_{\mu\to -5} \dfrac{\left(\mu - 2j\right)\left[3e^{\mu t} + t\left(3\mu - 22\right)e^{\mu t}\right] - \left(3\mu - 22\right)e^{\mu t}}{\left(\mu - 2j\right)^2} = \nonumber\\[3mm]
+%
+	&= R_0\left(t\right) \left[\dfrac{\left(-5 - 2j\right)\left[3e^{-5 t} + t\left(-15 - 22\right)e^{-5 t}\right] - \left(-15 - 22\right)e^{-5 t}}{\left(-5 - 2j\right)^2}\right] = \nonumber\\[3mm]
+%
+	&= R_0\left(t\right)e^{-5t} \left[\dfrac{-\left(5 + 2j\right)\left(3 - 37t\right) + 37}{\left(5 + 2j\right)^2}\right] = \nonumber\\[3mm]
+%
+	&= \left[\dfrac{-\left(5 + 2j\right)\left(3 - 37t\right) + 37}{\left(5 + 2j\right)^2}\right]e^{-5t - j\psi(t)}
+\end{align}
+
+	Thus the reconstructed signal is
+
+\begin{equation} X(t) = \mathbf{M}^{-1}\left[F\right] = \dfrac{1}{2\pi j}\dfrac{6j - 22}{\left(2j + 5\right)^2} e^{j2t - j\psi(t)} + \dfrac{1}{2\pi j}\left[\dfrac{-\left(5 + 2j\right)\left(3 - 37t\right) + 37}{\left(5 + 2j\right)^2}\right]e^{-5t - j\psi(t)} \end{equation}
+
+	The real signal reconstructed by this Dynamic Phasor is
+
+\begin{equation}  x(t) = \Re\left(\mathbf{M}^{-1}\left[F\right]\overline{R_0}(t)\right) = \dfrac{2\sqrt{130}}{58\pi}\cos\left(2t + \arctan\left(\dfrac{171}{283}\right)\right) + \dfrac{\left(4t - 6\right)e^{-5t}}{58\pi} \end{equation}
+
+	\noindent which is indeed a simple function, again illustrating that only particular functions (static sinusoids, exponentials, polynomials and so on) will have ``nice'' Laplace transforms and nice $\mu$ transforms.
+
+\examplebar
+\end{example} %>>>
+
+%-------------------------------------------------
+\subsection{The Final Value Theorems}
+
+	One of the also glaring advantages of the connection between the $\mu$T and the Laplace Transform is the fact that we can leverage the final value theorem available for the Laplace Transform to prove a version of this theorem for the $\mu$ Transform.
+
+\begin{theorem}[Final Value Theorem for the Laplace Transform \pcite{chenFinalValueTheorem2007}]\label{theo:laplace_fvt}
+	Suppose $F(s)\in\left[\mathbb{C}\to\mathbb{C}\right]$ with poles in either the open left half place or the origin, and that $F(s)$ has at most a single pole at the origin. Then $f(t) = \mathbf{L}^{-1}\left[F\right]$ exists, $sF(s)\to L\in\mathbb{R}$ as $s\to 0$ and
+
+\begin{equation} \lim\limits_{s\to\ 0} sF(s) = \lim\limits_{t\to\infty} f(t) \end{equation}
+\end{theorem}
+\hrule
+\vspace{3mm}
+
+	While more powerful versions of the Final Value Theorem exist, as shown in \cite{chenFinalValueTheorem2007}, that of theorem \ref{theo:laplace_fvt} is the ``standard'' one by which everyone knows the theorem.
+
+	For the $\mu$ Transform, we can use \eqref{eq:mtransf_mu_def} which directly relates $\mathbf{M}\left[\cdot\right]$ to $\mathbf{L}\left[\cdot\right]$. Thus, taken at face-value, theorem \ref{theo:laplace_fvt} would mean that
+
+\begin{equation} \lim\limits_{s\to\ 0} \mu \mathbf{M}\left[X(t) R_0(t)\right]\left(\mu\right) = \lim\limits_{t\to\infty} X(t) \end{equation}
+
+	\noindent but this would not be really of use because we want to have a limit in terms of $\mathbf{M}\left[X(t)\right]$ but not $\mathbf{M}\left[X(t) R_0(t)\right]$. We instead present an adaptation of this theorem: we suppose that the $\mu$ Transform of $X(t)$ is equivalent to the Laplace transform of $X(t)$ composed with a function $h$ that is,
+
+\begin{equation} \mathbf{M}\left[X\right](\mu) = \mathbf{L}\left[X(t)R_0(t)\right](\mu) = \mathbf{L}\left[X(t)\right]\left(h\left(s\right)\right). \end{equation}
+
+	\noindent where $h\in\left[U_0\to\mathbb{C}\right]$ is defined in some neighborhood of the origin $U_0$. In other words, for the specific signal $X(t)$, the $\mu$T is equivalent to the LT and some ``distortion'' $h$ in some vicinity of the origin. If this $h$ is ``nice'' around the origin (continuously differentiable at the origin) then theorem \ref{theo:laplace_fvt} is rather easy to adapt to the $\mu$ Transform.
+
+\begin{theorem}[Final Value Theorem for $\mu$ Transforms]\label{theo:muT_fvt} %<<<
+	Consider a continuous function $M\in\left[A\subset\mathbb{C}\to\mathbb{C}\right]$ and suppose there exists a continuous $h\in\left[S\subset\mathbb{C}\to\mathbb{C}\right]$ with $h(S) \subset A$ such that $h$ is continuously differentiable at the origin and the composition $ F\left(\mu\right) = M\left(h\left(\mu\right)\right)$ has poles either at the origin or at the open left half plane, with at most one pole at the origin. Then $M$ admits an inverse $\mu$ Transform $X(t)$ which is also the inverse Laplace Transform of $F$ and 
+
+\begin{equation} \lim\limits_{\mu\to 0} \mu M\left(\mu_0 + h'_0\mu\right) = \lim\limits_{t\to\infty} X(t). \label{eq:fvt_uT_4}\end{equation}
+
+	\noindent where $h\left(U_0\right) \ni \mu_0 = h(0)$ and $h'(0) = h'_0$.
+\end{theorem}
+\textbf{Proof:} clearly, $M$ is the candidate to the $\mu$T of some signal $X(t)$; let
+
+\begin{equation} L\left(\mu\right) = M\left(h\left(\mu\right)\right) \end{equation}
+
+	\noindent the candidate to the LT of $X(t)$. Multiplying both sides by $\mu$,
+
+\begin{equation} \mu L\left(\mu \right) = \mu M\left(h\left(\mu\right)\right) \label{eq:fvt_uT_def}\end{equation}
+
+	\noindent and by the Final Value Theorem for the LT the left limit exists at $\mu\to 0$ and $L$ admits an inverse transform $X(t)$. Because $h$ is continuously differentiable at the origin, it is analytic and continuously differentiable in some neighborhood of the origin, say $U_0$. Also because $M$ is continuous, so is $L$ and the limits of compositions of continuous functions can be used to yield
+
+\begin{equation} \lim\limits_{s\to 0} \mu L\left(\mu\right) = \lim\limits_{\mu\to h(0)} \mu M\left(h\left(\mu\right)\right) \end{equation}
+
+	\noindent therefore the limit on the right surely exists. Further, because $h$ is analytic in $U_0$ (it has a converging Taylor expansion), we denote $h(0) = \mu_0$ and $h'(0) = h'_0$ and Taylor expansion yields
+
+\begin{equation} h(\mu) = \mu_0 + h'_0\mu + O\left(\mu\right)^2,\ \mu \in U_0. \end{equation}
+
+	\noindent thus by \eqref{eq:fvt_uT_def}
+
+\begin{equation}
+	\mu L\left(\mu\right) = \mu M\left(h\left(\mu\right)\right) = \mu M\left[\mu_0 + h'_0\mu + O\left(\mu\right)^2\right].
+\end{equation}
+
+	Now because $M$ is supposed continuous we again use that the limit of a composition of continuous functions is the composition of the limits together with the linearity of limits and
+
+\begin{equation} \lim\limits_{\mu\to 0} \mu M\left[\mu_0 + h'_0\mu + O\left(\mu\right)^2\right] = \lim\limits_{\mu\to 0} \mu M\left(\mu_0 + h'_0\mu\right) \end{equation}
+
+	Therefore,
+
+\begin{equation} \lim\limits_{\mu\to 0} \mu M\left(\mu_0 + h'_0\mu\right) = \lim\limits_{t\to\infty} X(t). \label{eq:fvt_uT_2}\end{equation}
+
+	Multiplying this entire equation by $h'_0$ and using the linearity of limits with $\tau = \mu_0 + h'_0\mu$ yields
+
+\begin{equation} \lim\limits_{\tau\to \mu_0} \left(\tau - \mu_0\right) M\left(\tau\right) = h'_0\lim\limits_{t\to\infty} X(t). \label{eq:fvt_uT_3}\end{equation}
+\hfill$\blacksquare$
+\begin{remark} If a single function $h$ exists with non-null $h'_0$, then one can take the scaled function $g = h(\mu)/h'_0$ so that $g'_0 = 1$ and the theorem yields
+
+\begin{equation} \lim\limits_{\mu\to \mu_0} \left(\mu - \mu_0\right)M\left(\mu\right) = \lim\limits_{\mu \to 0} \mu M\left(\mu + \mu_0\right) = \lim\limits_{t\to\infty} X(t),\ \mu_0 = g(0).\end{equation}
+
+	On the other hand, if $h'(0) = 0$ then the result becomes trivial
+
+\begin{equation} \lim\limits_{\mu \to 0} \mu M\left(\mu_0\right) = \lim\limits_{t\to\infty} X(t) = 0.\end{equation}
+\end{remark}
+\begin{remark}\label{remark:theo_muT_fvt_null_freq} If the apparent frequency $\omega(t)$ is identically null, then $R_0(t) = 1$, and the $\mu$ Transform is equivalent to the Laplace Transform. Thus $h(\mu) = \mu$ is used, yielding $\mu_0 = 0,\ h'(0) = 1$ and this Final Value Theorem for $\mu$Ts simplifies into the theorem for the Laplace Transform (theorem \ref{theo:laplace_fvt}).
+\end{remark}
+\hrule
+\vspace{3mm} %>>>
+
+	It becomes obvious that the function $h$ and its existence depends on the signal $X(t)$ and the reference signal $R_0(t)$, which is defined by the apparent frequency signal $\omega(t)$ chosen. Thus, these results are still somewhat underwhelming because in a control system where many signals are time-varying, this makes the application of theorem \ref{theo:muT_fvt} streunous because it depends on finding such an $h$ for each signal involved. If we assume that the apparent frequency signal $\omega(t)$ involved in the Dynamic Phasor Transform is equivalent (see definition \ref{def:equivalent_freqs}) to a constant frequency $\omega_0$, then we can analyze the $\mu$-Transform taken at $\omega_0$ because, by theorem \ref{theo:homeomorphic_phasors}, the signals obtained at $\omega(t)$ are diffeomorphic to those obtained using $\omega_0$ and the signals have the same $\mu$ Transform as their counterparts measured at their own apparent frequencies, as per theorem \ref{theo:muT_indep_freq}.
+
+	The benefit of this is that, by adopting the constant apparent frequency $\omega_0$, we have
+
+\begin{equation} M_X\left(\mu\right) = \mathbf{L}\left[Xe^{j\omega_0 t}\right]\left(\mu\right) \end{equation}
+
+	\noindent and by the frequency shift property of the Laplace Transform,
+
+\begin{equation} M_X\left(\mu\right) = \mathbf{L}\left[Xe^{j\omega_0 t}\right]\left(\mu\right) = L_X\left(\mu - j\omega_0\right)\end{equation}
+
+	\noindent thus the function $h$ given by $h(\mu) = \mu + j\omega_0$ is the transformation candidate \textit{for all signals involved}. But this function is infinitely differentiable (holomorphic) in the entire complex plane and its derivative at the origin is unitary; this yields corollary \ref{corollary:fvt_const_freq}.
+
+\begin{corollary}\label{corollary:fvt_const_freq} Consider an arbitrary sinusoid $x(t)$ with a Laplace transform and an absolute angle $\theta(t)$ that admits an apparent frequency $\omega_0$, that is, the equation $\phi(t) = \theta(t) - \omega_0 t$ has a solution. Then for any Dynamic Phasor of $X(t)$ measured at any other apparent frequency $\omega(t)$ equivalent to $\omega_0$,
+
+\begin{equation} \lim\limits_{\mu\to j\omega_0} \left(\mu - j\omega_0\right) M_X\left(\mu\right) = \lim\limits_{\mu\to 0} \mu M_X\left(\mu + j\omega_0\right) = \lim\limits_{t\to\infty} X\left(t\right) .\end{equation}
+
+\end{corollary}
+
+%-------------------------------------------------
+\section{The $\mu$ Transform on DPFs and consequences on linear systems} \label{subsec:mutransf_and_dpos} %<<<1
+
+	We now explore the operational properties of DPFs. Like the Laplace Transform translates a n-th order differential operator in time as a complex multiplication by $s^n$ in the frequency domain, $M$ translates a k-th order differentiation in time (equivalent to the $\ndpo{k}$ in the Dynamic Phasor domain) to a multiplication by $\mu^k$.
+
+\begin{theorem}[$\mu$ Transform and DPFs]\label{theo:mu_transf_and_dpfs} %<<<
+	Suppose a $C^k$-class $x(t)$ for some natural $k$ that is a ZES sinusoid at the apparent frequency $\omega(t)$ that admits a Laplace Transform. Consider the signal $y(t) = x^{(k)}(t)$, such that $Y(t) = \ndpo{k}\left[X\right]$. Then
+
+\begin{equation} \mathbf{M}\left[Y\right] = \mu^k \mathbf{M}\left[X\right] \text{ and } Y(t) = \mathbf{M}^{-1}\left[\mu^k \mathbf{M}\left[X\right]\right] .\end{equation}
+\end{theorem}
+\textbf{Proof.} Computing $M_Y$ for $k=1$:
+
+\begin{equation} M_Y = \int_{\mathbb{R}} \dpo \left[X(t)\right]  e^{-\mu  t} \overline{R_0\left(t\right)} dt = \int_{\mathbb{R}} \left[\dot{X} + j\omega X\right]  e^{-\mu  t} \overline{R_0\left(t\right)} dt = \int_{\mathbb{R}} \dfrac{d}{dt}\left[X \overline{R_0\left(t\right)}\right] e^{\mu t} dt \end{equation}
+
+	\noindent and applying integration by parts,
+
+\begin{equation}  M_Y = \left[X e^{-\mu t} \overline{R_0\left(t\right)}\right]_{-\infty}^{\infty} + \mu \int_{\mathbb{R}} X(t) e^{-\mu  t} \overline{R_0\left(t\right)} dt .\end{equation}
+
+	Here, because $x(t)$ admits a Laplace Transform, then its amplitude is of some exponential order, thus $X(t)e^{-\mu t}$ vanishes to zero at both extrema; thus
+
+\begin{equation}  M_Y = \mu \int_{\mathbb{R}} X(t) e^{-\mu  t} \overline{R_0\left(t\right)} dt = \mu M_X.\end{equation}
+
+	By induction, $M_Y = \mu^k M_X$ for $k\in \mathbb{N}$ and, by inversion, this formula also extends to negative $k$, thus it is also valid for any integer $k$.
+
+	We can also show that $\mu^k M_X(\mu)$ reconstructs $Y(t)$:
+
+\begin{equation} Y(t) = \ndpo{k}\left[X\right] = \ndpo{k} \left[\dfrac{1}{2\pi j}  \int_{B_\alpha} M_X  e^{\mu  t} R_0\left(t\right) d\mu \right]  \end{equation}
+
+	\noindent because the limit is not on $t$, $\ndpo{k}$ can operate inside the limit, and because it is linear it can operate inside the integral. Because the integral limits are not functions of $t$, by Leibnitz' Integral Rule,
+
+\begin{equation} Y(t) = \dfrac{1}{2\pi j}\int_{B_\alpha} \ndpo{k} \left[ M_X  e^{\mu  t} R_0\left(t\right) \right] d\mu  \end{equation}
+
+	\noindent because $M_X$ is not a function of time,
+
+\begin{equation} Y(t) = \dfrac{1}{2\pi j}\int_{B_\alpha} M_X \ndpo{k} \left[e^{\mu  t} R_0\left(t\right) \right] d\mu  \end{equation}
+
+	\noindent and because $e^{\mu t}R_0(t)$ is an eigenvector with eigenvalue $\mu^k$,
+
+\begin{equation} Y(t) = \dfrac{1}{2\pi j} \int_{B_\alpha} M_X \mu^k e^{\mu  t} R_0\left(t\right) d\mu  \end{equation}
+
+	\noindent meaning $Y(t) = \ndpo{k}\left[X\right] = \mathbf{M}^{-1}\left[\mu^k M_X\right]$.
+\hfill$\blacksquare$
+\vspace{3mm}
+\hrule
+\vspace{3mm} %>>>
+\begin{corollary}[$\mu$ Transforms and DPFs for non ZES signals] %<<<
+	If $X$ is not ZES, then to apply the theorem one must remove the initial conditions of $X$ to obtain its ZES equivalent using \eqref{eq:zfs_reconst}. Thus, if the initial conditions of $X(t)$ are
+
+\begin{equation} X_0,X'_0,X''_0,\cdots,X^{(\mathbf{c}\left[X\right])}_0\end{equation}
+
+	\noindent where $\mathbf{c}\left[X\right]$ can be infinite, then $\mathbf{c}\left[Y\right] = \mathbf{c}\left[X\right] - k$ and the initial conditions of $Y(t)$ are such that $Y^{i}_0 = X^{(i+k)}_0$. Then we use the theorem on the ZES equation $\mathbf{M}\left[\tilde{Y}\right] = \mu^k\mathbf{M}\left[\tilde{X}\right]$,\ where
+
+\begin{equation} \tilde{Z}(t) = Z(t) - \sum_{i=0}^{\mathbf{c}\left[Z\right]} Z^{(i)}_{(0)}R_i(t)u(t) \end{equation}
+
+	\noindent with $u(t)$ the Heaviside step distribution to obtain
+
+\begin{gather}
+	\mathbf{M}\left[ Y(t) - \sum_{j=0}^{\mathbf{c}\left[Y\right]} Y^{(j)}_{(0)}R_j(t) u(t)\right] = \mu^k \mathbf{M}\left[ X(t) - \sum_{i=0}^{\mathbf{c}\left[X\right]} X^{(i)}_{(0)}R_i(t)u(t)\right] \nonumber\\[3mm]
+%
+	 \mathbf{M}\left[ Y(t) - \sum_{i=0}^{\mathbf{c}\left[X\right] - k} X^{(j+k)}_{(0)}R_j(t)u(t)\right]  = \mu^k \mathbf{M}\left[ X(t) - \sum_{i=0}^{\mathbf{c}\left[X\right]} X^{(i)}_{(0)}R_i(t)u(t)\right] \nonumber\\[3mm]
+%
+	 \mathbf{M}\left[ Y(t) \right] - \sum_{i=0}^{\mathbf{c}\left[X\right] - k} X^{(j+k)}_{(0)} \mathbf{M}\left[R_j(t)u(t)\right]  = \mu^k \left\{\mathbf{M}\left[X(t)\right] - \sum_{i=0}^{\mathbf{c}\left[X\right]} X^{(i)}_{(0)} \mathbf{M}\left[R_i(t)u(t)\right] \right\} \nonumber\\[3mm]
+%
+	 M_Y - \sum_{i=0}^{\mathbf{c}\left[X\right] - k} X^{(j+k)}_{(0)} \mathbf{M}\left[R_j(t)u(t)\right] = \mu^k M_X - \mu^k\sum_{i=0}^{\mathbf{c}\left[X\right]} X^{(i)}_{(0)} \mathbf{M}\left[R_i(t)u(t)\right].
+\end{gather}
+
+	But
+
+\begin{equation} \mathbf{M}\left[R_ku(t)\right] = \mathbf{M}\left[\dfrac{t^k}{k!} R_0(t)u(t)\right] = \mathbf{L}\left[\dfrac{t^k}{k!}u(t)\right] = \mu \end{equation}
+
+	\noindent resulting
+
+\begin{equation}  M_Y = \mu^k M_X - \sum_{i=0}^{k-1} \mu^{(k-i-1)}X^{(i)}_{(0)}. \label{eq:final_dpo_muT}\end{equation}
+\end{corollary}
+\hrule
+\vspace{3mm} %>>>
+\begin{remark} \eqref{eq:final_dpo_muT} is directly equivalent to the Laplace Transform of n-th derivative formula
+\begin{equation}  \mathbf{L}\left[x^{(k)}\right] = s^k \mathbf{L}\left[x\right] - \sum_{i=0}^{k-1} s^{(k-i-1)}x^{(i)}_{(0)},\ k\in \mathbb{N}^* .\end{equation}
+\end{remark}
+
+%-------------------------------------------------
+\subsection{Rational systems and $\mu$TFs} %<<<2
+
+	Consider a system in time with input $x(t)$ and output $y(t)$ given by the ordinary linear differential equation
+
+\begin{equation} \sum_{k=0}^{n} \alpha_kx^{(k)} = \sum_{k=0}^{d} \beta_k y^{(k)} . \label{eq:odesystem_def}\end{equation}
+
+	Applying the Laplace Transform to both sides yields a transfer function
+
+\begin{equation} \dfrac{Y(s)}{X(s)} = G(s) = \dfrac{\displaystyle\sum_{k=0}^{d} \beta_k s^k}{\displaystyle\sum_{k=0}^{n} \alpha_k s^k} = \dfrac{N(s)}{D(s)},\end{equation}
+
+	\noindent with $N(s)$ and $D(s)$ polynomials. This is equivalent to stating that a linear time invariant differential system yields a \textbf{rational transfer function}; if the degree of the denominator is higher than that of the numerator, this is also called \textbf{proper}. Because most control systems are of such characteristic, rational and proper transfer functions are studied at length in control theory. This definition can be extended to DPTFs: apply the $\dpo$ to \eqref{eq:odesystem_def}:
+
+\begin{equation} \sum_{k=0}^{n} \alpha_k \ndpo{k}\left[X\right]  = \sum_{k=0}^{d} \beta_k \ndpo{k}\left[Y\right] \label{eq:differental_dpo_system}\end{equation}
+
+	\noindent which defines a linear complex operator in $\dpS$:
+
+\begin{equation} Y(t)  = \mathbf{G}\left[X\right],\ \mathbf{G} = \dfrac{\displaystyle\sum_{k=0}^{n} \alpha_k \ndpo{k}}{\displaystyle\sum_{k=0}^{d} \beta_k \ndpo{k}} = \dfrac{\mathbf{N}\left(\dpo\right)}{\mathbf{D}\left(\dpo\right)}.\end{equation}
+
+	\noindent with $N,D\in\mathbb{C}\left[\dpo\right]$. The representation of $\mathbf{G}$ as a ratio of polynomials is highly resemblant of a Transfer Function, if it not were a functional of operators. Supposing $X(t)$ and $Y(t)$ are ZES, using the $\mu$ Transform on \eqref{eq:differental_dpo_system} yields
+
+\begin{equation} \sum_{k=0}^{n} \alpha_k \mu^k \mathbf{M} \left[X\right] = \sum_{k=0}^{d} \beta_k \mu^k \mathbf{M}\left[Y\right] \Leftrightarrow \dfrac{\mathbf{M}\left[Y\right]}{\mathbf{M}\left[X\right]} = \dfrac{N\left(\mu\right)}{D\left(\mu\right)} \label{eq:intuition_mutfs}\end{equation}
+
+	\noindent meaning that one can indeed define a Transfer Function in the $\mu$ context, or a \textbf{$\boldsymbol{\mu}$T Transfer Function ($\boldsymbol{\mu}$TF)} that is a direct representation DP operator $\mathbf{G}$:
+
+\begin{equation} G\left(\mu\right) = \dfrac{N\left(\mu\right)}{D\left(\mu\right)} \end{equation}
+
+	\noindent and, as such, the definition of such entities is available.
+
+\begin{definition}[Mu Transform Transfer functions ($\mu$TFs)]\label{def:muT_TFs}
+	Given a continuous-time linear time-invariant system, the $\mu$TF is the relationship relating the $\mu$T of the input to that of the output:
+
+\begin{equation} G\left(\mu\right) = \dfrac{\mathbf{M}\left[Y\right]}{\mathbf{M}\left[X\right]} \end{equation}
+\end{definition}
+
+	One of the main aspects of the Laplace Transform is that to every Transfer Function $G(s)$ there is an equivalent impulse response $g(t)$ such that the output $y(t)$ and input $x(t)$ are related by the convolution
+
+\begin{equation} G(s) = \dfrac{Y(s)}{X(s)} \Leftrightarrow y(t) = x(t)\ast g(t) = \int_{-\infty}^{\infty} x\left(\tau\right) g\left(t - \tau\right)d\tau . \label{eq:ltf_convo}\end{equation}
+
+	This means that if $g(t)$ is known, then the output can be easily calculated for a generic input $x(t)$ using the convolution; in this sense, the impulse signal $\delta(t)$ acts as a ``reference'' signal that characterizes the system $G(s)$ through its impulse response $g(t)$. 
+
+	Naturally one asks whether $\mu$TFs have the same properties. We first define what is a convolution in the Dynamic Phasor space.
+
+\begin{definition}[Convolution in DP space]\label{def:mut_convo} The Dynamic Phasor Convolution is a binary operation in complex signal space
+
+\begin{equation}
+	\left(\cdot\right)\ast\left(\cdot\right): \left\{\begin{array}{ccc}
+		\left[\mathbb{R}\to\mathbb{C}\right]^2 &\to& \left[\mathbb{R}\to\mathbb{C}\right] \\[3mm] \left(X(t),Y(t)\right) &\mapsto& \displaystyle \int_{-\infty}^{\infty} X\left(\tau\right) \overline{R_0\left(\tau\right)}Y\left(t - \tau\right)\overline{R_0\left(t - \tau\right)} R_0\left(t\right)  d\tau \end{array}\right.
+\end{equation}
+\end{definition}
+
+	This definition allows us many similar properties, like the $\mu$T of the convolution is the product of the transforms.
+
+\begin{theorem}[$\mu$T of a convolution is the product of transforms] \label{theo:muT_conv_prod}%<<<
+	Consider $X,Y\in\left[\mathbb{R}\to\mathbb{C}\right]$; then
+
+\begin{equation} \mathbf{M}\left[X \ast Y\right] =  \mathbf{M}\left[X\right]\mathbf{M}\left[Y\right] .\end{equation}
+\end{theorem}
+\textbf{Proof:} by direct computation:
+
+\begin{align}
+	\mathbf{M}\left[X \ast Y\right] &= \int_{-\infty}^{\infty} \left[\int_{-\infty}^{\infty}X\left(\tau\right) \overline{R_0\left(\tau\right)}Y\left(t - \tau\right)\overline{R_0\left(t - \tau\right)} R_0\left(t\right) d\tau\right]\overline{R_0\left(t\right)} e^{\mu t}dt = \nonumber\\[3mm]
+%
+	&= \int_{-\infty}^{\infty} \left[\int_{-\infty}^{\infty}X\left(\tau\right) \overline{R_0\left(\tau\right)}Y\left(t - \tau\right)\overline{R_0\left(t - \tau\right)} \overbrace{R_0\left(t\right)\overline{R_0\left(t\right)}}^{=\left\lvert R_0\right\rvert^2 = 1}  d\tau\right] e^{\mu t}dt = \nonumber\\[3mm]
+	&= \int_{-\infty}^{\infty} \left[\int_{-\infty}^{\infty}X\left(\tau\right) \overline{R_0\left(\tau\right)}Y\left(t - \tau\right)\overline{R_0\left(t - \tau\right)}  d\tau\right] e^{\mu t}dt \nonumber\\[3mm]
+\end{align}
+
+	Change the order of integration applying Fubini's Theorem:
+
+\begin{align}
+	\mathbf{M}\left[X \ast Y\right]	&= \int_{-\infty}^{\infty} \int_{-\infty}^{\infty}X\left(\tau\right) \overline{R_0\left(\tau\right)}Y\left(t - \tau\right)\overline{R_0\left(t - \tau\right)} e^{\mu t}dt d\tau = \nonumber\\[3mm]
+%
+	&= \int_{-\infty}^{\infty} X\left(\tau\right) \overline{R_0\left(\tau\right)} \int_{-\infty}^{\infty}Y\left(t - \tau\right)\overline{R_0\left(t - \tau\right)} e^{\mu t}dt d\tau = \nonumber\\[3mm]
+%
+	&= \int_{-\infty}^{\infty} X\left(\tau\right) \overline{R_0\left(\tau\right)}e^{\mu \tau}e^{-\mu \tau} \int_{-\infty}^{\infty}Y\left(t - \tau\right)\overline{R_0\left(t - \tau\right)} e^{\mu t}dt d\tau = \nonumber\\[3mm]
+%
+	&= \int_{-\infty}^{\infty} X\left(\tau\right) \overline{R_0\left(\tau\right)}e^{\mu \tau} \int_{-\infty}^{\infty}Y\left(t - \tau\right)\overline{R_0\left(t - \tau\right)} e^{\mu \left(t-\tau\right)}dt d\tau = \nonumber\\[3mm]
+%
+	(s = t - \tau) &= \int_{-\infty}^{\infty} X\left(\tau\right) \overline{R_0\left(\tau\right)}e^{\mu \tau} \int_{-\infty}^{\infty}Y\left(s\right)\overline{R_0\left(s\right)} e^{\mu s} ds d\tau = \nonumber\\[3mm]
+	&= \left[\int_{-\infty}^{\infty} X\left(\tau\right) \overline{R_0\left(\tau\right)} e^{\mu \tau}d\tau\right]\left[ \int_{-\infty}^{\infty}Y\left(s\right)\overline{R_0\left(s\right)} e^{\mu s} ds \right] = \mathbf{M}\left[X\right]\mathbf{M}\left[Y\right]
+\end{align}
+\hfill$\blacksquare$\vspace{5mm}\hrule\vspace{5mm}%>>>
+
+	Finally, another similar property of the new convolution is that the Dirac Delta distribution $\delta(t)$ is its neutral element.
+
+\begin{theorem}[The Dirac Delta is the neutral element of DP Convolution]\label{theo:delta_neutral} %<<<
+	For any $Y\in\left[\mathbb{R}\to\mathbb{C}\right]$,
+
+\begin{equation} \delta(t) \ast Y(t) = Y(t) .\end{equation}
+\end{theorem}
+\textbf{Proof.} Also by direct computation:
+
+\begin{equation}
+	\delta(t) \ast Y(t) = \int_{-\infty}^{\infty} \delta\left(\tau\right) \overline{R_0\left(\tau\right)}Y\left(t - \tau\right)\overline{R_0\left(t - \tau\right)} R_0\left(t\right)  d\tau \label{eq:conv_int_1}
+\end{equation}
+
+	Using the Dirac Function property that
+
+\begin{equation}
+	\int_{-\infty}^{\infty} f(x)\delta(x)dx = f(0)
+\end{equation}
+
+	Then \eqref{eq:conv_int_1} becomes
+
+\begin{equation}
+	\delta(t) \ast Y(t) = \overline{R_0\left(0\right)}Y\left(t\right)\overline{R_0\left(t\right)} R_0\left(t\right) = Y(t)
+\end{equation}
+\hfill$\blacksquare$\vspace{5mm}\hrule\vspace{5mm}%>>>
+
+	We now extract the Dynamic Phasor reconstructed by $G\left(\mu\right)$; by metonym, and taking care with notation, let such phasor be $G(t)$, that is,
+
+\begin{equation} G(t) = \dfrac{R_0(t)}{2\pi j}\int_{B_\alpha} G\left(\mu\right) e^{\mu  t} R_0\left(t\right) d\mu .\end{equation}
+
+	Notably,
+
+\begin{equation} \mathbf{M}\left[\delta\right]\left(\mu\right) = \int_{-\infty}^{\infty} \delta(t) e^{-\mu t} \overline{R_0(t)}dt = e^{0 t} \overline{R_0(0)} = 1 \end{equation}
+
+	\noindent so that $G(t)$ is the response of the system to the impulse distribution by theorem \ref{theo:muT_conv_prod}:
+
+\begin{equation} \mathbf{M}\left[\delta(t) \ast G(t)\right] = \mathbf{M}\left[G(t)\right] = G\left(\mu\right)\end{equation}
+
+	\noindent making yet another parallel between $\mu$TFs and Laplace TFs: it can be proven elementary by theorem \ref{theo:delta_neutral} that the output $Y(t)$ of a system and the input $X(t)$ are related by the convolution with the impulse response $G(t)$:
+
+\begin{equation} Y(t) = X(t)\ast G(t)\label{eq:impulse_response_convo}\end{equation}
+
+	\noindent so that, indeed, one can obtain any response $Y(t)$ by convolving the impulse response $G(t)$ and the corresponding input $X(t)$, directly related to the same property \eqref{eq:ltf_convo} of Laplace Transforms taking into account the adapted convolution for DPs in definition \ref{def:mut_convo}.
+
+	One can also ask if there exists some similar characterization of a system in the DP domain instead of the time domain. Let $\mathbf{G}$ the $\mu$TF of a particular system. If the input $X(t)$ s not ZES, then $\mathbf{G}\left[X\right] = \mathbf{G}\left[X_\varepsilon\right] + \mathbf{G}\left[X_\eta\right]$; starting with the former,
+
+\begin{equation} \mathbf{G}\left[X_\varepsilon\right] = \mathbf{G}\left[\int_{B_\alpha} M_X\left(\mu\right) e^{\mu  t} R_0 (t) d\mu \right]\end{equation}
+
+	Using the same arguments as subsection \ref{subsec:mutransf_and_dpos},
+
+\begin{equation} \mathbf{G}\left[X_\varepsilon\right] = \int_{B_\alpha} M_X\left(\mu\right) \mathbf{G}\left[e^{\mu  t} R_0 (t) \right] d\mu \end{equation}
+
+	\noindent therefore, denote $G_\mu(t) = \mathbf{G}\left[e^{\mu  t} R_0\right]$ and
+
+\begin{equation} \mathbf{G}\left[X_\varepsilon\right] = \int_{B_\alpha} M_X\left(\mu\right) G_\mu(t) d\mu \end{equation}
+
+	At the same time,
+
+\begin{equation} \mathbf{G}\left[X_\eta\right] = \mathbf{G}\left[\sum_{i=1}^{\infty} \eta_k^{\left[X\right]} R_k(t)\right] = \sum_{i=1}^{\infty} \eta_k^{\left[X\right]} \mathbf{G}\left[R_k\right] \end{equation}
+
+	\noindent and denote $G_k(t) = \mathbf{G}\left[R_k\right]$, yielding
+
+\begin{equation} \mathbf{G}\left[X\right] = \int_{B_\alpha} M_X\left(\mu\right) G_\mu (t) d\mu + \sum_{i=1}^{\infty} \eta_k^{\left[X\right]} G_k (t)\label{eq:linear_g_munull}\end{equation}
+
+	Therefore, to obtain $\mathbf{G}\left[X\right]$ one can use $M_{\left[X\right]}$ and obtain $G_\mu(t)$ and $G_k(t)$ to use \eqref{eq:linear_g_munull}. In this sense, the signals $e^{\mu  t} R_0$ and $R_k,\ k\in\mathbb{N}^*$, act as reference signals that characterize the operator $\mathbf{G}$ through its responses $G_k(t)$ and $G_\mu(t)$ to the reference signals $R_k(t)$ and $e^{\mu t}R_0(t)$. Particularly, if $x(t)$ is of zero-energy start,
+
+\begin{equation} \mathbf{G}\left[X\right]  = \int_{B_\alpha} M_X\left(\mu\right) G_\mu (t) d\mu \end{equation}
+
+	\noindent meaning only $G_\mu(t)$ are needed.
+
+%-------------------------------------------------
+\section{BIBO stability}
+
+%-------------------------------------------------
+\subsection{For general linear systems} %<<<2
+
+	In the realm of linear control theory, BIBO (Bounded-Input-Bounded-Output) stability, or simply input-output stability, is crucial for three main reasons. First, a BIBO-stable system is predictable even when the input signals vary; this guarantees reliability to the control system designed. Second, unstable systems have by definition ever-growing output signals, which at some point will inevitably damage components and cause malfunctions. Finally, BIBO stability guarantees that the output signal is whole, in the sense that the information conveyed by the signal will not be significantly distorted or scrambled with noise, ensuring accurate signal processing.	The classical way to ensure a control system is BIBO stable is to design its impulse response to be absolutely integrable, that is, a system with Transfer Function $G(s)$ is BIBO stable if and only if the impulse response $g(t)$ of $G(s)$ is absolutely integrable in $\mathbb{R}$.
+
+	However, most linear control systems are not designed through their time response; instead, they are designed using transfer functions. Using the Dominated Convergence Theorem one proves that the ROC of any causal $G(s)$ is given by the right semiplane $\text{Re}(z) > a$ for some real $a$; this is equivalent to saying that a causal system is BIBO stable if and only if its Region of Convergence of $G(s)$ contains the imaginary axis. Further particularization for rational functions yields that a BIBO stable linear system is in fact one which poles of the transfer function are all on the left semiplane, that is, the denominator polynomial is Hurwitz Stable.
+
+	By analyzing BIBO stability trough the transfer function, the designer is alleviated from the need to consider the input and output signals — a major advantage because the Laplace Transforms of most practical signals are not analytically representable. In other works, the fact BIBO stability is a characteristic of the control system means relieves the designer of the need to consider the input signal, instead ensuring that the system is reliable unwaivering to the input signal considered. The fact that one needs only to obtain the roots of the denominator means that such stability analysis is very simple and feasible with simple root finding algorithms.
+
+%%-------------------------------------------------
+\subsection{BIBO stability of the $\mu$TFs} %<<<2
+
+	We now want to assert if the transfer functions $\mu$TFs can also be BIBO stable, and under what conditions. Theorem \ref{theo:bibo_mutfs} proves that a $\mu$TF is BIBO stable under the very same condition as Laplace Transfer Functions: through the characteristics of its poles.
+
+\begin{theorem}[Rational $\mu$TFs are BIBO stable if propper and Hurwitz Stable] \label{theo:bibo_mutfs}
+	Let $x(t)$ be a nostationary sinusoid as input to a system, $X(t)$ its Dynamic Phasors at some apparent frequency $\omega(t)$ and $\ndpo{n}$ the n-th order Dynamic Phasor Functional at $\omega$. Consider that the output of the system is given by a linear operator $\mathbf{G}$ such that the Dynamic Phasor of the output is given by $Y(t) = \mathbf{G}\left[X\right]$, and suppose $\mathbf{G}$ is a rational function of $\dpo$, that is, $\mathbf{G} = N\left(\dpo\right)/D\left(\dpo\right)$ for some $N$ and $D$ coprime polynomials. Then the system is BIBO stable if and only if $\deg\left(N\right) \leq \deg\left(D\right)$ (that is, $\mathbf{G}$ is ``proper'') and the roots of $D\left(z\right),\ z\in\mathbb{C}$ all lie in the open left semiplane, that is, have strictly negative real part.
+\end{theorem}
+\textbf{Proof:} let us adopt the infinity norm for complex signals:
+
+\begin{equation} \left\lVert X \right\rVert = \sup_{t\in\mathbb{R}} \left\lvert X(t)\right\rvert .\end{equation}
+
+	As shown in definition \ref{def:mapping_norm}, the norm of a linear operator is defined as the minimum positive value $\lambda$ such that the norm of the output is smaller than the norm of the input escalated by $\lambda$, that is,
+
+\begin{equation} \left\lVert\mathbf{G}\right\rVert = \inf\left\{\lambda\in\mathbb{R}_+^*\cup\left\{\infty\right\}:\ \left\lVert \mathbf{G}v\right\rVert\leq \lambda\left\lVert v\right\rVert\forall v\in \left[\mathbb{R}\to\mathbb{C} \right] \right\}\end{equation}
+
+	Notably, the norm may be infinite; it comes from the definition that the system $Y(t) = \mathbf{G}\left[X\right]$ is BIBO if and only if $\left\lVert G\right\rVert < \infty$. It befalls this proof to ensure that this is the case for the particular class of systems where $\mathbf{G} = N\left(\dpo\right)/D\left(\dpo\right)$ for two coprime polynomials $N$ and $D$ with $\deg(N) \leq \deg(D)$. By partial fractions,
+
+\begin{equation} \mathbf{G} = P\left(\dpo\right) + \sum\limits_{\beta_i\in r\left(D\right)} \sum\limits_{j=1}^{\mu\left(\beta_i\right)} \dfrac{\alpha_{ij}}{\left(\dpo - \beta_i\mathbf{I}\right)^j}. \label{eq:partialfrac_decomp_dpo}\end{equation}
+
+	\noindent where $\alpha_{ij}$ and $\beta_i$ are complex numbers and $P(s)$ is a polynomial. If $G(s)$ is not proper and $\deg\left(N\right) > \deg\left(D\right)$, $P$ will be nonzero, making the system unstable. Therefore, for the system to be stable, $\mathbf{G}$ needs to be proper, making $P\equiv 0$. Further, if $N$ and $D$ share roots, their quotient can be simplified until the resulting polynomials are coprime themselves and equation \eqref{eq:partialfrac_decomp_dpo} can be applied to the resulting expression. Therefore $N$ and $D$ can be supposed coprime. 
+	
+	First suppose all roots of $D$ are simple: in this case, $Y(t)$ can be written as a sum of first-order $Y_i(t)$ outputs:
+
+\begin{equation} Y(t) = \sum\limits_{i=1}^{r\left(D(s)\right)} Y_i(t) = \sum\limits_{\beta_i\in r\left(D\right)} \left[\left(\dfrac{\alpha_{i}}{\dpo - \beta_i\mathbf{I}}\right) X(t)\right]. \label{eq:partialfrac_decomp_dpo}\end{equation}
+
+	By the definition of the DPF, each $Y_i$ will be defined by a complex ODE
+
+\begin{equation} \dot{Y}_i - \left(j\omega + \beta_i\right)Y_i = \alpha_i X(t)\end{equation}
+
+	\noindent which general solution is
+
+\begin{equation} Y_i(t) = J_i(t) \left[X_0 + \int_0^s J_i(s)^{-1} \alpha_i X(s)ds \right], \end{equation}
+
+	\noindent where
+
+\begin{equation} J_i(t) = e^{\left[\displaystyle\int_0^t \left(j\omega(s) + \beta_i\right)ds\right]} . \end{equation}
+
+	Now consider $\beta_i = p_i + jq_i$. Then
+
+\begin{equation} J_i(t) = e^{p_i t} e^{j\left[\displaystyle\int_0^t \left(\omega(s) + q_i\right)ds\right]} . \end{equation}
+
+	Now let $\left\lVert X(t)\right\rVert = M < \infty$. Considering that $\left\lvert e^{jx}\right\rvert = 1$ for any real $x$, then the norm of the complex integral is one for any $\omega(t)$ and $q_i$; therefore
+
+\begin{equation} \left\lVert J_i(t) \right\rVert \leq \left\lVert e^{p_i t} \right\rVert . \end{equation}
+
+	Thence,
+
+\begin{equation} \left\lVert Y_i(t) \right\lVert \leq \left\lVert e^{p_it} \right\rVert \left( M + M\left\lvert \alpha_i \right\rvert \left\lVert \int_0^s e^{-p_it}ds\right\rVert \right) \end{equation}
+
+	Here, $p_i = 0$ causes the norm of the integral to be infinite, therefore $\left\lVert Y_i\right\rVert$ to also be infinite. Thus consider $p_i\neq 0$:
+
+\begin{align} \left\lVert Y_i(t) \right\lVert 
+	&= \left\lVert e^{p_it} \right\rVert M\left(1 + \left\lvert \alpha_i \right\rvert \dfrac{1}{\left\lvert p_i\right\rvert} \left\lVert 1 - e^{-p_it} \right\rVert \right) \nonumber\\[3mm]
+	&\leq M \left(\left\lVert e^{p_it} \right\rVert + \dfrac{\left\lvert \alpha_i \right\rvert}{\left\lvert p_i\right\rvert} \left\lVert e^{p_it} -1 \right\rVert \right)
+\end{align}
+
+	If $p_i > 0$, then $e^{p_it}$ grows infinitely and $\left\lVert e^{p_it} \right\rVert = \infty$. If $p_i < 0$, then $\left\lVert e^{p_it} \right\rVert = 1$. At the same time, if $p_i > 0$, then $e^{p_it} - 1$ also explodes, thus $\left\lVert e^{-p_it} - 1 \right\rVert = \infty$. But if $p_i < 0$, then $\left\lVert e^{p_it} - 1\right\rVert = 1$. Therefore, if $p_i \geq 0$, $\left\lVert Y_i\right\rVert\to\infty$; but if $p_i < 0$, then $Y_i$ is bounded:
+
+\begin{equation} \left\lVert Y_i(t) \right\lVert \leq M \left( 1 + \left\lvert \dfrac{\alpha_i}{p_i}\right\rvert \right) \label{eq:partialfrac_decomp_yim}\end{equation}
+
+	\noindent and it is clear that $\left\lVert Y_i\right\rVert$ is limited if and only if $\beta_i$ has a strictly negative real part. By the definition \eqref{eq:partialfrac_decomp_dpo} of $\left\lVert \mathbf{G}\right\rVert$, \eqref{eq:partialfrac_decomp_yim} implies
+
+\begin{equation} \left\lVert\mathbf{G}\right\rVert \leq \sum\limits_{\beta_i\in r\left(D\right)}\left( 1 + \left\lvert \dfrac{\alpha_i}{p_i}\right\rvert \right)\end{equation}
+
+	However, if one of the $\beta_i$ has a positive real part, then the corresponding $Y_i(t)$ explodes — therefore $Y(t)$ also explodes, therefore $\left\lVert \mathbf{G}\right\rVert = \infty$. Thus all $\beta_i$ need to be on the left semiplane for the system to be BIBO stable.
+
+	We can generalize this method to a case where $\beta_i$ has multiplicity $\mu$  greater than 1. Then $Y_i$ will be composed of a sum of terms of $Y_{i1},Y_{i2},\cdots,Y_{i\mu}$ of the form
+
+\begin{equation} Y_{im}(t) = \left[\left(\dfrac{\alpha_{im}}{\left(\dpo - \beta_i\mathbf{I}\right)^m}\right) X(t)\right],\ 1\leq m \leq \mu\left(\beta_i\right). \label{eq:partialfrac_decomp_dpo_mth}\end{equation}
+	
+	Pick a particular index $m$. Create the intermediary signals $Z_j^i$ defined by subsequent operationals
+
+\begin{equation} \left\{\begin{array}{l}
+	Z^i_1(t) = \left[\left(\dfrac{\alpha_{i}}{\left(\dpo - \beta_i\mathbf{I}\right)^1}\right) X(t)\right] \\[5mm] 
+	Z^i_{(k)}(t) = \left[\left(\dfrac{\mathbf{I}}{\left(\dpo - \beta_i\mathbf{I}\right)^1}\right) Z^i_{(k-1)}(t)\right],\ 2\leq k \leq m
+\end{array}\right.
+\end{equation}
+
+	\noindent which define the ODEs
+
+\begin{equation} \left\{\begin{array}{l}
+	\dot{Z}_1^i - \left(j\omega + \beta_i\right)Z_1^i = \alpha_i X(t) \\[5mm]
+	\dot{Z}_{(k)}^i - \left(j\omega + \beta_i\right)Z_{(k-1)}^i = Z_1^i(t),\ 2\leq k \leq m
+\end{array}\right.
+\end{equation}
+
+	\noindent and the single-roots case yields that $Z_j^i$ is BIBO stable with respect to $Z_{(j-1)}^i$ and $Z_1^i$ is BIBO stable with respect to $X(t)$, such that
+
+\begin{equation} \left\{\begin{array}{l}
+	\left\lVert Z^i_1 \right\rVert \leq M \left( 1 + \left\lvert \dfrac{\alpha_i}{p_i}\right\rvert \right) \\[5mm] 
+	\left\lVert Z^i_{(k)} \right\rVert \leq \left\lVert Z^i_{(k-1)} \right\rVert \left( 1 + \left\lvert \dfrac{1}{p_i}\right\rvert \right)\text{ for } 2 \leq k \leq m
+\end{array}\right.
+\end{equation}
+
+	Therefore if $X(t)$ is bounded, so is $Z_1^i$, therefore so is $Z_2^i$ and so on, and all $Z_k^i$ are bounded. Therefore all $Z_k^i$ are BIBO stable with respect to $X(t)$ and, by induction,
+
+\begin{equation} \left\lVert Z^i_k \right\rVert \leq M \left( 1 + \left\lvert \dfrac{\alpha_i}{p_i}\right\rvert \right)\left( 1 + \left\lvert \dfrac{1}{p_i}\right\rvert \right)^{(k-1)} \end{equation}
+
+	for $1\leq k \leq m$. Therefore
+	
+\begin{equation} \left\lVert \mathbf{G} \right\rVert \leq \sum\limits_{\beta_i\in r\left(D\right)} \sum\limits_{k=1}^{\mu\left(\beta_i\right)} \left( 1 + \left\lvert \dfrac{\alpha_{ik}}{p_i}\right\rvert \right)\left( 1 + \left\lvert \dfrac{1}{p_i}\right\rvert \right)^{(k-1)} .\end{equation}
+\hfill$\blacksquare$
+
+\begin{corollary} A rational operator $\mathbf{G} = N\left(\dpo\right)/D\left(\dpo\right)$ is represented by the $\mu$TF $G\left(\mu\right) = N\left(\mu\right)/D\left(\mu\right)$ and is bounded if and only it is proper and the roots of $D$ are all in the open half left plane. \end{corollary}
+
+%-------------------------------------------------
+\section{Discussion and application: a new current controller proposed using DPOs}\label{subsec:new_controller} %<<<1
+
+	Seen as the $\mu$ Transform is eminently algebraic, one can easily envision that a circuit network theory in the $\mu$ space is very simple to prove. Immediately, Kirchoff's Laws in the $\mu$ domain can be proven simply by the transform's linearity. Further, one can define an impedance in the $\mu$ domain as the ratio between the $\mu$T of the voltage and the $\mu$T of the current
+
+\begin{equation} Z\left(\mu\right) = \dfrac{V\left(\mu\right)}{I\left(\mu\right)} \end{equation}
+
+	\noindent so that the simple components would yield 
+
+\begin{equation}\left\{\begin{array}{l} Z_L\left(\mu\right) = \mu L \text{ (Linear inductor)}\\[3mm] Z_C\left(\mu\right) = \dfrac{1}{\mu C} \text{ (Linear capacitor)}\\[5mm] Z_R = R \text{ (Linear resistor)}\end{array} \right. .\label{sys:muT_impedances_formula}\end{equation}
+
+	One can also see that the Superposition Principle, Thèvenin and the Norton Theorems can be proven using proofs very similar to theorems \ref{theo:superposition}, \ref{theo:thevenin} and \ref{theo:norton}. One can also simply prove matrix relationships of impedances, admittances, vectors of Dynamic Phasors, and the entirety of network analysis is available in $\mu$ domain.
+
+	These facts allow modelling control systems in generalized sinusoidal regimens with relative ease and simplicity due to its close relationship with the Laplace Transfer Functions.
+
+	For instance, we revisit example \ref{example:3p_eps_modelling}. One of the issues raised in the example was that the current filter model of figure \ref{fig:ibr_modelling_example} supposed a quasi-static phasor relationship \eqref{eq:example_quasistatic_supposition}. We now rewrite that equation in the $\mu$ domain: starting from the time domain equation,
+
+\begin{equation} e\left(t\right) - v_\infty\left(t\right) = \left(R + R_F\right)i(t) + \left(L + L_F\right) \dfrac{di(t)}{dt} \label{eq:dpo_filter_time} \end{equation}
+
+	\noindent and applying the $\mu$ Transform,
+
+\begin{equation} E\left(\mu\right) - V_\infty\left(\mu\right) = \left[R + R_F + \mu\left(L + L_F\right)\right] I\left(\mu\right) \label{eq:dpo_filter} \end{equation}
+
+	\noindent where $X\left(\mu\right)$ is a shorthand for $\mathbf{M}\left[X\right]$, that is, the $\mu$ Transform of the Dynamic Phasor $X(t)$. Although strikingly simple, this equation is much better suited to represent systems based on Dynamic Phasors because \eqref{eq:dpo_filter} is equivalent to
+
+\begin{equation} E\left(t\right) - V_\infty\left(t\right) = \left[R\mathbf{I} + R_F + \dpo\left(L + L_F\right)\right]\left[I\left(t\right)\right]  = \left(R + R_F\right)I + \left(L + L_F\right)\dpo\left[I(t)\right] \label{eq:dpo_filter_dps} \end{equation}
+
+	\noindent and the Dynamic Phasors that solve \eqref{eq:dpo_filter_dps} are proven to be biunivocally representatives of the time signal solutions of the original time differential equation \eqref{eq:dpo_filter_time}.
+
+% NEW PROPOSED PI CONTROLLER <<<
+\begin{figure}[h]
+\centering
+\scalebox{0.8}{
+\begin{tikzpicture}[american,scale=1,transform shape,line width=0.75, cute inductors, voltage shift = 1,>={Stealth[inset=0mm,length=1.5mm,angle'=50]}]
+\node (origin) at (0,0) {};
+
+\node at (55mm,15mm) [draw, rounded corners, stewartblue, fill=stewartblue, fill opacity=0.2, very thick, dashed, line cap = round, minimum width=90mm, minimum height=50mm] (pirounded) {};
+\node [above=1mm of pirounded, stewartblue] {\large $\mu$T PI Controller};
+
+%\node [draw, very thick, isosceles triangle, minimum height=15mm, minimum width=15mm] at (0mm, 15mm) (omegaLGainD) {$\omega L_F$};
+\node [draw,very thick, shape=circle,name=inputsum, minimum width=10mm] at (0,0) {};
+\draw [<-] ([shift=({-1mm,0})]inputsum.west) -- ++(-10mm,0) node[left] {$I^*$};
+\draw [<-] ([shift=({0,-1mm})]inputsum.south) -- ++(0,-10mm) node[below] {$I$};
+\node [name=kpgain, draw, shape=isosceles triangle,very thick, minimum height=15mm, minimum width=15mm,right=40mm of inputsum.east] {$k_P$};
+\draw[->] (inputsum.east) -- ([shift=({-1mm,0})]kpgain.west);
+\node [above=20mm of kpgain] (above) {};
+\node [name=kigain, draw, shape=isosceles triangle,very thick, minimum height=15mm, minimum width=15mm,left=0mm of above] {$k_I$};
+\node [draw, minimum width=10mm, very thick, minimum height=15mm, right=10mm of above] (integrator) {$\dfrac{1}{\mu - \mu_0}$};
+
+\node[left=10mm of kigain.west] (temp1) {};
+\draw[->] (temp1 |- inputsum) |- ([shift=({-1mm,0})]kigain.west);
+\draw[->] (kigain.east) |- ([shift=({-1mm,0})]integrator.west);
+
+\node [draw,very thick, shape=circle,name=pisum, minimum width=10mm,right=20mm of kpgain.east] {};
+
+\draw[->] (integrator.east) -| ([shift=({0mm,1mm})]pisum.north);
+\draw[->] (kpgain.east) -- ([shift=({-1mm,0})]pisum.west);
+
+\draw [->] (pisum.east) -- ++(10mm,0) node[right] {$V$};
+\end{tikzpicture}
+}
+\caption
+{Proposed $\mu$TF-based PI controller for the current control subsystem for the inverter system of figure \ref{fig:ibr_modelling_example}.}
+\label{fig:pi_utf_blockmodel}
+\end{figure}
+%>>>
+
+%-------------------------------------------------
+\subsection{Proposition and construction}\label{subsec:new_controller_prop_const} %<<<2
+
+	Looking at the current controller of figure \eqref{fig:3p_curr_control} for example \ref{example:3p_eps_modelling}, one can clearly see that any  attempt at tuning the integral and proportional gains of the $D$ and $Q$ loops will be considerable worksome; stability analysis is probably only possible by simulations. Using the DPFT theory proposed, however, we can propose a better controller that is intuitive and guaranteedly BIBO stable.
+
+	One can rewrite the equations of the power system of figure \ref{fig:ibr_modelling_example} and the controller of figure \ref{fig:3p_curr_control} to a more intuitive and theory-solid version. By denoting a time integration as $\mu^{-1}$, we propose an equivalent PI controller in the $\mu$ domain:
+
+\begin{equation} V\left(\mu\right) = \left[k_P + k_I \left(\dfrac{1}{\mu - \mu_0}\right)\right]\left(I^*\left(\mu\right) - I\left(\mu\right)\right) \label{eq:dpft_current_control}\end{equation}
+
+	\noindent and this generates the ``PI $\mu$TF controller'' in figure \ref{fig:pi_utf_blockmodel}. Notably, the PI controller proposed is a ratio of $\mu$ but shifted by a $\mu_0$ quantity, where one would expect the integral controller to just be defined as $\mu^{-1}$ like in the Laplace domain. This quantity exists because, due to the Final Value Theorem for $\mu$Ts (theorem \ref{theo:muT_fvt}), the final value happens as $\mu\to\mu_0$ where $\mu_0$ is the origin value of some continuous transformation $h$ which depends on the ratio of $V(\mu)$ and $I^*(\mu) - I(\mu)$. Indeed, manipulating \eqref{eq:dpft_current_control} one yields
+
+\begin{equation} \left(\mu - \mu_0\right)V\left(\mu\right) = \left[k_P\left(\mu - \mu_0\right) + k_I \right]\left(I^*\left(\mu\right) - I\left(\mu\right)\right) \Leftrightarrow \lim_{\mu\to\mu_0} \left[I^*\left(\mu\right) - I\left(\mu\right)\right] = 0\end{equation}
+
+	\noindent but according to the Final Value Theorem for $\mu$Ts (theorem \ref{theo:muT_fvt}), this implies
+
+\begin{equation} \lim_{t\to\infty} \left[I^*\left(t\right) - I\left(t\right)\right] = 0\end{equation}
+
+	\noindent showing that the PI controller proposed vanishes the steady-state error, as intended; this would not happen if the proposed integral controller were defined as $\mu^{-1}$. Notably, however, if the apparent frequency $\omega(t)$ is identically null then by remark T\ref{remark:theo_muT_fvt_null_freq} $\mu_0 = 0$ and the integral block becomes the ``Laplace integral controller'' $\mu^{-1}$.
+
+	Now note that
+
+\begin{equation} E(\mu) - V(\mu) = \left(R_F + \mu I_F\right)I(\mu)\end{equation}
+
+	\noindent and incorporating this equation into the PI controller of \ref{fig:pi_utf_blockmodel} generates the current controller model for the IBR as in figure \ref{fig:partial_blockmodel}.
+
+% NEW CURRENT CONTROL SYSTEM <<<
+\begin{figure}[t]
+\centering
+\scalebox{0.8}{
+\begin{tikzpicture}[american,scale=1,transform shape,line width=0.75, cute inductors, voltage shift = 1,>={Stealth[inset=0mm,length=1.5mm,angle'=50]}]
+\node (origin) at (0,0) {};
+
+%\node [draw, very thick, isosceles triangle, minimum height=15mm, minimum width=15mm] at (0mm, 15mm) (omegaLGainD) {$\omega L_F$};
+\node [draw,very thick, shape=circle,name=inputsum, minimum width=10mm] at (0,0) {};
+\draw [<-] ([shift=({-1mm,0})]inputsum.west) -- ++(-10mm,0) node[left] {$I^*$};
+\draw [<-] ([shift=({0,-1mm})]inputsum.south) -- ++(0,-40mm) node[below] {$I$};
+\node [name=kpgain, draw, shape=isosceles triangle,very thick, minimum height=15mm, minimum width=15mm,right=40mm of inputsum.east] {$k_P$};
+\draw[->] (inputsum.east) -- ([shift=({-1mm,0})]kpgain.west);
+\node [above=20mm of kpgain] (above) {};
+\node [name=kigain, draw, shape=isosceles triangle,very thick, minimum height=15mm, minimum width=15mm,left=0mm of above] {$k_I$};
+\node [draw, minimum width=10mm, very thick, minimum height=15mm, right=15mm of above] (integrator) {$\dfrac{1}{\mu - \mu_0}$};
+
+\node[left=10mm of kigain.west] (temp1) {};
+\draw[->] (temp1 |- inputsum) |- ([shift=({-1mm,0})]kigain.west);
+\draw[->] (kigain.east) |- ([shift=({-1mm,0})]integrator.west);
+
+\node [draw,very thick, shape=circle,name=pisum, minimum width=10mm,right=20mm of kpgain.east] {};
+
+\draw[->] (integrator.east) -| ([shift=({0mm,1mm})]pisum.north);
+\draw[->] (kpgain.east) -- ([shift=({-1mm,0})]pisum.west);
+
+\node [draw,very thick, shape=circle,name=vsum, minimum width=10mm,right=20mm of pisum.east] {};
+
+
+\draw [->] (pisum.east) -- ([shift=({-1mm,0})]vsum.west) node[midway,above] {$V$};
+\draw [->] (vsum.east) -- ++(20mm,0) node[right] {$E$};
+
+\node [name=filtergain, draw, very thick, minimum height=10mm, minimum width=15mm,below=20mm of kpgain] {$R_F + \mu L_F$};
+\draw[->] (filtergain -| inputsum) -- ([shift=({-1mm,0})]filtergain.west);
+\draw[->] (filtergain.east) -| ([shift=({0,-1mm})]vsum.south);
+\node[below=1mm of filtergain.south] {Current filter};
+
+\end{tikzpicture}
+}
+\caption
+[Improved $\mu$TF-based current control subsystem for the inverter system of figure \ref{fig:ibr_modelling_example}.]
+{Improved $\mu$TF-based current control subsystem for the inverter system of figure \ref{fig:ibr_modelling_example} considering current filter dynamics.}
+\label{fig:partial_blockmodel}
+\end{figure}
+%>>>
+
+	Finally, together with the grid equation \eqref{eq:dpo_filter}, the system can be denoted as the block model depicted in figure \ref{fig:complete_blockmodel} — a better alternative to the traditional representation using \eqref{eq:pi_adjust_e} because, by using \eqref{eq:dpo_filter} instead, the controller is designed taking into accout the frequency swings whereas the traditional control did not. The ``DPFT-based'' PI controller is shown as per \eqref{eq:dpft_current_control} with the grid equation \eqref{eq:dpo_filter} yielding the current $I$, which is then fed into the current controller, closing the loop.
+
+%-------------------------------------------------
+\subsection{Analyzing BIBO stability}\label{subsec:analyzing_bibo} %<<<2
+
+	To obtain the equation for $I$, substituting \eqref{eq:dpft_current_control} into \eqref{eq:dpo_filter} yields
+
+\begin{gather}
+	\left(R_F + L_F\mu\right)I(\mu) + \left[k_P + k_I\left(\dfrac{1}{\mu - \mu_0}\right)\right]\left[I^*(\mu) - I(\mu)\right] - V_\infty(\mu) = \left(R + R_F + \mu\left(L + L_F\right)\right)I(\mu) \nonumber\\[3mm]
+	\left[k_P + k_I\left(\dfrac{1}{\mu - \mu_0}\right)\right]I^*(\mu) + \left[- k_P - k_I\left(\dfrac{1}{\mu - \mu_0}\right) - R - L\mu \right]I(\mu) = V_\infty(\mu) \nonumber\\[3mm]
+	\left[k_P\left(\mu - \mu_0\right) + k_I\right]I^*(\mu) - \left[k_P\left(\mu - \mu_0\right) + k_I  + R\left(\mu - \mu_0\right) + L\mu\left(\mu - \mu_0\right)\right]I(\mu) = \left(\mu - \mu_0\right) V_\infty(\mu)   \nonumber\\[3mm]
+	I(\mu) = \dfrac{\left[k_P\left(\mu - \mu_0\right) + k_I\right]I^*(\mu) - \left(\mu - \mu_0\right) V_\infty(\mu)}{k_P\left(\mu - \mu_0\right) + k_I  + R\left(\mu - \mu_0\right) + L\mu\left(\mu - \mu_0\right)} \nonumber\\[3mm]
+	I(\mu) = \dfrac{\left[k_P\left(\mu - \mu_0\right) + k_I\right]I^*(\mu) - \left(\mu - \mu_0\right) V_\infty(\mu)}{ k_I - j \left(k_P + R\right) \omega_0 + \mu\left(k_P + R - \mu_0 L\right) + L\mu^2 } .\label{eq:dpo_i_mimo}
+\end{gather}
+
+	Notably this $\mu$FT has two inputs thus it is comprised of two transfer functions:
+
+\begin{equation} I(\mu) = G_I(\mu) I^*(\mu) + G_V(\mu) V_\infty(\mu) \end{equation}
+
+	\noindent but both the transfer functions share poles, meaning their BIBO stability is equivalent. Calculating these poles, however, depends on knowing the parameter $\mu_0$ which is probably difficult to obtain. To ameliorate the calculations, we assume that the system is working at an apparent frequency that is equivalent to the synchronous frequency $\omega_0$ and using corollary \ref{corollary:fvt_const_freq} we obtain $\mu_0 = j\omega_0$. With this assumption, the poles are given by
+
+\begin{align}
+	\mu_{(\pm)} &= \dfrac{-\left(k_P + R - j\omega_0 L\right) \pm \sqrt{\raisebox{3.5mm}{} \left(k_P + R - j\omega_0 L\right)^2 - 4L\left[\raisebox{3mm}{} k_I - j \left(k_P + R\right) \omega_0 \right]}}{2L} = \nonumber\\[3mm]
+%
+	            &= \dfrac{-\left(k_P + R - j\omega_0 L\right) \pm \sqrt{\raisebox{3.5mm}{} \left(k_P + R + j\omega_0 L\right)^2 - 4Lk_I}}{2L} = \nonumber\\[3mm]
+%
+	            &= \dfrac{-\left(k_P + R - j\omega_0 L\right) \pm \sqrt{\raisebox{3.5mm}{} \left(k_P + R\right)^2 - 4Lk_I - \omega_0^2L^2 + j2\omega_0 L \left(k_P + R\right)}}{2L} \label{eq:discriminant}
+\end{align}
+
+	\noindent allowing us to analyze what combination of $k_P$ and $k_I$ yields a BIBO stable system, which entails to choosing the gains so that Re$\left(\mu_{(\pm)}\right) < 0$. While $k_P$ and $k_I$ can be complex, for a simplified analysis let us assume real positive gains. We know that the real part maintains complex sum and is linear with respect to real scalars, so that we can obtain the poles by using the complex square root formula
+
+\begin{equation} \sqrt{z = a + jb} = \pm\left(\sqrt{\dfrac{\left\lvert z\right\rvert + a}{2}} + j\dfrac{b}{\left\lvert b\right\rvert}\sqrt{\dfrac{\left\lvert z\right\rvert - a}{2}}\right) \end{equation}
+
+	\noindent and considering $2\omega_0 L \left(k_P + R\right) \geq 0$ because all parameters are positive this yields
+
+\footnotesize
+\begin{equation}
+	\mu_{(\pm)} = \dfrac{1}{2L} \left[
+	\begin{array}{c}
+		-\left(k_P + R - j\omega_0 L\right) \pm \sqrt{\dfrac{ \sqrt{\left[\left(k_P + R\right)^2 - 4Lk_I - \omega_0^2L^2\right]^2 + 4\omega_0^2 L^2 \left(k_P + R\right)^2} + \left(k_P + R\right)^2 - 4Lk_I - \omega_0^2L^2}{2}} + \\[5mm]
+%
+		\pm j\sqrt{\dfrac{ \sqrt{\left[\left(k_P + R\right)^2 - 4Lk_I - \omega_0^2L^2\right]^2 + 4\omega_0^2 L^2 \left(k_P + R\right)^2} - \left(k_P + R\right)^2 + 4Lk_I + \omega_0^2L^2}{2}}
+	\end{array}
+	\right]
+\end{equation}
+\normalsize
+
+% COMPLETE SYSTEM <<<
+\begin{figure}[t]
+\centering
+\scalebox{0.8}{
+\begin{tikzpicture}[american,scale=1,transform shape,line width=0.75, cute inductors, voltage shift = 1,>={Stealth[inset=0mm,length=1.5mm,angle'=50]}]
+\node (origin) at (0,0) {};
+
+%\node [draw, very thick, isosceles triangle, minimum height=15mm, minimum width=15mm] at (0mm, 15mm) (omegaLGainD) {$\omega L_F$};
+\node [draw,very thick, shape=circle,name=inputsum, minimum width=10mm] at (0,0) {};
+\draw [<-] ([shift=({-1mm,0})]inputsum.west) -- ++(-10mm,0) node[left] {$I^*$};
+\draw [<-] ([shift=({0,-1mm})]inputsum.south) -- ++(0,-40mm) node[left] (buscurr) {$I$};
+\node [name=kpgain, draw, shape=isosceles triangle,very thick, minimum height=15mm, minimum width=15mm,right=40mm of inputsum.east] {$k_P$};
+\draw[->] (inputsum.east) -- ([shift=({-1mm,0})]kpgain.west);
+\node [above=20mm of kpgain] (above) {};
+\node [name=kigain, draw, shape=isosceles triangle,very thick, minimum height=15mm, minimum width=15mm,left=0mm of above] {$k_I$};
+\node [draw, minimum width=10mm, very thick, minimum height=15mm, right=15mm of above] (integrator) {$\dfrac{1}{\mu - \mu_0}$};
+
+\node[left=10mm of kigain.west] (temp1) {};
+\draw[->] (temp1 |- inputsum) |- ([shift=({-1mm,0})]kigain.west);
+\draw[->] (kigain.east) |- ([shift=({-1mm,0})]integrator.west);
+
+\node [draw,very thick, shape=circle,name=pisum, minimum width=10mm,right=20mm of kpgain.east] {};
+
+\draw[->] (integrator.east) -| ([shift=({0mm,1mm})]pisum.north);
+\draw[->] (kpgain.east) -- ([shift=({-1mm,0})]pisum.west);
+
+\node [draw,very thick, shape=circle,name=vsum, minimum width=10mm,right=20mm of pisum.east] {};
+
+\draw [->] (pisum.east) -- ([shift=({-1mm,0})]vsum.west) node[midway,above] {$V$};
+
+\node [name=filtergain, draw, very thick, minimum height=10mm, minimum width=15mm,below=20mm of kpgain] {$R_F + \mu L_F$};
+\draw[->] (filtergain -| inputsum) -- ([shift=({-1mm,0})]filtergain.west);
+\draw[->] (filtergain.east) -| ([shift=({0,-1mm})]vsum.south);
+\node[below=1mm of filtergain.south] {Current filter};
+
+\node [draw,very thick, shape=circle,name=vinfsum, minimum width=10mm, right=15mm of vsum.east] {};
+
+\draw [<-] ([shift=({0mm,1mm})]vinfsum.north) -- ++(0,10mm) node[above] {$V_\infty$};
+
+\draw [->] (vsum.east) -- ([shift=({-1mm,0mm})]vinfsum.west) node[midway,above] {$E$};
+
+\node [draw, minimum width=10mm, very thick, minimum height=15mm, below=50mm of pisum.south] (gridblock) {$\dfrac{1}{R + R_F + \mu\left(L + L_F\right)}$};
+\node[below=1mm of gridblock.south] {Grid equation};
+
+\draw [->] (vinfsum.south) |- ([shift=({1mm,0mm})]gridblock.east);
+\draw [->] (gridblock.west) -| ([shift=({0mm,-1mm})]inputsum.south);
+
+\end{tikzpicture}
+}
+\caption
+[Closed-loop model of the system of figure \ref{fig:ibr_modelling_example} in the $\mu$ domain.]
+{Closed-loop model of the system of figure \ref{fig:ibr_modelling_example} in the $\mu$ domain using the improved current control of figure \ref{fig:partial_blockmodel} and incorporating transmission grid and current filter dynamics.}
+\label{fig:complete_blockmodel}
+\end{figure}
+%>>>
+
+	Here we notice that $\Re\left(\mu_{(-)}\right)$ is always negative or zero, thus the stability of the $\mu$TF is left to $\mu_{(+)}$:
+
+\footnotesize
+\begin{equation}
+	\hspace{-4mm} \Re\left(\mu_{(+)}\right) = \dfrac{1}{2L} \left[ -\left(k_P + R\right) + \sqrt{\dfrac{ \sqrt{\left[\left(k_P + R\right)^2 - 4Lk_I - \omega_0^2L^2\right]^2 + 4\omega_0^2 L^2 \left(k_P + R\right)^2} + \left(k_P + R\right)^2 - 4Lk_I - \omega_0^2L^2}{2}}\right]
+\end{equation}
+\normalsize
+
+	Therefore we want to find combinations $k_P,k_I$ so that this quantity is negative. We first calculate the geometric space of $k_P,k_I$ where this quantity is zero:
+
+\begin{gather}
+	\sqrt{2}\left(k_P + R\right) = \sqrt{\sqrt{\left[\left(k_P + R\right)^2 - 4Lk_I - \omega_0^2L^2\right]^2 + 4\omega_0^2 L^2 \left(k_P + R\right)^2} + \left(k_P + R\right)^2 - 4Lk_I - \omega_0^2L^2} \nonumber\\[5mm]
+%
+	2\left(k_P + R\right)^2 = \sqrt{\left[\left(k_P + R\right)^2 - 4Lk_I - \omega_0^2L^2\right]^2 + 4\omega_0^2 L^2 \left(k_P + R\right)^2} + \left(k_P + R\right)^2 - 4Lk_I - \omega_0^2L^2 \nonumber\\[5mm]
+%
+	\left(k_P + R\right)^2 + 4Lk_I + \omega_0^2L^2 = \sqrt{\left[\left(k_P + R\right)^2 - 4Lk_I - \omega_0^2L^2\right]^2 + 4\omega_0^2 L^2 \left(k_P + R\right)^2} \nonumber\\[5mm]
+%
+	\left[\left(k_P + R\right)^2 + 4Lk_I + \omega_0^2L^2\right] = \left[\left(k_P + R\right)^2 - 4Lk_I - \omega_0^2L^2\right]^2 + 4\omega_0^2 L^2 \left(k_P + R\right)^2 \nonumber\\[5mm]
+%
+	\overbrace{\left[\left(k_P + R\right)^2 + 4Lk_I + \omega_0^2L^2\right] - \left[\left(k_P + R\right)^2 - 4Lk_I - \omega_0^2L^2\right]^2}^{a^2 - b^2 = (a-b)(a+b)} = 4\omega_0^2 L^2 \left(k_P + R\right)^2 \nonumber\\[5mm]
+%
+	%\left\{\left[\left(k_P + R\right)^2 + 4Lk_I + \omega_0^2L^2 - \left(k_P + R\right)^2 + 4Lk_I + \omega_0^2L^2\right]\left[\left(k_P + R\right)^2 + 4Lk_I + \omega_0^2L^2 + \left(k_P + R\right)^2 - 4Lk_I - \omega_0^2L^2\right]\right\} = 4\omega_0^2 L^2 \left(k_P + R\right)^2 \nonumber\\[5mm]
+%
+	\left\{\left[8Lk_I + 2\omega_0^2L^2\right]\left[2\left(k_P + R\right)^2\right]\right\} = 4\omega_0^2 L^2 \left(k_P + R\right)^2 \nonumber\\[5mm]
+%
+	4Lk_I + \omega_0^2L^2 = \omega_0^2 L^2 \nonumber\\[5mm]
+%
+	k_I = 0
+\end{gather}
+
+	\noindent and one immediately concludes that $\Re\left(\mu_{(+)}\right)$ has the inverse signal as $k_I$, that is, it is negative if $k_I$ is positive, positive if $k_I$ is negative, and zero if $k_I$ is negative. Thus, we only have to choose $k_I > 0$ and the system will be stable. Choosing $k_I$ and $k_P$ then comes down to a choice of dynamic performance.
+
+%-------------------------------------------------
+\subsection{Simulation}\label{subsec:newcontroller_sim} %<<<2
+
+	To simulate the system, one can translate \eqref{eq:dpo_i_mimo} into the time domain, yielding
+
+\begin{equation} L\ndpo{2}\left[I(t)\right] + \left(k_P + R\right)\dpo\left[I(t)\right] + k_I I(t) = k_P\dpo\left[I^*(t)\right] + k_I I^*(t) - \dpo\left[V_\infty(t)\right], \end{equation}
+
+	\noindent then knowing the expressions of $I^*(t)$ and $V_\infty(t)$ — since they are inputs — use the definitions \eqref{eq:steinmetz_1storder} of $\dpo$ and \eqref{eq:steinmetz_2ndorder} of $\ndpo{2}$ to obtain a differential equation in the complex domain, separating into real and imaginary components would yield a differential system on $I_d$ and $I_q$ that could be solved.
+
+	However, the entire point and objective (at least in applied sciences) of integral transforms is that the time signals can be reconstructed from their transforms, and solving the time-domain differential equation rather defeats this purpose. Due to the properties of the $\mu$T, we can also obtain the expression of $I$ through inverse $\mu$ Transform using the theory developed in this chapter.
+
+	We remember that we supposed that the apparent frequency used for Dynamic Phasor transformations is equivalent to the constant synchronous frequency $\omega_0$. In this frequency, $V_\infty(t)$ is a constant. We also consider that the Dynamic Phasor of the input reference for current $I^*(t)$ is also constant at the constant synchronous frequency.
+
+	Thus we simulate the system response to steps in the current reference (simulating a control decision change) and a then a step in the infinite bus voltage (simulating a transient disturbance on the larger grid); that is,
+
+\begin{equation} I^*\left(t\right) = I_0^* + u(t)\Delta I \text{ and } V_\infty\left(t\right) =  V_0 + u(t)\Delta V \end{equation}
+
+	\noindent where $u(t)$ is the step distribution, $I^*_0$ and $V_0$ are the initial values and $\Delta I,\ \Delta V$ are the disturbance amplitudes. We now calculate $I^*(\mu)$ and $V_\infty(\mu)$: first, we take their zero-energy counterparts $I^*(t) - I_0$ and $V_\infty(t) - V_0$, so we do not have to take initial conditions into account, and these signals are perfect steps; by definition \eqref{eq:mtransf_mu_def}, the $\mu$T of a constant $k\in\mathbb{C}$ at the apparent frequency $\omega_0$ is
+
+\begin{equation} \mathbf{M}\left[ku(t)\right] = \mathbf{L}\left[ku(t)e^{j\omega_0t}\right] = \dfrac{k}{\mu - j\omega_0}\end{equation}
+
+	\noindent and substituting onto the expression of $I(\mu)$,
+
+\begin{equation}
+	I(\mu) = \dfrac{\left[k_P\left(\mu - j\omega_0\right) + k_I\right]\Delta I - \left(\mu - j\omega_0\right) \Delta V}{\left(\mu - j\omega_0\right)\left[\raisebox{4mm}{} k_I - j \left(k_P + R\right) \omega_0 + \mu\left(k_P + R - j\omega_0 L\right) + L\mu^2\right] } .\label{eq:dpo_i_mimo_const}
+\end{equation}
+
+	\noindent where, by definition, $I(\mu)$ is the $\mu$T of the ZES equivalent $I(t) - I_0$. Naturally we assume that the initial value $I_0$ of $I(t)$ is the initial value of the reference $I^*$ due to the PI controller, supposing that the system was at equilibrium before the disturbances. Notably, if we assume that $k_P$ and $k_I$ are chosen such that $\Re\left(\mu_{(\pm)}\right) < 0$, then using the Final Value Theorem \ref{theo:muT_fvt},
+
+\begin{align}
+	\lim\limits_{t\to\infty} I(t) &= I_0 + \lim\limits_{\mu\to j\omega_0} \left(\mu - j\omega_0\right) I\left(\mu\right) = \nonumber\\[3mm]
+%
+	&= I_0 + \lim\limits_{\mu\to j\omega_0} \dfrac{\left[k_P\left(\mu - j\omega_0\right) + k_I\right]\Delta I - \left(\mu - j\omega_0\right) \Delta V}{k_P\left(\mu - j\omega_0\right) + k_I  + R\left(\mu - j\omega_0\right) + L\mu\left(\mu - j\omega_0\right)} = \nonumber\\[3mm]
+%
+	&= I_0 + \lim\limits_{\mu\to j\omega_0} \dfrac{\left[k_P\cancelto{0}{\left(\mu - j\omega_0\right)} + k_I\right]\Delta I - \cancelto{0}{\left(\mu - j\omega_0\right)} \Delta V}{k_P\cancelto{0}{\left(\mu - j\omega_0\right)} + k_I + \cancelto{0}{R\left(\mu - j\omega_0\right)} + \cancelto{0}{L\mu\left(\mu - j\omega_0\right)}} = I_0 + \dfrac{k_I \Delta I}{k_I} = \nonumber\\[3mm]
+%
+	&= I_0 + \Delta I = I^* \label{eq:dpo_i_mimo_const}
+\end{align}
+
+	\noindent once again showing that the PI controller proposed in \eqref{eq:dpft_current_control} indeed vanishes the steady-state error. Furthermore, we can obtain the Dynamic Phasor in time domain associated with this function using \eqref{eq:inv_muT_def}, that is, by using the inverse Laplace Transform. We first separate \eqref{eq:dpo_i_mimo_const} through partial fractions, denoting the poles of the quadratic portion of the denominator as $\mu_{(\pm)}$:
+
+\begin{equation} I(\mu) = \dfrac{\left[k_P\left(\mu - j\omega_0\right) + k_I\right]I^* - \left(\mu - j\omega_0\right) V_\infty}{\left(\mu - j\omega_0\right)L\left(\mu - \mu_{(+)}\right)\left(\mu - \mu_{(-)}\right)} = \dfrac{A}{\mu - j\omega_0} + \dfrac{B}{\mu - \mu_{(+)}} + \dfrac{C}{\mu - \mu_{(-)}} .\label{eq:dpo_i_mimo_const_part_fracs} \end{equation}
+
+	\noindent and we use the Heaviside cover-up method \pcite{zillDifferentialEquationsBoundaryvalue2013} to quickly obtain
+
+\begin{equation}
+	\left\{\begin{array}{l}
+		A = \Delta I\\[5mm]
+		B = \dfrac{\left[k_P\left(\mu_{(+)} - j\omega_0\right) + k_I\right]\Delta I - \left(\mu_{(+)} - j\omega_0\right) \Delta V}{\left(\mu_{(+)} - j\omega_0\right)L\left(\mu_{(+)} - \mu_{(-)}\right)} \\[10mm]
+		C = \dfrac{\left[k_P\left(\mu_{(-)} - j\omega_0\right) + k_I\right]\Delta I - \left(\mu_{(-)} - j\omega_0\right) \Delta V}{\left(\mu_{(-)} - j\omega_0\right)L\left(\mu_{(-)} - \mu_{(+)}\right)} 
+	\end{array}\right.
+\end{equation}
+
+	Now since $\mathbf{L}\left[e^{-zt}\right] = \left(s - z\right)^{-1}$ for any complex $z$ and $\Re(s) > \Re(z)$ we use \eqref{eq:inv_muT_def} and
+
+\begin{align}
+	I(t) = I_0 + \mathbf{M}^{-1}\left[I(\mu)\right] &= I_0^* + e^{-j\omega_0 t} \mathbf{L}^{-1}\left[\dfrac{\Delta I}{\mu - j\omega_0} + \dfrac{B}{\mu - \mu_{(+)}} + \dfrac{C}{\mu - \mu_{(-)}}\right] = \nonumber\\[5mm]
+%
+	&= I_0^* + e^{-j\omega_0 t}\left(\Delta Ie^{j\omega_0 t} + Be^{\mu_{(+)}t} + Ce^{j\mu_{(-)}t}\right) = \nonumber\\[5mm]
+%
+	&= I_0^* + \Delta I + Be^{\left(\mu_{(+)} - j\omega_0\right)t} + Ce^{j\left(\mu_{(-)} - j\omega_0\right)t}
+\end{align}
+
+	\noindent and note that $I_0^* + \Delta I$ is the current reference $I^*$ after the disturbance; thus,
+
+\begin{equation} I(t) = I^* + Be^{\left(\mu_{(+)} - j\omega_0\right)t} + Ce^{j\left(\mu_{(-)} - j\omega_0\right)t}. \end{equation}
+
+	We again note that because $k_P$ and $k_I$ are chosen so as to make $\mu_{(\pm)}$ stable (i.e. with negative real part), their exponentials vanish and $I(t)$ approaches $I^*$ at infinity. By definition, the time signal that this Dynamic Phasor reconstructs is
+
+\begin{equation} i(t) = \Re\left(I(t)e^{j\omega_0 t}\right) = \Re\left[\Delta Ie^{j\omega_0 t} + Be^{\mu_{(+)}t} + Ce^{\mu_{(-)}t}\right] \end{equation}
+
+	\noindent and because the real part maintains complex sum, 
+
+\begin{equation} i(t) = \Re\left[ I^*e^{j\omega_0 t}\right] + \Re\left[Be^{\mu_{(+)}t} + Ce^{\mu_{(-)}t}\right]. \end{equation}
+
+	\noindent and note that $\Re\left[ I^*e^{j\omega_0 t}\right]$ is equal to $\mathbf{P_D^{(-\omega)}}\left[I^*\right]$, that is, the static sinusoid $i_\infty(t)$ reconstructed by $I^*$ after the disturbance. Denoting $I^* = \left\lvert I^*\right\rvert e^{j\phi_I}$, then $i^*(t) = \left\lvert I^* \right\rvert \cos\left(\omega_0t + \phi_I\right)$. Again considering that $\mu_{(\pm)}$ are stable, the second portion of the sum vanishes exponentially; therefore,
+
+\begin{equation} \lim\limits_{t\to\infty} \left[ i(t) - i^*(t)\right] = 0 \label{eq:final_current_time}\end{equation}
+
+	\noindent or equivalently, $i^*$ is the assymptotic solution of $i(t)$. This again shows that the PI controller proposed indeed forces $i(t)$ to some reference signal $i^*(t)$.
+
+	Although seemingly simple, equation \eqref{eq:final_current_time} denotes that indeed by controlling the phasor $I$ and forcing it to a reference $I^*$, then its time counterpart $i(t)$ is also controlled and forced to the signal $i^*(t)$ represented by $I^*$, meaning that the controller in Dynamic Phasor space is equivalent to a control in the time domain.
+
+	We adopt the values $R = 100m\Omega$, $L = 1mF$, and we imagine that at the initial state the infinite bus is in phase to the angle reference, that is, $\left\lvert V_\infty\right\rvert = 100V, \phi_\infty = 0$. We suppose that the system departs from an equilibrium and outputs a complex power $S_0 = P_0 + Q_0 = 1kW + j100VAR$ measured at the terminal bus, yielding a system where the initial condition for the current can be calculated as
+
+\begin{equation}
+	\left\{\begin{array}{l}
+		P_0 = R\left(I_d^2 + I_q^2\right) + \left\lvert V_\infty\right\rvert I_d \\[5mm]
+		Q_0 = \omega_0 L\left(I_d^2 + I_q^2\right) - \left\lvert V_\infty\right\rvert I_q
+	\end{array}\right.
+\end{equation}
+
+	\noindent and for the adopted values this yields a solution $I_0 = 9.9899813 - j0.62230395A$; we adopt these values as the curent setpoint. We simulate the system under two scenarios: in scenario 1 the infinite bus is maintained constant but the current setpoint is augmented by 20\% at $t = 0$, that is, $\Delta I = 0.2 I_0$. In scenario 2 the current setpoint is maintained but the infinite bus suffers a 5\% increase in magnitude at $t = 0$, that is, $\Delta V = 0.05 \left\lvert V_\infty\right\rvert$.
+
+	We use the values $k_P = 0.1,\ k_I = 10$ for the $\mu$-PI controller, and this yields a pair of poles
+
+\begin{equation}\left\{\begin{array}{l} \mu_{(-)} = -103.926446502 - j23.3991623121\\ \mu_{(+)} = -6.07355349812 + j400.390280742 \end{array}\right.\end{equation}
+
+	\noindent and for each scenario the values of $A$ and $B$ calculated are
+
+\begin{gather} \text{First scenario: }\left\{\begin{array}{l} A_1 = \hphantom{-}1.99799626023 - j0.124460790227 \\ B_1 = -1.82087180780 - j0.284338508168 \\  C_1 = -1.82087180780 - j0.284338508168 \end{array}\right.\\[5mm] \text{Second scenario: }\left\{\begin{array}{l} A_2 = 0 \\ B_2 = -2.58633785371 + j11.2011269665 \\ C _2= -2.58633785371 + j11.2011269665\end{array}\right. .\end{gather}
+
+	Figures \ref{fig:dpftsim_scen1} and \ref{fig:dpftsim_scen2} show the time evolution of the bus current component as a function of time for scenario 1 and scenario 2, respectively. Top and middle plots show direct and quadrature components as functions of time with setpoints in dashed line, bottom plots show the bus current evolving in the complex domain. Figure \ref{fig:dpftsim_time_signals} shows the time signals reconstructed from these simulations. In all figures, the color evolution represents velocity — the absolute value of $\dot{I}(t)$, calculated as
+
+\begin{equation} \left\lvert\dfrac{d}{dt} I(t)\right\rvert = \left\lvert \dot{I}_d(t) + j\dot{I}_q(t)\right\rvert = \sqrt{\left[\dot{I}_d(t)\right]^2 + \left[\dot{I}_q(t)\right]^2} \end{equation}
+
+	\noindent and the color gradient is represented by a blue-to-red hue where blue (``cold'') denotes a slow variation and red (``hot'') denotes fast variation.
+
+% CURRENT DP SIGNALS FOR SCENARIO 1 <<<
+\begin{figure}
+        \begin{center}
+                \begin{tikzpicture}
+                        \begin{axis}[
+				name = ax_main,
+                                width = 1\columnwidth,
+                                height = 0.6/1.618*\columnwidth,
+                                title={Dynamic Phasor of bus current $I(t)$ for scenario 1 (current setpoint disturbance)},
+                                ylabel={$I_d$ (A)},
+				xlabel={Time (s)},
+                                xmin=-0.025, xmax=1,
+                                ymin=9.8, ymax=13,
+                                xtick={-0.1,0,...,1},
+                                ytick={10,11,...,13}, 
+                                legend pos=south east,
+				legend cell align={left},
+                                ymajorgrids=true,
+                                xmajorgrids=true,
+                                every axis plot/.append style={thick},
+                        ]
+                        \addplot[mesh, colormap={redblue}{color(0cm)=(blue);color(1cm)=(red);},point meta=explicit] table[col sep=comma,header=false,x index=0,y index=1, meta index=4]{data/dpft_sim/data_dpft_sim_scenario1.csv};
+			\addlegendentry{$I_d(t)$}
+		        \addplot[blue,  smooth, forget plot] coordinates {(-0.1,9.9899813) (0,9.9899813)};
+			\addplot[black, dashed] coordinates {(-0.1,9.9899813) (0,9.9899813) (0,11.98797756) (1,11.98797756)};
+			\addlegendentry{$I^*_d(t)$}
+                        \end{axis}
+%
+                        \begin{axis}[
+				name = ax_imaginary,
+                                at={($(ax_main.south west)-(0,0.35*\columnwidth)$)},
+                                width = 1\columnwidth,
+                                height = 0.6/1.618*\columnwidth,
+                                xmin=-0.025, xmax=1,
+                                ymin=-2.1, ymax=-0.1,
+                                xtick={-0.1,0,...,1},
+                                ytick={-2,-1.5,...,-0.5},
+				xlabel={Time (s)},
+                                ylabel={$I_q(t)$ (A)},
+				tick label style={/pgf/number format/fixed},
+				legend cell align={left},
+                                legend pos=south east,
+                                ymajorgrids=true,
+                                xmajorgrids=true,
+                                every axis plot/.append style={thick},
+                        ]
+                        \addplot[mesh, colormap={redblue}{color(0cm)=(blue);color(1cm)=(red);},point meta=explicit] table[col sep=comma,header=false,x index=0,y index=2, meta index=4]{data/dpft_sim/data_dpft_sim_scenario1.csv};
+			\addlegendentry{$I_q(t)$}
+			\addplot[blue,  smooth, forget plot] coordinates {(-0.1,-0.62230395) (0,-0.62230395)};
+			\addplot[black, dashed] coordinates {(-0.1,-0.62230395) (0,-0.62230395) (0,-0.74676474) (1,-0.74676474)};
+			\addlegendentry{$I^*_q(t)$}
+                        \end{axis}
+%
+                        \begin{axis}[
+				name = ax_main,
+                                at={($(ax_imaginary.south west)-(0,0.65*\columnwidth)$)},
+                                width = 1\columnwidth,
+                                height = 1/1.618*\columnwidth,
+                                title={Dynamic Phasor of bus current $I(t)$ for scenario 1},
+                                xlabel={$I_d$ (A)},
+                                ylabel={$I_q$ (A)},
+                                xmin=9.9, xmax=13,
+                                ymin=-2.1, ymax=0,
+                                xtick={10,10.5,...,13},
+                                ytick={-2,-1.5,...,-0.5,0},
+                                legend pos=south east,
+				legend cell align={left},
+                                ymajorgrids=true,
+                                xmajorgrids=true,
+                                every axis plot/.append style={thick}
+                        ]
+                        \addplot[mesh, colormap={redblue}{color(0cm)=(blue);color(1cm)=(red);},point meta=explicit] table[col sep=comma,header=false,x index=1,y index=2, meta index=4]{data/dpft_sim/data_dpft_sim_scenario1.csv};
+                        \end{axis}
+                \end{tikzpicture}
+        \endpgfgraphicnamed
+        \caption
+[Bus current signal results of the DPFT simulation, scenario 1.]
+{Bus current signal results of the DPFT simulation, scenario 1 (disturbance on current setpoint). Top plot shows direct component as a function of time, middle plot shows quadrature component as a function of time, bottom plot shows $I(t)$ evolving in the complex plane. Color gradient means rate of growth. Dashed line represents current setpoint.}
+        \label{fig:dpftsim_scen1}
+        \end{center}
+\end{figure}
+% >>>
+
+% CURRENT DP SIGNALS FOR SCENARIO 2 <<<
+\begin{figure}
+        \begin{center}
+                \begin{tikzpicture}
+                        \begin{axis}[
+				name = ax_main,
+                                width = 1\columnwidth,
+                                height = 0.6/1.618*\columnwidth,
+                                title={Dynamic Phasor of bus current $I(t)$ for scenario 2 (infinite bus voltage disturbance)},
+                                ylabel={$I_d$ (A)},
+				xlabel={Time (s)},
+                                xmin=-0.025, xmax=1,
+                                ymin=-2, ymax=14,
+                                xtick={-0.1,0,...,1},
+                                ytick={0,3,...,12}, 
+                                legend pos=south east,
+				legend cell align={left},
+                                ymajorgrids=true,
+                                xmajorgrids=true,
+                                every axis plot/.append style={thick},
+                        ]
+                        \addplot[mesh, colormap={redblue}{color(0cm)=(blue);color(1cm)=(red);},point meta=explicit] table[col sep=comma,header=false,x index=0,y index=1, meta index=4]{data/dpft_sim/data_dpft_sim_scenario2.csv};
+			\addlegendentry{$I_d(t)$}
+		        \addplot[blue,  smooth, forget plot] coordinates {(-0.1,9.9899813) (0,9.9899813)};
+			\addplot[black, dashed] coordinates {(-0.1,9.9899813) (1,9.9899813)};
+			\addlegendentry{$I^*_d(t)$}
+                        \end{axis}
+%
+                        \begin{axis}[
+				name = ax_imaginary,
+                                at={($(ax_main.south west)-(0,0.35*\columnwidth)$)},
+                                width = 1\columnwidth,
+                                height = 0.6/1.618*\columnwidth,
+                                xmin=-0.025, xmax=1,
+                                ymin=-7, ymax=15,
+                                xtick={-0.1,0,...,1},
+                                ytick={-5,0,...,15},
+				xlabel={Time (s)},
+                                ylabel={$I_q(t)$ (A)},
+				tick label style={/pgf/number format/fixed},
+				legend cell align={left},
+                                ymajorgrids=true,
+                                xmajorgrids=true,
+                                every axis plot/.append style={thick},
+                        ]
+                        \addplot[mesh, colormap={redblue}{color(0cm)=(blue);color(1cm)=(red);},point meta=explicit] table[col sep=comma,header=false,x index=0,y index=2, meta index=4]{data/dpft_sim/data_dpft_sim_scenario2.csv};
+			\addlegendentry{$I_q(t)$}
+			\addplot[blue,  smooth, forget plot] coordinates {(-0.1,-0.62230395) (0,-0.62230395)};
+			\addplot[black, dashed] coordinates {(-0.1,-0.62230395) (1,-0.62230395)};
+			\addlegendentry{$I^*_q(t)$}
+                        \end{axis}
+%
+                        \begin{axis}[
+                                at={($(ax_imaginary.south west)-(0,0.65*\columnwidth)$)},
+                                width = 1\columnwidth,
+                                title={Dynamic Phasor of bus current $I(t)$ for scenario 2},
+                                height = 1/1.618*\columnwidth,
+                                xmin=-1.3, xmax=14,
+                                ymin=-7, ymax=15,
+                                xtick={0,2,...,14},
+                                ytick={-6,-3,...,15},
+                                xlabel={$I_d(t)$ (A)},
+                                ylabel={$I_q(t)$ (A)},
+				tick label style={/pgf/number format/fixed},
+				legend cell align={left},
+                                ymajorgrids=true,
+                                xmajorgrids=true,
+                                every axis plot/.append style={thick},
+                        ]
+                        \addplot[mesh, colormap={redblue}{color(0cm)=(blue);color(1cm)=(red);},point meta=explicit] table[col sep=comma,header=false,x index=1,y index=2, meta index=4]{data/dpft_sim/data_dpft_sim_scenario2.csv};
+                        \end{axis}
+                \end{tikzpicture}
+        \endpgfgraphicnamed
+        \caption
+[Bus current signal results of the DPFT simulation, scenario 2.]
+{Bus current signal results of the DPFT simulation, scenario 2 (disturbance on infinite bus voltage). Top plot shows direct component as a function of time, middle plot shows quadrature component as a function of time, bottom plot shows $I(t)$ evolving in the complex plane. Color gradient means rate of growth. Dashed line represents current setpoint.}
+        \label{fig:dpftsim_scen2}
+        \end{center}
+\end{figure}
+% >>>
+
+% TIME CURRENT SIGNALS FOR BOTH SCENARIOS <<<
+\begin{figure}
+        \begin{center}
+                \beginpgfgraphicnamed{timesim_slow}
+                \begin{tikzpicture}
+                        \begin{axis}[
+				name = ax_main,
+                                width = 1\columnwidth,
+                                height = 1/1.618*\columnwidth,
+                                title={Bus current time domain signal for scenario 1 (current setpoint disturbance)},
+                                ylabel={$i(t)$ (A)},
+				xlabel={Time (s)},
+                                xmin=0, xmax=1,
+                                ymin=-15, ymax=15,
+                                xtick={0,0.1,...,1},
+                                ytick={-15,-10,...,12.5},
+                                legend pos=south east,
+				legend cell align={left},
+                                ymajorgrids=true,
+                                xmajorgrids=true,
+                                every axis plot/.append style={thick},
+                        ]
+                        \addplot[mesh, colormap={redblue}{color(0cm)=(blue);color(1cm)=(red);},point meta=explicit] table[col sep=comma,header=false,x index=0,y index=3, meta index=4]{data/dpft_sim/data_dpft_sim_scenario1.csv};
+                        \end{axis}
+%
+                        \begin{axis}[
+                                at={($(ax_main.south west)-(0,0.7*\columnwidth)$)},
+                                width = 1\columnwidth,
+                                height = 1/1.618*\columnwidth,
+                                title={Bus current time domain signal for scenario 2 (infinite bus voltage disturbance)},
+                                xmin=0, xmax=1,
+                                ymin=-15, ymax=15,
+                                xtick={0,0.1,...,1},
+                                ytick={-15,-10,...,15},
+				xlabel={Time (s)},
+                                ylabel={$i(t)$ (A)},
+				tick label style={/pgf/number format/fixed},
+				legend cell align={left},
+                                ymajorgrids=true,
+                                xmajorgrids=true,
+                                every axis plot/.append style={thick},
+                        ]
+                        \addplot[mesh, colormap={redblue}{color(0cm)=(blue);color(1cm)=(red);},point meta=explicit] table[col sep=comma,header=false,x index=0,y index=3, meta index=4]{data/dpft_sim/data_dpft_sim_scenario2.csv};
+                        \end{axis}
+                \end{tikzpicture}
+        \endpgfgraphicnamed
+        \caption
+[Time signals of the bus current for both DPFT simulation scenarios.]
+{Time signals of the bus current for both DPFT simulation scenarios. On the top, scenario 1 (perturbation on the current setpoint) and on the bottom, scenario 2 (perturbation on the infinite bus voltage).}
+        \label{fig:dpftsim_time_signals}
+        \end{center}
+\end{figure}
+% >>>

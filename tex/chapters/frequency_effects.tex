@@ -1,0 +1,1552 @@
+\chapter{Effects of apparent frequency}\label{chapter:choice_apparent_frequency}
+
+	While chapter \ref{chapter:dynamic_phasor_theory} discusses the proposed Dynamic Phasor theory in depth, we now want to analyze in further detail what are the effects of the choice and the characteristic of the apparent frequency signal $\omega(t)$ in the Dynamic Phasors produced by the transform proposed. The main motivators for this analysis are two: given that the apparent frequency signal $\omega(t)$ has to be preemptively chosen in order to apply the Dynamic Phasor Transform, one asks if there is a ``optimal'' signal that makes numerical simulations faster, or makes modelling procedures easier, while keeping the signals and systems modelled intact. Further, what happens if the circuit under study has different frequency and/or angle references like a Power System which many agents have local estimations of frequency?
+
+	This chapter is separated into two parts. In the first part, we study what happens when a certain system is excited by a ``slow'' frequency signal, that is, the excitation of the differential equations is defined at an apparent frequency that changes slowly or almost constant. This part proves the Quasi-Static Modelling or Hypothesis: it is proven that, if the frequency signal is indeed ``almost constant'', the system can be approximated by its static phasor modelling with a degree of precision that depends on how ``quick'' the circuit is.
+
+	In the second  part we analyze the effects of the specific choice of apparent frequency, that is, what are are the differences between phasorial differential equations obtained using two different apparent frequency signals to transform the same system. The short version of the contribution is that, as long as both frequency signals are minimally close (their difference is integrable), there is a diffeomorphism between the differential systems that they define; in this regard, these systems are somewhat equivalent.
+
+%-------------------------------------------------
+\section{Steady-state phasor approximation and timescales}\label{chapter:algebraic_solvability_timescales} %<<<1
+%--------------------------------------------------------------------------------------------------
+
+	As described in the introduction of this thesis, the Quasi-Static Hypothesis (QSH) in the context of linear circuits theory refers to the simplification of the dynamics of an electrical circuit by supposing that the circuit network is significantly quicker than the excitaton signals that power it. This allows assuming that the circuit transient behaviors can be neglected and considering the steady-state behavior to be good approximations of system dynamics. In practical terms, the QSH greatly simplifies dynamic models of electrical circuit networks by reducing model complexity and abating resources needed for numerical simulations and computations.
+
+	The power system literature has been prolific in producing results and analysis of the QSH, due to the fact that power system dynamic models are generally large and comprise multiple subsystems working at distinct timescales; because of this, simulating dynamic behaviors over long time intervals is prohibitively time consuming and resource demanding \pcite{xiaozhewangIssuesQuasiSteadyState2013}. There are a wide plethora of studies lining QSH applications and its limits, as well as pertaning computational optimizations, with the main goal of long-term frequency and voltage stability analysis \pcite{wangAnalyticalStudiesQuasi2014} as well as transient stability studies \pcite{wangQuasiSteadystateModel2014}. In general, the hypothess is established from the full dynamic equations of the system, and the simplification is then applied to yield an approximate model \pcite{wangContinuationBasedQuasiSteadyStateAnalysis2006}. 
+
+	It has long been known that certain transient phenomena can manifest in particular timescales, and there is a wide body of literature on the taxonomy of concepts in power system stability \pcite{hatziargyriouetal2021,farrokhabadi2020,powersystemstabilityieee/cigrejointtaskforceDefinitionClassificationPower2004,vancutsem1995,kundurPowerSystemStability1994} that emphasizes short, mid, and long term stability phenomena. The usual argument for justifying the QSH is that the circuit dynamics concentrate within the very short or short timescales (generally sub-second timeframes); in effect, for mid and long-term dynamic studies the circuit dynamics can be safely disregarded and the steady-state model is a good approximation of the network behavior. Owing to this, in most power system studies, the electrical network is modelled as a set of algebraic equations, facilitating modelling and computation by greatly reducing system complexity. 
+
+	While the existing body of work has certainly made significant strides, one key aspect missing from the literature however is a mathematically sound and solid justification of the QSH, that is, a proof that in a ``faster'' circuit the steady-state solution of the circuit differential equations is indeed close to the actual transient solution of these differential equations. A particular reason for this gap is the fact that the majority of power system literature uses phasor-equivalent models, as opposed to electromagnetic transient models \pcite{favuzza2024}, for their capacity to express electrical quantities in terms of amplitudes and phases. Yet, the definition of ``sinusoids in transient behavior'' — with time-varying amplitude, phase and frequency —, as well as the representation of such sinusoids as Dynamic Phasors (DPs) with an equally solid mathematical background was amiss, preventing researchers to develop these concepts with the required rigor.
+
+	We have presented in \cite{volpatoDynamicPhasorTransform2022} a robust and proof of the QSH using a theoretical framework for generalized sinusoids and their Dynamic Phasors, but we used the Short-Time Fourier Transform, as shown in theorem \ref{theo:fdp_quasi_static}, which was published in that paper. In this thesis, we shall use the framework of Dynamic Phasors proposed in chapter \ref{chapter:dynamic_phasor_theory} to achieve a mathematical modelling of a linear circuit excited with sinusoidal signals, and impose upon the model the fact that the circuit is ``quicker'' than the excitations, that is, it achieves sinusoidal steady-state faster the excitations change considerably in time. This is coupled with a generic modelling of the excitation frequency, which may depend on the circuit voltages and currents, to yield the result that as the circuit becomes faster the steady-state approximation becomes closer to the actual solutions of the circuit differential equations — mathematically validating the QSH for such circuits.
+
+%-------------------------------------------------
+\subsection{Revisiting nonstationary sinusoids and Dynamic Phasors: Sigma Spaces} %<<<2
+
+	Given a linear time invariant differential equation
+
+\begin{equation} \sum\limits_{k=0}^{n} \alpha_k x^{\left(k\right)} - f(t) = 0 \text{ (single-phase) or }\sum\limits_{k=0}^{n} \alpha_k \mathbf{x}^{\left(k\right)} - \mathbf{f_3}(t) = 0 \text{ (three-phase)}\end{equation}
+
+	\noindent then by theorems \ref{corollary:complex_equivalence_phasorialodes} for the single-phase case and \ref{theo:3p_ode_solution} for the three-phase, once an apparent frequency $\omega$ is chosen, the linear system can be transformed into a phasorial equivalent differential equation.
+
+	This begets many questions, for instance: suppose that for some particular frequency signal $\omega_1$ the differential equations have a solution. It is the case that a solution also exists for any apparent frequency signal? If so, what is the largest class of frequency signals that yield a solution?
+
+	In order to start the analysis, we define sinusoids in a particular time interval, which allows us to understand the effects of frequency signals in a particular time interval. We further define Sigma Spaces as the spaces of sinusoids.
+
+	Consider a closed interval $I = \left[t_0,t_F\right)$, where $t_0$ can be $-\infty$ and $t_F$ can be $+\infty$. We expand the definition of a sinusoid as a real signal $x(t)$ defined in $I$ such that there exist two signals $m(t),\delta(t)\in C\left(I\right)$ such that $x(t)$ can be written as
+
+\begin{equation} x(t) = m(t)\cos\left(\delta(t)\right)\forall\ t\in I. \label{eq:nonstationarydef_def}\end{equation}
+
+	Further, let $\omega(t)$ be called an \textbf{apparent frequency} signal. Then the \textbf{apparent phase of $x(t)$ respective to $\omega(t)$} is the angle $\phi_\omega(t)$ that satisfies
+
+\begin{equation} \delta(t) = \psi(t) + \phi_\omega(t) \text{ with } \psi(t) = \int_{t_0}^t \omega(s)ds,\ \forall t\in I\label{eq:nonstationarydef_def_phi_interval}\end{equation}
+
+	\noindent then $x(t)$ \textbf{can be represented or written at} $\omega$ in $I$. Further the space of all sinusoids at the apparent frequency $\omega$ defined in $I$ is denoted $\Sigma_\omega\left(I\right)$, or simply $\Sigma_{\omega}$ when $I$ is understood.
+
+	A couple notes to this definition stand out. The first note is that, at a first glance, a sinusoid $x(t)$ that can be defined at a certain frequency $\omega_1$ might not be defined in another signal $\omega_2$, hence the need to define a specific space $\Sigma_\omega$ of sinusoids at the frequency $\omega$. This means that $x(t)\in\Sigma_\omega$ implying that $x(t)$ can be defined at the frequency $\omega$. Also, this definition allows for the notion of an apparent phase with respect to a particular signal $\omega$; in the case a signal can be defined in two different frequency signals $\omega_1$ and $\omega_2$, the apparent phase signals $\phi_{\left(\omega_1\right)}$ and $\phi_{\left(\omega_2\right)}$ obtained from each frequency oviously differ. Finally, the objective of defining all signals in an interval $I$ is done to be able to also express unstable signals that show increasing or otherwise exploding behavior in a finite interval $I\subsetneqq \mathbb{R}$, or simply to make the analysis in a localized interval and not the entirety of the reals.
+
+	We now want to study the relationships between sigma spaces. Theorem \ref{theo:sigma_equivalence} proves that a signal $x(t)\in\Sigma_{\left(\omega_1\right)}$ can also be defined in another $\Sigma_{\left(\omega_1\right)}$ if the difference $\omega_1 - \omega_2$ is integrable.
+
+\begin{theorem}\label{theo:sigma_equivalence} %<<<
+	Consider two apparent frequency functions $\omega_1,\omega_2$ defined in some interval $I\subset \mathbb{R}$ such that $\Delta\omega = \omega_2 - \omega_1$ is integrable in $I$ (that is, $\Delta\psi (t) = \int_0^t \Delta\omega(s)ds$ exists and converges for all $t\in I$). Then every element $x_1\in\Sigma_{\left(\omega_1\right)}$ is also an element of $\Sigma_{\left(\omega_2\right)}$, and vice-versa. \end{theorem}
+\textbf{Proof:} adopt $\Delta\omega(t) = \omega_2(t) - \omega_1(t)$. It is simple to see that $\psi_1$ and $\psi_2$ are related by
+
+\begin{equation} \psi_2(t) - \psi_1(t) = \int_{0}^t \Delta\omega(s)ds \end{equation}
+
+	and by hypothesis the integral exists and converges. Therefore let $x_1 = m_1(t)\cos\left(\psi_1(t) + \phi_1(t)\right)$. Then
+
+\small\begin{equation} x_1(t) = m_1(t)\cos\left(\psi_2(t) + \phi_1(t) - \int_0^t \Delta\omega(s)ds\right) \end{equation}\normalsize
+
+	which means $x_1$ can be represented as an element of $\Sigma_{\left(\omega_2\right)}$ with amplitude $m_1(t)$ and apparent phase $\phi_2$ relative to $\omega_2$
+
+\small\begin{equation} \phi_2(t) = \phi_1(t) - \int_0^t \Delta\omega(s)ds \label{eq:angle_relationship}\end{equation}\normalsize
+
+	Now take $x_2 = m_2(t)\cos\left(\psi_2(t) + \phi_2(t)\right)$ and
+
+\small\begin{equation} x_2(t) = m_2(t)\cos\left(\psi_1(t) + \phi_2(t) + \int_0^t \Delta\omega(s)ds\right) \end{equation}\normalsize
+
+	meaning $x_2$ can also be written as an element of $\Sigma_{\left(\omega_1\right)}$. \hfill$\blacksquare$ \vspace{5mm}\hrule\vspace{5mm}%>>>
+
+	What theorem \ref{theo:sigma_equivalence} entails to is basically that any sinusoidal signal defined at a $\omega_1$ apprent frequency and in an interval $I$ can also be defined in any other frequency $\omega_2$, as long as $\Delta\psi$ can be defined in the entirety of $I$. This means that, given $\omega_1$ and $I$, any $\Sigma_{\left(\omega_2\right)}$ with an integrable $\Delta\psi(t)$ is exactly equal to $\Sigma_{\left(\omega_1\right)}$.
+
+	Borrowing from Analysis and Measure Theory, since a function $f(x)$ is Lebesge integrable in $I$ if and only if it is absolutely integrable in $I$ (that is, it belongs to $L^1\left(I\right)$), the pool of nonstationary sinusoids respective to a certain ``reference'' frequency $\omega_0(t)$ in an interval $I$ is, in essence, a union of all $\Sigma_\omega$ where the difference $\omega(t) - \omega_0(t)$ is Lebesgue integrable in $I$, or conversely, $\Delta\psi$ is defined in $I$.
+
+\begin{corollary} \label{theo:sigma_spaces_are_equal} Given $\omega_1$ and $\omega_2$ such that $\left(\omega_1(t)-\omega_2(t)\right)\in L^1\left(I\right)$, then $\Sigma_{\omega_1}^I = \Sigma_{\omega_2}^I$ .\end{corollary}
+\textbf{Proof:} from theorem \ref{theo:sigma_equivalence}, if $\left(\omega_1 - \omega_2\right)\in L\left(I\right)$ then $x(t)\in\Sigma_1 \Leftrightarrow x(t)\in\Sigma_2$, which is the exact definition of equality between sets, that is, $\Sigma_{\omega_1}^I = \Sigma_{\omega_2}^I$. \hfill$\blacksquare$ \vspace{5mm}\hrule\vspace{5mm}
+
+	Further, corolary \ref{theo:sigma_spaces_are_equal} shows that the implication that any $x(t)\in\Sigma_{\omega_1}$ is also in $\Sigma_{\omega_2}$, this means both spaces are essentially equal because they have the same elements. Finally, if two different frequency signals generate the same space in an interval $I$ — meaning they generate the same nonstationary sinusoidal functions — then we establish an equivalence relationship between the frequency signals, seen as they define the same sinusoidal signals.
+
+\newcommand{\equivfreq}[1]{\ \substack{ #1 \\ \sim}\ }
+
+\begin{definition}\label{def:equivalent_freqs} Given $\omega_1$ and $\omega_2$ such that $\left(\omega_1(t)-\omega_2(t)\right)\in L^1\left(I\right)$, then $\omega_1$ and $\omega_2$ are \textbf{equivalent in $I$}, denoted $\omega_1 \equivfreq{I} \omega_2$.\end{definition}
+
+	The naming of this equivalence is intentional, since this relationship fulfills the requirements of a set equivalence. It is \textbf{reflexive} because $\omega_1 \equivfreq{I} \omega_1$ for any $I$ where $\omega_1$ is defined; it is \textbf{symmetric} since $\omega_1 \equivfreq{I} \omega_2$ if and only if $\omega_2\equivfreq{I}\omega_1$; and it is \textbf{transitive}: if $\omega_1\equivfreq{I}$ and $\omega_2\equivfreq{I}\omega_3$ then $\omega_1\equivfreq{I}\omega_3$. While reflexivity and symmery are trivial to prove, transitivity can be proven with some algebra:
+
+\begin{equation} \left\lvert \omega_3 - \omega_1\right\rvert = \left\lvert \omega_3 - \omega_2 - \left(\omega_1 - \omega_2\right)\right\rvert \leq \left\lvert \omega_3 - \omega_2\right\rvert + \left\lvert \omega_2 - \omega_1\right\rvert\end{equation}
+
+	\noindent and because $\omega_1\equivfreq{I}\omega_2$ and $\omega_2\equivfreq{I}\omega_3$, then the integrals of both terms on the right exists, therefore the integral of the term on the left also exists. Therefore, one can draw the conclusion that if $x(t)$ is defined at an apparent frequency $\omega_0$, then it admits a representation for any other equivalent $\omega$. 
+
+%-------------------------------------------------
+\subsection{Characteristics of $L^1\left(I\right)$}\label{subsec:characteristics_l1}
+
+	It is natural to ask what is the largest pool of frequency signals $\omega$ that yields a $\Sigma^I_\omega$ space, and if there is a standard base to this pool so that we can know if a particular frequency signal is admissible (that is, it generates Nonstationary Sinusoid signals) and to draw further conclusions about the space and its constituents. In a first glance, one can think that the results so far lead to the fact that, given an interval $I$, any $\omega\in L^1\left(I\right)$ can be used as an apparent frequency signal — which would mean any nonstationary sinusoid defined in $I$ can be represented at $\omega$. Such is not the case, however, because the space $L^1\left(I\right)$ has no unconditional basis \pcite{lindenstrauss2013classical}, that is, there is no set of functions in $L^1\left(I\right)$ that can unconditionally generate the whole space. Even if the pool of frequency signals is reduced, so that the resulting subspace does admit an unconditional basis, because $L^1\left(I\right)$ is a Banach Space but not a Hilbert Space, that is, not every Cauchy sequence in $L^1$ converges to a limit, and this leads to many deep faults in this space.
+
+	While these concepts from topology sound somewhat esoterical to a reader in their first contact, such concepts are not fancy as they seem. For instance, the set of polynomials of order $n$, denoted $P^n$, with the basis $\mathbf{B}_n = \left(1,x,x^2,...,x^n\right)$ can be interpreted as a point in that basis:
+
+\begin{equation} P(x) = \sum_{k=0}^n \alpha_x k^k \Leftrightarrow \left[P\right]_{\mathbb{B}} = \left[\alpha_0,\alpha_1,...,\alpha_n\right] .\end{equation}
+
+	Naturally, one can imagine that any infinitely differentiable function that has a Taylor Series at $x=0$ admits a representation in the space of power series $P^\infty$; for instance,
+
+\begin{equation} e^x = \sum_{k\in\mathbb{N}} \dfrac{x^k}{k!} \Leftrightarrow \left[e^x\right]_{\mathbf{B}_\infty} = \left(1,\dfrac{1}{2},\dfrac{1}{3!},\dfrac{1}{4!},\cdots\right) = \left(\dfrac{1}{k}\right)_{k\in\mathbb{N}} .\end{equation}
+
+	It is not difficult, however, to find signals that are infinitely differentiable at $x=0$ but have a non-converging Taylor Series, for instance,
+
+\begin{equation} f(x) = \left\{\begin{array}{l} e^{-1/x^2} \text{, if } x\neq 0\\[3mm] 0 \text{ if } x= 0\end{array}\right. \label{eq:problem_eq_1}\end{equation}
+
+	\noindent is infinitely differentiable at $x=0$ but its Taylor Series is divergent because all coefficients are null. Other pathological examples exist, for instance
+
+\begin{equation} f(x) = \sum_{n\in\mathbb{N}} e^{-\sqrt{2^n}} \cos\left(2^n x\right) \label{eq:problem_eq_2}\end{equation}
+
+	\noindent is infinitely differentiable everywhere but analytic nowhere, that is, its Taylor Function does not converge at any point. Therefore, the functions \eqref{eq:problem_eq_1} and \eqref{eq:problem_eq_2} cannot be expressed in any basis $\mathbf{B}_n$, for $n$ natural or even infinite. Maybe, one thinks, another basis (say $\mathbf{B}'$) can generate these functions; then the union $\mathbf{B}_\infty\cup\mathbf{B}'$ is the new candidate to a complete basis. Even then, there will still be some signal that cannot be expressed in that particular basis: no basis can generate the entirety of $\left[\mathbb{R}\to\mathbb{R}\right]$.
+
+	Much the same way, because there is no inner product that induces a complete metric in $L^1$, this means that this space is ``wider'' than any inner product can express, culminating with the fact that there is no definable inner product that will induce a complete topology of $L^1$, lest a limitation of signals of interest is adopted. Therefore no useful decomposition in the scope of this analysis is available to give more information on the space of apparent frequency signals admissible.
+
+	For simplicity, we can limit the roster to that of frequency signals we are interested in. In Power Systems, we are generally interested in frequency signals that are equivalent to a constant synchronous or reference frequency $\omega_0$; at the same time, in Modulation Theory, we are interested in frequency signals that are equivalent to a (constant) carrier frequency $\omega_0$. Therefore, we want the space of Nonstationary Sinusoids represented in an apparent frequency $\omega$ that is equivalent to a reference $\omega_0$ in a given interval $I$, that is, the space $\Sigma_{\left(\omega_0\right)}$.
+
+	In short, ``how close'' does a signal $\omega(t)$ has to be to a synchronous frequency value $\omega_0$ to be a valid apparent frequency summarizes to their difference having to be integrable in the time interval being considered. Further, any additional consideration will require a particularization of the frequency signals, removing certain ones from the pool and weakening the analysis.
+
+%-------------------------------------------------
+\subsection{Consequences of characteristics of $\Sigma$ spaces on linear circuit theory} %<<<2
+
+	We now investigate the consequences of the qualities of sigma spaces on the linear circuits transformed by the Dynamic Phasor Transform. In order to be able to have our analysis done in a matrix form, we define the Dynamic Phasor Transform of a vector of signals.
+
+\begin{definition}[Dynamic Phasor Transform of a vector or sequence of sinusoids] \label{def:dptransform_vector}%<<<
+	The \textbf{Dynamic Phasor Transform} (DPT) of a vector of sinusoids $\mathbf{x}\in\Sigma_{\omega}^n$ is a functional transform $\mathbf{P^\omega_D}\in \left[\Sigma_\omega^n  \to \left[\mathbb{R}\to\mathbb{C}\right]^n\right]$ where
+
+\begin{equation} \mathbf{P_D^\omega}\left[x\right] = \left[\raisebox{3mm}{} \mathbf{P_D^\omega}\left[x_1\right],\mathbf{P_D^\omega}\left[x_2\right],...,\mathbf{P_D^\omega}\left[x_n\right]\right]^\intercal \end{equation}
+
+	\noindent and equally with the inverse transform: given $X(t) = \left[X_1(t),X_2(t),...,X_n(t)\right]^\transpose\in\left[\mathbb{R}\to\mathbb{C}\right]^n$, define $\mathbf{P^{\left(-\omega_D\right)}}\in \left[\left[\mathbb{R}\to\mathbb{C}\right]^n \to \Sigma_\omega^n\right]$ where
+
+\begin{equation} \mathbf{P_D^{\left(-\omega\right)}}\left[X\right] = \left[\raisebox{3mm}{} \mathbf{P_D^{\left(-\omega\right)}}\left[X_1\right],\mathbf{P_D^{\left(-\omega\right)}}\left[X_2\right],...,\mathbf{P_D^{\left(-\omega\right)}}\left[X_n\right]\right]^\transpose \end{equation}
+\end{definition} %>>>
+
+	Definition \ref{def:dptransform_vector} allows us to define the transformation for matrix systems of the type $\dot{\mathbf{x}} = \mathbf{Ax + Bf}$, which we now use to analyze electrical circuits in matrix form. A natural question induced by the complexification theorems \ref{corollary:complex_equivalence_phasorialodes} for the single-phase case and \ref{theo:3p_ode_solution} for the three-phase case is whether the currents and voltages in a passive linear circuit, when excited with multiple geberakuzed sinusoidal voltages or currents, are also generalized sinusoids. As proven in chapter \ref{chapter:classical_phasors}, this certainly is the case when a linear system is excited by static sinusoids. Further, what happens if the excitations have different apparent frequencies — like in power systems where each agent is equipped with a frequency control or adjustment, which are generally independent from other agents? Thence, imagine a linear circuit of $n$ nodes and excited by $p$ voltage and current sources (``forcings''), modelled by
+
+\begin{equation} \dot{\mathbf{x}}(t) = \mathbf{Ax}(t) + \mathbf{Bf}(t), \label{eq:nonautodiffeq_sigma} \end{equation}
+
+	\noindent where $\mathbf{x}(t) = \left[v_1,v_2,...,v_c,i_1,i_2,...,i_d\right]^\intercal\in \left[\mathbb{R}\to\mathbb{R}^n\right]$ is the vector of states; $\mathbf{f}(t)\in\left[\mathbb{R}\to\mathbb{R}^p\right]$ is composed of the $p$ forcings, and $\mathbf{A}\in\mathbb{R}^{(n\times n)}$ and $\mathbf{B}\in\mathbb{R}^{(n\times p)}$ are obtained through the combinations of resistance, capacitance and inductance parameters of the circuit. Furthermore, the capacitor voltages and inductor currents chosen as state variables ``sufficiently describe'' the circuit, as any node voltage or any branch current in the circuit can be obtained by some combination of the elements of $\mathbf{x}$ and its derivative.  
+
+	Moreover, theorems \ref{theo:phasors_solutions} and \ref{theo:phasors_solutions_reproof} show that if the vector of excitations $\mathbf{f}(t)$ are sinusoidal sources of a fixed frequency $\omega$, and if the circuit has at least one resistance, then the solutions of \eqref{eq:nonautodiffeq_sigma} will be the sum of vanishing exponential terms plus a sinusoidal steady-state part composed of sinusoids at the exact frequency $\omega$. The question arises if such is the case under non-stationary conditions. To prove this true, theorem \ref{theo:sigma_invariancy} states that $\Sigma$ spaces are closed under linear combinations and differentiations; then, theorem \ref{theo:sigma_equivalence} proves that a signal of apparent frequency $\omega_2$ can be (diffeomorphically) written as a sinusoid of another $\omega_1$. This yields theorem \ref{theorem:sols_are_nonst} proving that if the forcing $\mathbf{f}(t)$ is composed of $p$ sinusoidal signals $f_i(t)$, each with its own apparent frequency $\omega_i$, they can all be written in a ``common'' frequency $\omega_0(t)$ by theorem \ref{theo:sigma_equivalence}, that is, $f(t)$ also belongs to $\Sigma_{\left(\omega_0\right)}$. 
+
+\begin{theorem}\label{theo:sigma_invariancy}%<<<
+The $\Sigma_\omega$ space is invariant under time differentiation and linear combinations, that is, for any $x_1,x_2\in\Sigma_\omega$,
+
+\begin{itemize} \item $a(t),b(t)\in C\left(\mathbb{R}\right) \Rightarrow a(t)x_1 + b(t)x_2\in\Sigma_\omega$; \item $x\in\Sigma_\omega \Rightarrow\dot{x} \in \Sigma_\omega$\end{itemize}
+\end{theorem}
+\textbf{Proof:} for the linear combination, adopt \eqref{eq:nonstationarydef_def} and compute $a(t)x_1 + b(t)x_2$. With some algebra this yields
+
+\begin{align}
+	a(t)x_1 + b(t)x_2 &= \cos\left(\psi(t)\right)\left[a(t)m_1(t)\cos\left(\phi_1(t)\right) + b(t)m_2(t)\cos\left(\phi_2(t)\right)\right] + \nonumber\\[2mm] &\hspace{15mm} - \sin\left(\psi(t)\right)\left[a(t)m_1(t)\sin\left(\phi_1(t)\right) + b(t)m_2(t)\sin\left(\phi_2(t)\right)\right] \nonumber\\[2mm]
+	&= \cos\left(\psi(t)\right)p(t) - \sin\left(\psi(t)\right)q(t)
+\end{align}
+	
+	Let $c(t)$, $\alpha(t)$ such that
+
+\begin{equation} c(t) = \left\lvert p(t) + jq(t)\right\rvert,\ \alpha(t) = \arg\left(p(t) + jq(t)\right) \end{equation}
+
+	Then $a(t)x_1 + b(t)x_2 = c(t)\cos\left(\psi(t) + \alpha(t)\right)\in\Sigma_\omega$. For the differentiation, compute $\dot{x}$:
+
+\begin{equation} \dot{x}(t) = \dot{m}(t)\cos\left(\psi(t) + \phi(t)\right) + m(t)\left[\omega(t) + \dot{\phi}(t)\right]\cos\left(\psi(t) + \phi(t) + \dfrac{\pi}{2} \right), \end{equation}
+
+	\noindent which is a linear combination of vectors of $\Sigma_\omega$, thus a vector itself by the linear combination result before. \hfill$\blacksquare$
+\vspace{5mm}
+\hrule
+\vspace{5mm}
+%>>>
+
+	Now, we revisit theorem \ref{theorem:ode_matrix_equiv} which states that the components $x_i(t)$ of the solution to \eqref{eq:nonautodiffeq_sigma} obey the n-th order differential equation
+
+\begin{equation} \sum_{k=0}^n \alpha_k x_i^{(k)} - g_i(t) = 0, \label{eq:theo_nthnonst_end_freq}\end{equation}
+
+	\noindent where $g_i$ is the i-th component of
+
+\begin{equation} \mathbf{g} = \sum_{k=1}^n \alpha_k \left[\sum_{j=0}^{k-1} \mathbf{A}^j \mathbf{Bf}^{(k-j)}\right] \label{eq:theo_nthnonst_g_freq}\end{equation}
+
+	\noindent and the $\alpha_i$ are the coefficients of the characteristic polynomial of $\mathbf{A}$. This yields theorem \ref{theorem:sols_are_nonst}: since the forcing $\mathbf{f}(t)$ can be written in some common frequency $\omega$, that is, $\mathbf{f}\in\Sigma_\omega^p$ for some $\omega(t)$, we combine this result with theorems \ref{theo:1p_ode_solution} for the single-phase case and \ref{theo:3p_ode_solution} for the three-phase case proves which prove that the phasorial and dq-equivalent ODEs defined by linear systems, when excited by sinusoidal signals at some frequency $\omega$, respond with signals at that same frequency. This means that each $x_i(t)\in\Sigma_\omega$, thus $x\in\Sigma_\omega^n$ as we wanted to prove; by Kirchoff's Laws, this implies that all voltages and currents of the system belong to $\Sigma_\omega$.
+
+\begin{theorem}[Linear circuits excited at a frequency $\omega(t)$ respond at the same frequency]\label{theorem:sols_are_nonst} %<<<
+	Suppose $\mathbf{f}$ is a vector of $p$ nonstationary sinusoids each defined at some apparent frequency $\omega_p$ where these frequency signals are mutually equivalent. Due to theorem \ref{theorem:ode_matrix_equiv} we can suppose $\mathbf{f}\in \Sigma_\omega^p$ for some $\omega(t)$ that is equivalent to all $\omega_p$. Thus the $g_i$ are linear combinations of the $f_i$ meaning $g_i\in\Sigma_\omega$. By theorems \ref{theo:1p_ode_solution} and \ref{theo:3p_ode_solution}, \eqref{eq:theo_nthnonst_end_freq} implies that the steady-state solution $x_{is}$ of each $x_i$ belongs to $\Sigma_\omega$, therefore the steady-state solution $x_s$ to $x$ is in $\Sigma_\omega^n$. Finally, because the state $x(t)$ completely describes the circuit, and any node voltage and any branch current is a linear combination of $\mathbf{x}(t)$ and its derivatives, any branch current and any node voltage in the circuit is in $\Sigma_\omega$.
+\end{theorem} \vspace{5mm}\hrule\vspace{5mm}%>>>
+
+	The result of theorem \ref{theorem:sols_are_nonst} is essentially that a linear circuit, when excited with sinusoids, will respond with currents and voltages with a steady-state sinusoidal behavior at the same apparent frequency than the excitations — therefore the steady-state solution $x_s(t)$ admits a DPT. If the chosen initial conditions reconstruct the solution, then $x(t) = x_s(t)$. Thus the differential equation \eqref{eq:nonautodiffeq_sigma} can be transformed to a DP differential equation.
+
+\begin{theorem}\label{theo:dp_diffeq} %<<<
+	Consider the differential equation \eqref{eq:nonautodiffeq_sigma} with $\mathbf{f}\in\Sigma_\omega^n$, $\mathbf{x}_s$ the steady-state solution to $\mathbf{x}(t)$, $X = \mathbf{P_D^\omega}\left[\mathbf{x}_s\right]$ and $F = \mathbf{P_D^\omega}\left[\mathbf{f}\right]$. Then $X(t)$ satisfies
+
+\begin{equation} \dot{X} = \left(\mathbf{A} - j\omega(t)\mathbf{I_n}\right)X + \mathbf{B}F(t), \label{eq:theo_nonautodiffeq_def}\end{equation}
+
+\end{theorem}
+\textbf{Proof:} take the i-th line of \eqref{eq:theo_nonautodiffeq_def}, write $x_i(t) = m_i(t)\cos\left(\psi(t) + \phi_i(t)\right)$, and compute $\dot{x}_i$:
+
+\begin{equation} \sum\limits_{k=1}^n a_{ik} x_k + \sum\limits_{k=1}^m b_{ik} f_k = \dot{m}_i \cos\left(\psi(t) + \phi_i(t)\right) - m_i\left[\omega(t) + \dot{\phi}_i(t)\right] \cos\left(\psi(t) + \phi_i(t) + \dfrac{\pi}{2}\right) \end{equation}
+
+	Because the DPT is bijective, we can apply it to this entire equation; because it is linear, it can operate inside the sums and the $a_{ik},b_{ik}$ multiplications:
+
+\begin{gather}
+	\dot{m}_ie^{j\phi_i(t)} + m_i\left[\omega(t) + \dot{\phi}_i(t)\right]e^{j\left(\phi_i(t) + \frac{\pi}{2}\right)} = \sum\limits_{k=1}^n a_{ik} X_k + \sum\limits_{k=1}^m b_{ik} F_k \\[3mm] 
+	\overbrace{\dot{m}_ie^{j\phi_i(t)} + jm_i \dot{\phi}_i(t)e^{j\phi_i(t)}}^{\dot{X}_i} + \overbrace{j\omega m_i e^{j\phi_i(t)}}^{jX_i(t)} = \sum\limits_{k=1}^n a_{ik} X_k + \sum\limits_{k=1}^m b_{ik} F_k
+\end{gather}
+
+	\noindent which is equivalent to $\dot{X} + j\omega X = \mathbf{A}X + \mathbf{B}F \Rightarrow \dot{X} = \left(\mathbf{A} - j\omega(t)\mathbf{I_n}\right)X + \mathbf{B}F(t)$. \hfill$\blacksquare$ \vspace{5mm}\hrule\vspace{5mm} %>>>
+
+	Finally, theorem \ref{theo:dp_diffeq} proves that the matrix ODE \eqref{eq:nonautodiffeq_sigma} can be complexified into the complex matrix ODE \eqref{eq:theo_nonautodiffeq_def}, allowing to express a matrix system phasorially.
+
+%------------------------------------------------- 
+\section{Sigma Spaces in the phasor domain} %<<<1
+
+	We now use the phasorial modelling of matrix system to show that two phasorial differential systems, generated by two different frequency signals from the same time-domain linear circuit, yield diffeomorphic models. We first prove that the phasorial transformations $X_1$ and $X_2$ generated from the same sinusoid $x(t)$ using two different frequencies are related by a bijection.
+
+\begin{theorem}[DPTs at different frequencies are homeomorphic] \label{theo:homeomorphic_phasors} %<<<
+	Let $I = \left(t_0,t_F\right)\in \mathbb{R}$, $x\in \Sigma^I_{\left(\omega_1\right)}$, $\omega_2\equivfreq{I}\omega_1$, and $X_1 = \mathbf{P^{\omega_1}_D}\left[x\right]$, $X_2 = \mathbf{P^{\omega_2}_D}\left[x\right]$. Define $\Delta\omega(t) = \omega_2(t) - \omega_1(t)$. Then $X_1$ and $X_2$ are related by the diffeomorphism
+
+\begin{equation} X_2 = X_1e^{-j\Delta\psi(t)}, \text{ with } \Delta\psi(t) = \int_{t_0}^t \Delta\omega(s)ds\ \forall t\in I \label{eq:x1x2_homeomorphism}\end{equation}
+\end{theorem}
+\textbf{Proof:} take $x = m_1\cos\left(\psi_1(t) + \phi_1(t)\right)$. Then $X_1 = \mathbf{P_D^{\omega_1}}\left[x\right] = m_1e^{j\phi_1}$. At the same time, $X_2 = \mathbf{P_D^{\omega_2}}\left[x\right] = m_1e^{j\phi_2}$ for $\phi_2$ given by \eqref{eq:angle_relationship}; therefore $X_2$ can be written as
+
+\begin{equation} X_2 = m_1e^{j\left(\phi_1 - \Delta\psi\right)} = m_1e^{j\phi_1}e^{-j\Delta\psi} = X_1e^{-j\Delta\psi}\end{equation}
+
+	\noindent with $\Delta\psi$ defined as in \eqref{eq:x1x2_homeomorphism}. \hfill$\blacksquare$\vspace{5mm}\hrule\vspace{5mm}
+%>>>
+
+\begin{corollary} \label{corollary:images_sigma_diffeomorphic} The images of $\Sigma_{\omega_0}$ by two DPTs at different but equivalent frequencies are diffeomorphic, that is, if $\omega_1,\omega_2\equivfreq{I}\omega_0$ then for every element $X_1\in\mathbf{P_D^{\omega_1}}\left[\Sigma\right]$ there exists a biunivocally related element $X_2\in\mathbf{P_D^{\omega_2}}\left[\Sigma\right]$.
+\end{corollary}
+
+	In Topology, diffeomorphisms are equivalence relationships between topological spaces. In the case of corollary \ref{corollary:images_sigma_diffeomorphic}, the existence of such diffeomorphism means that the Dynamic Phasors generated by $\mathbf{P_D^{\omega_1}}\left[\Sigma\right]$ are equivalent to those generated by $\mathbf{P_D^{\omega_2}}\left[\Sigma\right]$. Such equivalence relationship is deep and far reaching, for instance, in the theory of Dynamical Systems.
+
+\begin{theorem}[Topological equivalence between continuous Dynamical Systems \pcite{kuznetzovElementsAppliedBifurcation2023}] \label{theo:dynamical_systems_diffeomorphism}
+	Let
+
+\begin{equation} \left(D_1\right):\ \dot{x} = f\left(x,t\right),\ x\left(t_0\right) = x_0 \text{, and } \left(D_2\right):\ \dot{y} = g\left(y,t\right),\ y\left(t_0\right) = y_0 \end{equation}
+
+	\noindent two continuous Dynamical Systems with $f = h\circ g$ for some diffeomorphism $h\in\left[\mathbb{R}^n\to\mathbb{R}^n\right]$ where $x,y\in\left[\mathbb{R}\to\mathbb{R}^n\right]$ that is, an invertible differentiable relation with a differentiable inverse, that is, the jacobian of $h$ with respect to $x$ exists and is invertible for all $x$ considered. Then these systems are \textbf{topologically equivalent}, that is, an orbit $x(t)$ of $D_1$ is biunivocally related to one orbit $y(t)$ of $D_2$ by $x = h\circ y$.
+\end{theorem}
+
+	What theorem \ref{theo:dynamical_systems_diffeomorphism} states is that if two dynamical systems are related by a diffeomorphism then their orbits are related by the same relationship, effectively making the dynamical systems equivalent — they are diffeomorphically equivalent. Due to this, we can use theorem \ref{theo:homeomorphic_phasors} and its corollary \ref{corollary:images_sigma_diffeomorphic} to show that the Dynamical Phasors obtained by solving a certain circuit in two different apparent frequencies are also equivalent.
+
+\begin{theorem}[Models of the same circuit at different frequencies are diffeomorphic]\label{theo:diff_freqs} %<<<
+	Suppose a passive linear circuit modelled by
+
+\begin{equation} \dot{\mathbf{x}}(t) = \mathbf{Ax}(t) + \mathbf{Bf}\left(t\right), \label{eq:nonautodiffeq} \end{equation}
+
+	\noindent where $\mathbf{x}\in\Sigma_{\left(\omega_1\right)}^n$, $\mathbf{f}\in\Sigma_{\left(\omega_1\right)}^p,\ \mathbf{A}\in\mathbb{C}^{\left(n\times n\right)},\ \mathbf{B}\in\mathbb{C}^{\left(n\times p\right)}$. Let $\omega_2\equivfreq{I}\omega_1$ in some interval $I$ and then imagine that this circuit is expressed in two different frequencies, yielding the differential equations
+
+\begin{equation}\left\{\begin{array}{l} \dot{X}_1(t) = f_1\left(X_1,t\right) \\[3mm] \dot{X}_2(t) = f_2\left(X_2,t\right) \end{array}\right. \label{eq:two_sols_freq_announce}\end{equation}\normalsize
+
+	Then these systems are diffeomorphic in $I$.
+\end{theorem}
+\textbf{Proof:} take the initial system \eqref{eq:nonautodiffeq} and transform it using the two frequency signals, yielding
+
+\begin{equation}\left\{\begin{array}{l} \dot{X}_1(t) = \left(\mathbf{A} - j\omega_1(t)\mathbf{I}_n\right)X_1(t) + \mathbf{B}F_1\left(t\right) = f_1\left(X_1,t\right) \\[3mm] \dot{X}_2(t) = \left(\mathbf{A} - j\omega_2(t)\mathbf{I}_n\right)X_2(t) + \mathbf{B}F_2\left(t\right) = f_2\left(X_2,t\right) \end{array}\right. \label{eq:two_sols_freq}\end{equation}
+
+	From theorem \ref{theo:homeomorphic_phasors}, define $\Delta\omega(t) = \omega_2(t) - \omega_1(t)$. Then $X_1$ and $X_2$ are related by
+
+\begin{equation} X_2 = X_1e^{-j\Delta\psi(t)}, \text{ with } \Delta\psi(t) = \int_{t_0}^t \Delta\omega(s)ds,\ t\in I. \label{eq:homeomorphic_phasors_equiv}\end{equation}
+
+	Thus
+
+\begin{equation} \dfrac{dX_2}{dt} = \dfrac{d}{dt}\left[X_1e^{-j\Delta\psi(t)}\right] = \dfrac{dX_1}{dt}e^{-j\Delta\psi(t)} + X_1\dfrac{d}{dt}\left[e^{-j\Delta\psi(t)}\right] = \dfrac{dX_1}{dt}e^{-j\Delta\psi(t)} - X_1 \Delta\omega e^{-j\Delta\psi(t)}. \end{equation}
+
+	By equations \eqref{eq:two_sols_freq}, this means
+
+\begin{equation} f_2\left(X_2,t\right) = f_1\left(X_1,t\right)e^{-j\Delta\psi(t)} - \Delta\omega X_1 e^{-j\Delta\psi(t)} \end{equation}
+
+	Again using \eqref{eq:homeomorphic_phasors_equiv}, this equation means
+
+\begin{equation} f_2\left(X_2,t\right) = f_1\left(X_2e^{j\Delta\psi(t)},t\right)e^{-j\Delta\psi(t)} - \Delta\omega X_2 \end{equation}
+
+	\noindent which is differentiable with respect to $f_1$ and $X_2$. Naturally this relationship is invertible as
+
+\begin{equation} f_1\left(X_1,t\right) = f_2\left(X_1e^{-j\Delta\psi(t)},t\right)e^{j\Delta\psi(t)} + \Delta\omega X_1 \end{equation}
+
+	\noindent thus there is a diffeomorphism between $f_1$ and $f_2$ in $I$, which means that the solutions $X_1$ and $X_2$ of \eqref{eq:two_sols_freq} are equivalent in this interval. In other words, one can integrate any of the two equations and can obtain the solution to the other. \hfill$\blacksquare$\vspace{5mm}\hrule\vspace{5mm} 
+%>>>
+
+\begin{example}[Example application of theorems \ref{theo:homeomorphic_phasors} and \ref{theo:diff_freqs}]\label{example:diff_freqs} %<<<
+
+	Consider again the second-order circuit of figure \ref{fig:different_freqs_example_network_1p} where the same second-order circuit of example \ref{example:rlc_dpt} is shown. This circuit is excited by a voltage
+
+\begin{equation} v(t) = m_v(t)\cos\left(\psi(t)\right) \text{, with } \psi = \int_0^a \omega(a)da \text{, where } \omega(t) = \omega_0\left[1 + Me^{-\alpha t}\sin\left(\beta t\right)\right], \label{eq:example_voltage_def}\end{equation}
+
+ 	\noindent yields an angle displacement
+
+\begin{equation} \psi(t) = \omega_0\left(t + \dfrac{M\left\{\beta - e^{-\alpha t}\left[\alpha\sin\left(\beta t\right) + \beta\cos\left(\beta t\right)\right]\right\}}{\alpha^2 + \beta^2} \right) .\end{equation}
+
+% MODELLING EXAMPLE OF DIFFERENT FREQUENCIES <<<	
+\begin{figure}[htb!]
+\centering
+        \begin{tikzpicture}[american,scale=1,transform shape,line width=0.75, cute inductors, voltage shift = 1]
+	\ctikzset{/tikz/circuitikz/voltage/distance from node=10mm}
+		\draw (0,0)
+			to[vsource,sources/scale=1.25, v>=$V(t)$,invert] (0,4)
+			to[L,l=$L$,f>^=$I_{L}$,v>=$V_{L}$,-*] (4,4) 
+			to[C,l=$C$,f>^=$I_{C}$,v>=$V_{C}$,-*] (4,0) 
+			to[short] (0,0); 
+		\draw (4,4)
+			to[short,f>^=$I_{R}$] (8,4) 
+			to[R,l=$R$,v>=$V_{R}$] (8,0) 
+			to[short]  (4,0);
+        \end{tikzpicture}
+	\caption{Second-order circuit for example application of theorem \ref{theo:diff_freqs}.}
+	\label{fig:different_freqs_example_network_1p}
+\end{figure} %>>>
+
+	We now model the circuit using the apparent frequency $\omega(t)$, and call the resulting phasor of the voltage across the load as $V_R(t)$:
+
+\begin{equation}\left(\omega(t)\right): \ddot{V}_R(t) + \dot{V}_R(t)\left(\dfrac{1}{RC} + 2j\omega(t)\right) + V_R\left\{ \dfrac{1}{LC}  -\omega^2(t) + j \left[ \dot{\omega}(t) + \dfrac{1}{RC}\omega(t)\right]\right\} -\dfrac{1}{LC} m_v(t) = 0, \label{eq:rlc_complex_diffeq_1}\end{equation}
+
+	Now, modelling the circuit using the constant frequency $\omega_0$. Denote as $V_{R0}(t)$ as the Dynamic Phasor of $v_R(t)$ modelled using $\omega_0$:
+
+\begin{equation}\left(\omega_0\right): \ddot{V}_{R0}(t) + \dot{V}_{R0}(t)\left(\dfrac{1}{RC} + 2j\omega_0\right) + V_{R0}\left(\dfrac{1}{LC} - \omega_0^2 + j \dfrac{1}{RC}\omega_0\right) - \dfrac{1}{LC} m_v(t)e^{j\left(\psi(t) - \omega_0 t\right)} = 0, \label{eq:rlc_complex_diffeq_0}\end{equation}
+
+	\noindent which is the exact same equation as \eqref{eq:rlc_complex_diffeq} of example \ref{example:rlc_dpt}. Notably, both equations differ fundamentally in the fact that since $\omega_0$ is constant, its derivatives vanish; also, the excitation vector $v(t)$ yields different phasors: in the time-varying frequency $V(t)$ is in phase with the DQ transform axis because the sinusoid $v(t)$ is defined exactly at $\omega(t)$, whereas for the static frequency $\omega_0$, the phasor $V(t)$ varies in time. 
+
+	We want to validate theorem \ref{theo:homeomorphic_phasors} showing that by solving the ODE at constant frequency \eqref{eq:rlc_complex_diffeq_0}, we can obtain the solution to the ODE with time-varying frequency \ref{eq:rlc_complex_diffeq_1} not by integrating it, but through the transformation $V_R(t) = V_{R0}e^{j\left(\psi(t) - \omega_0 t\right)}$. To this extent, figures \ref{fig:amp_phase_voltage_signals_diffreqs_real} and \ref{fig:amp_phase_voltage_signals_diffreqs_imag} show the real and imaginary parts of three signals:
+
+\begin{itemize}
+	\item In blue, $V_R(t)$ as the complex voltage obtained by integrating the complex ODE \eqref{eq:rlc_complex_diffeq_1} at the time-varying frequency $\omega(t)$;
+	\item In green, $V_{R0}(t)$ as the complex voltage obtained by integrating \eqref{eq:rlc_complex_diffeq_0} at the fixed frequency $\omega_0$;
+	\item In dashed red, the composition $V_{R0}e^{j\left(\psi(t) - \omega_0 t\right)}$ that, by theorems \ref{theo:homeomorphic_phasors} should be equal to $V_{R}(t)$.
+\end{itemize}
+
+	The figures indeed validate theorem \ref{theo:homeomorphic_phasors}, since the dashed red line clearly overlaps with the blue lines; this means that instead of solving the ODE with time-varying frequency \eqref{eq:rlc_complex_diffeq_1}, one can solve \eqref{eq:rlc_complex_diffeq_0}, defined at the fixed frequency $\omega_0$, and then obtain the solution to \eqref{eq:rlc_complex_diffeq_1} by the transformation $V_{R0}e^{j\left(\psi(t) - \omega_0 t\right)}$.
+
+% AMPLITUDE REAL PART TIME CURVES <<<
+\begin{figure}
+        \begin{center}
+                \beginpgfgraphicnamed{timesim_comp_diffreqs_real}
+                \begin{tikzpicture}
+                        \begin{axis}[
+                                width =  \columnwidth,
+                                height = \columnwidth/1.618,
+                                title={Real components of voltages},
+                                xlabel={Time (s)},
+                                ylabel={$\Re\left(V_R(t),\ V_{R0}(t)\right)$ (V)},
+                                xmin=0, xmax=1,
+                                ymin=-15, ymax=42,	
+				ymajorgrids=true,
+                                xmajorgrids=true,
+                                xtick={0,0.1,...,1},
+                                ytick={-15,-10,...,40},
+				ylabel style = {align=center},
+				axis y line*=left,
+                                every axis plot/.append style={thick},
+                                legend pos=south east,
+				legend cell align = {left}
+                        ]
+                                \addplot[blue,smooth]                                      table[col sep=comma,header=false,x index=0,y index=8]{data/rlc_sim/data_rlc_sim_dps.csv};
+				\addlegendentry{$\Re\left(V_R(t)\right)$}
+                                \addplot[red,dashed, dash pattern=on 4pt off 4pt,smooth, line cap = round] table[col sep=comma,header=false,x index=0,y index=2]{data/rlc_sim/data_rlc_sim_omega0.csv};
+				\addlegendentry{$\Re\left[V_{R0}e^{j\left(\psi(t) - \omega_0 t\right)}\right]$}
+                                \addplot[stewartgreen,smooth]                             table[col sep=comma,header=false,x index=0,y index=5]{data/rlc_sim/data_rlc_sim_omega0.csv};
+				\addlegendentry{$\Re\left(V_{R0}(t)\right)$}
+                        \end{axis}
+                \end{tikzpicture}
+        \endpgfgraphicnamed
+        \caption
+[Real components of simulated voltages and reconstructed voltage.]
+{Real components of $V_R(t)$ (blue), $V_{R0}(t)$ (green) and the reconstructed voltage $V_{R0}e^{j\left(\psi(t) - \omega_0 t\right)}$ which should be equal to $V_R(t)$.}
+        \label{fig:amp_phase_voltage_signals_diffreqs_real}
+        \end{center}
+\end{figure}
+% >>>
+
+% AMPLITUDE IMAGINARY PART TIME CURVES <<<
+\begin{figure}
+        \begin{center}
+                \beginpgfgraphicnamed{timesim_comp_diffreqs_imag}
+                \begin{tikzpicture}
+                        \begin{axis}[
+                                width =  \columnwidth,
+                                height = \columnwidth/1.618,
+                                title={Imaginary components of voltages},
+                                xlabel={Time (s)},
+                                ylabel={$\Im\left(V_R(t),\ V_{R0}(t)\right)$ (V)},
+                                xmin=0, xmax=1,
+                                ymin=-17, ymax=32,	
+				ymajorgrids=true,
+                                xmajorgrids=true,
+                                xtick={0,0.1,...,1},
+                                ytick={-15,-10,...,30},
+				ylabel style = {align=center},
+				axis y line*=left,
+                                every axis plot/.append style={thick},
+                                legend pos=south east,
+				legend cell align = {left}
+                        ]
+                                \addplot[blue,smooth]                                    table[col sep=comma,header=false,x index=0,y index=9]{data/rlc_sim/data_rlc_sim_dps.csv};
+				\addlegendentry{$\Im\left(V_R(t)\right)$}
+                                \addplot[red,dashed, dash pattern=on 4pt off 4pt,smooth, line cap = round] table[col sep=comma,header=false,x index=0,y index=3]{data/rlc_sim/data_rlc_sim_omega0.csv};
+				\addlegendentry{$\Im\left[V_{R0}e^{j\left(\psi(t) - \omega_0 t\right)}\right]$}
+                                \addplot[stewartgreen,smooth]                            table[col sep=comma,header=false,x index=0,y index=6]{data/rlc_sim/data_rlc_sim_omega0.csv};
+				\addlegendentry{$\Im\left(V_{R0}(t)\right)$}
+                        \end{axis}
+                \end{tikzpicture}
+        \endpgfgraphicnamed
+        \caption
+[Imaginary components of simulated voltages and reconstructed voltage.]
+{Imaginary components of $V_R(t)$ (blue), $V_{R0}(t)$ (green) and the reconstructed voltage $V_{R0}e^{j\left(\psi(t) - \omega_0 t\right)}$ which should be equal to $V_R(t)$.}
+        \label{fig:amp_phase_voltage_signals_diffreqs_imag}
+        \end{center}
+\end{figure}
+% >>>
+
+	Further, Figure \ref{fig:voltage_signals_diffreqs} shows that both $V_R(t)$ and $V_{R0}(t)$ reconstruct the same exact signal in time, which corroborates with the fact that both the differential models \eqref{eq:rlc_complex_diffeq_1} and \eqref{eq:rlc_complex_diffeq_0} are able to accurately reconstruct sinusoids in time even though they define different phasors.
+
+% VOLTAGE TIME CURVES <<<
+\begin{figure}
+        \begin{center}
+                \begin{tikzpicture}
+                        \begin{axis}[
+				name = ax_main,
+                                width = 0.9*\columnwidth,
+                                height = 0.9*1/1.618*\columnwidth,
+                                title={Reconstructed voltage signals from DP simulations},
+                                xlabel={Time (s)},
+                                ylabel={$\mathbf{P_D^{\left(-\omega_0\right)}} \left[V_{R0}\right]$ and $\mathbf{P_D^{\left(-\omega\right)}} \left[V_R\right]$ (V)},
+                                xmin=0, xmax=1,
+                                ymin=-42, ymax=42,
+                                xtick={0,0.1,...,1},
+                                ytick={-40,-30,...,40}, 
+                                legend pos=south east,
+                                ymajorgrids=true,
+                                xmajorgrids=true,
+                                %grid style=dashed,
+                                colormap name=hsv2,
+                                cycle list={[ colors of colormap={100,200,300,400,500,600,700,800,900,1000} ]},
+                                every axis plot/.append style={thick},
+                        ]
+                                \addplot[blue ,smooth] table[col sep=comma,header=false,x index=0,y index=1]{data/rlc_sim/data_rlc_sim_dps.csv};
+                        \coordinate (c1) at (axis cs:0,-42);
+                        \coordinate (c2) at (axis cs:0.1,-42);
+                        \end{axis}
+%
+                        \begin{axis}[
+                                name = ax_zoomed,
+                                at={($(ax_main.north east)-(0.9\columnwidth,1.75/1.618*\columnwidth)$)},
+                                width = 0.9*1\columnwidth,
+                                height = 0.9*1/1.618*\columnwidth,
+                                xmin=0, xmax=0.1,
+                                ymin=-42, ymax=42,
+                                xtick={0,0.01,...,0.1},
+				xlabel={Time (ms)},
+				xticklabels={$0$,$10$,$20$,$30$,$40$,$50$,$60$,$70$,$80$,$90$,$100$},
+                                ytick={-40,-30,...,40},
+				tick label style={/pgf/number format/fixed},
+				legend columns=2,
+				legend style={/tikz/every even column/.append style={column sep=0.5cm}},
+                                ymajorgrids=true,
+                                xmajorgrids=true,
+                                %grid style=dashed,
+                                every axis plot/.append style={thick},
+                                axis background/.style = {
+                                        preaction = {
+                                        path picture = {
+                                        \draw[fill=white,line width=0mm] (axis cs:0,400) rectangle (axis cs:0.1,-40);
+                                                }
+                                        }
+                                }
+                        ]
+				\addplot[blue, smooth, line cap=round] table[col sep=comma,header=false,x index=0,y index=2]{data/rlc_sim/data_rlc_sim_dps.csv};
+				\addlegendentry{$\mathbf{P_D^{\left(-\omega\right)}}\left[V_R\right]$}
+                                \addplot[red,dashed, dash pattern=on 4pt off 4pt,smooth, line cap = round] table[col sep=comma,header=false,x index=0,y index=4]{data/rlc_sim/data_rlc_sim_omega0.csv};
+				\addlegendentry{$\mathbf{P_D^{\left(-\omega_0\right)}}\left[V_{R0}\right]$}
+                        \end{axis}
+                        % draw dashed lines from rectangle in first axis to corners of second
+                        \draw [gray,dashed] (c1) -- (ax_zoomed.north west);
+                        \draw [gray,dashed] (c2) -- (ax_zoomed.north east);
+                \end{tikzpicture}
+        \caption
+[Voltage across the resistor of the circuit of Figure \ref{fig:different_freqs_example_network_1p}.]
+{Voltage across the resistor of the circuit of Figure \ref{fig:different_freqs_example_network_1p} as reconstructed by the solution $V_R(t)$ of the frequency-varying model \eqref{eq:rlc_complex_diffeq_1} (in blue) and the one reconstructed from the fixed-frequency model \eqref{eq:rlc_complex_diffeq_0} (in dashed red).}
+        \label{fig:voltage_signals_diffreqs}
+        \end{center}
+\end{figure}
+% >>>
+
+	We also know that the matrix model of this circuit is given by
+
+\begin{equation} \dfrac{d}{dt} \left[ \begin{array}{l} v_C \\[3mm] i_L \end{array}\right] = \left[\begin{array}{cc} -\dfrac{1}{RC} & \dfrac{1}{C} \\[5mm] - \dfrac{1}{L} & 0 \end{array}\right] \left[\begin{array}{c} v_C \\[5mm] i_L \end{array}\right] + \left[\begin{array}{c} 0 \\[3mm] -\dfrac{1}{L}\end{array}\right] v(t)\end{equation}
+
+	\noindent which, adopting the time-varying frequency $\omega(t)$, yields a complex-equivalent system
+
+\begin{equation} \dfrac{d}{dt} \left[ \begin{array}{l} V_C \\[3mm] I_L \end{array}\right] = \left(\left[\begin{array}{cc} -\dfrac{1}{RC} & \dfrac{1}{C} \\[5mm] - \dfrac{1}{L} & 0 \end{array}\right] - j\omega \mathbf{I}_2\right) \left[\begin{array}{c} V_C \\[5mm] I_L \end{array}\right] + \left[\begin{array}{c} 0 \\[3mm] -\dfrac{1}{L}\end{array}\right] V(t) . \label{eq:matrix_model_varying}\end{equation}
+
+	Let $V_{C0},\ I_{L0},\ V_0$ the equivalent phasors at the frequency $\omega_0$. From theorem \ref{theo:homeomorphic_phasors}
+
+\begin{equation} \left[ \begin{array}{l} V_{C0} \\[3mm] I_{L0} \\[3mm] V_0\end{array}\right] = \left[\begin{array}{l} V_C \\[3mm] I_L \\[3mm] V\end{array}\right] e^{j\left(\psi(t) - \omega_0 t\right)} ,\end{equation}
+
+	\noindent and applying this to \eqref{eq:matrix_model_varying},
+
+\begin{equation} \dfrac{d}{dt} \left(\left[ \begin{array}{l} V_{C0} \\[3mm] I_{L0} \end{array}\right]e^{j\left(\omega_0 t - \psi(t)\right)}\right) = \left(\left[\begin{array}{cc} -\dfrac{1}{RC} & \dfrac{1}{C} \\[5mm] - \dfrac{1}{L} & 0 \end{array}\right] - j\omega \mathbf{I}_2\right) \left[ \begin{array}{l} V_{C0} \\[3mm] I_{L0} \end{array}\right]e^{j\left(\omega_0 t - \psi(t)\right)} + \left[\begin{array}{c} 0 \\[3mm] -\dfrac{1}{L}\end{array}\right] V(t) . \label{eq:matrix_model_varying_1}\end{equation}
+
+	Developing this equation,
+
+\begin{align}
+	 & e^{j\left(\omega_0 t - \psi(t)\right)}\dfrac{d}{dt} \left[ \begin{array}{l} V_{C0} \\[3mm] I_{L0} \end{array}\right] + \dfrac{d}{dt}\left[e^{j\left(\omega_0 t - \psi(t)\right)} \right] \left[ \begin{array}{l} V_{C0} \\[3mm] I_{L0} \end{array}\right] = \nonumber\\[3mm] &\hspace{4cm} = \left(\left[\begin{array}{cc} -\dfrac{1}{RC} & \dfrac{1}{C} \\[5mm] - \dfrac{1}{L} & 0 \end{array}\right] - j\omega \mathbf{I}_2\right) \left[ \begin{array}{l} V_{C0} \\[3mm] I_{L0} \end{array}\right]e^{j\left(\omega_0 t - \psi(t)\right)} + \left[\begin{array}{c} 0 \\[3mm] -\dfrac{1}{L}\end{array}\right] V(t) \nonumber\\[3mm]
+	 & e^{j\left(\omega_0 t - \psi(t)\right)}\dfrac{d}{dt} \left[ \begin{array}{l} V_{C0} \\[3mm] I_{L0} \end{array}\right] + \left(\omega_0 - \omega(t)\right)e^{j\left(\omega_0 t - \psi(t)\right)} \left[ \begin{array}{l} V_{C0} \\[3mm] I_{L0} \end{array}\right] = \nonumber\\[3mm] &\hspace{4cm} = \left(\left[\begin{array}{cc} -\dfrac{1}{RC} & \dfrac{1}{C} \\[5mm] - \dfrac{1}{L} & 0 \end{array}\right] - j\omega \mathbf{I}_2\right) \left[ \begin{array}{l} V_{C0} \\[3mm] I_{L0} \end{array}\right]e^{j\left(\omega_0 t - \psi(t)\right)} + \left[\begin{array}{c} 0 \\[3mm] -\dfrac{1}{L}\end{array}\right] V(t) \nonumber\\[3mm]
+	 & e^{j\left(\omega_0 t - \psi(t)\right)}\dfrac{d}{dt} \left[ \begin{array}{l} V_{C0} \\[3mm] I_{L0} \end{array}\right] = \left(\left[\begin{array}{cc} -\dfrac{1}{RC} & \dfrac{1}{C} \\[5mm] - \dfrac{1}{L} & 0 \end{array}\right] - j\omega \mathbf{I}_2 + j\left(\omega(t) - \omega_0\right) \mathbf{I}_2\right) \left[ \begin{array}{l} V_{C0} \\[3mm] I_{L0} \end{array}\right]e^{j\left(\omega_0 t - \psi(t)\right)} + \left[\begin{array}{c} 0 \\[3mm] -\dfrac{1}{L}\end{array}\right] V(t)  \label{eq:matrix_model_varying_2}
+\end{align}
+
+	Multiplying the entire equation by $e^{j\left(\psi(t) - \omega_0 t\right)}$, and noting that $V_0 = e^{j\left(\psi(t) - \omega_0 t\right)}V(t)$,
+
+\begin{equation} \dfrac{d}{dt} \left[ \begin{array}{l} V_{C0} \\[3mm] I_{L0} \end{array}\right] = \left(\left[\begin{array}{cc} -\dfrac{1}{RC} & \dfrac{1}{C} \\[5mm] - \dfrac{1}{L} & 0 \end{array}\right] - j\omega_0 \mathbf{I}\right) \left[ \begin{array}{l} V_{C0} \\[3mm] I_{L0} \end{array}\right] + \left[\begin{array}{c} 0 \\[3mm] -\dfrac{1}{L}\end{array}\right] V_0(t)  \label{eq:matrix_model_varying_3} \end{equation}
+
+	\noindent which is the exact equation that would be obtained by modelling the circuit at $\omega_0$.
+
+\examplebar
+\end{example} %>>>
+
+%-------------------------------------------------
+\section{Determining if a 3$\phi$ system yields a balanced assymptotic solution}\label{sec:3p_assymp_freq} %<<<1
+
+	In subsection \ref{subsec:zeroseq_comp} we discussed that a three-phase system yields a phasorial equation and a zero-sequence differential equation of the form
+
+\begin{equation} \sum\limits_{i=0}^n \eta_i^n z_0^{(i)} - f_0 = 0,\ \eta_i(t) = \sum\limits_{k=i}^{n} \alpha_k {k\choose i} \left[\sum\limits_{c=0}^{k-i} B_{\left(k-i,c\right)}\left(\omega,\dot{\omega},\ddot{\omega},...,\omega^{(k-i-c)}\right)\right] \label{eq:qsh_init_zeroseq_diffeq}\end{equation}
+
+	\noindent and because this equation is linear but has time-varying coefficients, analysis is made much more difficult. We want to prove that if the excitation $\omega(t)$ is equivalent to a fairly slow $\omega_0$ and the circuit is ``fast'' enough, then the three-phase when excited by a balanced forcing will be such that its response will tend to a balanced response.
+
+	Assuming $\omega(t)$ is equivalent to a $\omega_0$, we can solve \eqref{eq:qsh_init_zeroseq_diffeq} in $\omega_0$ and we can reconstruct the solution at $\omega(t)$; we thus make our analysis in $\omega_0$. Denote $h_0(t)$ as the zero-sequence component of the forcing $\mathbf{f}_3$ measured at $\omega_0$:
+
+\begin{equation} \sum\limits_{i=0}^n \eta_i \dfrac{d^i z_0}{dt^i} - h_0 = 0,\ \eta_i(t) = \sum\limits_{k=i}^{n} \alpha_k {k\choose i} \left[\sum\limits_{c=0}^{k-i} B_{\left(k-i,c\right)}\left(\omega_0,0,0,\cdots,0\right)\right] \label{eq:3p_zeroseq_omega0} \end{equation}
+
+	\noindent and the $\eta_i$ become time invariant. Developing their expression yields
+
+\begin{equation}
+	\eta_i = \sum\limits_{k=i}^{n} \alpha_k {k\choose i} \left[\sum\limits_{c=0}^{k-i} B_{\left(k-i,c\right)}\left(\omega_0,0,0,\cdots,0\right)\right] = \sum_{k=i}^n \alpha_k {k\choose i} \left(\sum\limits_{c=0}^{k-i} \omega_0^c \right)
+\end{equation}
+
+	\noindent therefore \eqref{eq:3p_zeroseq_omega0} is Hurwitz Stable if the polynomial
+
+\begin{equation} H_3(x) = \sum_{k=0}^n \eta_k x^k \end{equation}
+
+	\noindent is Hurwitz; further, the differential equation is assymptotically stable. If we denote $P_k(\omega_0)$ as the sum of the first $k$ powers of $\omega_0$ as
+
+\begin{equation} P_k\left(\omega_0\right) = 1 + \omega_0 + \omega_0^2 + \cdots + \omega_0^k = \sum_{j=0}^k \omega_0^k \end{equation}
+
+	\noindent then we can further develop the $\eta_k$ of $H_3$ as
+
+\begin{equation}
+\left\{\begin{array}{l}
+	\eta_n = \alpha_n P_0 \\[3mm]
+%
+	\eta_{(n-1)} = n\alpha_nP_1 + \alpha_{(n-1)}P_0\\[3mm]
+%
+	\eta_{(n-2)} = n(n-1)\alpha_n P_2 + (n-1)\alpha_{(n-1)}P_1 + \alpha_{(n-2)}P_0\\[3mm]
+%
+	\eta_{(n-3)} = n(n-1)(n-2)\alpha_n P_3+ (n-1)(n-2)\alpha_{(n-1)}P_2 + (n-2)\alpha_{(n-2)}P_1 + \alpha_{(n-3)}P_0\\[3mm]
+%
+	\hspace{3cm}\vdots
+\end{array}\right.
+\end{equation}
+
+	\noindent thus we can write $H_3$ as a triangular sum
+
+\begin{equation}
+H_3 = \left\{\begin{array}{l}
+	P_0\left(\alpha_n x^n + \alpha_{(n-1)}x^{(n-1)} + \alpha_{(n-2)}x^{(n-2)} + \cdots + \alpha_1x + \alpha_0\right) + \\[3mm]
+%
+	P_1\left( n\alpha_{n}x^{(n-1)} + (n-1)\alpha_{(n-1)}x^{(n-2)} + \cdots + 2\alpha_2x + \alpha_1\right) + \\[3mm]
+%
+	P_2\left( n(n-1)\alpha_{n}x^{(n-2)} + (n-1)(n-2)\alpha_{(n-1)}x^{(n-2)} + \cdots + 2\alpha_2\right) + \\[3mm]
+%
+	\hspace{3cm}\vdots
+\end{array}\right.
+\end{equation}
+
+	\noindent and one notices that the $k$-th row of this triangular sum is equal to $P_k$ times the $k$-th derivative of $H_1$:
+
+\begin{equation} H_3(x) = \sum_{k=0}^n P_k H_1^{(k)}(x) \label{eq:h3_h1_rel}\end{equation}
+
+	\noindent where $H_1$ is the polynomial of the original circuit ODE $H_1 = \sum_{k=0}^n \alpha_kx^k$, and we know that this polynomial is Hurwitz, therefore its roots are all in the open left half plane.
+
+	Initially, one uses the Gauss-Lucas Theorem to show that because $H_1$ is Hurwits, all derivatives $P^{(k)}$ (up to the $(n-1)$-th derivative) are also Hurwitz stable; since $H_3$ is a linear combination of $P(z)$ and its derivatives, it should also be Hurwitz.
+
+% GAUSS-LUCAS EXAMPLE <<<
+\definecolor{gausslucas1}{HTML}{065573}
+\definecolor{gausslucas2}{HTML}{4D8D7A}
+\definecolor{gausslucas3}{HTML}{D9BC2C}
+\definecolor{gausslucas4}{HTML}{F57D39}
+\definecolor{gausslucas5}{HTML}{FF0000}
+
+\begin{figure}[t]
+\centering
+\scalebox{2}{
+	\begin{tikzpicture}[scale=10,>={Stealth[inset=0mm,length=1mm,angle'=50]},square/.style={regular polygon,regular polygon sides=4}]
+		\draw [->, line width = 0.1mm] (   -5mm,  0   ) -- (   1mm,  0   ); \node[label={\tiny $\Re$}] at (1mm,-0.6mm) {};
+		\draw [->, line width = 0.1mm] (      0, -2mm ) -- (   0   ,  3mm) node[label={\tiny $\Im$}] (yaxis) {};
+%
+		\foreach \x/\y in {-5/2,-1.5/1,-1/0,-3/3,-3/-2,-2/2} {\node [circle, fill=gausslucas1, inner sep=0mm, minimum size=1mm] (p) at (\x mm,\y mm) {};}
+		\draw[gausslucas1, fill=none, line width = 0.15mm] (-1mm,0mm) -- (-3mm,-2mm) -- (-5mm,2mm) -- (-3mm,3mm) -- (-2mm,2mm) -- (-1.5mm,1mm) -- (-1mm,0);
+%
+		\foreach \x/\y in {-4.33957/1.95852 , -2.76774/-1.32603 , -2.73412/2.54262 , -1.83004/1.4764 , -1.2452/0.348488} {\node [circle, fill=gausslucas2, inner sep=0mm, minimum size=1mm] (p) at (\x mm,\y mm) {};}
+		\draw[gausslucas2, fill=none, line width = 0.15mm] (-4.33957mm, 1.95852mm) -- (-2.73412mm, 2.54262mm) -- (-1.83004 mm, 1.4764 mm) -- (-1.2452 mm, 0.348488 mm) -- (-2.76774mm, -1.32603mm) -- (-4.33957mm, 1.95852mm);
+%
+		\foreach \x/\y in {-3.71663/1.9115 , -2.5573/-0.657236 , -2.4692/1.98348 , -1.59021/0.762254} {\node [circle, fill=gausslucas3, inner sep=0mm, minimum size=1mm] (p) at (\x mm,\y mm) {};}
+		\draw[gausslucas3, fill=none, line width = 0.15mm] (-3.71663 mm,1.9115mm ) -- (-2.4692 mm,1.98348mm ) -- (-1.59021 mm,0.762254mm ) -- (-2.5573 mm,-0.657236mm ) -- (-3.71663 mm,1.9115mm );
+%
+		\foreach \x/\y in {-3.19306/1.81086 , -2.39361/0.0203507 , -2.16333/1.20949 } {\node [circle, fill=gausslucas4, inner sep=0mm, minimum size=1mm] (p) at (\x mm,\y mm) {};}
+		\draw[gausslucas4, fill=none, line width = 0.15mm] (-3.19306 mm,1.81086 mm) -- (-2.39361 mm,0.0203507 mm) -- (-2.16333 mm, 1.20949 mm) -- (-3.19306 mm,1.81086 mm);
+%
+		\foreach \x/\y in {-2.78939/1.4853 , -2.37728/0.514701} {\node [circle, fill=gausslucas5, inner sep=0mm, minimum size=1mm] (p) at (\x mm,\y mm) {};}
+		\draw[gausslucas5, fill=none, line width = 0.15mm] (-2.78939 mm, 1.4853 mm) -- (-2.37728 mm, 0.514701 mm);
+%
+		\node [circle, fill=gray, inner sep=0mm, minimum size=1mm] (p) at (-2.58333 mm,1 mm) {};
+%
+		\node at (0.5mm, 3mm   ) [fill = gausslucas1, square ,inner sep = 0mm, minimum size = 2.5mm] (v100) {}; \node[scale = 0.8,right,gausslucas1] at (0.6mm,3mm)   {\tiny $r\left(P\right)$};
+		\node at (0.5mm, 2.5 mm) [fill = gausslucas2, square ,inner sep = 0mm, minimum size = 2.5mm] (v100) {}; \node[scale = 0.8,right,gausslucas2] at (0.6mm,2.5mm) {\tiny $r\left(P'\right)$};
+		\node at (0.5mm, 2   mm) [fill = gausslucas3, square ,inner sep = 0mm, minimum size = 2.5mm] (v100) {}; \node[scale = 0.8,right,gausslucas3] at (0.6mm,2mm)   {\tiny $r\left(P''\right)$};
+		\node at (0.5mm, 1.5 mm) [fill = gausslucas4, square ,inner sep = 0mm, minimum size = 2.5mm] (v100) {}; \node[scale = 0.8,right,gausslucas4] at (0.6mm,1.5mm) {\tiny $r\left(P^{(3)}\right)$};
+		\node at (0.5mm, 1   mm) [fill = gausslucas5, square ,inner sep = 0mm, minimum size = 2.5mm] (v100) {}; \node[scale = 0.8,right,gausslucas5] at (0.6mm,1mm)   {\tiny $r\left(P^{(4)}\right)$};
+		\node at (0.5mm, 0.5 mm) [fill = gray       , square ,inner sep = 0mm, minimum size = 2.5mm] (v100) {}; \node[scale = 0.8,right,gray       ] at (0.6mm,0.5mm) {\tiny $r\left(P^{(5)}\right)$};
+
+	\end{tikzpicture}
+}
+\caption
+[Gauss-Lucas application example.]
+{Gauss-Lucas application example to the polynomial $P(z)$ of \eqref{eq:poly_gausslucas_example}.}
+\label{fig:gausslucas_example}
+\end{figure} %>>>
+
+\begin{theorem}[Gauss-Lucas Theorem \pcite{ahlfors1979complex}]
+	Given $P\in\left[\mathbb{C}\to\mathbb{C}\right]$ a nonconstant polynomial with complex coefficients, all zeros of $P'$ belong to the convex hull of the set of zeros of $P$, that is, the smallest convex polygon containing the roots of $P$.
+\end{theorem}
+\hrule
+\vspace{3mm}
+
+	As an example of this theorem, take the polynomial
+
+\begin{equation} P(z) = \prod_{k=1}^6 \left(z - z_k\right)\left\{\begin{array}{l} z_1 = -5000 + j2000 \\ z_2 = -1500 + j1000 \\ z_3 = -1000 \\ z_4 = -3000 - j2000 \\ z_5 = -3000 + j3000 \\ z_6 = -2000 + j2000 \end{array}\right.  \label{eq:poly_gausslucas_example} \end{equation}
+
+	\noindent which roots are explicit and all in the left open half plane (thus $P$ is Hurwitz); therefore the roots of the derivatives are certainly in the polygon formed by the roots of $P$. The roots of $P$ and its derivatives are shown in figure \ref{fig:gausslucas_example}.
+
+	The example shows that if $P$ is Hurwitz stable (which it is as per definition \ref{eq:poly_gausslucas_example}) then all its derivatives are also Hurwitz stable. This unfortunately does not mean $H_3$ is Hurwitz: the sum of stable polynomials is not always stable, that is, the class of Hurwitz stable polynomials is not closed to linear combinations. For instance, $S(x) = (x+1)^3$ and $R(x) = x + 20$ are Hurwitz stable, but their sum is not.
+
+	Hence, the proof that $H_3$ is Hurwitz needs an additional restriction: we now want to show that if the roots of $H_1$ are large enough (the circuit is ``quick enough''), the roots of $H_3$ approach the roots of $H_1$ as $\omega_0$ gets smaller and tends to zero (the excitation gets ``slower''). We first prove that the distance between $H_3$ and $H_1$ has an upper bound that gets smaller with $\omega_0$ and as the roots get larger.
+
+\begin{lemma}[Rouché's Theorem \pcite{ahlfors1979complex}] Consider two $f,g\in\left[K\subset\mathbb{C}\to\mathbb{C}\right]$ holomorphic in $K$ with a closed contour $\partial K$. If $\left\lvert g(z)\right\rvert < \left\lvert f(z)\right\rvert$ on $\partial K$, then $f$ and $f+g$ have the same number of zeros in $K$, each zero counter as many times as its multiplicity.
+\end{lemma}
+\begin{theorem}[$H_3$ approaches $H_1$ under the QSH]\label{theo:h3approachesh1} %<<<
+	Consider a central point $z_0\in\mathbb{C}$ and a radius $R\in\mathbb{R}^+$ such that the roots of $H_1$ are inside the disc of radius $R$ centered at $z_0$, that is,
+
+\begin{equation} \left\lvert z_k - z_0\right\rvert \leq R\ \forall z_k\in r\left(H_1\right). \end{equation}
+
+	Then 
+
+\begin{equation} \left\lvert H_3(x) - H_1(x)\right\rvert \leq \varepsilon\left\lvert\sum_{k=1}^n x^k\right\rvert + \omega_0 \left\lvert \sum_{k=1}^n P_{(k-1)}H_1^{(k)}(x)\right\rvert \text{, where } \lim\limits_{\left\lvert z_0\right\rvert\to\infty} \varepsilon = 0.  \end{equation}
+
+\end{theorem}
+\textbf{Proof.} By definition, $P_k = 1 + \omega_0 P_{(k-1)}$ for $k \geq 1$; thus,
+
+\begin{equation} H_3(x) = H_1(x) + \sum_{k=1}^n \left(1 + \omega_0 P_{(k-1)}\right) H_1^{(k)}(x) = \sum_{k=1}^n H_1^{(k)}(x) + \omega_0 \sum_{k=1}^n P_{(k-1)}H_1^{(k)}(x) \label{eq:h3_h1_rel}\end{equation}
+
+	Thus by the triangular inequality
+
+\begin{equation} \left\lvert H_3(x) - \sum_{k=0}^n H_1^{(k)}(x)\right\rvert = \omega_0 \left\lvert \sum_{k=1}^n P_{(k-1)}H_1^{(k)}(x)\right\rvert \label{eq:h3_triang_ineq}\end{equation}
+
+	\noindent and now we want to show that the term $\sum_{k=0}^n H_1^{(k)}(x)$ tends to $H_1(x)$ as the roots of $H_1(x)$ get larger in absolute value. For this, let us consider a central point $z_0$ and a radius $R$ such that the roots of $H_1$ are inside the disc of radius $R$ centered at $z_0$, that is,
+
+\begin{equation} \left\lvert z_k - z_0\right\rvert < R,\ k= 1,2,\cdots,n \Rightarrow \left\lvert z_0\right\rvert - R \leq \left\lvert z_k\right\rvert \leq \left\lvert z_0\right\rvert + R \label{eq:roots_radius_ineq}\end{equation}
+
+	\noindent for some radius $R$ and some number $z_0$. We also know, by the Gauss-Lucas Theorem, that all roots of all derivatives of $H_1$ will also be inside this circle; thus the right part of \eqref{eq:h3_triang_ineq} is limited above in this circle. We additionally know that $H_1$ is Hurwitz, so $z_0$ is certainly in the open half left plane and $R$ is less than $\left\lvert z_0\right\rvert$. We can obtain the coefficients of $H_1(x)$ through the roots using Vieta's Formulas \pcite{ahlfors1979complex}: the $k$-th coefficient is obtained as the sum of the roots multiplied in groups of $k$ as in
+
+\begin{equation}
+	\left\{\begin{array}{l}
+		r_1 + r_2 + \cdots + r_n = -\alpha_{(n-1)} \\[3mm]
+		\left(r_1r_2 + r_1r_3 + \cdots + r_1r_n\right) + \left(r_2r_3 + r_2r_4 + \cdots + r_2r_n\right) + \cdots + r_{(n-1)}r_n = a_{(n-2)} \\[3mm]
+		\left(r_1r_2r_3 + r_1r_2r_4 + \cdots + r_1r_{(n-1)}r_n\right) + \cdots + r_{(n-2)}r_{(n-1)}r_n = a_{(n-3)} \\[3mm]
+		\hspace{2cm} \vdots \\[3mm]
+		r_1r_2 \cdots r_n = \left(-1\right)^n a_0
+	\end{array}\right. \label{eq:vietas_formulas}
+\end{equation}
+
+	\noindent and using \eqref{eq:roots_radius_ineq} we immediately notice that 
+
+\begin{equation} \alpha_{(n-k)} = O\left(\left\lvert z_0\right\rvert^k\right) .\end{equation}
+
+	It thus becomes clear that the differentiation operation causes the resulting polynomial to go down in order; if $z_0$ is big enough, the coefficients of $H_1(x)$ dominates over the coefficients of its derivatives. In formal terms, let $\beta_k$ the coefficients of $\sum_{k=0}^n H_1^{(k)}(x)$, that is,
+
+\begin{equation} Q(x) = \sum_{k=0}^n H_1^{(k)}(x) = \sum_{k=0}^n \beta_kx^k .\end{equation}
+
+	Thus the coefficients $\beta_k$ are the sums of the coefficients of $H_1$ and its derivatives. For the $i-th$ derivative of $H_1(x)$, the $k$-th coefficiene of the derivative is a combination of all $\alpha_{(n-k)},\ k\leq n$; summing the coefficients of all derivatives yields because the $\alpha_i$ are of a lower order of $\left\lvert z_0\right\rvert$, then
+
+\begin{align}
+	\beta_k &= \overbrace{\alpha_k}^{\text{k-th coeff. of } H_1} + \overbrace{\alpha_k O \left(\dfrac{1}{\left\lvert z_0\right\rvert}\right)}^{\text{k-th coeff. of 1st deriv.}} + \overbrace{\alpha_k O \left(\dfrac{1}{\left\lvert z_0\right\rvert^2}\right)}^{\text{k-th coeff. of 2nd deriv.}} + \cdots + \overbrace{\alpha_k O \left(\dfrac{1}{\left\lvert z_0\right\rvert^{(k-1)}}\right)}^{\text{k-th coeff. of (k-1)-th deriv.}} = \nonumber\\[3mm]
+%
+	&= \alpha_k + \alpha_k \sum_{i=1}^{k-1} O\left(\dfrac{1}{\left\lvert z_0\right\rvert^i}\right).
+\end{align}
+
+	Therefore
+
+\begin{equation} \lim\limits_{\left\lvert z_0\right\rvert\to\infty} \left(\beta_k - \alpha_k\right) = 0 .\end{equation}
+
+	Alternatively, we can write 
+
+\begin{equation} \sum_{k=1}^n H_1^{(k)}(x) = \sum_{k=0}^n \varepsilon_kx^k \text{ such that } \lim\limits_{\left\lvert z_0\right\vert\to\infty} \varepsilon_k = 0 .\end{equation}
+
+	Denote $\varepsilon\left(z_0\right)$ the largest among the $\varepsilon_k\left(z_0\right)$; then this equation yields
+
+\begin{equation} \left\lvert\sum_{k=1}^n H_1^{(k)}(x)\right\rvert \leq \varepsilon \left\lvert\sum_{k=0}^n x^k\right\rvert .\end{equation}
+
+	Applying this to \eqref{eq:h3_triang_ineq} and applying the inverse triangle inequality yields
+
+\begin{equation} \left\lvert H_3(x) - H_1(x)\right\rvert \leq \varepsilon\left\lvert\sum_{k=1}^n x^k\right\rvert + \omega_0 \left\lvert \sum_{k=1}^n P_{(k-1)}H_1^{(k)}(x)\right\rvert \label{eq:h3_ineq_qsg}\end{equation}
+
+\hfill$\blacksquare$ \vspace{3mm}\hrule\vspace{3mm} %>>>
+\begin{corollary}[The roots of $H_3$ are close to those of $H_1$ under the QSH]\label{corollary:h3_h1_roots_qsh} %<<<
+	If $H_1$ is Hurwitz stable, $H_3$ is also Hurwitz stable for $\left\lvert z_0\right\rvert$ sufficiently large and $\omega_0$ sufficiently small. Moreover, the roots of $H_3$ get closer to those of $H_1$ as $z_0$ gets larger and $\omega_0$ gets smaller.
+\end{corollary}
+\textbf{Proof.} Consider
+
+\begin{equation} M\left(z_0,\omega_0\right) = \varepsilon\left\lvert\sum_{k=1}^n x^k\right\rvert + \omega_0 \left\lvert \sum_{k=1}^n P_{(k-1)}H_1^{(k)}(x)\right\rvert \end{equation}
+
+% H3 PROOF EXAMPLE <<<
+\definecolor{gradient1}{HTML}{80FF00}
+\definecolor{gradient2}{HTML}{66D220}
+\definecolor{gradient3}{HTML}{4DA540}
+\definecolor{gradient4}{HTML}{33775F}
+\definecolor{gradient5}{HTML}{1A4A7F}
+\definecolor{gradient6}{HTML}{001D9F}
+
+\begin{figure}[t]
+\centering
+\scalebox{2}{
+	\begin{tikzpicture}[scale=10,>={Stealth[inset=0mm,length=1mm,angle'=50]},square/.style={regular polygon,regular polygon sides=4},y=1mm, x=1mm]
+		\draw [->, line width = 0.1mm] (   -5mm,  0   ) -- (   1mm,  0   ); \node[label={\tiny $\Re$}] at (1mm,-0.6mm) {};
+		\draw [->, line width = 0.1mm] (      0, -2mm ) -- (   0   ,  3mm) node[label={\tiny $\Im$}] (yaxis) {};
+
+		\node at (0.8mm, 1.9mm ) [draw, black,inner sep = 0mm, minimum width = 10mm, minimum height=32mm] () {};
+		\node at (0.5mm, 3.0mm ) [fill = gradient1, square ,inner sep = 0mm, minimum size = 2.5mm] () {}; \node[scale = 0.8,right,gradient1] at (0.6mm, 3.0mm)   {\tiny $260$};
+		\node at (0.5mm, 2.5mm ) [fill = gradient2, square ,inner sep = 0mm, minimum size = 2.5mm] () {}; \node[scale = 0.8,right,gradient2] at (0.6mm, 2.5mm)   {\tiny $230$};
+		\node at (0.5mm, 2.0mm ) [fill = gradient3, square ,inner sep = 0mm, minimum size = 2.5mm] () {}; \node[scale = 0.8,right,gradient3] at (0.6mm, 2.0mm)   {\tiny $120$};
+		\node at (0.5mm, 1.5mm ) [fill = gradient4, square ,inner sep = 0mm, minimum size = 2.5mm] () {}; \node[scale = 0.8,right,gradient4] at (0.6mm, 1.5mm)   {\tiny $30$};
+		\node at (0.5mm, 1.0mm ) [fill = gradient5, square ,inner sep = 0mm, minimum size = 2.5mm] () {}; \node[scale = 0.8,right,gradient5] at (0.6mm, 1.0mm)   {\tiny $20$};
+		\node at (0.5mm, 0.5mm ) [fill = gradient6, square ,inner sep = 0mm, minimum size = 2.5mm] () {}; \node[scale = 0.8,right,gradient6] at (0.6mm, 0.5mm)   {\tiny $12$};
+		\node[scale = 0.8,right] at (0.65mm, 3.3mm)   {\tiny $M$};
+%
+	\begin{scope}[cm={ 0.2645833304670139199,0.0,0.0,0.2645833304670139199,(0,-0.1363752681684345948)}]
+	
+	\path[draw=gradient1] %<<<
+	(-15.007659,12.601877100000001) -- (-15.007659,12.601877100000001) -- (-15.821629,11.831638100000001) -- (-16.408089,11.327524100000002) -- (-16.912209,10.963684100000002) -- (-17.333619000000002,10.712577100000003) -- (-17.682449000000002,10.534994100000002) -- (-18.837799,10.000573600000003) -- (-19.009439,9.906043600000002) -- (-19.370169,9.668175600000001) -- (-19.608039,9.466136600000002) -- (-19.768879000000002,9.296644600000002) -- (-19.993159000000002,8.982629600000003) -- (-20.108729000000004,8.750686600000003) -- (-20.173729000000005,8.570162600000003) -- (-20.243129000000007,8.230388600000003) -- (-20.253329000000008,7.980448600000003) -- (-20.231929000000008,7.741647600000003) -- (-20.20382900000001,7.595329600000003) -- (-20.12902900000001,7.346050600000003) -- (-20.04792900000001,7.155442600000003) -- (-19.99312900000001,7.048939600000003) -- (-19.74958900000001,6.683506600000003) -- (-19.53533900000001,6.439972600000003) -- (-19.222889000000013,6.150386600000003) -- (-18.837769000000012,5.849768600000003) -- (-17.682409000000014,5.006493600000002) -- (-17.551239000000013,4.899496600000003) -- (-16.735819000000014,4.129258600000003) -- (-16.069379000000012,3.3590206000000027) -- (-15.432189000000012,2.5282896000000026) -- (-14.788839000000012,1.6311667000000027) -- (-13.532499000000012,-0.1934424399999971) -- (-12.817559000000012,-1.262406399999997) -- (-12.290749000000012,-2.0926523999999973) -- (-11.888259000000012,-2.8028823999999974) -- (-11.709309000000012,-3.1804753999999975) -- (-11.557919000000012,-3.610534399999998) -- (-11.520519000000013,-3.782384399999998) -- (-11.499619000000013,-3.981583399999998) -- (-11.535219000000014,-4.328722399999998) -- (-11.545819000000014,-4.368552399999999) -- (-11.696489000000014,-4.728473399999999) -- (-11.923559000000013,-5.113593399999998) -- (-12.146159000000013,-5.498711399999999) -- (-12.336239000000013,-5.9292083999999985) -- (-12.426539000000012,-6.268949399999999) -- (-12.453539000000012,-6.491392399999999) -- (-12.455539000000012,-6.654069399999999) -- (-12.443039000000013,-6.806433499999999) -- (-12.393339000000013,-7.0391873999999985) -- (-12.290669000000014,-7.2875093999999985) -- (-12.205269000000014,-7.424307399999998) -- (-12.032579000000014,-7.616866399999998) -- (-11.847719000000014,-7.751591399999998) -- (-11.712989000000015,-7.818591399999998) -- (-11.520429000000014,-7.878831399999998) -- (-11.228419000000015,-7.902521399999999) -- (-11.062539000000015,-7.882191399999999) -- (-10.750199000000014,-7.7745504) -- (-10.535449000000014,-7.6390404) -- (-10.311439000000014,-7.4242994) -- (-10.171269000000015,-7.2329864) -- (-10.064269000000015,-7.0391794) -- (-9.934098700000016,-6.6999234) -- (-9.873198700000016,-6.4615024000000005) -- (-9.836998700000017,-6.2689414) -- (-9.784498700000016,-5.8780614) -- (-9.719398700000017,-5.4216694) -- (-9.711398700000018,-5.3823094) -- (-9.613698700000018,-5.0762354) -- (-9.476048700000018,-4.8474394) -- (-9.209898700000018,-4.5932004) -- (-8.773168700000017,-4.3433513999999995) -- (-8.439658700000017,-4.2071684) -- (-8.231018700000016,-4.134708399999999) -- (-7.355358900000016,-3.887176499999999) -- (-5.358708900000016,-3.400291499999999) -- (-4.588468900000016,-3.1697594999999987) -- (-3.7667789000000154,-2.8543284999999985) -- (-3.6531589000000153,-2.8028684999999984) -- (-3.047998900000015,-2.4857784999999986) -- (-2.770078900000015,-2.3105514999999985) -- (-2.2777589000000154,-1.9386844999999986) -- (-1.9284589000000154,-1.6116934999999986) -- (-1.5075189000000155,-1.1151843999999986) -- (-1.2579089000000154,-0.7417713999999985) -- (-1.1169589000000155,-0.49215439999999855) -- (-0.9340689500000156,-0.10703543999999854) -- (-0.7372790000000156,0.4325475800000015) -- (-0.6088990000000156,0.9199355800000015) -- (-0.5817990000000156,1.0483205800000015) -- (-0.4959990000000156,1.5773036000000014) -- (-0.4465990000000156,2.1092426000000013) -- (-0.42919900000001565,2.5887965000000013) -- (-0.43919900000001566,3.180912500000001) -- (-0.46759900000001564,3.629098600000001) -- (-0.5196990000000157,4.129272500000002) -- (-0.6575490000000157,4.9795855000000016) -- (-0.8162489500000157,5.669748500000002) -- (-1.0453889000000158,6.439986500000002) -- (-1.332308900000016,7.210224500000002) -- (-1.5078689000000158,7.6161565000000016) -- (-1.6803489000000158,7.980462500000002) -- (-1.8836689000000157,8.374897500000001) -- (-2.278108900000016,9.056027600000002) -- (-2.5819689000000157,9.520938600000003) -- (-3.1578989000000157,10.291176600000002) -- (-3.845968900000016,11.061415100000001) -- (-4.683598900000016,11.831652100000001) -- (-5.506368900000016,12.4545811) -- (-6.129288900000016,12.8602601) -- (-6.450008900000015,13.0514111) -- (-7.031798900000015,13.372129099999999) -- (-7.669768900000015,13.6889791) -- (-8.526328700000015,14.0560411) -- (-8.758468700000014,14.1423711) -- (-9.210248700000013,14.2913791) -- (-9.701688700000014,14.421168100000001) -- (-9.980478700000015,14.477978100000001) -- (-10.373459000000015,14.535348100000002) -- (-10.750719000000014,14.563598100000002) -- (-11.164969000000013,14.562198100000002) -- (-11.856799000000013,14.4782281) -- (-12.291199000000013,14.3694001) -- (-13.006789000000014,14.0877491) -- (-13.233109000000013,13.9707181) -- (-13.960379000000014,13.500863099999998) -- (-14.128759000000015,13.372153099999998) -- (-14.797859000000015,12.797863099999999) -- (-15.008079000000015,12.6019151); %>>>
+	
+	\path[draw=gradient2] %<<<
+	(-14.601489,12.5836441) -- (-14.601489,12.5836441) -- (-15.756849,11.403573100000001) -- (-16.173869,11.0294991) -- (-16.650019,10.6762821) -- (-17.060249,10.4392055) -- (-17.382409,10.2911626) -- (-17.682449,10.1755505) -- (-18.468588999999998,9.9060435) -- (-18.837798999999997,9.755200499999999) -- (-19.259458999999996,9.5209245) -- (-19.654978999999997,9.1827466) -- (-19.696378999999997,9.1358066) -- (-19.947918999999995,8.750687600000001) -- (-19.993218999999996,8.647200600000001) -- (-20.076918999999997,8.365568600000001) -- (-20.107918999999995,8.0951596) -- (-20.099918999999996,7.874118600000001) -- (-20.046318999999997,7.595330600000001) -- (-19.993518999999996,7.436424600000001) -- (-19.888498999999996,7.210211600000002) -- (-19.667268999999997,6.883963600000002) -- (-19.311608999999997,6.528298600000002) -- (-19.201248999999997,6.439978600000002) -- (-18.753828999999996,6.139190600000002) -- (-18.262588999999995,5.860196600000002) -- (-17.682808999999995,5.526491600000002) -- (-17.306098999999996,5.276209600000001) -- (-16.831698999999997,4.899502600000002) -- (-16.476338999999996,4.565491600000001) -- (-16.069528999999996,4.129264600000002) -- (-15.439978999999996,3.3590266000000013) -- (-14.866978999999995,2.5887886000000013) -- (-13.646518999999994,0.8632125800000013) -- (-12.291138999999994,-1.0342793999999986) -- (-11.520898999999995,-2.070968399999999) -- (-10.934118999999995,-2.802876399999999) -- (-10.750658999999995,-3.004436399999999) -- (-10.454318999999995,-3.276774399999999) -- (-10.365518999999994,-3.342054399999999) -- (-9.980408699999995,-3.5308373999999993) -- (-9.804008699999995,-3.573117399999999) -- (-9.595288699999996,-3.5981873999999996) -- (-9.184298699999996,-3.5989553999999995) -- (-8.439928699999996,-3.531515399999999) -- (-6.899448899999996,-3.326723399999999) -- (-6.129218899999996,-3.203469399999999) -- (-5.358978899999996,-3.052299399999999) -- (-5.156148899999996,-3.005679399999999) -- (-4.4202888999999965,-2.802855399999999) -- (-3.8184988999999963,-2.584261399999999) -- (-3.418608899999996,-2.402963399999999) -- (-2.943198899999996,-2.137682399999999) -- (-2.663148899999996,-1.949202399999999) -- (-2.278028899999996,-1.6387793999999989) -- (-2.085258899999996,-1.4551443999999987) -- (-1.892908899999996,-1.247818399999999) -- (-1.603978899999996,-0.8772603999999989) -- (-1.363888899999996,-0.49214239999999887) -- (-1.2145588999999961,-0.19890943999999888) -- (-1.0224288999999962,0.2780955800000011) -- (-0.9532288999999962,0.4938165800000011) -- (-0.8177788999999962,1.0483335800000013) -- (-0.7374788999999962,1.566551700000001) -- (-0.7096788999999961,1.846333700000001) -- (-0.6801788999999961,2.588809600000001) -- (-0.7088788999999961,3.3876496000000014) -- (-0.737478899999996,3.7224656000000014) -- (-0.784978899999996,4.129285600000002) -- (-0.9133988499999961,4.899523600000001) -- (-0.960198849999996,5.122187600000001) -- (-1.094478749999996,5.669761600000001) -- (-1.186378749999996,5.991131600000001) -- (-1.3315587499999961,6.439999600000001) -- (-1.6279387499999962,7.210237600000001) -- (-1.7208387499999962,7.423289600000001) -- (-2.086378749999996,8.172124600000002) -- (-2.413018749999996,8.750712600000002) -- (-2.657528749999996,9.141451600000002) -- (-3.048258749999996,9.704764600000003) -- (-3.511198749999996,10.291188600000002) -- (-4.0238687499999966,10.856061100000002) -- (-4.229698749999996,11.061427100000001) -- (-4.824158749999996,11.596248100000002) -- (-5.358978749999996,12.015127100000003) -- (-5.702268749999996,12.258615100000002) -- (-6.230978749999996,12.601903100000001) -- (-6.899448749999996,12.991842100000001) -- (-7.710718749999996,13.413169100000001) -- (-8.721278549999996,13.8610251) -- (-9.210168549999995,14.0383931) -- (-9.550858549999996,14.142379100000001) -- (-10.109548949999995,14.271527100000002) -- (-10.750638949999995,14.346617100000001) -- (-11.356608949999995,14.336107100000001) -- (-11.787398949999995,14.2756471) -- (-12.296978949999994,14.1423891) -- (-12.839738949999994,13.920773100000002) -- (-13.145308949999993,13.757269100000002) -- (-13.446478949999994,13.567497100000002) -- (-13.831598949999995,13.282834100000002) -- (-14.216708949999994,12.952734100000002) -- (-14.601828949999994,12.583680100000002); %>>>
+	
+	\path[draw=gradient2] %<<<
+	(-10.365179,-5.6189164) -- (-10.365179,-5.6189164) -- (-10.447179,-5.4987144) -- (-10.600519,-5.3489694) -- (-10.750259,-5.267379399999999) -- (-10.928089,-5.229139399999999) -- (-11.019989,-5.228916399999999) -- (-11.135349000000001,-5.2443664) -- (-11.332219000000002,-5.3061164) -- (-11.520469000000002,-5.403536399999999) -- (-11.750529000000002,-5.576206399999999) -- (-11.905589000000003,-5.734373399999999) -- (-12.020729000000003,-5.883798399999999) -- (-12.122269000000003,-6.052238399999999) -- (-12.215869000000003,-6.268916399999999) -- (-12.291769000000004,-6.6550894) -- (-12.286769000000003,-6.850733399999999) -- (-12.251469000000004,-7.039154399999999) -- (-12.234469000000004,-7.095624399999999) -- (-12.151569000000004,-7.2848934) -- (-12.058569000000004,-7.424270399999999) -- (-11.905869000000004,-7.5792034) -- (-11.768939000000005,-7.672463400000001) -- (-11.701239000000005,-7.707083400000001) -- (-11.488069000000005,-7.776723400000001) -- (-11.292419000000004,-7.795533400000001) -- (-11.101859000000005,-7.775633400000001) -- (-10.864229000000005,-7.695643400000001) -- (-10.736849000000005,-7.6236434000000015) -- (-10.630499000000004,-7.544253400000001) -- (-10.507559000000004,-7.424262400000002) -- (-10.365369000000005,-7.229012400000002) -- (-10.271469000000005,-7.039143400000002) -- (-10.221969000000005,-6.895728400000002) -- (-10.171869000000004,-6.654025400000002) -- (-10.157969000000005,-6.446591400000002) -- (-10.172869000000006,-6.205201400000002) -- (-10.200469000000005,-6.0487464000000015) -- (-10.278369000000005,-5.796698400000001) -- (-10.365469000000004,-5.618869400000001); %>>>
+	
+	\path[draw=gradient3] %<<<
+	(-11.520539,13.557181100000001) -- (-11.520539,13.557181100000001) -- (-11.677159,13.528741100000001) -- (-11.905659,13.468851100000002) -- (-12.290779,13.314110100000002) -- (-12.413979000000001,13.248920100000003) -- (-12.801169000000002,12.986997100000004) -- (-13.136979000000002,12.677845100000004) -- (-13.207279000000002,12.601875100000004) -- (-13.515379000000001,12.216755100000004) -- (-13.831229,11.726160100000003) -- (-14.326339,10.786275100000003) -- (-15.371699000000001,8.632543600000004) -- (-15.467699000000001,8.365565600000004) -- (-15.519199000000002,8.127883600000002) -- (-15.529199000000002,7.980446600000002) -- (-15.520199000000002,7.8325856000000025) -- (-15.467399000000002,7.595327600000003) -- (-15.308969000000003,7.210208600000002) -- (-15.243369000000003,7.081301600000002) -- (-14.602039000000003,5.987153600000003) -- (-13.445999000000004,4.129256600000003) -- (-12.712449000000005,3.0099016000000027) -- (-12.291329000000005,2.4040556000000026) -- (-11.521089000000005,1.3848045800000026) -- (-11.013409000000005,0.7857455800000027) -- (-10.532349000000005,0.2780665800000027) -- (-9.980608700000005,-0.2266524399999973) -- (-9.644248700000006,-0.49217039999999723) -- (-9.210378700000005,-0.7877583999999972) -- (-8.440138700000006,-1.1921243999999973) -- (-8.271628700000006,-1.2624043999999972) -- (-7.669898900000006,-1.4691633999999971) -- (-7.222098900000006,-1.584838399999997) -- (-6.899658900000006,-1.6510983999999973) -- (-6.129418900000005,-1.7583443999999973) -- (-5.600758900000005,-1.7910643999999971) -- (-5.1149189000000055,-1.7883643999999972) -- (-4.850048900000005,-1.771534399999997) -- (-4.588948900000005,-1.7426943999999969) -- (-4.238198900000006,-1.681894399999997) -- (-3.8187089000000056,-1.569359399999997) -- (-3.593678900000006,-1.4874293999999972) -- (-3.048468900000006,-1.2074113999999971) -- (-2.644538900000006,-0.896096399999997) -- (-2.521518900000006,-0.7758213999999971) -- (-2.278228900000006,-0.4872423999999972) -- (-1.991768900000006,-0.008393439999997199) -- (-1.871518900000006,0.2780725800000028) -- (-1.755488900000006,0.6631925800000028) -- (-1.681188900000006,1.048310580000003) -- (-1.639588900000006,1.433430580000003) -- (-1.6221889000000058,1.9326767000000027) -- (-1.6356889000000059,2.4611966000000027) -- (-1.6518889000000059,2.732572600000003) -- (-1.708188900000006,3.359024600000003) -- (-1.812318900000006,4.129262600000003) -- (-1.878018900000006,4.499181600000003) -- (-2.024288900000006,5.153541600000003) -- (-2.170238900000006,5.669738600000003) -- (-2.396528900000006,6.321782600000003) -- (-2.558268900000006,6.719909600000003) -- (-2.869888900000006,7.388893600000003) -- (-3.186488900000006,7.980452600000003) -- (-3.421458900000006,8.377797600000003) -- (-3.818808900000006,8.983385600000004) -- (-4.2210089000000055,9.520927600000004) -- (-4.752408900000005,10.127806600000003) -- (-4.9135989000000055,10.291165600000003) -- (-5.557628900000005,10.863058100000003) -- (-6.129518900000005,11.283870100000003) -- (-6.460988900000006,11.500173100000003) -- (-7.016538900000006,11.831642100000003) -- (-8.469088700000006,12.630736100000004) -- (-9.441498700000006,13.141093100000004) -- (-9.989318700000005,13.372118100000005) -- (-10.586919000000005,13.536147100000004) -- (-10.960539000000006,13.581707100000004) -- (-11.313329000000007,13.580007100000005) -- (-11.521189000000007,13.557217100000004); %>>>
+	
+	\path[draw=gradient3] %<<<
+	(-19.222919,8.8528076) -- (-19.222919,8.8528076) -- (-19.349509,8.7506866) -- (-19.469579,8.6122316) -- (-19.505278999999998,8.5581316) -- (-19.608078999999996,8.3174625) -- (-19.633778999999997,8.1730115) -- (-19.628778999999998,7.960161499999998) -- (-19.586378999999997,7.787893499999998) -- (-19.492879,7.595333499999998) -- (-19.333999,7.402773499999998) -- (-19.162919,7.270690499999998) -- (-19.023958999999998,7.196450499999998) -- (-18.838278999999996,7.130070499999999) -- (-18.577078999999998,7.086300499999998) -- (-18.332358999999997,7.089400499999998) -- (-18.068049,7.136920499999998) -- (-17.736898999999998,7.264175499999998) -- (-17.682899,7.2931554999999975) -- (-17.490339,7.421348499999998) -- (-17.297779,7.610940499999998) -- (-17.168398999999997,7.8510684999999985) -- (-17.145898999999996,7.9804404999999985) -- (-17.158998999999998,8.129871499999998) -- (-17.213199,8.2810075) -- (-17.297798999999998,8.4193725) -- (-17.490358999999998,8.627715499999999) -- (-17.743928999999998,8.811695499999999) -- (-18.068039,8.9619205) -- (-18.202199,9.0016305) -- (-18.453149,9.0426305) -- (-18.806219,9.023600499999999) -- (-18.906288999999997,8.999770499999999) -- (-19.008668999999998,8.965410499999999) -- (-19.223388999999997,8.852805499999999); %>>>
+	
+	\path[draw=gradient3] %<<<
+	(-11.135419,-6.4079344) -- (-11.135419,-6.4079344) -- (-11.308969000000001,-6.3772044) -- (-11.403369000000001,-6.3861044) -- (-11.559439000000001,-6.4420644) -- (-11.660919000000002,-6.513674399999999) -- (-11.774629000000001,-6.6541033999999994) -- (-11.815929,-6.7437933999999995) -- (-11.844929,-6.8677464) -- (-11.837929,-7.039225399999999) -- (-11.809329,-7.135305399999999) -- (-11.712829,-7.290467399999999) -- (-11.518958999999999,-7.425660399999999) -- (-11.327708999999999,-7.461560399999999) -- (-11.133378999999998,-7.422580399999999) -- (-10.916548999999998,-7.2591214) -- (-10.839248999999999,-7.1284534) -- (-10.800748999999998,-6.988492399999999) -- (-10.797748999999998,-6.852885399999999) -- (-10.824848999999999,-6.729372399999999) -- (-10.857148999999998,-6.654112399999999) -- (-10.979728999999997,-6.499166399999999) -- (-11.029328999999997,-6.461556399999999) -- (-11.134708999999997,-6.407976399999999); %>>>
+	
+	\path[draw=gradient4] %<<<
+	(-10.352499,11.048721100000002) -- (-10.352499,11.048721100000002) -- (-10.350499,11.061401100000001) -- (-10.346499,11.465254100000001) -- (-10.365199,11.593501100000001) -- (-10.430099,11.831638100000001) -- (-10.533319,12.048608100000001) -- (-10.594919,12.1407381) -- (-10.750309000000001,12.3084851) -- (-10.942869000000002,12.4364081) -- (-10.992569000000001,12.4589781) -- (-11.219559000000002,12.5177981) -- (-11.303459000000002,12.5224981) -- (-11.520579000000001,12.4920981) -- (-11.721819000000002,12.4006481) -- (-11.921249000000001,12.2167721) -- (-11.958549000000001,12.1639121) -- (-12.049549,11.9755501) -- (-12.088349000000001,11.8120231) -- (-12.097349000000001,11.637792099999999) -- (-12.063849000000001,11.417478099999999) -- (-12.033049000000002,11.319558099999998) -- (-11.900239000000003,11.061412099999998) -- (-11.727089000000003,10.855279099999999) -- (-11.501249000000003,10.676294099999998) -- (-11.260589000000003,10.551541099999998) -- (-11.135839000000002,10.508001099999998) -- (-10.927189000000002,10.467631099999998) -- (-10.711659000000003,10.483731099999998) -- (-10.558159000000003,10.565961099999997) -- (-10.433899000000004,10.744586099999998) -- (-10.365599000000003,10.971917099999997) -- (-10.352899000000003,11.048727099999997); %>>>
+	
+	\path[draw=gradient4] %<<<
+	(-9.7814587,9.9060436) -- (-9.7814587,9.9060436) -- (-9.9800687,9.8209736) -- (-10.134109,9.6749676) -- (-10.221309,9.5209246) -- (-10.345489,9.116088600000001) -- (-10.365189,9.016428600000001) -- (-10.404689000000001,8.7506906) -- (-10.430589000000001,8.4308726) -- (-10.430339000000002,7.9804526) -- (-10.393239000000001,7.5673996) -- (-10.333039000000001,7.2102146) -- (-10.186199000000002,6.6459386) -- (-10.081409000000003,6.3388056) -- (-9.980238700000003,6.0783346) -- (-9.802028700000003,5.6697386) -- (-9.418918700000003,4.8995006) -- (-8.990808700000002,4.1292626) -- (-8.614128700000002,3.5333916) -- (-8.439768700000002,3.2885915999999997) -- (-8.054648700000001,2.8167745999999996) -- (-7.669528900000001,2.4277635999999996) -- (-6.890208900000001,1.8185486999999996) -- (-5.9733889000000016,1.2039695799999997) -- (-5.743928900000002,1.0164955799999995) -- (-5.391428900000002,0.6631925799999996) -- (-4.973698900000002,0.22318455999999964) -- (-4.794818900000002,0.07182955999999963) -- (-4.507058900000002,-0.10704544000000038) -- (-4.206838900000002,-0.21172944000000038) -- (-4.078558900000002,-0.23193944000000033) -- (-3.9431589000000016,-0.2372394400000003) -- (-3.718338900000002,-0.2070894400000003) -- (-3.6257389000000018,-0.17894944000000035) -- (-3.433178900000002,-0.08395944000000033) -- (-3.273228900000002,0.04657855999999966) -- (-3.2192289000000023,0.10683855999999964) -- (-3.088388900000002,0.3183955799999997) -- (-3.034488900000002,0.47059657999999965) -- (-2.999488900000002,0.7117145799999997) -- (-2.999118900000002,0.7772145799999997) -- (-3.048018900000002,1.1007175799999995) -- (-3.174258900000002,1.4333905799999997) -- (-3.5710389000000022,2.2036286999999994) -- (-3.641038900000002,2.4115815999999994) -- (-3.698838900000002,2.7081225999999994) -- (-3.7269389000000017,3.3589855999999996) -- (-3.7279389000000016,3.5653105999999997) -- (-3.7584389000000016,4.1888606) -- (-3.8180389000000017,4.5885006) -- (-3.9251489000000017,5.0065706) -- (-4.076728900000002,5.4110126) -- (-4.200768900000002,5.6744756) -- (-4.334448900000002,5.9235236) -- (-5.103558900000001,7.2101746) -- (-5.658328900000001,8.2802296) -- (-6.030838900000001,8.848561600000002) -- (-6.285518900000001,9.135770600000003) -- (-6.513868900000001,9.339784600000003) -- (-6.898988900000001,9.597835600000003) -- (-7.057038900000001,9.678935600000003) -- (-7.380918900000001,9.809200600000002) -- (-7.689398900000001,9.895920600000002) -- (-8.006058900000001,9.954300600000002) -- (-8.4394687,9.994620600000001) -- (-8.918158700000001,9.999620600000002) -- (-9.2097087,9.986600600000003) -- (-9.6291087,9.940330600000003) -- (-9.7813387,9.906040600000003); %>>>
+	
+	\path[draw=gradient4] %<<<
+	(-18.709609,8.2594855) -- (-18.709609,8.2594855) -- (-18.731909,8.282865500000002) -- (-18.837839000000002,8.338645500000002) -- (-18.895639000000003,8.344745500000002) -- (-18.988639000000003,8.3238055) -- (-19.064139000000004,8.2692855) -- (-19.117439000000005,8.1730055) -- (-19.122439000000004,8.0720515) -- (-19.084839000000002,7.9804415) -- (-19.030839000000004,7.9247915) -- (-18.935539000000002,7.8832015) -- (-18.838239,7.8849015) -- (-18.741939000000002,7.9319714999999995) -- (-18.678539,8.0132415) -- (-18.656739,8.1035215) -- (-18.675439,8.2027115) -- (-18.710039000000002,8.259451499999999); %>>>
+	
+	\path[draw=gradient4] %<<<
+	(-11.258119,-6.9083944) -- (-11.258119,-6.9083944) -- (-11.285919,-6.8887044) -- (-11.363819,-6.8748344) -- (-11.424218999999999,-6.8995844) -- (-11.461219,-6.9429144) -- (-11.475919,-6.994684400000001) -- (-11.470918999999999,-7.0391944) -- (-11.445419,-7.0873344000000005) -- (-11.406818999999999,-7.1185644) -- (-11.323519,-7.131574400000001) -- (-11.263119,-7.103514400000001) -- (-11.223619,-7.046694400000001) -- (-11.216619,-6.9910544) -- (-11.231019,-6.9428044) -- (-11.257319,-6.9084044); %>>>
+	
+	\path[draw=gradient5] %<<<
+	(-8.8247087,9.1734246) -- (-8.8247087,9.1734246) -- (-8.8803087,9.1358046) -- (-9.0977187,8.9432446) -- (-9.2434687,8.7506856) -- (-9.2899687,8.6705956) -- (-9.4131387,8.3655626) -- (-9.448438699999999,8.2190125) -- (-9.479838699999998,7.9804435) -- (-9.478838699999999,7.6577926) -- (-9.4556387,7.4558535) -- (-9.3640387,7.0561506) -- (-9.2099787,6.6372116) -- (-9.1201787,6.4399675) -- (-8.3339987,4.8994915) -- (-7.9767789,4.1292536) -- (-7.8702989,3.9284665999999997) -- (-7.6695189,3.5993525999999996) -- (-7.4941289,3.3590155999999998) -- (-7.2126889,3.0456085999999996) -- (-6.8992789,2.7756035999999997) -- (-6.6219988999999995,2.5887776) -- (-6.298918899999999,2.4188946) -- (-6.129038899999999,2.3467046) -- (-5.6793588999999995,2.2036557) -- (-5.2354088999999995,2.1320657) -- (-4.9736788999999995,2.1568857) -- (-4.874278899999999,2.2036557) -- (-4.732078899999999,2.3471996) -- (-4.699378899999999,2.3962196000000002) -- (-4.588508899999999,2.6039576) -- (-4.378918899999999,3.1494256000000003) -- (-4.319718899999999,3.3590166000000004) -- (-4.240818899999999,3.7816536000000003) -- (-4.222018899999999,4.1292546) -- (-4.2676188999999995,4.578747600000001) -- (-4.353418899999999,4.8994926) -- (-4.418318899999999,5.069514600000001) -- (-4.588338899999999,5.405709600000001) -- (-4.7603689,5.6697306) -- (-5.3810189,6.4624056) -- (-5.6566689,6.9121236) -- (-5.785128899999999,7.2102066) -- (-6.128818899999999,8.1755036) -- (-6.220218899999999,8.3655636) -- (-6.328278899999999,8.551224600000001) -- (-6.513938899999999,8.799356600000001) -- (-6.680868899999999,8.968873600000002) -- (-6.899058899999999,9.136878600000003) -- (-7.147058899999999,9.272914600000004) -- (-7.2841789,9.327914600000003) -- (-7.669298899999999,9.418574600000003) -- (-7.7624989,9.427674600000003) -- (-8.0530487,9.426174600000003) -- (-8.3059187,9.387264600000004) -- (-8.508358699999999,9.328334600000003) -- (-8.7322587,9.228172600000004) -- (-8.824658699999999,9.173392600000005); %>>>
+	
+	\path[draw=gradient5] %<<<
+	(-11.135419,12.307708100000001) -- (-11.135419,12.307708100000001) -- (-11.325899000000001,12.3426881) -- (-11.399899000000001,12.3373881) -- (-11.580039000000001,12.2763481) -- (-11.713049000000002,12.1701061) -- (-11.806949000000001,12.0242331) -- (-11.852649000000001,11.8316741) -- (-11.847649,11.7161991) -- (-11.799749,11.552322100000001) -- (-11.712949,11.413809100000002) -- (-11.633049,11.333859100000002) -- (-11.508728999999999,11.253989100000002) -- (-11.373168999999999,11.208619100000002) -- (-11.271989,11.198189100000002) -- (-11.135239,11.215649100000002) -- (-10.978519,11.289829100000002) -- (-10.942719,11.318049100000001) -- (-10.807029,11.503414100000002) -- (-10.759629,11.691640100000003) -- (-10.766629,11.848063100000003) -- (-10.824729,12.024226100000003) -- (-10.868929,12.098106100000004) -- (-10.978569,12.216782100000005) -- (-11.135369,12.307732100000004); %>>>
+	
+	\path[draw=gradient5] %<<<
+	(-4.3958389,1.6304756) -- (-4.3958389,1.6304756) -- (-4.4921389000000005,1.6042855999999999) -- (-4.588438900000001,1.5359256000000001) -- (-4.5954389,1.5279256) -- (-4.6568389,1.4334656) -- (-4.7044389,1.2990506000000002) -- (-4.7257389000000005,1.1859296000000001) -- (-4.7357389,1.0483456) -- (-4.725338900000001,0.8674296) -- (-4.6812389,0.6632276) -- (-4.6575389000000005,0.5940676) -- (-4.5883389,0.4454676) -- (-4.4706989,0.2781076) -- (-4.332058900000001,0.14926857999999998) -- (-4.2032189,0.07030857999999995) -- (-4.0752389,0.02096857999999996) -- (-3.9195389000000005,-0.005561420000000039) -- (-3.8180989000000003,-0.003961419999999993) -- (-3.6884289000000003,0.020748580000000016) -- (-3.5318789,0.09081857999999998) -- (-3.4329789,0.16638858) -- (-3.3378789,0.2781416) -- (-3.2403789,0.5129366) -- (-3.2263789000000003,0.6632616) -- (-3.2542789,0.8558205999999999) -- (-3.2602789,0.8754306000000001) -- (-3.3347789,1.0483796) -- (-3.4331788999999997,1.1906615999999999) -- (-3.5976788999999996,1.3512476) -- (-3.8182988999999994,1.49337455) -- (-4.049258899999999,1.5876545499999999) -- (-4.215248899999999,1.62605455) -- (-4.3959788999999985,1.6305545499999998); %>>>
+	
+	\path[draw=gradient6] %<<<
+	(-8.4395887,8.6243756) -- (-8.4395887,8.6243756) -- (-8.6019087,8.3655676) -- (-8.6582087,8.1990826) -- (-8.6901087,7.9804486) -- (-8.6778087,7.7422066) -- (-8.6472087,7.5953296) -- (-8.5320787,7.302694600000001) -- (-8.4395787,7.1487126000000005) -- (-8.2470187,6.914281600000001) -- (-8.0544587,6.742661600000001) -- (-7.8060589,6.576688600000001) -- (-7.5162489,6.439972600000001) -- (-7.3384589,6.385732600000001) -- (-7.2114889,6.3672326) -- (-7.0916589,6.378412600000001) -- (-6.9778989,6.439962600000001) -- (-6.899098899999999,6.529972600000002) -- (-6.7501188999999995,6.8250806000000015) -- (-6.6556188999999994,7.108323600000001) -- (-6.592518899999999,7.402757600000001) -- (-6.569818899999999,7.661667600000001) -- (-6.592518899999999,7.980436600000001) -- (-6.656618899999999,8.222873600000002) -- (-6.718718899999999,8.3655556) -- (-6.961468899999999,8.6882356) -- (-7.035268899999999,8.750675600000001) -- (-7.284168899999999,8.894038600000002) -- (-7.469888899999999,8.950078600000001) -- (-7.669288899999999,8.970678600000001) -- (-7.870648899999999,8.952028600000002) -- (-8.0544087,8.898168600000002) -- (-8.3082687,8.750669600000002) -- (-8.439528699999999,8.624358600000003); %>>>
+	
+	\path[draw=gradient6] %<<<
+	(-6.5139889,5.9131405) -- (-6.5139889,5.9131405) -- (-6.6516489000000005,5.9172405) -- (-6.743848900000001,5.8995905) -- (-6.817748900000001,5.8623305000000006) -- (-6.8990489,5.780850500000001) -- (-6.9646489,5.6697765) -- (-7.0119489,5.5568865) -- (-7.0881489,5.2846574) -- (-7.116548900000001,5.1170084000000005) -- (-7.1349489,4.8995385) -- (-7.1232489,4.5788454000000005) -- (-7.0721489,4.302385500000001) -- (-7.0177489,4.129300500000001) -- (-6.8990289,3.873735500000001) -- (-6.6817189,3.576372500000001) -- (-6.6096189,3.503742500000001) -- (-6.4297289,3.3590595000000008) -- (-6.1287489,3.2044765000000006) -- (-5.9184889,3.1487965000000004) -- (-5.7533589,3.1331065000000002) -- (-5.5720789,3.1454865) -- (-5.3585089,3.2052865) -- (-5.2549089,3.2554565) -- (-5.1055289,3.3590565000000003) -- (-4.973388900000001,3.4925156000000004) -- (-4.815558900000001,3.7441756) -- (-4.733158900000001,3.9844256000000002) -- (-4.708058900000001,4.1292936000000005) -- (-4.700058900000001,4.288849600000001) -- (-4.721858900000001,4.514413500000001) -- (-4.781158900000001,4.7313275) -- (-4.855658900000001,4.8995315999999995) -- (-5.033778900000001,5.1644906) -- (-5.1452489,5.2846516) -- (-5.3588189,5.4629196) -- (-5.4832389,5.545349600000001) -- (-5.7439389,5.6834696000000005) -- (-6.1290588999999995,5.827992600000001) -- (-6.3434389,5.8841426000000006) -- (-6.5141789,5.9131726); %>>>
+	
+	\path[draw=gradient6] %<<<
+	(-4.1892489,0.8557475800000001) -- (-4.1892489,0.8557475800000001) -- (-4.2032489,0.83207758) -- (-4.2516489,0.6631855799999999) -- (-4.2496489,0.58643558) -- (-4.2031489,0.43315558) -- (-4.1400489,0.34113558) -- (-4.0705489,0.27805557999999997) -- (-3.9456389000000005,0.21542558) -- (-3.8180489000000004,0.19718558000000003) -- (-3.7410489000000005,0.20588558) -- (-3.5842189000000007,0.27801558000000004) -- (-3.4948189000000007,0.37429558) -- (-3.4453189000000006,0.48286158) -- (-3.4299189000000005,0.59774058) -- (-3.4359189000000003,0.66634058) -- (-3.4851189000000002,0.80325058) -- (-3.5701189,0.9107785800000001) -- (-3.6851689000000003,0.9882885800000001) -- (-3.7919289000000003,1.02241858) -- (-3.9141089000000004,1.02641858) -- (-4.1037789,0.9491585800000001) -- (-4.1888789,0.8556985800000001); %>>>
+	
+	\path[draw=gradient6] %<<<
+	(-11.327979,12.180515100000001) -- (-11.327979,12.180515100000001) -- (-11.370278999999998,12.1791151) -- (-11.460178999999998,12.1563751) -- (-11.530878999999999,12.1153951) -- (-11.611379,12.024255100000001) -- (-11.642279,11.9533751) -- (-11.654879000000001,11.8316941) -- (-11.609879000000001,11.6907971) -- (-11.520679000000001,11.5919271) -- (-11.423779000000001,11.5428471) -- (-11.328079,11.5283071) -- (-11.230779,11.5438371) -- (-11.135479,11.5945871) -- (-11.051879,11.6936071) -- (-11.034678999999999,11.730877099999999) -- (-11.013079,11.8316851) -- (-11.030279,11.9568101) -- (-11.061879,12.0242401) -- (-11.151479,12.1205201) -- (-11.231679,12.1623401) -- (-11.327979,12.1805601); %>>>
+
+	\end{scope}
+
+	\end{tikzpicture}
+}
+\caption
+[Level curves of $\left\lvert P(z)\right\rvert$.]
+{Level curves of $\left\lvert P(z)\right\rvert = M$ for specific level values showing the neighborhoods $U\left(z_k\right)$ forming as $M$ diminishes.}
+\label{fig:pz_level_curves}
+\end{figure} %>>>
+
+	\noindent and let
+
+\begin{equation} K\left(M\right) = \left\{z\in\mathbb{C}: \left\lvert H_1(z)\right\rvert \leq  M\right\} .\end{equation}
+
+	\noindent or, in other words, $K\left(M\right)$ is the sublevel set of $f(x,y) = \left\lvert H_1\left(x + jy\right)\right\rvert \leq M$. Because any polynomial in complex space is holomorphic, its counter-image is closed — thus $K(M)$ is always closed, and clearly contains all roots of $H_1$. It is intuitive to see that $K(M)$ becomes smaller as $M$ also gets smaller, so that if the roots of $H_1$ are all in the open left half plane, there exists a small enough $M_0$ (equivalently, a large enough $\left\lvert z_0\right\rvert$ and a small enough $\omega_0$) such that $K\left(M_0\right)$ will be enclosed in that half plane. Formally, it is known that the volume of sublevel sets of continuous functions on riemannian manifolds reduce their volumes continually as the level is reduced, and tends to zero as the level tends to zero. For instance, \cite{jubinIntrinsicVolumesSublevel2024} shows a closed formula for such volume if the function in question is thrice-differentiable. On the other hand, using the inverse triangle inequality on \eqref{eq:h3_ineq_qsg} one concludes that $0 \leq \left\lvert H_3\right\rvert \leq 2M$ in $K(M)$. Therefore $K\left(M_0\right)$ also contains all roots of $H_3$, and since it is wholly enclosed in the open left half plane, this means $H_3$ is Hurwitz stable.
+
+	To illustrate this, figure \ref{fig:pz_level_curves} shows several level curves for the polynomial $P(z)$ of \eqref{eq:poly_gausslucas_example}. The plots clearly show that, as $M$ gets smaller, the regions defined by $\left\lvert P(z)\right\rvert = M$ become disjoint and progressively smaller, yet still closed. The figure shows that $K(260)$ is entirely in the open left half plane; therefore so will be $K(M\leq 260)$. Thus for any combination of $z_0$ and $\omega_0$ such that $M\left(z_0,\omega_0\right) \leq 260$, all roots of $H_3$ also lie in $K(M)$, and $H_3$ will be Hurwitz.
+
+	Furthermore, pick a $z_k\in r\left(H_1\right)$. Because the roots of a polynomial are isolated, for small enough $M$, say $M_k$, $K\left(M_k\right)$ will be comprised of disconnected regions where one such region is a neighborhood of $z_k$ where no other root of $H_1$ lies. Let $U\left(z_k\right)$ be such one neighborhood around a root $z_k$, which is closed and simply connected. Because it is simply connected we can use Rouché's Theorem to conclude that $H_3 - H_1$ and $H_1$ have the same number of roots inside $U\left(z_k\right)$, thus $H_3$ has the same number of roots that $H_1$ in that region. Since $U\left(z_k\right)$ contains only one root $z_k$ of $H_1$, then there is a root of $H_3$ inside $U\left(z_k\right)$, and this root will have the same multiplicity than $z_k$.
+
+	Further, because $M$ gets smaller as $\left\lvert z_0\right\rvert$ gets larger and $\omega_0$ gets smaller, the neighborhoods $U\left(z_k\right)$ get smaller as well, thus approximating the roots of $H_3$ to those of $H_1$. Figure \ref{fig:pz_level_curves} shows that as $M$ gets smaller, $K(M)$ becomes disconnected regions; for $M=260$, $K(M)$ is just one big region whereas for $M=230$, it becomes two regions, one of which contains only $z_2$. Thus one root of $H_3$ will also be in this neighborhood containing $z_2$. For each subsequent value of $M$ the regions become smaller and separate into neighborhoods of the roots, so that at $M=12$ $K(12)$ becomes six neighborhoods each one containing a root of $H_1$.\hfill$\blacksquare$ \vspace{3mm}\hrule\vspace{3mm} %>>>
+
+	In short, corollary \ref{corollary:h3_h1_roots_qsh} defines that the three-phase polynomial $H_3$ will also be Hurwitz stable given that the roots of $H_1$ are ``sufficiently stable'' (have large enough negative real parts) and the frequency $\omega_0$ is sufficiently ``slow''. For instance, \eqref{eq:poly_gausslucas_example_h3} shows the roots of $H_3$ calculated for the example polynomial $P(z)$ of \eqref{eq:poly_gausslucas_example} when $\omega_0 = 200$ rad.s$^{-1}$. Figure \ref{fig:h3_p_roots} depicts the roots of $H_1$ and $H_3$ in the complex plane, showing they are indeed very close.
+
+\begin{equation} H_3(z) = \prod_{k=1}^6 \left(z - z_k\right)\left\{\begin{array}{l} z_1 = -5158.4777 + j2003.9222 \\ z_2 = -3180.2023 - j2040.3105 \\ z_3 = -3168.9499 + j3048.5748 \\ z_4 = -2207.5821 + j2054.2120 \\ z_5 = -1741.7266 + j1006.0870 \\ z_6 = -1249.0614 - j72.485443 \end{array}\right.  \label{eq:poly_gausslucas_example_h3} \end{equation}
+
+% H3 VS P ROOTS <<<
+\begin{figure}[htb!]
+\centering
+\scalebox{2}{
+	\begin{tikzpicture}[scale=10,>={Stealth[inset=0mm,length=1mm,angle'=50]},square/.style={regular polygon,regular polygon sides=4},y=1mm, x=1mm]
+		\draw [->, line width = 0.1mm] (   -5mm,  0   ) -- (   1mm,  0   ); \node[label={\tiny $\Re$}] at (1mm,-0.6mm) {};
+		\draw [->, line width = 0.1mm] (      0, -2mm ) -- (   0   ,  3mm) node[label={\tiny $\Im$}] (yaxis) {};
+%
+		\foreach \x/\y in {-5/2,-1.5/1,-1/0,-3/3,-3/-2,-2/2} {\node [circle, fill=gausslucas1, inner sep=0mm, minimum size=1mm] (p) at (\x mm,\y mm) {};}
+%
+		\node at (0.5mm, 2mm   ) [fill=black, regular polygon, regular polygon sides = 3, minimum size=1.2mm, inner sep=0mm] {}; \node[scale = 0.8, black, right] at (0.6mm, 2mm) {\tiny $r\left(H_3\right)$};
+		\node at (0.5mm, 1.5mm ) [fill = gausslucas1, square ,inner sep = 0mm, minimum size = 2.5mm] (v100) {}; \node[scale = 0.8,right,gausslucas1] at (0.6mm, 1.5mm)   {\tiny $r\left(P\right)$};
+	\foreach \x/\y in {-5.15847773924/2.00392222893, -3.18020230321/-2.04031048349, -3.16894990284/3.04857477312, -2.20758205951/2.05421197833, -1.74172662011/1.00608694574, -1.2490613751/-0.07248544263} { \node[fill=black, regular polygon, regular polygon sides = 3, minimum size=1.2mm, inner sep=0mm] (p) at (\x mm,\y mm) {};}
+	
+	\end{tikzpicture}
+}
+\caption
+[Roots of $P(z)$ of \eqref{eq:poly_gausslucas_example} and of the three-phase polynomial $H_3$.]
+{Roots of $P(z)$ of \eqref{eq:poly_gausslucas_example} and of the characteristic polynomial of the three-phase polynomial $H_3$ calculated using $\omega_0 = 200$ rad.s$^{-1}$.}
+\label{fig:h3_p_roots}
+\end{figure} %>>>
+
+	Therefore, even if the apparent frequency $\omega(t)$ is time varying but equivalent to a forcing which zero-sequence component $f_0$ is null, then the zero-sequence response $z_0$ will inevitably vanish; thus the circuit three-phase response $\mathbf{x}$ will assymptotically tend to a three-phase quantity.
+
+%-------------------------------------------------
+\section{Frequency control modelling and timescales: the Quasi-static Hypothesis}\label{sec:freq_modelling_timescales} %<<<1
+
+	From all these developments, we can conclude several things:
+
+\begin{enumerate}
+	\item If a forcing $\mathbf{f}(t)$ of sinusoids is such that each component is defined at some particular apparent frequency, but these frequencies are mutually integrable, then $\mathbf{f}(t)$ can be written in a common frequency $\omega_0(t)$;
+	\item As such, if this signal $\mathbf{f}$ excites a linear system, then it will respond with a vector of sinusoids at the frequency $\omega_0$;
+	\item Because of this, a linear matrix system admits a phasor-vector representation \eqref{eq:theo_nonautodiffeq_def}, where the Dynamic Phasor Transform was taken at $\omega_0$;
+	\item This linear system yields to different yet equivalent models when modelled using two different frequency signals, and the solutions of the models can be reconstructed from one another;
+	\item The differential equations from these two systems are diffeomorphic — ``equivalent'' in some way, and they reconstruct the same signals in time.
+\end{enumerate}
+
+	Consider equation \eqref{eq:nonautodiffeq} of a linear circuit modelling a transmission system with a vector of nonstationary sinusoidal forcings $f$ representing machine, inverter and agents voltages and currents upon the transmission grid. Each agent works at a particular local frequency $\omega_k$, like machine rotor frequency and inverter PLL frequencies, and applies a forcing $f_k$ to the grid, like machine internal voltages and stator currents and inverter bridge voltages and bus currents. In general, these quantities depend on the voltages and currents of the transmission system: for instance, induced voltages of machines depend on bus current, and the frequency of the rotor depends on electrical power given as a composition of induced voltage and currents. It is also common that the frequency $\omega_k$ depends on the forcings themselves; for instance, the machine rotor frequency depends on the internal voltage induced on the stator, which is a forcing of the transmission grid circuit, Thus we suppose that the forcings and frequencies have differential models that depend on each other and the transmission states, that is, there exist two functions $g_\omega^k$ and $g_f^k$ such that
+
+
+\begin{gather}
+	\boldsymbol{\Omega}_k = \left[\begin{array}{c} \omega_k \\[3mm] \dot{\omega}_k\\[3mm] \vdots \\[3mm] \omega_k^{(p)} \end{array}\right] \Rightarrow \dot{\boldsymbol{\Omega}} = g_\omega^k \left(t,\mathbf{x},\boldsymbol{\Omega}_k,\theta_k\right) \label{eq:diff_model_omega}\\
+	\boldsymbol{\theta}_k = \left[\begin{array}{c} f_k \\[3mm] \dot{f}_k \\[3mm] \vdots \\[3mm] f^{(q)}_k \end{array}\right] \Rightarrow \dot{\boldsymbol{\theta}}_k = g_f^k\left(t,\mathbf{x},\boldsymbol{\Omega}_k,\boldsymbol{\theta}_k\right) \label{eq:diff_model_theta}
+\end{gather}
+
+	We suppose that the system has $m$ agents with differential models such as \eqref{eq:diff_model_omega} and \eqref{eq:diff_model_theta} and the transmission grid has a $n$-th order differential model, that is, $x$ has size $n$. Then
+
+\begin{gather}
+	\boldsymbol{\Omega} = \left[\begin{array}{c} \boldsymbol{\Omega}_1 \\[3mm] \boldsymbol{\Omega}_2 \\[3mm] \vdots \\[3mm] \boldsymbol{\Omega}_{m} \end{array}\right] \Rightarrow \dot{\boldsymbol{\Omega}} = \left[\begin{array}{c} g_\omega^1\left(t,\mathbf{x},\boldsymbol{\theta}_1,\boldsymbol{\Omega}_1\right) \\[3mm] g_\omega^2\left(t,\mathbf{x},\boldsymbol{\theta}_2,\boldsymbol{\Omega}_2\right) \\[3mm] \vdots \\[3mm] g_\omega^m\left(t,\mathbf{x},\boldsymbol{\theta}_m,\boldsymbol{\Omega}_m\right) \end{array}\right] = g_\omega\left(t,\mathbf{x},\boldsymbol{\theta},\boldsymbol{\Omega}\right) \\[5mm]
+%
+	\boldsymbol{\theta} = \left[\begin{array}{c} \boldsymbol{\theta}_1 \\[3mm] \boldsymbol{\theta}_2 \\[3mm] \vdots \\[3mm] \boldsymbol{\theta}_{m} \end{array}\right] \Rightarrow \dot{\boldsymbol{\theta}} = \left[\begin{array}{c} g_{\boldsymbol{\theta}}^1\left(t,\mathbf{x},\boldsymbol{\theta}_1,\boldsymbol{\Omega}_1\right) \\[3mm] g_{\boldsymbol{\theta}}^2\left(t,\mathbf{x},\boldsymbol{\theta}_2,\boldsymbol{\Omega}_2\right) \\[3mm] \vdots \\[3mm] g_{\boldsymbol{\theta}}^m\left(t,\mathbf{x},\boldsymbol{\theta}_m,\boldsymbol{\Omega}_m\right) \end{array}\right] = g_{\boldsymbol{\theta}}\left(t,\mathbf{x},\boldsymbol{\theta},\boldsymbol{\Omega}\right)
+\end{gather}
+
+	Thus we achieve a generalized Power System model
+
+\begin{equation}
+	\left\{\begin{array}{l}
+		\dot{\mathbf{x}} = \mathbf{Ax + Bf},\ \mathbf{x}\left(0\right) = \mathbf{x}_0\\[2mm]
+		\dot{\boldsymbol{\theta}} = g_{\boldsymbol{\theta}}\left(t,\mathbf{x},\boldsymbol{\theta},\boldsymbol{\Omega}\right) \\[2mm]
+		\dot{\boldsymbol{\Omega}} = g_\omega\left(t,\mathbf{x},\boldsymbol{\theta},\boldsymbol{\Omega}\right)
+	\end{array}\right. .\label{eq:lemma_time_complex}
+\end{equation}
+
+	We now transform this system into a phasorial-equivalent one. We adopt $\omega = \kappa\left(\Omega\right)$ as the frequency for the Dynamic Phasor Transform; this frequency can be for instance the grid center of frequency given by either pure averages or weighted averages of frequencies. We suppose $\kappa$ is continuous. Thus the first equation of \ref{eq:lemma_time_complex_final} can be directly transformed using theorem \ref{theo:dp_diffeq}. For the frequency and forcing dynamics, denote $\Theta = \mathbf{P_D^{\left(\omega\right)}} \left[\theta\right]$ and $X = \mathbf{P_D^{\left(\omega\right)}} \left[x\right]$ the Dynamic Phasor of the forcings and the states respectively:
+
+\begin{equation}
+	\left\{\begin{array}{l}
+		\dot{\boldsymbol{\Theta}} + j\omega \mathbf{I}_m\boldsymbol{\Theta} = g_{\boldsymbol{\theta}}\left(t,\mathbf{P_D^{\left(-\omega\right)}} \left[X\right],\mathbf{P_D^{\left(-\omega\right)}} \left[\boldsymbol{\Theta}\right],\boldsymbol{\Omega}\right) \\[2mm]
+		\dot{\boldsymbol{\Omega}} = g_\omega\left(t,\mathbf{P_D^{\left(-\omega\right)}} \left[X\right]\mathbf{P_D^{\left(-\omega\right)}} \left[\boldsymbol{\Theta}\right],\boldsymbol{\Omega}\right)
+	\end{array}\right. \label{eq:lemma_time_complex_final}
+\end{equation}
+
+	\noindent and because $\mathbf{P_D}$ and its inverse are not only continuous but diffeomorphic in the Banach Space of Nonstationary Sinusoids \cite{volpatoDynamicPhasorTheory2025}, then this can be noted as
+
+\begin{equation}
+	\left\{\begin{array}{l}
+		\dot{\boldsymbol{\Theta}} = G_{\boldsymbol{\theta}}\left(t,\mathbf{X},\boldsymbol{\Theta},\boldsymbol{\Omega}\right) \\[2mm]
+		\dot{\boldsymbol{\Omega}} = G_{\boldsymbol{\omega}}\left(t,\mathbf{X},\boldsymbol{\Theta},\boldsymbol{\Omega}\right)
+	\end{array}\right. 
+\end{equation}
+
+	\noindent thus achieving a generalized phasorial modelling of the Power System as
+
+\begin{equation}
+	\left\{\begin{array}{l}
+		\dot{\mathbf{X}} = \left(\mathbf{A} - j\omega \mathbf{I}_n\right)\mathbf{X} + \mathbf{BF} \\[2mm]
+		\dot{\boldsymbol{\Theta}} = G_{\boldsymbol{\theta}}\left(t,X,\boldsymbol{\Theta},\boldsymbol{\Omega}\right) \\[2mm]
+		\dot{\boldsymbol{\Omega}} = G_{\boldsymbol{\omega}}\left(t,X,\boldsymbol{\Theta},\boldsymbol{\Omega}\right) \\[2mm]
+		\omega = \kappa\left(\boldsymbol{\Omega}\right)
+	\end{array}\right. ,\label{eq:lemma_time_complex_final}
+\end{equation}
+
+%-------------------------------------------------
+\subsection{Exploring timescales} %<<<2
+
+	We know turn our concern towards a particular case where the top equation of \eqref{eq:lemma_time_complex_final} — that models the electrical network dynamics — is much faster than the bottom equation that models frequency dynamics. We want to prove that if the circuit is ``fast'', then we can approximate the top equation that models the grid behavior by its steady-state behavior. Formally, we want to prove that the solution of the system
+
+\begin{equation}
+	\left\{\begin{array}{l}
+		\mathbf{0} = \left(\mathbf{A} - j\omega_a \mathbf{I}_n\right)\mathbf{X}_a + \mathbf{BF}_a \\[2mm]
+		\dot{\boldsymbol{\Theta}}_a = G_\theta\left(t,\mathbf{X}_a,\boldsymbol{\Theta}_a,\boldsymbol{\Omega}_a\right) \\[2mm]
+		\dot{\boldsymbol{\Omega}}_a = G_\omega\left(t,\mathbf{X}_a,\boldsymbol{\Theta}_a,\boldsymbol{\Omega}_a\right) \\[2mm]
+		\omega_a = \kappa\left(\boldsymbol{\Omega}_a\right)
+	\end{array}\right. ,\label{eq:lemma_time_complex_final_approx}
+\end{equation}
+
+	\noindent where the subscript ``a'' denotes ``approximation or ``algebraic'', approximates the solution of the original system \eqref{eq:lemma_time_complex_final}. We first ask how we formally define a ``fast'' circuit, which albeit an intuitive concept, needs formalization, in the form of theorem \ref{theo:generic_rlc_modelling}.
+
+	From a circuit theory perspective, this happens when the circuit RLC elements are all very low; the system supplies a high quantity of power for resistive loads while the energy storage elements cannot store big quantities of energy or, in other words, the circuit stores very little energy while quickly spending it. From a Power System perspective, this is the assumption that the frequency dynamics, are much quicker than the circuit dynamics; this is a resonable assumption if the system under scrutiny is a ``classical'' power system where the agents are electromechanical in nature, thus determining slow frequency dynamics. From a mathematics point of view, the top equation, that models the circuit, attains steady-state much quicker than the bottom equation modelling frequency dynamics, so that as the variable $\boldsymbol{\Omega}$ changes, the variable $X$ follows it in an almost-steady-state-like behavior.
+
+	Under the assumption that the circuit is ``quick'' enough, we conclude that the grid differential equation (the first equation of \eqref{eq:lemma_time_complex_final}) attains steady-state much faster than the frequency control — the second equation — such that as $\omega(t)$ is adjusted in time $X(t)$ exhibits a composition of very small transients and the ``algebraic solution'' $X_a$ that solves $\dot{X_a} = 0$ — the grid is supposed at a permanent static sinusoidal state while frequency dynamics, much slower than that of the grid, actuates upon it. Such is the Quasi-static Hypothesis (QSH).
+
+	We now analyze the theory of two-timescale systems to prove these statements. This theory was first proposed by Tikhonov \pcite{Khalil2002} for autonomous systems of the form
+
+\begin{equation} \left\{\begin{array}{l} \varepsilon \dfrac{dx}{dt} = f\left(x,y\right),\ x\left(t_0\right) = x_0, \\[3mm]\phantom{\varepsilon} \dfrac{dy}{dt} = g\left(x,y\right),\ y\left(t_0\right) = y_0 \end{array}\right. \end{equation}
+
+	\noindent where $\varepsilon$ is a small positive parameter. Such systemas are called ``singularly perturbed'' systems \pcite{albertoCaracterizacaoEstimativasArea2010} and the general interest is to analyze the behavior of the system at, or close to, $\varepsilon = 0$. 
+
+	Tikhonov proved that, under certain conditions, the dynamics of this system can be decomposed into a ``slow dynamic'' and a ``fast dynamic'' in such a way that if the dynamics of this system can be approximated by the model obtained when $\dot{x}(t) = 0$. However, taking from the model \eqref{eq:lemma_time_complex_final}, the system under study is more complicated: it has a non-automomous system modelled by
+
+\begin{equation}\left(\Lambda_\varepsilon\right):\ \left\{\begin{array}{l} \varepsilon \dfrac{dx}{dt} = f\left(t,x,y,\varepsilon\right),\ x\left(t_0\right) = x_0, \\[3mm]\phantom{\varepsilon} \dfrac{dy}{dt} = g\left(t,x,y,\varepsilon\right),\ y\left(t_0\right) = y_0 \end{array}\right. . \label{eq:original_single_persystem}\end{equation}
+
+	 Here we use a generalized version of Tikhonov's Theorem for this larger class of systems as presented in \cite{Marva2012}. The state $x(t)$ is called the ``fast state'' while $y(t)$ is the ``slow state''. We denote the trajectory of this system starting from $\left(t_0,x_0,y_0\right)$ as
+
+\begin{equation} \varphi_\varepsilon\left(t,t_0,x_0,y_0\right) = \left[x_\varepsilon\left(t,t_0,x_0,y_0\right),y_\varepsilon\left(t,t_0,x_0,y_0\right)\right]^\intercal . \end{equation}
+
+	Considering a time interval $t_0 \leq t \leq T$, we first suppose that the states $x,y$ exist in neighborgoods of $x_0,y_0$ and that $x(t)$ and $y(t)$ stay in these neighborhoods in that time interval. This guarantees that the system does not explode or ``jerk''. Making $\varepsilon = 0$ on $\left(\Lambda_\varepsilon\right)$ one obtains the ``slow system''
+
+\begin{equation}\left(\Lambda_s\right):\ \left\{\begin{array}{rcl} 0 &=& f\left(t,x,y,\varepsilon\right) \\[3mm]\phantom{\varepsilon} \dfrac{dy}{dt} &=& g\left(t,x,y,\varepsilon\right),\ y(0) = y_0 \end{array}\right. .\end{equation}
+
+	\noindent yielding a set of algebraic-differential equations. This system describes the dynamics of the slower state $y(t)$ in the standard timescale $t$ supposing that $x(t)$ is ``infinitely fast'', that is, it reaches steady-state immediately and continuously. We denote the trajectory of this system as
+
+\begin{equation} \varphi_s\left(t,t_0,x_0,y_0\right) = \left[x_s\left(t,t_0,x_0,y_0\right),y_s\left(t,t_0,x_0,y_0\right)\right]^\intercal \end{equation}
+
+	\noindent where the subscript ``s'' stands for ``slow''. Naturally, the equation $0 = f\left(t,x,y\right)$ restricts this system to a ``slow manifold'' which contains the equilbria of the original system $\left(\Lambda_\varepsilon\right)$ at $t_0$. Also, by the implicit function theorem \pcite{Lima2017b}, if the partial derivative $f_x$ is not singular at $\left(t,\Phi\left(t,y\right),y,0\right)$ then there exists a single local solution $ x = \Phi\left(t,y\right)$ at the instant $t$, such that (locally) the system can be written in a reduced form
+
+\begin{equation}\left(\Lambda_{r}\right):\ \left\{\begin{array}{rcl} x &=& \Phi\left(t,y\right) \\[3mm] \dfrac{dy}{dt} &=& g\left(t,\Phi\left(t,y\right),y,\varepsilon\right),\ y\left(t_0\right) = y_0 \end{array}\right. .\end{equation}
+
+	\noindent and $\Phi$ is the candidate of the steady-state approximation for $x(t)$. We also suppose that $\Phi$ is defined in the initial neghborhoods of the initial conditions. Finally, we divide the fast variable equation of \eqref{eq:original_single_persystem} by $\varepsilon$ and denote a ``fast timescale'' $\tau = t/\varepsilon$, generating a description of that system in a fast timescale:
+
+\begin{equation}\left\{\begin{array}{l} \dfrac{dx}{d\tau} = f\left(\tau,x,y,\varepsilon\right),\ x\left(t_0\right) = x_0, \\[3mm]\dfrac{dy}{d\tau} = \varepsilon g\left(\tau,x,y,\varepsilon\right),\ y\left(t_0\right) = y_0 \end{array}\right. \end{equation}
+
+	\noindent and making $\varepsilon = 0$ in these equations generates a ``fast system'':
+
+\begin{equation}\left(\Lambda_f\right): \left\{\begin{array}{l} \dfrac{dx}{d\tau} = f\left(\tau,x,y,\varepsilon\right),\ x\left(t_0\right) = x_0, \\[3mm]\dfrac{dy}{dt} = 0 \end{array}\right. \end{equation}
+
+	\noindent which supposes that $y(t)$ is ``infinitely slow'', that is, $\left(\Lambda_f\right)$ denotes how the dynamics of the fast variable $x(t)$ vary in a fast timescale where the slow variable $y(t)$ has not has enough time to change; therefore, with respect to the dynamics of $x(t)$, $y(t)$ is constant and treated as a parameter, that is,
+
+\begin{equation}\left(\Lambda_f\right): \dfrac{dx}{d\tau} = f\left(\tau,x,y,\varepsilon\right),\ x\left(t_0\right) = x_0 \end{equation}
+
+	\noindent and the trajectory of this system is denoted 
+
+\begin{equation} \varphi_f\left(t,t_0,x_0\right) = x_f\left(t,t_0,x_0\right) .\end{equation}
+
+	Given additional requirements on $f$ and $g$, \cite{Marva2012} proves that the solution of the fast system $x_f$ vanishes quickly in time, and it also varies little in amplitude, culminating in theorem \ref{theo:qsh_approx_nonlinivps} which states that 
+
+\begin{equation}\left\{\begin{array}{l} \lim\limits_{t\to\infty} \left\lVert x_\varepsilon(t) - \Phi\left(t,y_s\left(t\right)\right)\right\rVert = O\left(\varepsilon\right) \\[2mm] \lim\limits_{t\to\infty} \left\lVert y_\varepsilon(t) - y_s(t) \right\rVert = O\left(\varepsilon\right) \end{array}\right. \end{equation}
+
+	\noindent that is, the behavior of the original system $\left(\Lambda_\varepsilon\right)$ can be approximated by the dynamics of the slow system. Additionally, if $\Phi$ and $y_s$ are assymptotically stable, then
+
+\begin{equation}\left\{\begin{array}{l} \lim\limits_{t\to\infty} \left\lVert x_\varepsilon(t) - \Phi\left(t,y_s\left(t\right)\right)\right\rVert = 0 \\[2mm] \lim\limits_{t\to\infty} \left\lVert y_\varepsilon(t) - y_s(t) \right\rVert = 0 \end{array}\right. \end{equation}
+
+	\noindent and $x(t),y(t)$ exist for all times $t\geq t_0$, meaning not only the behavior of the original system $\left(\Lambda_\varepsilon\right)$ can be approximated by the dynamics of the slow system, the trajectories converge assymptotically.
+
+\begin{theorem}[Quasistatic-state approximation of nonlinear IVPs \pcite{Marva2012}]\label{theo:qsh_approx_nonlinivps} %<<<
+	Consider the nonlinear IVP
+
+\begin{equation}\left\{\begin{array}{l} \varepsilon \dfrac{dx}{dt} = f\left(t,x,y,\varepsilon\right),\ x\left(t_0\right) = x_0, \\[3mm]\phantom{\varepsilon} \dfrac{dy}{dt} = g\left(t,x,y,\varepsilon\right),\ y\left(t_0\right) = y_0 \end{array}\right. \label{sys:theo_quasistatic_sysdef}\end{equation}
+
+	where $x\in\mathbb{R}^n,\ y\in\mathbb{R}^m$, $\varepsilon$ a small positive parameter. Let $S = I\times B_R\times B_{R'},\ I = \left\{t: t_0\leq t\leq T\leq \infty\right\},\ B_R = \left\{x\in\mathbb{R}^n: \left\lvert x\right\rvert \leq R\right\},\ B_{R'} = \left\{y\in\mathbb{R}^m:\left\lvert y\right\rvert \leq R'\right\}, \overline{S} = S\times\left[0,\varepsilon_0\right]$, $f,g\in C^2\left(S\right)$ and $T, \varepsilon_0$ constants. Suppose the following hypotheses H1-H4 are true:
+
+\begin{itemize}
+	\item\textbf{H1}: any solution of \eqref{sys:theo_quasistatic_sysdef} beggining in $B_R\times B_{R'}$ remains there for $t_0\leq t \leq T$;
+	\item\textbf{H2}: there exists a function $\Phi\left(t,y\right)$ such that
+
+\begin{equation} f\left(t,\Phi\left(t,y\right),y,0\right) = 0 \label{eq:theo_qsh_approx_nonlinivps_limf}\end{equation}
+
+	for all $\left(t,y\right)\in I\times B_{R'}$. Moreover, $\Phi\in C^2\left(I\times B_{R'}\right)$ and $f_x\left(t,\Phi\left(t,y\right),y,0\right)$ is nonsingular for all $\left(t,y\right)\in I\times B_{R'}$;
+	\item\textbf{H3}: the equation
+
+\begin{equation} \dfrac{dX}{d\tau} = f\left(\alpha,X,\beta,0\right) \label{eq:theo_qsh_approx_nonlinivps_limX}\end{equation}
+
+	has $X = \Phi\left(\alpha,\beta\right)$ as an equilibrium for each $\left(\alpha,\beta\right)\in I\times B_{R'}$ and the initial condition $x_0$ is in the domain of attraction of the equilibrium $\Phi\left(t_0,y_0\right)$;
+	\item\textbf{H4}: the equation
+
+\begin{equation} \dfrac{dz}{dt} = g\left(t,\Phi\left(t,z\right),z,0\right) \label{eq:theo_qsh_approx_nonlinivps_limz}\end{equation}
+
+	has a solution for $t_0\leq t < \infty$, say $y^*(t)$, and $y_0$ is in the domain of attraction of $y^*(t)$.
+\end{itemize}
+
+	Then, for sufficiently small values of $\varepsilon$, $\left(x(t),y(t)\right)$ exists for $t_0 \leq t \leq T$ and
+
+\begin{equation}\left\{\begin{array}{l} \left\lVert x(t) - \Phi\left(t,y^*\left(t\right)\right)\right\rVert = O\left(\varepsilon\right) \\[2mm] \left\lVert y(t) - y^*(t) \right\rVert = O\left(\varepsilon\right) \end{array}\right. \label{eq:qsh_approx_theo_result}\end{equation}
+
+	Additionally, if
+
+\begin{itemize}
+	\item\textbf{H3'}: the equilibrium $X = \Phi\left(\alpha,\beta\right)$ of \textbf{H3} is assymptotically stable uniformly; and 
+
+	\item\textbf{H4'}: the solution $y^*(t)$ of \textbf{H4} is uniformly assymptotically stable;
+\end{itemize}
+
+	then $\left(x(t),y(t)\right)$ exists for $t_0 \leq t < \infty$ and
+
+\begin{equation}\left\{\begin{array}{l} \lim\limits_{t\to\infty} \left\lVert x(t) - \Phi\left(t,y^*\left(t\right)\right)\right\rVert = 0 \\[2mm] \lim\limits_{t\to\infty} \left\lVert y(t) - y^*(t) \right\rVert = 0 \end{array}\right. \label{eq:qsh_approx_theo_assympt}\end{equation}
+\end{theorem} %>>>
+
+%-------------------------------------------------
+\subsection{Applying theorem \ref{theo:qsh_approx_nonlinivps} to the modelling } %<<<2
+
+	We now explore theorem \ref{theo:qsh_approx_nonlinivps} by applying it to the modelling \ref{eq:lemma_time_complex_final}. We suppose that the norm $\left\lVert \mathbf{A}\right\rVert$ becomes small and acts as the perturbation $\varepsilon$. A wider discussion on what this means for the circuit is taken following the result.
+
+\begin{theorem}[Quasi-Static Modelling of Linear Electrical Circuits]\label{theo:qsh_linear_circuits}%<<<
+	Consider the Dynamic Phasor complex differential equation \eqref{eq:lemma_time_complex_final} of a PLC with nonstationary sinusoidal forcing equipped with a frequequency control, where $F\in C^2\left(\mathbb{R}\right)$, $X_0,X\in B_R\subset \mathbb{C}^n$, $\Omega_0,\Omega = \left[\omega,\dot{\omega},...,\omega^{(p)}\right]^\intercal \in B_{R'}\subset\mathbb{R}^p$, and $\Gamma \in C^2\left(B_{R'}\times B_R \times I\right)$. Suppose that $t\in I = \left[0,T\right)$ for some $T$ such that $X(I)\subset B_{R}$. Let 
+
+\begin{equation} X_a = -\left(\mathbf{A} - j\omega_a(t)\mathbf{I}\right)^{-1}\mathbf{B}F(t) \end{equation}
+
+	\noindent be the candidate of steady-state approximation of $X(t)$, and suppose there exist solutions $\boldsymbol{\Omega}_a,\ \boldsymbol{\Theta}_a$ to
+
+\begin{equation} \dfrac{d}{dt}\left[\begin{array}{c} \boldsymbol{\Omega}_a \\[3mm] \boldsymbol{\Theta}_a\end{array}\right] = \Gamma \left(X_a, \boldsymbol{\Theta}_a, \boldsymbol{\Omega}_a, t\right),\ \left[\begin{array}{c} \boldsymbol{\Omega}(0) \\[3mm] \boldsymbol{\Theta}(0) \end{array}\right] = \left[\begin{array}{c} \boldsymbol{\Omega}_0 \\[3mm] \mathbf{P_D^\omega}\left[\boldsymbol{\theta}_0\right] \end{array}\right] \label{eq:theo_slowfast_omegaa_def}\end{equation}
+
+	for $t\in\left[0,T\right)$. Then for $\left\lVert \mathbf{A}\right\rVert$ large, $X(t),\ \boldsymbol{\Omega}(t)$ and $\boldsymbol{\Theta}(t)$ exist for $\left[0,T\right)$ and
+
+\begin{equation}\left\{\begin{array}{l} \left\lVert X(t) - X_a(t)\right\rVert = O\left(\left\lVert \mathbf{A}\right\rVert^{-1}\right) \\[2mm] \left\lVert \left[\begin{array}{c} \boldsymbol{\Omega}(t) \\[3mm] \boldsymbol{\Theta}(t) \end{array}\right] - \left[\begin{array}{c} \boldsymbol{\Omega}_a(t) \\[3mm] \boldsymbol{\Theta}_a(t) \end{array}\right]\right\rVert = O\left(\left\lVert \mathbf{A}\right\rVert^{-1}\right) \end{array}\right. \label{eq:theo_slowfast_omegaa_approxresult} \end{equation}
+
+	Additionally, if the moduli of the components of $F(t)$ are bounded and the solution $\Omega_a$ of \eqref{eq:theo_slowfast_omegaa_def} is also bounded, then $X(t),\ \Omega(t)$ exist for $\left[0,\infty\right)$ and
+
+\begin{equation}\left\{\begin{array}{l} \lim\limits_{t\to\infty}\left\lVert X(t) - X_a(t)\right\rVert = 0 \\[3mm] \lim\limits_{t\to\infty}\left\lVert \left[\begin{array}{c} \boldsymbol{\Omega}(t) \\[3mm] \boldsymbol{\Theta}(t) \end{array}\right] - \left[\begin{array}{c} \boldsymbol{\Omega}_a(t) \\[3mm] \boldsymbol{\Theta}_a(t) \end{array}\right]\right\rVert = 0 \end{array}\right. \label{eq:theo_slowfast_omegaa_assympt} \end{equation}
+
+\end{theorem}
+\textbf{Proof:} adopt $\varepsilon = \left(\left\lVert \mathbf{A}\right\rVert\right)^{-1}$; we want to analyze the behavior of \eqref{eq:lemma_time_complex_final} as $\varepsilon\to 0^+$. Multiply the first equation of \eqref{eq:lemma_time_complex_final} by $\varepsilon$:
+
+\begin{equation}\left\{\begin{array}{l} \varepsilon\dot{X} = \left(\mathbf{U_A} - j\varepsilon\omega(t) \mathbf{I}\right) X + \mathbf{U_B} F\left(t\right) \\[3mm] \dfrac{d}{dt}\left[\begin{array}{c} \boldsymbol{\Omega} \\[3mm] \boldsymbol{\Theta}\end{array}\right] = \Gamma \left(X, \boldsymbol{\Theta}, \boldsymbol{\Omega}, t\right),\ \left[\begin{array}{c} \boldsymbol{\Omega}(0) \\[3mm] \boldsymbol{\Theta}(0) \end{array}\right] = \left[\begin{array}{c} \boldsymbol{\Omega}_0 \\[3mm] \mathbf{P_D^\omega}\left[\boldsymbol{\theta}_0\right] \end{array}\right] \end{array}\right. .\label{eq:modified_circuit_de4}\end{equation}
+
+	\noindent where $\mathbf{U_A} = \varepsilon \mathbf{A}, \mathbf{U_B} = \varepsilon \mathbf{B}$. The proof follows by showing that the hypotheses H1-H4 of theorem \ref{theo:qsh_approx_nonlinivps} are satisfied.
+
+\begin{itemize}
+	\item \textbf{H1} is satisfied by ensuring $X\left(\left[0,T\right]\right)\subset B_R$;
+	\item \textbf{H2} is satisfied by adopting $X_a$ as $\Phi$ and seeing that $X_a$ is a solution to $\dot{X}(t) = 0$ in \eqref{eq:modified_circuit_de4} for any $\varepsilon$;
+	\item \textbf{H3} is satisfied by requiring that the circuit has at least one resistance, thus $\mathbf{A}$ will be Hurwitz stable. If this is true then
+
+\begin{equation}\dfrac{dX}{d\tau} = \left(\mathbf{A} - j\beta \mathbf{I}\right)X\left(\tau\right) + \mathbf{B}F\left(\alpha\right)\label{eq:theo_time_complex_final_assymt}\end{equation}
+
+	is globally assymptotically uniformly stable due to being linear with a fixed forcing and because the matrix $\mathbf{A} - j\beta \mathbf{I}$ is invertible with all eigenvalues on the left plane. Thus $\mathbf{P_D^\omega}\left[x_0\right]$ is in the domain of attraction of $X_a$.
+	\item \textbf{H4} is satisfied fulfilled by requiring \eqref{eq:theo_slowfast_omegaa_def} to have a solution.
+\end{itemize}
+
+	Additionally, if $F(t)$ has all moduli bounded, then it is bounded itself as the cosines are limited to the unit. Thus the excitation $F\left(\alpha\right)$ of \eqref{eq:theo_time_complex_final_assymt} is bounded. Because the matrix $\left(A-j\omega I_n\right)$ has only eigenvalues in the left plane (because such is the case of $A$ and removing $j\omega$ from the main diagonal only changes the imaginary component of eigenvalues) then \eqref{eq:theo_time_complex_final_assymt} is assymptotically stable if $\omega$ is defined for all infinity which, combined with continuity, means that $\omega$ is bounded — which is equivalent to $\Omega_a$ also being bounded; then \textbf{H3'} and \textbf{H4'} are satisfied and $X(t),\boldsymbol{\Theta(t)},\ \boldsymbol{\Omega(t)}$ exist for $\left[0,\infty\right)$ and the assymptotic stability result \eqref{eq:theo_slowfast_omegaa_assympt} holds. \hfill$\blacksquare$ %>>>
+
+%-------------------------------------------------
+\section{Exploring theorem \ref{theo:qsh_linear_circuits} and its consequences}%<<<1
+
+%-------------------------------------------------
+\subsection{The unitary matrices $U_A$ and $U_B$} %<<<2
+
+	While theorem \ref{theo:qsh_linear_circuits} constitutes a rigorous statement of the Quasi-Static Hypothesis, the proof presented seems nonetheless too swift and the roles of the matrices $U_A$ and $U_B$ are not clear — except for the obvious reason to transform the original system \eqref{eq:lemma_time_complex_final} into a new version \eqref{eq:modified_circuit_de4} which can leverage theorem \ref{theo:qsh_approx_nonlinivps} to obtain the desired results. We first revisit theorem \ref{theo:generic_rlc_modelling} which states that any RLC circuit can be modelled as
+
+\begin{equation} \mathbf{E}\dot{\mathbf{x}} = \left(\mathbf{J-K}\right)\mathbf{x}(t) + \mathbf{Gf}(t) \end{equation}
+
+	where
+
+\begin{equation} \mathbf{E} = \left[\begin{array}{cc} \mathbf{A}_C C \mathbf{A}_C^\intercal & \mathbf{0}\\[1mm] \mathbf{0} & L \end{array}\right],\ \mathbf{G} = \left[\begin{array}{c} \mathbf{A}_i \\ \mathbf{0} \end{array}\right],\ \mathbf{J} = \left[\begin{array}{cc} \mathbf{0} & -\mathbf{A}_L \\[1mm] \mathbf{A}_L^\intercal & \mathbf{0} \end{array}\right],\ \mathbf{K} = \left[\begin{array}{cc} \mathbf{A}_R \mathbf{R}^{-1}  \mathbf{A}_R^\intercal & \mathbf{0} \\[1mm] \mathbf{0} & \mathbf{0} \end{array}\right] ,\end{equation}
+
+	\noindent and $\mathbf{A}_i$ is the input-to-node connectivity matrix. Suppose all inductance and capacitance values of a PLC are multiplied by a certain positive value $\varepsilon$, while resistances are maintained. This will scale the matrix $\mathbf{E}$ by $\varepsilon$, making the norms of the matrices $\mathbf{A} = \mathbf{E}^{-1}\left(\mathbf{J-R}\right)$ and $\mathbf{B} = \mathbf{E}^{-1}\mathbf{G}$ of \eqref{eq:lemma_time_complex} will be divided by $\varepsilon$. Noticeably, this causes the eigenvalues of $\mathbf{A}$ to be also divided by $\varepsilon$ and its eigenvectors stay the same; by theorem \ref{def:exp_charac} (page \pageref{def:exp_charac}), this means that the exponential terms of the homogeneous response have smaller absolute values while still being stable, thus fading quicker — meaning that as the $LC$ parameters become smaller, the circuit becomes ``faster''.
+
+	Thus, if all LC values are divided by $\left\lVert \mathbf{A}\right\rVert$, the matrix of the new circuit will be $\mathbf{U_A}$ such that $\left\lVert \mathbf{U_A}\right\rVert = 1$; $\mathbf{U_A}$ and $\mathbf{U_B}$ in essence represent a ``standard''version of the circuit where the LC parameters are scaled so that the norm of $\mathbf{U_A}$ becomes \textit{unitary}, thus the naming ``$U$''. Let the circuit represented by $\mathbf{U_A}$ and $\mathbf{U_B}$ be called the \textit{unitary version} of the original circuit of $\mathbf{A}$ and $\mathbf{B}$. As $\left\lVert \mathbf{A}\right\rVert$ is excursionated to infinity (that is, $\varepsilon$ is made smaller approximating zero), $\mathbf{U_A}$ does not change, as well as $\mathbf{U_B}$, allowing for easily applying the results of theorem \ref{theo:qsh_approx_nonlinivps}. In contrast, using the original system \eqref{eq:lemma_time_complex_final} can be problematic because as the norm of $\mathbf{A}$ is excursionated, that is, as the LC parameters are multiplied, the matrix $\mathbf{A}$ itself changes, as well as $\mathbf{B}$ (that is, the circuit itself changes), making harder the application of theorem \ref{theo:qsh_approx_nonlinivps}.
+
+%-------------------------------------------------
+\subsection{Timescale analysis} %<<<2
+
+	Despite making the application of theorem \ref{theo:qsh_approx_nonlinivps} simpler, the usage of the unitary circuit \eqref{eq:modified_circuit_de4} comes at a cost: it is denoted as transformed by apparent frequency $\varepsilon\omega$. Let $\tau = t/\varepsilon$ be a ``fast timescale'', $t$ the original one. Then the circuit equation of the unitary system \eqref{eq:modified_circuit_de4} becomes
+
+\begin{equation} \dfrac{dX}{d\tau} = \left(\mathbf{U_A} - j\varepsilon\omega\left(\tau\right) \mathbf{I}_n\right) X\left(\tau\right) + \mathbf{U_B} F\left(\tau\right) ,\end{equation}
+
+	\noindent causing the Dynamic Phasor Transform in this new timescale to be performed at a scaled apparent frequency $\varepsilon\omega\left(\tau\right)$, which makes sense since the unitary circuit is ``slower'' than the original circuit. The adoption of $\mathbf{U_A}$ and $\mathbf{U_B}$ as a ``unitary reference version'' of the original circuit means that the original circuit $\mathbf{A,B}$ is translated into a new timescale $\tau$ wherein the circuit does not change with $\varepsilon$. What changes is that the DPT is taken in this new timescale at the scaled frequency $\varepsilon\omega\left(\tau\right)$, and then the circuit is translated back into the original timescale. This is to maintain the frequency timescale, which should be kept because the proof relies on the fact that as $\varepsilon$ is made smaller, the circuit is swifter but the frequency behavior is maintained. This guarantees that when $X$ is transformed back to the $\Sigma_\omega$ space through $\mathbf{P_D^{\left(-\omega\right)}}$, the equivalent $x(t)$ is the same signal used in the frequency model $\gamma$, that is, it is a solution to the original time differential equation \eqref{eq:nonautodiffeq}. In simpler words, the adoption of $\mathbf{U_A}$ and $\mathbf{U_B}$ allows to consider a ``fixed circuit'' and vary the timescale and frequency at which it is analyzed, rather than change the circuit itself (which is what using the original matrices $\mathbf{A}$ and $\mathbf{B}$ entails to) and keeping the timescales intact.
+
+	Finally, one notices that the pertinent functions \eqref{eq:theo_qsh_approx_nonlinivps_limf}, \eqref{eq:theo_qsh_approx_nonlinivps_limX}, \eqref{eq:theo_qsh_approx_nonlinivps_limz} of theorem \ref{theo:qsh_approx_nonlinivps} are defined at the equality $\varepsilon = 0$, but $\left\lVert \mathbf{A}\right\rVert = 0$ is unattainable unless $\mathbf{A}$ is the null matrix. One might adapt the definitions, however, using limits and the results remain because $g$ and $f$ are supposed continuous.
+
+%-------------------------------------------------
+\subsection{Assymptotic stability and effects of loads} %<<<2
+
+	In theorem \ref{theo:qsh_approx_nonlinivps}, the additional requirements of hypotheses \textbf{H3'} and \textbf{H4'} essentially make it so that the solutions $\left(x(t),y(t)\right)$ are defined to infinity rather than just some interval $\left[0,T\right)$. The need for these conditions is clear in that, if the system \eqref{sys:theo_quasistatic_sysdef} under study is unstable this means that at some time $T_\infty$ the solutions explode; therefore the balls $B_R$ and $B_{R'}$ are defined to avoid choosing $T > T_\infty$. Assymptotic stability of the equilibriums $\Phi\left(\alpha,\beta\right)$ and $y^*(t)$ assure that the system will never behave in such explosive manner, while also meaning that while $x(t)$ and $y(t)$ evolve, they are always close to $\Phi$ and $y^*$ because any deviation vanishes assyptotically. This guarantees that solutions will exist for any time $T$ chosen, ergo being defined for infinity.
+
+	When it comes to the application of theorem \ref{theo:qsh_linear_circuits}, the principles of $B_R$, $B_{R'}$ and $T$ still stand. The purpose of the additional requirements \textbf{H3'} and \textbf{H4'} become clearer as they signify that the circuit differential equations \eqref{eq:lemma_time_complex_final} must have bounded forcings $F(t)$ and bounded frequency $\omega$. While it is obvious that an unbounded forcing can drive a circuit to instability, it is not so obvious that an unbounded frequency excitation can accomplish the same effect. This can be further evaluated through eigenvalue analysis: even if $\mathbf{A}$ has a large norm, an unbounded $\omega$ means that the number $j\omega$ can get close to an eigenvalue of $\mathbf{A}$, meaning that $\mathbf{A} - j\omega(t)\mathbf{I}_n$ can have a small eigenvalue in some interval in time; during this interval, the circuit is not much faster than the frequency and the QSM fails. This can happen if the system is not furnishing enough load power (that is, the load resistance values are not low enough to draw sufficient current) and $\omega(t)$ approximates a natural resonant frequency of the system. If the system is experiencing high loading (low load resistance values) then even if the frequency $\omega$ approaches a natural mode of the system, the high loading will expend enough energy to keep the system ``quick enough'' to keep the QSH still valid. These conclusions might explain instability effects seen in light-loaded power systems \pcite{kundurPowerSystemStability1994} as well as stability issues in some ring amplifiers \pcite{Conrad2020}.
+
+	Figure \ref{fig:voltage_signals_highload} shows the time simulation of the ``high load'' case, comprise of ``slow'' circuit $A_S$ but the resistance $R$ was reduced to $1\Omega$, that is, the circuit load was augmented tenfold. In contrast to the ``slow'' case of figure \ref{fig:voltage_signals_slow}, where transients take long to fade, the higher load case of figure \ref{fig:voltage_signals_highload} shows that a higher loading scenario causes not only for swifter transients but also greatly reduces the distance between the solution of the phasorial differential equations and their steady-state approximation.
+
+\begin{example}[Application of theorem \ref{theo:qsh_linear_circuits}]\label{example:rlc_timescales}
+
+	We again consider the second-order circuit of figure \ref{fig:secondordercircuit}, modelled in \eqref{eq:examplecircuit_model}, excited by a sinusoidal voltage $v(t)$ and $R = 10\Omega$, $L = 1$mH, $C = 1$mF.
+
+% MODELLING EXAMPLE: RLC CIRCUIT <<<
+\begin{figure}[htb!]
+\centering
+        \begin{tikzpicture}[american,scale=1,transform shape,line width=0.75, cute inductors, voltage shift = 1]
+	\ctikzset{/tikz/circuitikz/voltage/distance from node=10mm}
+		\draw (0,0)
+			to[vsource,sources/scale=1.25, v>=$v(t)$,invert] (0,4)
+			to[L,l=$L$,f>^=$i_{L}$,v>=$v_{L}$,-*] (4,4) 
+			to[C,l=$C$,f>^=$i_{C}$,v>=$v_{C}$,-*] (4,0) 
+			to[short] (0,0); 
+		\draw (4,4)
+			to[short,f>^=$i_{R}$] (7,4) 
+			to[R,l=$R$,v>=$v_{R}$] (7,0) 
+			to[short]  (4,0);
+        \end{tikzpicture}
+	\caption{Second-order circuit.}
+	\label{fig:secondordercircuit}
+\end{figure} %>>>
+
+	The circuit modelling is given by
+
+\begin{equation}\overbrace{\dfrac{d}{dt}\left[\begin{array}{c} i_L \\ v_C \end{array}\right]}^{\dot{\mathbf{x}}} = \overbrace{\left[\begin{array}{cc} 0 & -\dfrac{1}{L} \\[3mm] \dfrac{1}{C} & -\dfrac{1}{RC} \end{array}\right]}^{\mathbf{A}} \overbrace{\left[\begin{array}{c} i_L \\ v_C \end{array}\right]}^{\mathbf{x}} + \overbrace{\left[\begin{array}{c} \dfrac{1}{L}\\[3mm] 0\end{array}\right]}^{\mathbf{B}} \overbrace{\left[\begin{array}{c} v \\ 0 \end{array}\right]}^{\mathbf{f}} \label{eq:examplecircuit_model}\end{equation}
+
+	Using the DPT at some apparent frequency $\omega$, and using theorem \ref{theo:dp_diffeq} and yields the phasor-equivalent
+
+\begin{equation} \dfrac{d}{dt}\left[\begin{array}{c} I_L \\ V_C \end{array}\right] = \left(\mathbf{A} - j\omega \mathbf{I} \right) \left[\begin{array}{c} I_L \\ V_C \end{array}\right] +  \mathbf{B}\left[\begin{array}{c} V \\ 0 \end{array}\right] \label{eq:example_circuit_AB_diffeq} \end{equation}
+
+	Hence transforming \eqref{eq:example_circuit_AB_diffeq} to the unitary circuit notation with the timescale transformation yields
+
+\small\begin{equation} \dfrac{1}{\left\lVert \mathbf{A}\right\rVert} \dfrac{d}{dt}\left[\begin{array}{c} I_L \\ V_C \end{array}\right] = \left(\mathbf{U_A} - j\dfrac{\omega}{\left\lVert \mathbf{A}\right\rVert}\mathbf{I}_2\right) \left[\begin{array}{c} I_L \\ V_C \end{array}\right] + \mathbf{U_B} \left[\begin{array}{c} V \\ 0 \end{array}\right] \end{equation}\normalsize
+
+	To make direct calculations easier, adopt the Frobenius norm $\left\lVert \cdot\right\rVert_F$ for matrices; calculating $\left\lVert \mathbf{A}\right\rVert_F$ yields
+
+\begin{equation} \left\lVert \mathbf{A}\right\rVert_F = \sqrt{\dfrac{1}{L^2} + \dfrac{1}{C^2} + \dfrac{1}{\left(RC\right)^2}}.\end{equation}
+
+	We consider three situations for the circuit:
+
+\begin{itemize}
+	\item $\mathbf{A_S}$ refers to the ``slow circuit'' with parameters $R = 10\Omega$, $L = 1$mH, $C = 1$mF, thus $\left\lVert\mathbf{A_S}\right\rVert_F \approx 1417.7447$. This version is the ``standard'' or ``benchmark'' version for comparison;
+	\item $\mathbf{A_F}$ refers to a ``fast'' version circuit where the $L$ and $C$ parameters are divided by 10, but the resistance is kept, meaning $R = 10\Omega$, $L = 100\mu$H, $C = 100\mu$F, thus $\left\lVert\mathbf{A_F}\right\rVert_F \approx 14177.447$. This version of the circuit serves the purpose of showing the effects of the energy elements $L$ and $C$ on system dynamics, but keeping loading $R$ intact;
+	\item $\mathbf{A_L}$ refers to a ``high-load'' version circuit where the $L$ and $C$ parameters are kept, but the resistance is divided by 10, meaning $R = 1\Omega$, $L = 1$mH, $C = 1$mF, hence $\left\lVert\mathbf{A_L}\right\rVert_F\approx 17320.508$, with the purpose of showing the effects of a higher loading point on the circuit but keeping the elements $L$ and $C$ intact.
+\end{itemize}
+
+	We again consider the excitation
+
+\begin{equation} v(t) = m_v \cos\left(\psi(t)\right),\ \psi(t) = \int_0^t \omega(s)ds \end{equation}
+
+	\noindent with $m_v = 10$V and the apparent frequency
+
+\begin{equation} \omega(t) = \omega_0\left[1 + Me^{-\alpha t}\sin\left(\beta t\right)\right] .\end{equation}
+
+	\noindent where $\omega_0$ is a 1kHz base frequency $\omega_0 = 2000\pi$ and a decaying behavior $M=1$, $\alpha = 100$, $\beta = 200\pi$.
+ 	Figures \ref{fig:voltage_signals_slow}, \ref{fig:voltage_signals_fast} and \ref{fig:voltage_signals_highload} shows the real and imaginary portions of the Dynamic Phasor of the capacitor voltage $V_C$ for the slow, fast and high-load cases, respectively. The pictures compare the solution obtained by directly integrating the DP differental system \eqref{eq:example_circuit_AB_diffeq} (in red) to the steady-state approximation (in blue). Figures \ref{fig:voltage_signals_slow} and \ref{fig:voltage_signals_fast} are illustrative of the results of theorem \ref{theo:qsh_linear_circuits} in that it shows that the ``fast'' circuit is more well-behaved than the ``slow'' circuit, for the latter exhibits transients that linger for longer and have greater amplitude, whereas the transients of the ``fast'' circuit are quicker and smaller. This causes the steady-state approximation to be verossimile in the fast case and usable, but questionable in the ``slow'' case. Since the excitation and the frequency signals are bounded in both cases, the differential solution is assymptotically stable to the steady-state approximation in both cases, meaning that even for the slow case the steady-state approxmation is perfectly applicable after transients have worn off.
+
+	Interestingly, in the highload case, the transients are as well-behaved as in the fast case, albeit the capacitance and inductance values being the same as in the slow case. This again corroborates the fact that the loading condition of the circuit highly contribute to its dynamics, thus reflecting on the fitment of the steady-state approximation: the approximated solution better suits the high-load case than the slow case, even though they have the same inductance and capacitance values. This means that the role of the loading on the circuit is not only to make transients faster, but also tame their effects on the final circuit behavior.
+
+% VOLTAGE TIME CURVES (SLOW CASE) <<<
+\begin{figure}
+        \begin{center}
+                \beginpgfgraphicnamed{timesim_slow}
+                \begin{tikzpicture}
+                        \begin{axis}[
+				name = ax_main,
+                                width = 1\columnwidth,
+                                height = 0.6/1.618*\columnwidth,
+                                title={Capacitor voltage $V_C$ (slow circuit)},
+                                ylabel={Re$\left(V_C\right)$ (V)},
+				xlabel={Time (ms)},
+                                xmin=0, xmax=0.06,
+                                ymin=-0.3, ymax=0.4,
+                                xtick={0,0.01,...,0.06},
+				xticklabels={$0$,$10$,$20$,$30$,$40$,$50$,$60$,$70$,$80$,$90$,$100$},
+				scaled x ticks=false,
+                                ytick={-0.3,-0.2,...,0.4}, 
+                                legend pos=south east,
+				legend cell align={left},
+                                ymajorgrids=true,
+                                xmajorgrids=true,
+                                every axis plot/.append style={thick},
+                        ]
+                        \addplot[red,  smooth] table[col sep=comma,header=false,x index=0,y index=1]{data/quasistationary/data_slow.csv};
+			\addlegendentry{Dynamic response}
+                        \addplot[blue, smooth] table[col sep=comma,header=false,x index=0,y index=3]{data/quasistationary/data_slow.csv};
+			\addlegendentry{Steady-state approximation}
+                        \end{axis}
+%
+                        \begin{axis}[
+                                name = ax_imaginary,
+                                at={($(ax_main.south west)-(0,0.35*\columnwidth)$)},
+                                width = 1\columnwidth,
+                                height = 0.6/1.618*\columnwidth,
+                                xmin=0, xmax=0.06,
+                                ymin=-0.5, ymax=0.15,
+                                xtick={0,0.01,...,0.06},
+				xlabel={Time (ms)},
+                                ylabel={Im$\left(V_C\right)$ (V)},
+				xticklabels={$0$,$10$,$20$,$30$,$40$,$50$,$60$,$70$,$80$,$90$,$100$},
+				scaled x ticks=false,
+                                ytick={-0.5,-0.4,...,0.1},
+				tick label style={/pgf/number format/fixed},
+				legend cell align={left},
+                                ymajorgrids=true,
+                                xmajorgrids=true,
+                                every axis plot/.append style={thick},
+                        ]
+			\addplot[red, smooth] table[col sep=comma,header=false,x index=0,y index=2]{data/quasistationary/data_slow.csv};
+			\addlegendentry{Dynamic response}
+			\addplot[blue,smooth] table[col sep=comma,header=false,x index=0,y index=4]{data/quasistationary/data_slow.csv};
+			\addlegendentry{Steady-state approximation}
+                        \end{axis}
+%
+                        \begin{axis}[
+                                at={($(ax_imaginary.south west)-(0,0.65*\columnwidth)$)},
+                                width = 1\columnwidth,
+                                height = 1/1.618*\columnwidth,
+                                title={Capacitor voltage $V_C$ (slow circuit)},
+                                xlabel={$\Re\left(V_C\right)$ (V)},
+                                ylabel={$\Im\left(V_C\right)$ (V)},
+                                xmin=-0.3, xmax=0.4,
+                                xtick={-0.3,-0.2,...,0.4}, 
+                                ymin=-0.5, ymax=0.15,
+                                ylabel={Im$\left(V_C\right)$ (V)},
+                                ytick={-0.5,-0.4,...,0.1},
+                                legend pos=south east,
+				legend cell align={left},
+                                ymajorgrids=true,
+                                xmajorgrids=true,
+                                every axis plot/.append style={thick},
+                        ]
+                        \addplot[red,  smooth] table[col sep=comma,header=false,x index=1,y index=2]{data/quasistationary/data_slow.csv};
+			\addlegendentry{Dynamic response}
+                        \addplot[blue, smooth] table[col sep=comma,header=false,x index=3,y index=4]{data/quasistationary/data_slow.csv};
+			\addlegendentry{Steady-state approximation}
+                        \end{axis}
+
+                \end{tikzpicture}
+        \endpgfgraphicnamed
+        \caption
+[Components of the voltage across the capacitor of the circuit of figure \ref{fig:secondordercircuit} for the ``slow'' case.]
+{Real and imaginary components of the voltage $V_C$ across the capacitor of the circuit of figure \ref{fig:secondordercircuit} for the ``slow'' case. In red the voltage $V_C$ obtained by integrating the differential equation \eqref{eq:example_circuit_AB_diffeq}, and in blue the steady-state approximation.}
+        \label{fig:voltage_signals_slow}
+        \end{center}
+\end{figure}
+% >>>
+% VOLTAGE TIME CURVES (FAST CASE) <<<
+\begin{figure}
+        \begin{center}
+                \beginpgfgraphicnamed{timesim_fast}
+                \begin{tikzpicture}
+                        \begin{axis}[
+				name = ax_main,
+                                width = 1\columnwidth,
+                                height = 0.6/1.618*\columnwidth,
+                                title={Capacitor voltage $V_C$ (fast circuit)},
+                                ylabel={Re$\left(V_C\right)$ (V)},
+				xlabel={Time (ms)},
+                                xmin=0, xmax=0.06,
+                                ymin=-25.5, ymax=25,
+                                xtick={0,0.01,...,0.1},
+				xticklabels={$0$,$10$,$20$,$30$,$40$,$50$,$60$},
+				scaled x ticks=false,
+                                ytick={-20,-10,...,20}, 
+                                legend pos=north east,
+				legend cell align={left},
+                                ymajorgrids=true,
+                                xmajorgrids=true,
+                                every axis plot/.append style={thick},
+                        ]
+                        \addplot[red,  smooth] table[col sep=comma,header=false,x index=0,y index=1]{data/quasistationary/data_fast.csv};
+			\addlegendentry{Dynamic response}
+                        \addplot[blue, smooth] table[col sep=comma,header=false,x index=0,y index=3]{data/quasistationary/data_fast.csv};
+			\addlegendentry{Steady-state approximation}
+                        \end{axis}
+%
+                        \begin{axis}[
+                                name = ax_imaginary,
+                                at={($(ax_main.south west)-(0,0.35*\columnwidth)$)},
+                                width = 1\columnwidth,
+                                height = 0.6/1.618*\columnwidth,
+                                xmin=0, xmax=0.06,
+                                ymin=-3, ymax=33,
+                                xtick={0,0.01,...,0.1},
+				xlabel={Time (ms)},
+                                ylabel={Im$\left(V_C\right)$ (V)},
+				xticklabels={$0$,$10$,$20$,$30$,$40$,$50$,$60$},
+				scaled x ticks=false,
+                                ytick={0,5,...,30},
+                                legend pos=north east,
+				tick label style={/pgf/number format/fixed},
+				legend cell align={left},
+                                ymajorgrids=true,
+                                xmajorgrids=true,
+                                every axis plot/.append style={thick},
+                        ]
+			\addplot[red, smooth] table[col sep=comma,header=false,x index=0,y index=2]{data/quasistationary/data_fast.csv};
+			\addlegendentry{Dynamic response}
+			\addplot[blue,smooth] table[col sep=comma,header=false,x index=0,y index=4]{data/quasistationary/data_fast.csv};
+			\addlegendentry{Steady-state approximation}
+			\end{axis}
+%
+			\begin{axis}[
+                                at={($(ax_imaginary.south west)-(0,0.65*\columnwidth)$)},
+                                width = 1\columnwidth,
+                                height = 1/1.618*\columnwidth,
+                                title={Capacitor voltage $V_C$ (fast circuit)},
+                                xlabel={Re$\left(V_C\right)$ (V)},
+                                xmin=-25.5, xmax=25,
+                                xtick={-20,-10,...,20}, 
+                                ymin=-3, ymax=33,
+                                ylabel={Im$\left(V_C\right)$ (V)},
+                                ytick={0,5,...,30},
+                                legend pos=north east,
+				legend cell align={left},
+                                ymajorgrids=true,
+                                xmajorgrids=true,
+                                every axis plot/.append style={thick},
+                        ]
+                        \addplot[red,  smooth] table[col sep=comma,header=false,x index=1,y index=2]{data/quasistationary/data_fast.csv};
+			\addlegendentry{Dynamic response}
+                        \addplot[blue, smooth] table[col sep=comma,header=false,x index=3,y index=4]{data/quasistationary/data_fast.csv};
+			\addlegendentry{Steady-state approximation}
+                        \end{axis}
+                \end{tikzpicture}
+        \endpgfgraphicnamed
+        \caption
+[Components of the voltage across the capacitor of the circuit of figure \ref{fig:secondordercircuit} for the ``fast'' case.]
+{Real and imaginary components of the voltage $V_C$ across the capacitor of the circuit of figure \ref{fig:secondordercircuit} for the ``fast'' case. In red the voltage $V_C$ obtained by integrating the differential equation \eqref{eq:example_circuit_AB_diffeq}, and in blue the steady-state approximation.}
+        \label{fig:voltage_signals_fast}
+        \end{center}
+\end{figure}
+% >>>
+% VOLTAGE TIME CURVES (HIGH LOAD) <<<
+\begin{figure}
+        \begin{center}
+                \beginpgfgraphicnamed{timesim_highload}
+                \begin{tikzpicture}
+                        \begin{axis}[
+				name = ax_main,
+                                width = 1\columnwidth,
+                                height = 0.6/1.618*\columnwidth,
+                                title={Capacitor voltage $V_C$ (high load)},
+                                ylabel={Re$\left(V_C\right)$ (V)},
+				xlabel={Time (ms)},
+                                xmin=0, xmax=0.06,
+                                ymin=-0.3, ymax=0.4,
+                                xtick={0,0.01,...,0.1},
+				xticklabels={$0$,$10$,$20$,$30$,$40$,$50$,$60$},
+				scaled x ticks=false,
+				scaled x ticks=false,
+                                ytick={-0.3,-0.2,...,0.4}, 
+                                legend pos=south east,
+				legend cell align={left},
+                                ymajorgrids=true,
+                                xmajorgrids=true,
+                                every axis plot/.append style={thick},
+                        ]
+                        \addplot[red,  smooth] table[col sep=comma,header=false,x index=0,y index=1]{data/quasistationary/data_highload.csv};
+			\addlegendentry{Dynamic response}
+                        \addplot[blue, smooth] table[col sep=comma,header=false,x index=0,y index=3]{data/quasistationary/data_highload.csv};
+			\addlegendentry{Steady-state approximation}
+                        \end{axis}
+%
+                        \begin{axis}[
+                                name = ax_imaginary,
+                                at={($(ax_main.south west)-(0,0.35*\columnwidth)$)},
+                                width = 1\columnwidth,
+                                height = 0.6/1.618*\columnwidth,
+                                xmin=0, xmax=0.06,
+                                ymin=-0.4, ymax=0.08,
+                                xtick={0,0.01,...,0.06},
+				xlabel={Time (ms)},
+                                ylabel={Im$\left(V_C\right)$ (V)},
+				xticklabels={$0$,$10$,$20$,$30$,$40$,$50$,$60$},
+				scaled x ticks=false,
+                                ytick={-0.4,-0.3,...,0},
+				tick label style={/pgf/number format/fixed},
+				legend cell align={left},
+				legend pos = north east,
+                                ymajorgrids=true,
+                                xmajorgrids=true,
+                                every axis plot/.append style={thick},
+                        ]
+			\addplot[red, smooth] table[col sep=comma,header=false,x index=0,y index=2]{data/quasistationary/data_highload.csv};
+			\addlegendentry{Dynamic response}
+			\addplot[blue,smooth] table[col sep=comma,header=false,x index=0,y index=4]{data/quasistationary/data_highload.csv};
+			\addlegendentry{Steady-state approximation}
+			\end{axis}
+%
+                        \begin{axis}[
+                                at={($(ax_imaginary.south west)-(0,0.65*\columnwidth)$)},
+                                width = 1\columnwidth,
+                                height = 1/1.618*\columnwidth,
+                                title={Capacitor voltage $V_C$ (high load)},
+                                xlabel={Re$\left(V_C\right)$ (V)},
+                                xmin=-0.3, xmax=0.4,
+                                xtick={-0.3,-0.2,...,0.4}, 
+                                ymin=-0.4, ymax=0.08,
+                                ylabel={Im$\left(V_C\right)$ (V)},
+                                ytick={-0.4,-0.3,...,0},
+                                legend pos=south east,
+				legend cell align={left},
+                                ymajorgrids=true,
+                                xmajorgrids=true,
+                                every axis plot/.append style={thick},
+                        ]
+                        \addplot[red,  smooth] table[col sep=comma,header=false,x index=1,y index=2]{data/quasistationary/data_highload.csv};
+			\addlegendentry{Dynamic response}
+                        \addplot[blue, smooth] table[col sep=comma,header=false,x index=3,y index=4]{data/quasistationary/data_highload.csv};
+			\addlegendentry{Steady-state approximation}
+                        \end{axis}
+                \end{tikzpicture}
+        \endpgfgraphicnamed
+        \caption
+[Components of the voltage across the capacitor of the circuit of figure \ref{fig:secondordercircuit} for the ``high load'' case.]
+{Real and imaginary components of the voltage $V_C$ across the capacitor of the circuit of figure \ref{fig:secondordercircuit} for the ``high load'' case. In red the voltage $V_C$ obtained by integrating the differential equation \eqref{eq:example_circuit_AB_diffeq}, and in blue the steady-state approximation.}
+        \label{fig:voltage_signals_highload}
+        \end{center}
+\end{figure}
+% >>>
+
+\examplebar
+\end{example}
+
+%-------------------------------------------------
+\section{Proving the Quasi-Static Hypothesis}\label{sec:qsh_proof} %<<<1
+
+	In immediate practical terms, what the QSH entails is that the complexification of linear circuits of theorem \ref{corollary:complex_equivalence_phasorialodes} can be simplified greatly. Suppose a linear system 
+
+\begin{equation} \sum_{k=0}^n \alpha_k x^{(k)} - f(t)  = 0 \end{equation} 
+
+	\noindent that is complexified as per theorem \ref{corollary:complex_equivalence_phasorialodes}, yielding a complex differential system
+
+\begin{equation} \sum\limits_{i=0}^n \beta^n_i(t) \dfrac{d^iX(t)}{dt^i} - F(t) = 0,\ \beta_n^k(t) = \sum\limits_{k=i}^{n} \alpha_k{k\choose i}\left[ \sum\limits_{c=0}^{k-i} j^c B_{\left(k-i,c\right)}\left(\omega,\dot{\omega},\ddot{\omega},...,\omega^{(k-i-c)}\right)\right] . \label{eq:qsh_approx_line}\end{equation}
+
+	We now build the matrix model of this system using the line-to-matrix ODE equivalence (theorem \ref{theorem:line_to_matrixode_equiv}): let $\mathbf{Y} = \left[X,\dot{X},\ddot{X},...,X^{(n-1)}\right]$ and
+
+\begin{equation} \boldsymbol{\beta}(t) =
+\left[\begin{array}{ccccc} 0 & 1 & 0 & ... & 0 \\[3mm] 0 & 0 & 1 & ... & 0  \\[3mm] \vdots & \vdots & \vdots & \ddots & \vdots \\[3mm] 0 & 0 & 0 & ... & 1 \\[3mm] - \dfrac{\beta^n_0}{\beta^n_n} & - \dfrac{\beta^n_1(t)}{\beta^n_n(t)} & -\dfrac{\beta^n_2(t)}{\beta^n_n(t)} & ... & -\dfrac{\beta^n_{(n-1)}(t)}{\beta^n_n(t)}
+\end{array}\right] ,
+%
+\mathbf{F} = \left[\begin{array}{c} 0 \\[3mm] 0 \\[3mm] \vdots \\[3mm] \dfrac{F(t)}{\beta_n^n} \end{array}\right]
+\end{equation}
+
+	\noindent and one can write \eqref{eq:qsh_approx_line} in matrix form $\dot{\mathbf{Y}} = \boldsymbol{\beta} + \mathbf{F}$. In accordance with the modelling of section \ref{sec:freq_modelling_timescales}, we suppose that the apparent frequency $\omega$ adopted for the Dynamic Phasor Transform and the forcing $F(t)$ are given by
+
+\begin{equation}
+	\left(\Lambda_\varepsilon\right):\ \left\{\begin{array}{l} 
+		\dot{\mathbf{Y}} = \boldsymbol{\beta}\mathbf{Y} + \mathbf{F} \\[3mm]
+		\dfrac{d}{dt}\left[\begin{array}{c} \boldsymbol{\Omega} \\[3mm] \boldsymbol{\Theta}\end{array}\right] = G \left(\mathbf{Y}, \boldsymbol{\Theta}, \boldsymbol{\Omega}, t\right)
+\end{array} \right.
+\end{equation}
+
+	\noindent comprising the initial system being studied, where $\boldsymbol{\Omega}$ and $\boldsymbol{\Theta}$ are the differential models of the frequency and the modelling, respectively. Obtaining the slow system and the steady-state approximations $\mathbf{Y}_a,\ \boldsymbol{\Omega}_a,\ \boldsymbol{\Theta}_a$ is done by adopting
+
+\begin{equation}
+	\left(\Lambda_s\right):\ \left\{\begin{array}{l} 
+		\mathbf{0} = \boldsymbol{\beta}\mathbf{Y}_a + \mathbf{F} \\[3mm]
+		\dfrac{d}{dt}\left[\begin{array}{c} \boldsymbol{\Omega}_a \\[3mm] \boldsymbol{\Theta}_a \end{array}\right] = G \left(\mathbf{Y}, \boldsymbol{\Theta}_a, \boldsymbol{\Omega}_a, t\right)
+\end{array} \right.
+\end{equation}
+
+	\noindent and isolating $\mathbf{Y}_a$,
+
+\begin{equation}
+	\left(\Lambda_s\right):\ \left\{\begin{array}{l} 
+		\mathbf{Y}_a = \boldsymbol{\beta}^{-1} \mathbf{F} \\[3mm]
+		\dfrac{d}{dt}\left[\begin{array}{c} \boldsymbol{\Omega}_a \\[3mm] \boldsymbol{\Theta}_a \end{array}\right] = G'\left(\boldsymbol{\Theta}_a, \boldsymbol{\Omega}_a, t\right)
+\end{array} \right. .
+\end{equation}
+
+	But we note that if $\boldsymbol{\beta}(t)$ is invertible then
+
+\begin{equation} \left[\boldsymbol{\beta}(t)\right]^{-1} =
+\left[\begin{array}{cccccc}
+- \dfrac{\beta^n_1}{\beta^n_0} & - \dfrac{\beta^n_2}{\beta^n_0} & -\dfrac{\beta^n_3}{\beta^n_0} & ... & -\dfrac{\beta^n_{(n-1)}}{\beta^n_0} & -\dfrac{\beta^n_n}{\beta^n_0} \\[3mm]
+1 & 0 & 0 & ... & 0 & 0 \\[3mm]
+0 & 1 & 0 & ... & 0 & 0  \\[3mm]
+\vdots & \vdots & \vdots & \ddots & \vdots & \vdots \\[3mm]
+0 & 0 & 0 & ... & 1 & 0
+\end{array}\right] ,
+\end{equation}
+
+	\noindent and considering the steady-state approximation $X_a(t)$ of $X(t)$ is the first component of $\mathbf{Y}_a$, this yields
+
+\begin{equation} X_a = \dfrac{\beta^n_n}{\beta^n_0}\dfrac{F(t)}{\beta^n_n} = \dfrac{F(t)}{\beta_0^n} . \label{eq:qsh_approx_slowsystemresult}\end{equation}
+
+	By the definition of the $\beta$ coefficients,
+
+\begin{align} \beta_0^n(t) &= \sum\limits_{k=0}^{n} \alpha_k{k\choose 0} \left[\sum\limits_{c=0}^{k} j^cB_{\left(k,c\right)}\left(\omega,\dot{\omega},\ddot{\omega},...,\omega^{(k-c)}\right) \right] = \\[3mm] &= \sum\limits_{k=0}^{n} \alpha_k \left[\sum\limits_{c=0}^{k} j^cB_{\left(k,c\right)}\left(\omega,\dot{\omega},\ddot{\omega},...,\omega^{(k-c)}\right) \right]. \label{eq:beta0_approx_tvar}\end{align}
+
+	Naturally, if the apparent frequency is a constant $\omega_0$ then by the properties of the Bell Polynomials,
+
+\begin{equation} B_{\left(k-i,c\right)}\left(\omega,0,...0\right) = \left\{\begin{array}{l} \omega^{k} \text{, if } k-i=c \\[2mm] 0 \text{, if otherwise} \end{array}\right. \end{equation}
+
+	\noindent and substituting onto \eqref{eq:beta0_approx_tvar},
+
+\begin{equation} \beta_0^n(t) = \sum\limits_{k=0}^{n} \alpha_k{k\choose 0} \left[\sum\limits_{c=0}^{k} j^cB_{\left(k,c\right)}\left(\omega,0,...,0\right)\right] = \sum\limits_{k=0}^{n} \alpha_k \left(j^k\omega_0^k\right),  \end{equation}
+
+	\noindent and substituting this into \eqref{eq:beta0_approx_tvar},
+
+\begin{equation} X_a = \dfrac{F(t)}{\displaystyle \sum\limits_{k=i}^{n} \alpha_k \left( j\omega_0\right)^k} .\end{equation}
+
+	Thus showing that for a constant apparent frequency the approximated steady-state equations are the classical phasor algebraic equations. For non-constant apparent frequencies, let us suppose that $\omega(t)$ is such that its derivatives are all sufficiently small, that is,
+
+\begin{equation} \left\lvert\dfrac{d^k\omega(t)}{dt^k}\right\rvert \leq \varepsilon(t) \text{ for some small } \varepsilon(t) \text{ and } 1\leq k \leq n. \end{equation}
+
+	We know that polynomials are infinitely smooth with respect to the inputs, so
+
+\begin{equation} \lim_{x_2,x_3,...,x_{\left(k-c+1\right)}\to 0} B_{\left(n,k\right)}\left(x_1,x_2,...,x_{\left(k-c+1\right)}\right) = B_{\left(n,k\right)}\left(x_1,0,...,0\right)\end{equation}
+
+	\noindent meaning
+
+\begin{equation} B_{\left(n,k\right)}\left(x_1,x_2,...,x_{\left(k-c+1\right)}\right) = B_{\left(k,c\right)}\left(x_1,0,...,0\right) + \sum_{i=2}^{k-c+1} O\left(x_i\right) = x_1^n + O\left(\varepsilon(t)\right)\end{equation}
+
+	\noindent in turn meaning
+
+\begin{equation} \beta_0^n(t) = \sum\limits_{k=0}^{n} \alpha_k \left(j\omega\right)^k + O\left(\varepsilon(t)\right) \Rightarrow X_a = \dfrac{F(t)}{\displaystyle \sum\limits_{k=i}^{n} \alpha_k \left( j\omega\left(t\right) \right)^{k}} + O\left(\varepsilon(t)\right). \label{eq:qsh_approx_composition}\end{equation}
+
+	One can immediately notice that this result is a time-varying adaptation of the algebraic equation one would obtain if the excitation $f(t)$ were a static sinusoid with fixed frequency — hence why this solution is sometimes called ``algebraic solution''. One can also note that these results can be obtained by applying null derivatives of $X$ and $\omega$ on \eqref{eq:qsh_approx_line}, which also corroborates with the notion that the Dynamic Phasor differential equation \eqref{eq:qsh_approx_line} is approximated by a static phasor equivalent version once the Quasi-Static Modelling is applied. Particularly, if $\omega(t)$ is still time varying but slow and close to some constant $\omega_0$, that is, 
+
+\begin{equation} \omega(t) = \omega_0 + \Delta\omega(t) \text{ where } \left\lvert\dfrac{d^k\Delta\omega(t)}{dt^k}\right\rvert \leq \varepsilon(t) \text{ for some small } \varepsilon(t) \text{ and } 1\leq k \leq n. \label{eq:close_and_slow}\end{equation}
+
+	\noindent then
+
+\begin{equation} X_a = \dfrac{F(t)}{\displaystyle \sum\limits_{k=i}^{n} \alpha_k \left( j\omega_0\right)^k} + O\left(\varepsilon(t)\right)\end{equation}
+
+	\noindent and the equation becomes algebraic and the denominator becomes a static impedance quantity. This equation also means that if the frequency $\omega(t)$ assymptotically stabilizes to a certain value, that is, the limit
+
+\begin{equation} \lim_{t\to\infty} \omega(t) = \omega_\infty \end{equation}
+
+	\noindent exists then $\varepsilon(t)\to 0$ and at the equilibrium
+
+	\begin{equation} X_\infty = \dfrac{F_\infty}{\displaystyle \sum\limits_{k=i}^{n} \alpha_k \left( j\omega_\infty\right)^k}\end{equation}
+
+	\noindent where $F(t)\to F_\infty$ as $t\to\infty$, provided $F_\infty$ exists. This essentially means that the assymptotic response of the circuit is given by a classic phasor relationship, therefore allowing us to calculate the initial and final conditions of \eqref{eq:lemma_time_complex_final} using algebraic relationships.
+
+	Thus, from a linear circuits perspective, these results in essence validade the Quasi-Static Hypothesis: as $\omega$ is supposed much slower than the circuit dynamics, $X_a$ approximates its steady-state algebraic behavior and the model becomes much close to the static phasor models using classic impedances.
+
+	Another reason to call this solution ``algebraic'' is the fact that the impedances become algebraic equations. Applying the results to the differential equation $\dot{x} = y(t)$ one obtains $Y_a(t) = j\omega(t)X_a(t)$; thus the linear circuit bipole equations become
+
+\begin{equation} \left\{\begin{array}{l} \text{Linear inductor: } v(t) = L \dot{i}(t) \Rightarrow V_a(t) = j\omega(t) L I_a(t) \\[3mm] \text{Linear capacitor: } i(t) = C \dot{v}(t) \Rightarrow I_a(t) = j\omega(t) C V_a(t) \\[3mm] \text{Linear resistor: } v(t) = Ri(t) \Rightarrow V(t) = RI(t) \end{array}\right. \label{eq:Linear_approximated_relationshipsp} .\end{equation}
+
+	\noindent which are algebraic since the differential portion is dropped. Particularly interesting for Power Systems, if $\omega(t)$ is a constant synchronous frequency $\omega_0$ (or sufficiently close to it with small derivatives as in \eqref{eq:close_and_slow}) then
+
+\begin{equation} \left\{\begin{array}{l} \text{Linear inductor: } V_a(t) = j\omega_0L I_a(t) = j x_L I_a(t) \\[3mm] \text{Linear capacitor: } I_a(t) = j\omega_0 C V_a(t) = j x_C V_a(t) \\[3mm] \text{Linear resistor: } V(t) = RI(t) \end{array}\right. \label{eq:Linear_approximated_relationships_synch} \end{equation}
+
+	\noindent where $x_L$ and $x_C$ are the inductive and capacitive reactances measured at the synchronous frequency. This justifies many results in stability and control of Power Systems; for instance, in example \ref{example:3p_eps_modelling}, it was mentioned that the current controller of figure \ref{fig:3p_curr_control} has a flaw in that it assumes time-varying equivalent impedance equations in the form of \eqref{eq:circuit_3pmodel_complex}, leading to potentially bad controller behavior. In that particular example, by adopting small values of gains for the PI controller of the PLL synchronization subsystem, the swings in frequency $\omega$ are slow and small (as evidenced by the simulation results of $\omega(t)$ in figure \ref{fig:freqsignal_3psim}; thus, in this case, the steady-state modelling is justified.
