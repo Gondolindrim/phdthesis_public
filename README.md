@@ -2,11 +2,13 @@
 
 This is the public repository of my doctoral thesis. PDF links:
 
-- [Click here for the final version dated september 15 2025](https://github.com/Gondolindrim/phdthesis_public/releases/download/final/alvaro-volpato_dynphasor_theory_final_version.pdf)
+- [Click here for the final version dated september 15 2025](https://github.com/Gondolindrim/phdthesis_public/releases/download/final/dynamic_phasor_theory_final-150925.pdf)
 
 ## A note on compiling
 
-If you want to read the thesis, just download the PDF using the link above. If for some reason you need to compile it (like to get the images), the thesis contains 100 TikZ generated figures which are externalized and take roughly 20 minutes to compile, so grab a coffee and lay back.
+If you want to read the thesis, just download the PDF using the link above. If for some reason you need to compile it (like to get the images), the thesis contains 100 TikZ generated figures which are externalized and take roughly 20 minutes to compile, so grab a coffee and lay back. Due to the extensive time this takes to compile, it will not work with Overlaf.
+
+To compile, you need to use `pdflatex` with `tikZ` (available in most texlive packages) with `inkscape` installed. The `tex` folder contains a Makefile, so all you need to do to fully compile the thesis is to type in `make bib`. The PDF file will be created in a `build` folder under the name `main.pdf`. All images generates will also be there.
 
 ## Licensing and citing
 
